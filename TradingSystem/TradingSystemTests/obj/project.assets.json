@@ -5657,23 +5657,26 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\iseepeople\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+      "projectUniqueName": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
       "projectName": "TradingSystemTests",
-      "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystemTests\\obj\\",
+      "projectPath": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+      "packagesPath": "C:\\Users\\iseepeople\\.nuget\\packages\\",
+      "outputPath": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystemTests\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\iseepeople\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5687,8 +5690,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
-              "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\TradingSystem.csproj"
+            "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+              "projectPath": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\TradingSystem.csproj"
             }
           }
         }

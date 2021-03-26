@@ -1,23 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
+    "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
   },
   "projects": {
-    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+    "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "projectUniqueName": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
         "projectName": "TradingSystem",
-        "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\TradingSystem\\TradingSystem\\obj\\",
+        "projectPath": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "packagesPath": "C:\\Users\\iseepeople\\.nuget\\packages\\",
+        "outputPath": "D:\\Programming\\software-engineering-workshop-project\\TradingSystem\\TradingSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\iseepeople\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
