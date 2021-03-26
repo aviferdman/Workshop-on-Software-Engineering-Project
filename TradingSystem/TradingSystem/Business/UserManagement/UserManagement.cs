@@ -6,14 +6,14 @@ namespace TradingSystem.Business.UserManagement
 {
     class UserManagement
     {
-        private ICollection<DataUser> dataUsers;
-        private Authentication authentication;
+        private ICollection<DataUser> _dataUsers;
+        private Authentication _authentication;
         private static readonly Lazy<UserManagement>
-        lazy =
+        _lazy =
         new Lazy<UserManagement>
             (() => new UserManagement());
 
-        public static UserManagement Instance { get { return lazy.Value; } }
+        public static UserManagement Instance { get { return _lazy.Value; } }
 
         private UserManagement()
         {

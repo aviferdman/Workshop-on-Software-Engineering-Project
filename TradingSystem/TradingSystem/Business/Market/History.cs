@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TradingSystem.Business.Delivery
+namespace TradingSystem.Business.Market
 {
     class History
     {
