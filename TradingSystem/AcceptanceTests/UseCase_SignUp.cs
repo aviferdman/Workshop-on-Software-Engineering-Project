@@ -21,15 +21,19 @@ namespace AcceptanceTests
         }
 
         [Test]
-        public void SignUp_Success_Normal()
+        public void Success_Normal()
         {
-            Assert.AreEqual(true, bridge.SignUp("user123", "mypassword1"));
+            Success_Normal("user123", "mypassword1");
+        }
+        public void Success_Normal(string username, string password)
+        {
+            Assert.AreEqual(true, bridge.SignUp(username, password));
         }
 
         [Test]
-        public void SignUp_Failure_UsernameTaken()
+        public void Failure_UsernameTaken()
         {
-            SignUp_Success_Normal();
+            Success_Normal("user123", "mypassword1");
             Assert.AreEqual(true, bridge.SignUp("user123", "abcd1234"));
         }
     }

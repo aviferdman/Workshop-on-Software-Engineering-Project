@@ -8,9 +8,16 @@ namespace AcceptanceTests.AppInterface
 {
     public static class Driver
     {
+        private static IUserBridge userBridge;
+
+        static Driver()
+        {
+            userBridge = new UserBridgeProxy(null);
+        }
+
         public static IUserBridge UserBridge()
         {
-            return new UserBridgeProxy(null);
+            return userBridge;
         }
     }
 }
