@@ -5662,11 +5662,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ASUS\\source\\repos\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+      "projectUniqueName": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
       "projectName": "TradingSystemTests",
-      "projectPath": "C:\\Users\\ASUS\\source\\repos\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+      "projectPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
       "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ASUS\\source\\repos\\TradingSystem\\TradingSystemTests\\obj\\",
+      "outputPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -5683,8 +5683,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "C:\\Users\\ASUS\\source\\repos\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
-              "projectPath": "C:\\Users\\ASUS\\source\\repos\\TradingSystem\\TradingSystem\\TradingSystem.csproj"
+            "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+              "projectPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj"
             }
           }
         }

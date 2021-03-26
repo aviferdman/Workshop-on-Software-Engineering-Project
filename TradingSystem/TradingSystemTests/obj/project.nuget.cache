@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NzKhdqbmr3B/cyrntdvtB0aavU5aXl6P0zqd5+ukfKZQJainUZ3C5cK+seRUIVoFwcatnyrqOkBBr57COaORqw==",
+  "dgSpecHash": "PisS+BzFYAYIwc8RmdSr0nWblDzB4ov0Fwphjb7BOL4MHnxKM8iWhFeTAk81eHOzPtBdslw1TTxmdVydqH2JcQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ASUS\\source\\repos\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+  "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ASUS\\.nuget\\packages\\coverlet.collector\\1.3.0\\coverlet.collector.1.3.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.codecoverage\\16.7.1\\microsoft.codecoverage.16.7.1.nupkg.sha512",
