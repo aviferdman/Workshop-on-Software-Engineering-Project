@@ -29,6 +29,7 @@ namespace TradingSystem.Business.UserManagement
                    username.Equals(user.username) &&
                    password.Equals(user.password) &&
                    address.Equals(user.address);
+            
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TradingSystem.Business.UserManagement
 {
-    class UserManagement
+    public class UserManagement
     {
         private ConcurrentDictionary<string, DataUser> dataUsers;
         private Authentication authentication;
@@ -20,7 +20,7 @@ namespace TradingSystem.Business.UserManagement
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
         }
-        //use case 2 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
+        //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
 
         //using concurrent dictionary try add if usename already exist
         //than fail and return error message otherwise return success
@@ -28,7 +28,14 @@ namespace TradingSystem.Business.UserManagement
         {
             if(dataUsers.TryAdd(username, new DataUser(username, password, address)))
                 return "success";
-            return "username is already taken please choose a different one";
+            return "username: "+username+" is already taken please choose a different one";
+        }
+
+        //for unit test
+        public bool DeleteUser(string username)
+        {
+            DataUser u=null;
+            return dataUsers.TryRemove(username, out u);
         }
     }
 }
