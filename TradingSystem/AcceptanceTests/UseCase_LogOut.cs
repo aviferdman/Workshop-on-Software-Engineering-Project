@@ -14,7 +14,7 @@ namespace AcceptanceTests
     /// Use case 3: Log out
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
     /// </summary>
-    [TestFixture("user123", "mypassword1")]
+    [TestFixture("logout_user123", "mypassword1")]
     public class UseCase_LogOut
     {
         private readonly string username;

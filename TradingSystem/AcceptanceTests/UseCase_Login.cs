@@ -14,7 +14,7 @@ namespace AcceptanceTests
     /// Use case 2: Login
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
     /// </summary>
-    [TestFixture("user123", "hi1there2")]
+    [TestFixture("login_user123", "hi1there2")]
     public class UseCase_Login
     {
         private readonly string username;
@@ -42,9 +42,9 @@ namespace AcceptanceTests
         public void Setup()
         {
             bridge = Driver.UserBridge();
-            test_signUp = new UseCase_SignUp();
+            test_signUp = new UseCase_SignUp(username, password);
             test_signUp.Setup();
-            test_signUp.Success_Normal(username, password);
+            test_signUp.Success_Normal();
         }
 
         [Test]
