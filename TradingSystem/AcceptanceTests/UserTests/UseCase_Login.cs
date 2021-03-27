@@ -14,13 +14,12 @@ namespace AcceptanceTests
     /// Use case 2: Login
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
     /// </summary>
-    [TestFixture("login_user123", "hi1there2")]
-    public class UseCase_Login
+    [TestFixture(USERNAME, PASSWORD)]
+    public class UseCase_Login : MemberUseTestBase
     {
         private readonly string username;
         private readonly string password;
 
-        private IUserBridge bridge;
         private UseCase_SignUp test_signUp;
 
         public UseCase_Login(string username, string password)
@@ -39,9 +38,9 @@ namespace AcceptanceTests
         }
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            bridge = Driver.UserBridge();
+            base.Setup();
             test_signUp = new UseCase_SignUp(username, password);
             test_signUp.Setup();
             test_signUp.Success_Normal();
@@ -50,26 +49,26 @@ namespace AcceptanceTests
         [Test]
         public void Success_Normal()
         {
-            Assert.AreEqual(true, bridge.Login(username, password));
+            Assert.AreEqual(true, Bridge.Login(username, password));
         }
 
         [Test]
         public void Failure_PasswordMismatch()
         {
-            Assert.AreEqual(false, bridge.Login(username, "wrongpasswrod"));
+            Assert.AreEqual(false, Bridge.Login(username, "wrongpasswrod"));
         }
 
         [Test]
         public void Failure_UsernameDoesntExist()
         {
-            Assert.AreEqual(false, bridge.Login("invaliduser1", "wrongpasswrod"));
+            Assert.AreEqual(false, Bridge.Login("invaliduser1", "wrongpasswrod"));
         }
 
         [Test]
         public void Failure_AlreadyLoggedIn()
         {
             Success_Normal();
-            Assert.AreEqual(false, bridge.Login(username, password));
+            Assert.AreEqual(false, Bridge.Login(username, password));
         }
     }
 }

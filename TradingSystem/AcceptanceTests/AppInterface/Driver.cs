@@ -8,16 +8,12 @@ namespace AcceptanceTests.AppInterface
 {
     public static class Driver
     {
-        private static IUserBridge userBridge;
+        public static IUserBridge UserBridge => UserBridgeInitializer.UserBridge;
 
-        static Driver()
+        // Defend against parallized initialization
+        private static class UserBridgeInitializer
         {
-            userBridge = new UserBridgeProxy(null);
-        }
-
-        public static IUserBridge UserBridge()
-        {
-            return userBridge;
+            internal static IUserBridge UserBridge { get; } = new UserBridgeProxy(null);
         }
     }
 }

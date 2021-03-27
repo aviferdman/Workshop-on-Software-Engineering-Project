@@ -14,13 +14,12 @@ namespace AcceptanceTests
     /// Use case 3: Log out
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
     /// </summary>
-    [TestFixture("logout_user123", "mypassword1")]
-    public class UseCase_LogOut
+    [TestFixture(USERNAME, PASSWORD)]
+    public class UseCase_LogOut : MemberUseTestBase
     {
         private readonly string username;
         private readonly string password;
 
-        private IUserBridge bridge;
         private UseCase_Login test_login;
 
         public UseCase_LogOut(string username, string password)
@@ -39,9 +38,9 @@ namespace AcceptanceTests
         }
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            bridge = Driver.UserBridge();
+            base.Setup();
             test_login = new UseCase_Login(username, password);
             test_login.Setup();
             test_login.Success_Normal();
@@ -50,7 +49,7 @@ namespace AcceptanceTests
         [Test]
         public void Success_Normal()
         {
-            Assert.AreEqual(true, bridge.LogOut());
+            Assert.AreEqual(true, Bridge.LogOut());
         }
     }
 }
