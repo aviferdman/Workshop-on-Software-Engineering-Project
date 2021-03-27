@@ -12,9 +12,14 @@
 
         }
 
+        public string State { get => _state; set => _state = value; }
+        public string City { get => _city; set => _city = value; }
+        public string Street { get => _street; set => _street = value; }
+        public string ApartmentNum { get => _apartmentNum; set => _apartmentNum = value; }
+
         public override string ToString()
         {
-            return _state + "\\" + _city + "\\" + _street + "\\" + _apartmentNum;
+            return State + "\\" + City + "\\" + Street + "\\" + ApartmentNum;
         }
     }
 }

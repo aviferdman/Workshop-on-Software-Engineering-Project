@@ -18,14 +18,14 @@ namespace TradingSystem.Business.Delivery
 
         public PaymentStatus CancelPayment(PaymentDetails paymentDetails)
         {
-            string paymentId = _paymentSystem.CancelPayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
-            return new PaymentStatus(paymentId, !paymentId.Equals(ErrorPaymentId));
+            Guid paymentId = _paymentSystem.CancelPayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
+            return new PaymentStatus(paymentId, !paymentId.ToString().Equals(ErrorPaymentId));
         }
 
         public PaymentStatus CreatePayment(PaymentDetails paymentDetails)
         {
-            string paymentId = _paymentSystem.CreatePayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
-            return new PaymentStatus(paymentId, !paymentId.Equals(ErrorPaymentId));
+            Guid paymentId = _paymentSystem.CreatePayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
+            return new PaymentStatus(paymentId, !paymentId.ToString().Equals(ErrorPaymentId));
         }
 
     }

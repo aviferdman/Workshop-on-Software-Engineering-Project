@@ -18,19 +18,19 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        internal string CreatePayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        internal Guid CreatePayment(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
         {
             return generatePaymentId();
         }
 
-        internal string CancelPayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        internal Guid CancelPayment(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
         {
             return generatePaymentId();
         }
 
-        private string generatePaymentId()
+        private Guid generatePaymentId()
         {
-            return new Guid().ToString();
+            return new Guid();
         }
     }
 }

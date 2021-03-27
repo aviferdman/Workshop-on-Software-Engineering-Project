@@ -9,11 +9,17 @@ namespace TradingSystem.Business.Market
     {
         private State _state;
         private ShoppingCart _shoppingCart;
-        private string _id;
+        private Guid _id;
         private Address _address;
 
-        public string Id { get => _id; set => _id = value; }
-        internal Address Address { get => _address; set => _address = value; }
+        public User()
+        {
+            this._shoppingCart = new ShoppingCart();
+            this.Id = new Guid();
+        }
+
+        public Guid Id { get => _id; set => _id = value; }
+        public Address Address { get => _address; set => _address = value; }
 
 
         public bool CheckEnoughtCurrent(double paymentSum)
@@ -26,7 +32,7 @@ namespace TradingSystem.Business.Market
             throw new NotImplementedException();
         }
 
-        internal string getBankAccount()
+        internal Guid getBankAccount()
         {
             throw new NotImplementedException();
         }

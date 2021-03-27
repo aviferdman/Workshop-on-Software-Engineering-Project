@@ -25,7 +25,7 @@ namespace TradingSystem.Business.Market
             this._transactionLock = new object();
         }
 
-        public bool Purchase(Dictionary<Product, int> product_quantity, string clientId, double paymentSum)
+        public bool Purchase(Dictionary<Product, int> product_quantity, Guid clientId, double paymentSum)
         {
             bool enoughtQuantity, enoughtCurrent, purvhaseStatus;
             User client = getUserById(clientId);
@@ -52,7 +52,7 @@ namespace TradingSystem.Business.Market
             return purvhaseStatus;
         }
 
-        private string getBankAccount()
+        private Guid getBankAccount()
         {
             throw new NotImplementedException();
         }
@@ -77,20 +77,20 @@ namespace TradingSystem.Business.Market
             bool enoughtQuantity = true;
             foreach (KeyValuePair<Product, int> p_q in product_quantity)
             {
-                string productId = p_q.Key.Id;
+                Guid productId = p_q.Key.Id;
                 Product p = getProductById(productId);
                 enoughtQuantity = enoughtQuantity && p != null && p.Quantity >= p_q.Value;
             }
             return enoughtQuantity;
         }
 
-        private Product getProductById(string productId)
+        private Product getProductById(Guid productId)
         {
             IEnumerable<Product> products = _products.Where(product => product.Id.Equals(productId));
             return products.FirstOrDefault();
         }
 
-        private User getUserById(string clientId)
+        private User getUserById(Guid clientId)
         {
             IEnumerable<User> users = _users.Where(user => user.Id.Equals(clientId));
             return users.FirstOrDefault();

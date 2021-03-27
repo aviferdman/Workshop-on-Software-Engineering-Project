@@ -6,12 +6,12 @@ namespace TradingSystem.Business.Payment
 {
     class PaymentDetails
     {
-        private string _clientId;
-        private string _clientBankAccountId;
-        private string _recieverBankAccountId;
+        private Guid _clientId;
+        private Guid _clientBankAccountId;
+        private Guid _recieverBankAccountId;
         private double _paymentSum;
 
-        public PaymentDetails(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        public PaymentDetails(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
         {
             this.ClientId = clientId;
             this.ClientBankAccountId = clientBankAccountId;
@@ -19,9 +19,9 @@ namespace TradingSystem.Business.Payment
             this.PaymentSum = paymentSum;
         }
 
-        public string ClientId { get => _clientId; set => _clientId = value; }
-        public string ClientBankAccountId { get => _clientBankAccountId; set => _clientBankAccountId = value; }
-        public string RecieverBankAccountId { get => _recieverBankAccountId; set => _recieverBankAccountId = value; }
+        public Guid ClientId { get => _clientId; set => _clientId = value; }
+        public Guid ClientBankAccountId { get => _clientBankAccountId; set => _clientBankAccountId = value; }
+        public Guid RecieverBankAccountId { get => _recieverBankAccountId; set => _recieverBankAccountId = value; }
         public double PaymentSum { get => _paymentSum; set => _paymentSum = value; }
     }
 }

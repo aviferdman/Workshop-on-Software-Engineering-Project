@@ -8,7 +8,7 @@ namespace TradingSystem.Business.Market
     {
         private int _quantity;
         private double _weight;
-        private string _id;
+        private Guid _id;
 
         public Product()
         {
@@ -17,6 +17,6 @@ namespace TradingSystem.Business.Market
 
         public int Quantity { get => _quantity; set => _quantity = value; }
         public double Weight { get => _weight; set => _weight = value; }
-        public string Id { get => _id; set => _id = value; }
+        public Guid Id { get => _id; set => _id = value; }
     }
 }

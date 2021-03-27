@@ -18,18 +18,18 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        public string CreateDelivery(string recieverId, string recieverPhone, double weight, string source, string destination)
+        public Guid CreateDelivery(Guid recieverId, string recieverPhone, double weight, string source, string destination)
         {
             return generatePackageId();
         }
 
-        public string CancelDelivery(object recieverId, string recieverPhone, double weight, string source, string destination)
+        public Guid CancelDelivery(Guid recieverId, string recieverPhone, double weight, string source, string destination)
         {
             return generatePackageId();
         }
-        private string generatePackageId()
+        private Guid generatePackageId()
         {
-            return new Guid().ToString();
+            return new Guid();
         }
     }
 }

@@ -25,7 +25,7 @@ namespace TradingSystem.Business.Market
             this._deliveryAdapter = new DeliveryImpl();
         }
  
-        public bool ActivateTransactionAsync(string clientId, string recieverPhone, double weight, string source, string destination, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        public bool ActivateTransactionAsync(Guid clientId, string recieverPhone, double weight, string source, string destination, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
         {
             DeliveryStatus deliveryStatus;
             PaymentStatus paymentStatus;

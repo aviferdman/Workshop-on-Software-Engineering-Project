@@ -6,13 +6,13 @@ namespace TradingSystem.Business.Delivery
 {
     class DeliveryDetails
     {
-        private string _recieverId;
+        private Guid _recieverId;
         private string _recieverPhone;
         private double _weight;
         private string _source;
         private string _destination;
 
-        public DeliveryDetails(string recieverId, string recieverPhone, double weight, string source, string destination)
+        public DeliveryDetails(Guid recieverId, string recieverPhone, double weight, string source, string destination)
         {
             this._recieverId = recieverId;
             this._recieverPhone = recieverPhone;
@@ -21,7 +21,7 @@ namespace TradingSystem.Business.Delivery
             this._destination = destination;
         }
 
-        public string RecieverId { get => _recieverId; set => _recieverId = value; }
+        public Guid RecieverId { get => _recieverId; set => _recieverId = value; }
         public string RecieverPhone { get => _recieverPhone; set => _recieverPhone = value; }
         public double Weight { get => _weight; set => _weight = value; }
         public string Source { get => _source; set => _source = value; }
