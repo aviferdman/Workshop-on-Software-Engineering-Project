@@ -25,23 +25,28 @@ namespace TradingSystem.Business.Market
             this._deliveryAdapter = new DeliveryImpl();
         }
  
-        public async Task<bool> ActivateTransaction(string clientId, string recieverPhone, double weight, string source, string destination, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        public bool ActivateTransactionAsync(string clientId, string recieverPhone, double weight, string source, string destination, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
         {
-            bool deliveryStatus, paymentStatus;
-            deliveryStatus = await _deliveryAdapter.CreateDelivery(clientId, recieverPhone, weight, source, destination);
-            if (deliveryStatus)
+            DeliveryStatus deliveryStatus;
+            PaymentStatus paymentStatus;
+            DeliveryDetails deliveryDetails = new DeliveryDetails(clientId, recieverPhone, weight, source, destination);
+            PaymentDetails paymentDetails = new PaymentDetails(clientId, clientBankAccountId, recieverBankAccountId, paymentSum);
+            deliveryStatus = _deliveryAdapter.CreateDelivery(deliveryDetails);
+            //check if possible to deliver
+            if (deliveryStatus.Status)
             {
-                paymentStatus = await _paymentAdapter.CreatePayment(clientId, clientBankAccountId, recieverBankAccountId, paymentSum);
-                if (!paymentStatus)
+                paymentStatus = _paymentAdapter.CreatePayment(paymentDetails);
+                //check if possible to pay
+                if (!paymentStatus.Status)
                 {
-                    await _deliveryAdapter.CancelDelivery(clientId, recieverPhone, weight, source, destination);
+                    _deliveryAdapter.CancelDelivery(deliveryDetails);
                     return false;
                 }
                 return true;
             }
             else
             {
-                await _deliveryAdapter.CancelDelivery(clientId, recieverPhone, weight, source, destination);
+                _deliveryAdapter.CancelDelivery(deliveryDetails);
                 return false;
             }
 

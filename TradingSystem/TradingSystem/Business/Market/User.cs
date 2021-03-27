@@ -9,11 +9,11 @@ namespace TradingSystem.Business.Market
     {
         private State _state;
         private ShoppingCart _shoppingCart;
-        private string id;
-        private Address address;
+        private string _id;
+        private Address _address;
 
-        public string Id { get => id; set => id = value; }
-        internal Address Address { get => address; set => address = value; }
+        public string Id { get => _id; set => _id = value; }
+        internal Address Address { get => _address; set => _address = value; }
 
 
         public bool CheckEnoughtCurrent(double paymentSum)

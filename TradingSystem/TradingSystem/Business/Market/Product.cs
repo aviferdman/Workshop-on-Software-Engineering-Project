@@ -7,8 +7,8 @@ namespace TradingSystem.Business.Market
     class Product
     {
         private int _quantity;
-        private double weight;
-        private string id;
+        private double _weight;
+        private string _id;
 
         public Product()
         {
@@ -16,7 +16,7 @@ namespace TradingSystem.Business.Market
         }
 
         public int Quantity { get => _quantity; set => _quantity = value; }
-        public double Weight { get => weight; set => weight = value; }
-        public string Id { get => id; set => id = value; }
+        public double Weight { get => _weight; set => _weight = value; }
+        public string Id { get => _id; set => _id = value; }
     }
 }

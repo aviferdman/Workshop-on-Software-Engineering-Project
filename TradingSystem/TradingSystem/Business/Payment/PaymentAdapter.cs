@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Payment
 {
     interface PaymentAdapter
     {
-        public Task<bool> CreatePayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum);
-        public Task<bool> CancelPayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum);
+        public PaymentStatus CreatePayment(PaymentDetails paymentDetails);
+        public PaymentStatus CancelPayment(PaymentDetails paymentDetails);
     }
 }

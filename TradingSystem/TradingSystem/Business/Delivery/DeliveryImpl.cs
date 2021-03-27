@@ -7,6 +7,7 @@ namespace TradingSystem.Business.Delivery
 {
     class DeliveryImpl : DeliveryAdapter
     {
+        private readonly string ErrorPackageId = "";
         private DeliverySystem _deliverySystem;
 
         public DeliveryImpl()
@@ -14,15 +15,18 @@ namespace TradingSystem.Business.Delivery
             this._deliverySystem = DeliverySystem.Instance;
         }
 
-        public Task<bool> CancelDelivery(string recieverId, string recieverPhone, double weight, string source, string destination)
+        public DeliveryStatus CancelDelivery(DeliveryDetails deliveryDetails)
         {
-            return _deliverySystem.CancelDelivery(recieverId, recieverPhone, weight, source, destination);
+            string packageId = _deliverySystem.CancelDelivery(deliveryDetails.RecieverId, deliveryDetails.RecieverPhone, deliveryDetails.Weight, deliveryDetails.Source, deliveryDetails.Destination);
+            return new DeliveryStatus(packageId, !packageId.Equals(ErrorPackageId));
+        
         }
 
         //use case 42 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/73
-        public Task<bool> CreateDelivery(string recieverId, string recieverPhone, double weight, string source, string destination)
+        public DeliveryStatus CreateDelivery(DeliveryDetails deliveryDetails)
         {
-            return _deliverySystem.CreateDelivery(recieverId, recieverPhone, weight, source, destination);
+            string packageId =_deliverySystem.CreateDelivery(deliveryDetails.RecieverId, deliveryDetails.RecieverPhone, deliveryDetails.Weight, deliveryDetails.Source, deliveryDetails.Destination);
+            return new DeliveryStatus(packageId, !packageId.Equals(ErrorPackageId));
         }
     }
 }

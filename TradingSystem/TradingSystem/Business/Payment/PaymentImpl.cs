@@ -8,6 +8,7 @@ namespace TradingSystem.Business.Delivery
 {
     class PaymentImpl : PaymentAdapter
     {
+        private readonly string ErrorPaymentId = "";
         private PaymentSystem _paymentSystem;        
         
         public PaymentImpl()
@@ -15,14 +16,16 @@ namespace TradingSystem.Business.Delivery
             this._paymentSystem = PaymentSystem.Instance;
         }
 
-        public Task<bool> CancelPayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        public PaymentStatus CancelPayment(PaymentDetails paymentDetails)
         {
-            return _paymentSystem.CancelPayment(clientId, clientBankAccountId, recieverBankAccountId, paymentSum);
+            string paymentId = _paymentSystem.CancelPayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
+            return new PaymentStatus(paymentId, !paymentId.Equals(ErrorPaymentId));
         }
 
-        public Task<bool> CreatePayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        public PaymentStatus CreatePayment(PaymentDetails paymentDetails)
         {
-            return _paymentSystem.CreatePayment(clientId, clientBankAccountId, recieverBankAccountId, paymentSum);
+            string paymentId = _paymentSystem.CreatePayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
+            return new PaymentStatus(paymentId, !paymentId.Equals(ErrorPaymentId));
         }
 
     }

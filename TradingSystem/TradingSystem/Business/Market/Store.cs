@@ -41,7 +41,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
 
-                purvhaseStatus = _transaction.ActivateTransaction(clientId, client.getPhoneNumber(), weight, address.ToString(), client.Address.ToString(), client.getBankAccount(), getBankAccount(), paymentSum);
+                purvhaseStatus = _transaction.ActivateTransactionAsync(clientId, client.getPhoneNumber(), weight, address.ToString(), client.Address.ToString(), client.getBankAccount(), getBankAccount(), paymentSum);
                 if (!purvhaseStatus)
                 {
                     //transaction didn't succeded means no need to substract the quantities

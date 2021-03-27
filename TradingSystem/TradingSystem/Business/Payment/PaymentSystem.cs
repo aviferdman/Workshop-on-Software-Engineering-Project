@@ -18,14 +18,19 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        internal Task<bool> CreatePayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        internal string CreatePayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
         {
-            return new Task<bool>(() => true);
+            return generatePaymentId();
         }
 
-        internal Task<bool> CancelPayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
+        internal string CancelPayment(string clientId, string clientBankAccountId, string recieverBankAccountId, double paymentSum)
         {
-            return new Task<bool>(() => true);
+            return generatePaymentId();
+        }
+
+        private string generatePaymentId()
+        {
+            return new Guid().ToString();
         }
     }
 }

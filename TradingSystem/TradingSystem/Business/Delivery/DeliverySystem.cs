@@ -18,14 +18,18 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        internal Task<bool> CreateDelivery(string recieverId, string recieverPhone, double weight, string source, string destination)
+        public string CreateDelivery(string recieverId, string recieverPhone, double weight, string source, string destination)
         {
-            return new Task<bool>(() => true);
+            return generatePackageId();
         }
 
-        internal Task<bool> CancelDelivery(object recieverId, string recieverPhone, double weight, string source, string destination)
+        public string CancelDelivery(object recieverId, string recieverPhone, double weight, string source, string destination)
         {
-            return new Task<bool>(() => true);
+            return generatePackageId();
+        }
+        private string generatePackageId()
+        {
+            return new Guid().ToString();
         }
     }
 }
