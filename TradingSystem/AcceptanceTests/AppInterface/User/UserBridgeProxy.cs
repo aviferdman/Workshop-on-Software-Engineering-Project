@@ -32,5 +32,15 @@ namespace AcceptanceTests.AppInterface.User
 
             return realBridge.Login(username, password);
         }
+
+        public bool LogOut()
+        {
+            if (realBridge == null)
+            {
+                return true;
+            }
+
+            return realBridge.LogOut();
+        }
     }
 }
