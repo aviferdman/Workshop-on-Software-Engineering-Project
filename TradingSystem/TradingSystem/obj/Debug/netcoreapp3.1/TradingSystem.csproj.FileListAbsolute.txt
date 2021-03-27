@@ -11,3 +11,16 @@ C:\Users\ASUS\source\repos\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\T
 C:\Users\ASUS\source\repos\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.dll
 C:\Users\ASUS\source\repos\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.pdb
 C:\Users\ASUS\source\repos\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.genruntimeconfig.cache
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\TradingSystem.exe
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\TradingSystem.deps.json
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\TradingSystem.runtimeconfig.json
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\TradingSystem.runtimeconfig.dev.json
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\TradingSystem.dll
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\TradingSystem.pdb
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.csprojAssemblyReference.cache
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.AssemblyInfoInputs.cache
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.AssemblyInfo.cs
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.csproj.CoreCompileInputs.cache
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.dll
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.pdb
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.genruntimeconfig.cache
