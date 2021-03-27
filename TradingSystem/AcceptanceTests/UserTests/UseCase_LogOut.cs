@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 using AcceptanceTests.AppInterface;
-using AcceptanceTests.AppInterface.User;
 
 using NUnit.Framework;
 
@@ -17,31 +16,20 @@ namespace AcceptanceTests
     [TestFixture(USERNAME, PASSWORD)]
     public class UseCase_LogOut : MemberUseTestBase
     {
-        private readonly string username;
-        private readonly string password;
-
         private UseCase_Login test_login;
 
-        public UseCase_LogOut(string username, string password)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentException($"'{nameof(username)}' cannot be null or whitespace.", nameof(username));
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException($"'{nameof(password)}' cannot be null or whitespace.", nameof(password));
-            }
-
-            this.username = username;
-            this.password = password;
-        }
+        public UseCase_LogOut(string username, string password) :
+            this(SystemContext.New(), new UserInfo(username, password))
+        { }
+        public UseCase_LogOut(SystemContext systemContext, UserInfo loginInfo) :
+            base(systemContext, loginInfo)
+        { }
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
-            test_login = new UseCase_Login(username, password);
+            test_login = new UseCase_Login(SystemContext, UserInfo);
             test_login.Setup();
             test_login.Success_Normal();
         }

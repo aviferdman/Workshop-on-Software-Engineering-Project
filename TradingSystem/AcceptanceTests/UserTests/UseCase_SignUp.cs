@@ -1,5 +1,4 @@
 using AcceptanceTests.AppInterface;
-using AcceptanceTests.AppInterface.User;
 
 using NUnit.Framework;
 
@@ -13,26 +12,24 @@ namespace AcceptanceTests
     [TestFixture(USERNAME, PASSWORD)]
     public class UseCase_SignUp : MemberUseTestBase
     {
-        private readonly string username;
-        private readonly string password;
-
-        public UseCase_SignUp(string username, string password)
-        {
-            this.username = username;
-            this.password = password;
-        }
+        public UseCase_SignUp(string username, string password) :
+            this(SystemContext.New(), new UserInfo(username, password))
+        { }
+        public UseCase_SignUp(SystemContext systemContext, UserInfo signupInfo) :
+            base(systemContext, signupInfo)
+        { }
 
         [Test]
         public void Success_Normal()
         {
-            Assert.AreEqual(true, Bridge.AssureSignUp(username, password));
+            Assert.AreEqual(true, Bridge.AssureSignUp(UserInfo));
         }
 
         [Test]
         public void Failure_UsernameTaken()
         {
             Success_Normal();
-            Assert.AreEqual(true, Bridge.SignUp(username, "abcd1234"));
+            Assert.AreEqual(true, Bridge.SignUp(UserInfo.WithDifferentPassword("abcd1234")));
         }
     }
 }

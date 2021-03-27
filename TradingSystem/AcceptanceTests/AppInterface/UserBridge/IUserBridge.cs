@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace AcceptanceTests.AppInterface.User
+namespace AcceptanceTests.AppInterface.UserBridge
 {
     public interface IUserBridge
     {
@@ -20,7 +20,7 @@ namespace AcceptanceTests.AppInterface.User
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        bool AssureSignUp(string username, string password);
+        bool AssureSignUp(UserInfo signupInfo);
 
         /// <summary>
         /// Sends a sign up request with the specified username and password.
@@ -28,9 +28,9 @@ namespace AcceptanceTests.AppInterface.User
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <returns></returns>
-        bool SignUp(string username, string password);
+        bool SignUp(UserInfo signupInfo);
 
-        bool Login(string username, string password);
+        bool Login(UserInfo loginInfo);
         bool LogOut();
     }
 }

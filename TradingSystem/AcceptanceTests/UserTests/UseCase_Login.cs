@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 using AcceptanceTests.AppInterface;
-using AcceptanceTests.AppInterface.User;
 
 using NUnit.Framework;
 
@@ -17,31 +16,20 @@ namespace AcceptanceTests
     [TestFixture(USERNAME, PASSWORD)]
     public class UseCase_Login : MemberUseTestBase
     {
-        private readonly string username;
-        private readonly string password;
-
         private UseCase_SignUp test_signUp;
 
-        public UseCase_Login(string username, string password)
-        {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentException($"'{nameof(username)}' cannot be null or whitespace.", nameof(username));
-            }
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException($"'{nameof(password)}' cannot be null or whitespace.", nameof(password));
-            }
-
-            this.username = username;
-            this.password = password;
-        }
+        public UseCase_Login(string username, string password) :
+            this(SystemContext.New(), new UserInfo(username, password))
+        { }
+        public UseCase_Login(SystemContext systemContext, UserInfo loginInfo) :
+            base(systemContext, loginInfo)
+        { }
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
-            test_signUp = new UseCase_SignUp(username, password);
+            test_signUp = new UseCase_SignUp(SystemContext, UserInfo);
             test_signUp.Setup();
             test_signUp.Success_Normal();
         }
@@ -49,26 +37,26 @@ namespace AcceptanceTests
         [Test]
         public void Success_Normal()
         {
-            Assert.AreEqual(true, Bridge.Login(username, password));
+            Assert.AreEqual(true, Bridge.Login(UserInfo));
         }
 
         [Test]
         public void Failure_PasswordMismatch()
         {
-            Assert.AreEqual(false, Bridge.Login(username, "wrongpasswrod"));
+            Assert.AreEqual(false, Bridge.Login(UserInfo.WithDifferentPassword("wrongpasswrod")));
         }
 
         [Test]
         public void Failure_UsernameDoesntExist()
         {
-            Assert.AreEqual(false, Bridge.Login("invaliduser1", "wrongpasswrod"));
+            Assert.AreEqual(false, Bridge.Login(new UserInfo("invaliduser1", "wrongpasswrod")));
         }
 
         [Test]
         public void Failure_AlreadyLoggedIn()
         {
             Success_Normal();
-            Assert.AreEqual(false, Bridge.Login(username, password));
+            Assert.AreEqual(false, Bridge.Login(UserInfo));
         }
 
         [TearDown]

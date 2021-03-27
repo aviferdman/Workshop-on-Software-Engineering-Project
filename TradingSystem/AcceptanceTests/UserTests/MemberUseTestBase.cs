@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using AcceptanceTests.AppInterface;
-using AcceptanceTests.AppInterface.User;
+using AcceptanceTests.AppInterface.UserBridge;
 
 using NUnit.Framework;
 
@@ -13,11 +13,16 @@ namespace AcceptanceTests
     {
         public const string USERNAME = "user123";
         public const string PASSWORD = "mypassword1";
-        protected IUserBridge Bridge { get; }
 
-        public MemberUseTestBase()
+        protected IUserBridge Bridge { get; }
+        protected SystemContext SystemContext { get; }
+        public UserInfo UserInfo { get; }
+
+        public MemberUseTestBase(SystemContext systemContext, UserInfo loginInfo)
         {
-            Bridge = Driver.UserBridge;
+            SystemContext = systemContext;
+            Bridge = systemContext.UserBridge;
+            UserInfo = loginInfo;
         }
 
         [SetUp]
