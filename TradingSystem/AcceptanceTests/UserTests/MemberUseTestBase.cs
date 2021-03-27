@@ -14,16 +14,16 @@ namespace AcceptanceTests
         public const string USERNAME = "user123";
         public const string PASSWORD = "mypassword1";
 
-        protected IUserBridge Bridge { get; }
         protected SystemContext SystemContext { get; }
         public UserInfo UserInfo { get; }
 
         public MemberUseTestBase(SystemContext systemContext, UserInfo loginInfo)
         {
             SystemContext = systemContext;
-            Bridge = systemContext.UserBridge;
             UserInfo = loginInfo;
         }
+
+        protected IUserBridge Bridge => SystemContext.UserBridge;
 
         [SetUp]
         public virtual void Setup() { }

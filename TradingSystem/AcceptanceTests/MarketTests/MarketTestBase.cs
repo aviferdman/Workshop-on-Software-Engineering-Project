@@ -17,14 +17,14 @@ namespace AcceptanceTests.MarketTests
         public const string USER_BUYER_NAME = "buyer78";
         public const string USER_BUYER_PASSWORD = "buyer_pass78";
 
-        protected IMarketBridge Bridge { get; }
         public SystemContext SystemContext { get; }
 
         public MarketTestBase(SystemContext systemContext)
         {
             SystemContext = systemContext;
-            Bridge = systemContext.MarketBridge;
         }
+
+        protected IMarketBridge Bridge => SystemContext.MarketBridge;
 
         [SetUp]
         public virtual void Setup() { }
