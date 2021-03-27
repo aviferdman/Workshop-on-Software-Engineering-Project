@@ -14,6 +14,7 @@ namespace AcceptanceTests
     /// Use case 2: Login
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
     /// </summary>
+    [TestFixture("user123", "hi1there2")]
     public class UseCase_Login
     {
         private readonly string username;
@@ -22,7 +23,6 @@ namespace AcceptanceTests
         private IUserBridge bridge;
         private UseCase_SignUp test_signUp;
 
-        public UseCase_Login() : this("user123", "hi1there2") { }
         public UseCase_Login(string username, string password)
         {
             if (string.IsNullOrWhiteSpace(username))

@@ -21,10 +21,7 @@ namespace AcceptanceTests
         }
 
         [Test]
-        public void Success_Normal()
-        {
-            Success_Normal("user123", "mypassword1");
-        }
+        [TestCase("user123", "mypassword1")]
         public void Success_Normal(string username, string password)
         {
             Assert.AreEqual(true, bridge.SignUp(username, password));
