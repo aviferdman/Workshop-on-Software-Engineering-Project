@@ -6,14 +6,14 @@ namespace TradingSystem.Business.Market
 {
     class Market
     {
-        private ICollection<Store> stores;
-        private ICollection<User> users;
+        private ICollection<Store> _stores;
+        private ICollection<User> _users;
         private static readonly Lazy<Market>
-        lazy =
+        _lazy =
         new Lazy<Market>
             (() => new Market());
 
-        public static Market Instance { get { return lazy.Value; } }
+        public static Market Instance { get { return _lazy.Value; } }
 
         private Market()
         {
