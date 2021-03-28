@@ -16,7 +16,7 @@ namespace AcceptanceTests.MarketTests
     public class UseCase_OpenShop : ShopManagementTestBase
     {
         public UseCase_OpenShop(string username, string password) :
-            this(SystemContext.New(), new UserInfo(username, password))
+            this(SystemContext.Instance, new UserInfo(username, password))
         { }
         public UseCase_OpenShop(SystemContext systemContext, UserInfo userInfo) :
             base(systemContext, userInfo)

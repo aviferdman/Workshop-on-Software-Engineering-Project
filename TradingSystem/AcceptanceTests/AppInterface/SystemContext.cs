@@ -27,13 +27,15 @@ namespace AcceptanceTests.AppInterface
             LoggedInUser = null;
         }
 
-        public static SystemContext New()
+        private static SystemContext New()
         {
             var system = new SystemContext();
             system.userBridge.System = system;
             system.marketBridge.System = system;
             return system;
         }
+
+        public static SystemContext Instance { get; } = New();
 
         public IUserBridge UserBridge => userBridge.Bridge;
         public IMarketBridge MarketBridge => marketBridge.Bridge;

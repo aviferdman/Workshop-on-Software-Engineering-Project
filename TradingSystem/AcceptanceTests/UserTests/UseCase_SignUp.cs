@@ -13,7 +13,7 @@ namespace AcceptanceTests
     public class UseCase_SignUp : MemberUseTestBase
     {
         public UseCase_SignUp(string username, string password) :
-            this(SystemContext.New(), new UserInfo(username, password))
+            this(SystemContext.Instance, new UserInfo(username, password))
         { }
         public UseCase_SignUp(SystemContext systemContext, UserInfo signupInfo) :
             base(systemContext, signupInfo)

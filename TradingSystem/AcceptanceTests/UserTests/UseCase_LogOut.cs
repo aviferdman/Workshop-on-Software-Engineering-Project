@@ -19,7 +19,7 @@ namespace AcceptanceTests
         private UseCase_Login test_login;
 
         public UseCase_LogOut(string username, string password) :
-            this(SystemContext.New(), new UserInfo(username, password))
+            this(SystemContext.Instance, new UserInfo(username, password))
         { }
         public UseCase_LogOut(SystemContext systemContext, UserInfo loginInfo) :
             base(systemContext, loginInfo)
