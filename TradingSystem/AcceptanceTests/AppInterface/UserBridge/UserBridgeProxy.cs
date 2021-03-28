@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+
+using AcceptanceTests.AppInterface.Data;
 
 namespace AcceptanceTests.AppInterface.UserBridge
 {

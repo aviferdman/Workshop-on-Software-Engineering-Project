@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
 using AcceptanceTests.AppInterface.UserBridge;
 

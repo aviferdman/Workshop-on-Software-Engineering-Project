@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AcceptanceTests.AppInterface.MarketBridge
+﻿namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public class MarketBridgeProxy : ProxyBase<IMarketBridge>, IMarketBridge
     {
