@@ -15,6 +15,7 @@ namespace TradingSystemTests
             return UserManagement.Instance.DeleteUser("inbi2001");
         }
 
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.SignUp(string, string, string)"/>
         [TestMethod]
         public void TestSignUpSuccess()
         {
@@ -22,6 +23,7 @@ namespace TradingSystemTests
             delete();
         }
 
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.SignUp(string, string, string)"/>
         [TestMethod]
         public void TestSignUpFail()
         {

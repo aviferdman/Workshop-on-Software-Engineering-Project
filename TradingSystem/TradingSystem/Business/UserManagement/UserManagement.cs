@@ -21,7 +21,7 @@ namespace TradingSystem.Business.UserManagement
             dataUsers = new ConcurrentDictionary<string, DataUser>();
         }
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
-
+        /// 
         //using concurrent dictionary try add if usename already exist
         //than fail and return error message otherwise return success
         public string SignUp(string username, string password, string address)
