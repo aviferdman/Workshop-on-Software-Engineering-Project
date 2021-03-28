@@ -8,6 +8,6 @@ namespace TradingSystem.Business.Payment
     interface PaymentAdapter
     {
         public PaymentStatus CreatePayment(PaymentDetails paymentDetails);
-        public PaymentStatus CancelPayment(PaymentDetails paymentDetails);
+        public PaymentStatus CancelPayment(PaymentStatus paymentStatus);
     }
 }

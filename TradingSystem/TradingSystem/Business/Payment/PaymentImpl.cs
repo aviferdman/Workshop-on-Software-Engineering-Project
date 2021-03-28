@@ -16,16 +16,17 @@ namespace TradingSystem.Business.Delivery
             this._paymentSystem = PaymentSystem.Instance;
         }
 
-        public PaymentStatus CancelPayment(PaymentDetails paymentDetails)
+        public PaymentStatus CancelPayment(PaymentStatus paymentStatus)
         {
-            Guid paymentId = _paymentSystem.CancelPayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
-            return new PaymentStatus(paymentId, !paymentId.ToString().Equals(ErrorPaymentId));
+            Guid paymentId = _paymentSystem.CancelPayment(paymentStatus.PaymentId);
+            return new PaymentStatus(paymentId, paymentStatus.ClientId, paymentStatus.StoreId, !paymentId.ToString().Equals(ErrorPaymentId));
         }
 
+        //use case 19 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/74
         public PaymentStatus CreatePayment(PaymentDetails paymentDetails)
         {
             Guid paymentId = _paymentSystem.CreatePayment(paymentDetails.ClientId, paymentDetails.ClientBankAccountId, paymentDetails.RecieverBankAccountId, paymentDetails.PaymentSum);
-            return new PaymentStatus(paymentId, !paymentId.ToString().Equals(ErrorPaymentId));
+            return new PaymentStatus(paymentId, paymentDetails.ClientId, paymentDetails.StoreId, !paymentId.ToString().Equals(ErrorPaymentId));
         }
 
     }

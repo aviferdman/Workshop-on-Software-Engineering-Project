@@ -23,7 +23,7 @@ namespace TradingSystem.Business.Delivery
             return generatePackageId();
         }
 
-        public Guid CancelDelivery(Guid recieverId, string recieverPhone, double weight, string source, string destination)
+        public Guid CancelDelivery(Guid packageId)
         {
             return generatePackageId();
         }

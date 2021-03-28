@@ -18,17 +18,17 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        internal Guid CreatePayment(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
+        public Guid CreatePayment(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
         {
             return generatePaymentId();
         }
 
-        internal Guid CancelPayment(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
+        public Guid CancelPayment(Guid paymentId)
         {
             return generatePaymentId();
         }
 
-        private Guid generatePaymentId()
+        public Guid generatePaymentId()
         {
             return new Guid();
         }

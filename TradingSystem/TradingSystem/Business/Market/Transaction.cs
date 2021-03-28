@@ -12,6 +12,7 @@ namespace TradingSystem.Business.Market
     {
         private PaymentAdapter _paymentAdapter;
         private DeliveryAdapter _deliveryAdapter;
+        private History _history;
         private static readonly Lazy<Transaction>
         _lazy =
         new Lazy<Transaction>
@@ -23,33 +24,61 @@ namespace TradingSystem.Business.Market
         {
             this._paymentAdapter = new PaymentImpl();
             this._deliveryAdapter = new DeliveryImpl();
+            this._history = new History();
         }
- 
-        public bool ActivateTransactionAsync(Guid clientId, string recieverPhone, double weight, string source, string destination, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
+
+        public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, Guid clientBankAccountId, Guid storeId, Guid recieverBankAccountId, double paymentSum)
         {
+            TransactionStatus transactionStatus;
             DeliveryStatus deliveryStatus;
             PaymentStatus paymentStatus;
-            DeliveryDetails deliveryDetails = new DeliveryDetails(clientId, recieverPhone, weight, source, destination);
-            PaymentDetails paymentDetails = new PaymentDetails(clientId, clientBankAccountId, recieverBankAccountId, paymentSum);
-            deliveryStatus = _deliveryAdapter.CreateDelivery(deliveryDetails);
+            DeliveryDetails deliveryDetails = new DeliveryDetails(clientId, storeId, recieverPhone, weight, source, destination);
+            PaymentDetails paymentDetails = new PaymentDetails(clientId, storeId, clientBankAccountId, recieverBankAccountId, paymentSum);
+            paymentStatus = _paymentAdapter.CreatePayment(paymentDetails);
             //check if possible to deliver
-            if (deliveryStatus.Status)
+            if (paymentStatus.Status)
             {
-                paymentStatus = _paymentAdapter.CreatePayment(paymentDetails);
-                //check if possible to pay
-                if (!paymentStatus.Status)
-                {
-                    _deliveryAdapter.CancelDelivery(deliveryDetails);
-                    return false;
-                }
-                return true;
+                deliveryStatus = _deliveryAdapter.CreateDelivery(deliveryDetails);
+                _history.AddDelivery(deliveryStatus);
+                _history.AddPayment(paymentStatus);
+                transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, deliveryStatus.Status);
             }
             else
             {
-                _deliveryAdapter.CancelDelivery(deliveryDetails);
-                return false;
+                transactionStatus = new TransactionStatus(paymentStatus, null, false);
             }
+            return transactionStatus;
+        }
 
+        public History GetHistory(Guid userId)
+        {
+            return _history.GetHistory(userId);
+        }
+
+        internal History GetStoreHistory(Guid storeId)
+        {
+            return _history.GetStoreHistory(storeId);
+        }
+
+        public History GetAllHistory()
+        {
+            return _history;
+        }
+
+        public TransactionStatus CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
+        {
+            PaymentStatus paymentStatus = null;
+            DeliveryStatus deliveryStatus = null;
+            if (cancelPayments)
+            {
+                paymentStatus = _paymentAdapter.CancelPayment(transactionStatus.PaymentStatus);
+            }
+            if (cancelDeliveries)
+            {
+                deliveryStatus = _deliveryAdapter.CancelDelivery(transactionStatus.DeliveryStatus);
+            }
+            bool allSucceeded = deliveryStatus.Status && paymentStatus.Status;
+            return new TransactionStatus(paymentStatus, deliveryStatus, allSucceeded);
         }
     }
 }

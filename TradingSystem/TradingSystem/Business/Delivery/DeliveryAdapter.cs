@@ -8,6 +8,6 @@ namespace TradingSystem.Business.Delivery
     interface DeliveryAdapter
     {
         public DeliveryStatus CreateDelivery(DeliveryDetails deliveryDetails);
-        public DeliveryStatus CancelDelivery(DeliveryDetails deliveryDetails);
+        public DeliveryStatus CancelDelivery(DeliveryStatus deliveryStatus);
     }
 }
