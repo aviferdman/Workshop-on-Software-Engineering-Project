@@ -27,8 +27,8 @@ namespace AcceptanceTests.AppInterface
         private static SystemContext New()
         {
             var system = new SystemContext();
-            system.userBridge.System = system;
-            system.marketBridge.System = system;
+            system.userBridge.SystemContext = system;
+            system.marketBridge.SystemContext = system;
             return system;
         }
 

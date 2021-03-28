@@ -8,7 +8,7 @@ namespace AcceptanceTests.AppInterface
     /// (at least 2 tests wanted to register the same username, but with a different password).
     /// </summary>
     [Serializable]
-    public class TestUserRegisterMismatchException : Exception
+    public class TestUserRegisterMismatchException : SharedDataMismatchException
     {
         public TestUserRegisterMismatchException(string username) : base($"Uername {username} was already registered with a different password.") { }
         public TestUserRegisterMismatchException(string message, Exception inner) : base(message, inner) { }

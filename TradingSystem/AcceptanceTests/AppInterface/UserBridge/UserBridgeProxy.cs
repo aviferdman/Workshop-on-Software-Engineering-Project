@@ -33,26 +33,47 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool SignUp(UserInfo signupInfo)
         {
-            if (!registeredUsers.ContainsKey(signupInfo))
+            if (RealBridge == null)
+            {
+                return false;
+            }
+
+            bool success = RealBridge.SignUp(signupInfo);
+            if (success && !registeredUsers.ContainsKey(signupInfo))
             {
                 registeredUsers.Add(signupInfo, signupInfo);
             }
-            if (RealBridge == null)
-            {
-                return true;
-            }
-
-            return RealBridge.SignUp(signupInfo);
+            return success;
         }
 
         public bool Login(UserInfo loginInfo)
         {
-            return RealBridge == null || RealBridge.Login(loginInfo);
+            if (RealBridge == null)
+            {
+                return false;
+            }
+
+            bool success = RealBridge.Login(loginInfo);
+            if (success)
+            {
+                SystemContext!.LoggedInUser = loginInfo;
+            }
+            return success;
         }
 
         public bool LogOut()
         {
-            return RealBridge == null || RealBridge.LogOut();
+            if (RealBridge == null)
+            {
+                return false;
+            }
+
+            bool success = RealBridge.LogOut();
+            if (success)
+            {
+                SystemContext!.LoggedInUser = null;
+            }
+            return success;
         }
     }
 }

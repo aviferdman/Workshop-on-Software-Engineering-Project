@@ -5,14 +5,14 @@
         public ProxyBase(TBridge? realBridge)
         {
             RealBridge = realBridge;
-            System = null;
+            SystemContext = null;
         }
 
         /// <summary>
         /// The actual bridge which conntects to the system
         /// </summary>
         protected TBridge? RealBridge { get; }
-        public SystemContext? System { get; internal set; }
+        public SystemContext? SystemContext { get; internal set; }
 
         /// <summary>
         /// Returns the TBridge interface itself so that the object
