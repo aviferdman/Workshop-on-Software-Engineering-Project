@@ -31,6 +31,18 @@ namespace AcceptanceTests
             test_signUp.Success_Normal();
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            // Cannot use the LogOut test class because that causes
+            // a circular dependency between them and in C# this
+            // can only be setup in runtime by the method which created both
+            // instances.
+            // In this class, we cannot create both because this is one of
+            // the instances which needs to be created.
+            _ = Bridge.LogOut();
+        }
+
         [Test]
         public void Success_Normal()
         {
@@ -54,18 +66,6 @@ namespace AcceptanceTests
         {
             Success_Normal();
             Assert.AreEqual(false, Bridge.Login(UserInfo));
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            // Cannot use the LogOut test class because that causes
-            // a circular dependency between them and in C# this
-            // can only be setup in runtime by the method which created both
-            // instances.
-            // In this class, we cannot create both because this is one of
-            // the instances which needs to be created.
-            _ = Bridge.LogOut();
         }
     }
 }

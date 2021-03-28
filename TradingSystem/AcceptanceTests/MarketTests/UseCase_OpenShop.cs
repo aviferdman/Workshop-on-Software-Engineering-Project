@@ -12,6 +12,8 @@ namespace AcceptanceTests.MarketTests
     [TestFixture(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD)]
     public class UseCase_OpenShop : ShopManagementTestBase
     {
+        public UseCase_Login useCase_login;
+
         public UseCase_OpenShop(string username, string password) :
             this(SystemContext.Instance, new UserInfo(username, password))
         { }
@@ -19,17 +21,34 @@ namespace AcceptanceTests.MarketTests
             base(systemContext, userInfo)
         { }
 
+        [SetUp]
+        public override void Setup()
+        {
+            base.Setup();
+            useCase_login = new UseCase_Login(SystemContext, UserInfo);
+            useCase_login.Setup();
+            useCase_login.Success_Normal();
+        }
+
+        [TearDown]
+        public void Teardown()
+        {
+            useCase_login.TearDown();
+        }
+
         [Test]
-        [TestCase("my shop 1")]
+        [TestCase(SHOP_NAME)]
         public void Success_Normal_Test(string shopName)
         {
-            _ = Success_Normal(shopName);
+            _ = Success_Normal(new ShopInfo(shopName));
         }
-        public int Success_Normal(string shopName)
+        public Shop Success_Normal(ShopInfo shopInfo)
         {
-            int shopId = Bridge.OpenShop(shopName);
-            Assert.Greater(shopId, 0);
-            return shopId;
+            Shop? shop = Bridge.OpenShop(shopInfo);
+            Assert.IsNotNull(shop);
+            Assert.AreEqual(shopInfo.Name, shop!.Name);
+            Assert.Greater(shop!.Id, 0);
+            return shop;
         }
     }
 }

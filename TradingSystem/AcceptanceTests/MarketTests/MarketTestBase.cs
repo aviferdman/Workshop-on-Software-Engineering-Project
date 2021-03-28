@@ -13,6 +13,8 @@ namespace AcceptanceTests.MarketTests
         public const string USER_BUYER_NAME = "buyer78";
         public const string USER_BUYER_PASSWORD = "buyer_pass78";
 
+        public const string SHOP_NAME = "my shop 1";
+
         public SystemContext SystemContext { get; }
 
         public MarketTestBase(SystemContext systemContext)
