@@ -6,11 +6,13 @@ namespace AcceptanceTests.MarketTests
     public class ShopManagementTestBase : MarketTestBase
     {
         public ShopManagementTestBase(SystemContext systemContext, UserInfo userInfo) :
-            base(systemContext)
-        {
-            UserInfo = userInfo;
-        }
+            base(systemContext, userInfo)
+        { }
 
-        public UserInfo UserInfo { get; }
+        protected void LoginToBuyer()
+        {
+            _ = SystemContext.UserBridge.LogOut();
+            _ = Login(new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD));
+        }
     }
 }

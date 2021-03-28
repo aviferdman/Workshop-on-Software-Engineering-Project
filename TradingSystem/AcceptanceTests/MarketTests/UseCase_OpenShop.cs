@@ -25,9 +25,7 @@ namespace AcceptanceTests.MarketTests
         public override void Setup()
         {
             base.Setup();
-            useCase_login = new UseCase_Login(SystemContext, UserInfo);
-            useCase_login.Setup();
-            useCase_login.Success_Normal();
+            useCase_login = Login();
         }
 
         [TearDown]

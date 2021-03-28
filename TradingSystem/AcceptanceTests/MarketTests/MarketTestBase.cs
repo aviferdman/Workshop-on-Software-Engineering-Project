@@ -1,4 +1,5 @@
 ﻿using AcceptanceTests.AppInterface;
+using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
 
 using NUnit.Framework;
@@ -17,14 +18,30 @@ namespace AcceptanceTests.MarketTests
 
         public SystemContext SystemContext { get; }
 
-        public MarketTestBase(SystemContext systemContext)
+        public UserInfo UserInfo { get; }
+
+        public MarketTestBase(SystemContext systemContext, UserInfo userInfo)
         {
             SystemContext = systemContext;
+            UserInfo = userInfo;
         }
 
         protected IMarketBridge Bridge => SystemContext.MarketBridge;
 
         [SetUp]
         public virtual void Setup() { }
+
+        protected UseCase_Login Login()
+        {
+            return Login(UserInfo);
+        }
+
+        protected UseCase_Login Login(UserInfo userInfo)
+        {
+            var useCase_login = new UseCase_Login(SystemContext, userInfo);
+            useCase_login.Setup();
+            useCase_login.Success_Normal();
+            return useCase_login;
+        }
     }
 }
