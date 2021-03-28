@@ -1,4 +1,6 @@
-﻿using AcceptanceTests.AppInterface.Data;
+﻿using System.Collections.Generic;
+
+using AcceptanceTests.AppInterface.Data;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
@@ -20,7 +22,12 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool RemoveProduct(Shop shop, Product product)
         {
-            return RealBridge == null ? false : RealBridge.RemoveProduct(shop, product);
+            return RealBridge != null && RealBridge.RemoveProduct(shop, product);
+        }
+
+        public IEnumerable<Product>? SearchProducts(ProductSearchCreteria creteria)
+        {
+            return RealBridge?.SearchProducts(creteria);
         }
     }
 }

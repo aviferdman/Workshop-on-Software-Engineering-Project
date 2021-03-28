@@ -1,4 +1,6 @@
-﻿using AcceptanceTests.AppInterface.Data;
+﻿using System.Collections.Generic;
+
+using AcceptanceTests.AppInterface.Data;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
@@ -19,5 +21,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         Product? AddProduct(Shop shop, ProductInfo product);
 
         bool RemoveProduct(Shop shop, Product product);
+
+        IEnumerable<Product>? SearchProducts(ProductSearchCreteria creteria);
     }
 }

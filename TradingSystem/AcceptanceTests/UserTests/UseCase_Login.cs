@@ -14,7 +14,6 @@ namespace AcceptanceTests
     public class UseCase_Login : MemberUseTestBase
     {
         private UseCase_SignUp test_signUp;
-
         public UseCase_Login(string username, string password) :
             this(SystemContext.Instance, new UserInfo(username, password))
         { }

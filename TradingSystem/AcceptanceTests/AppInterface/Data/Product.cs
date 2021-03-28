@@ -13,5 +13,13 @@ namespace AcceptanceTests.AppInterface.Data
         }
 
         public int Id { get; }
+
+        public override bool Equals(object? obj) => obj is Product other && Equals(other);
+        public bool Equals(Product other) => other != null && other.Id == Id;
+        public override int GetHashCode() => Id.GetHashCode();
+        public override string ToString()
+        {
+            return $"Product {Id} - '{Name}'";
+        }
     }
 }

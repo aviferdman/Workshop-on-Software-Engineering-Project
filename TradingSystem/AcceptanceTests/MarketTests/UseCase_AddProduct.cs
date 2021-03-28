@@ -35,7 +35,7 @@ namespace AcceptanceTests.MarketTests
         public override void Setup()
         {
             base.Setup();
-            useCase_openShop = new UseCase_OpenShop(SystemContext.Instance, UserInfo);
+            useCase_openShop = new UseCase_OpenShop(SystemContext, UserInfo);
             useCase_openShop.Setup();
             Shop = useCase_openShop.Success_Normal(new ShopInfo(ShopName));
         }
@@ -54,7 +54,7 @@ namespace AcceptanceTests.MarketTests
         [TestCase("cucumber", 4, 4)]
         public void Success_Normal_Test(string productName, int quantity, int price)
         {
-            product = Success_Normal(new ProductInfo(productName, quantity, price));
+            _ = Success_Normal(new ProductInfo(productName, quantity, price));
         }
         public Product Success_Normal(ProductInfo productInfo)
         {
@@ -64,6 +64,7 @@ namespace AcceptanceTests.MarketTests
             Assert.AreEqual(productInfo.Quantity, product!.Quantity);
             Assert.AreEqual(productInfo.Price, product!.Price);
             Assert.Greater(product!.Id, 0);
+            this.product = product;
             return product;
         }
 
