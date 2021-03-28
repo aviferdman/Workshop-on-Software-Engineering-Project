@@ -25,6 +25,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         bool RemoveProduct(Shop shop, Product product);
 
-        IEnumerable<Product>? SearchProducts(ProductSearchCreteria creteria);
+        ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);
     }
 }

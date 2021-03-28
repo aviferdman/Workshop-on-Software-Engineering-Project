@@ -18,10 +18,12 @@ namespace AcceptanceTests.MarketTests
     public class UseCase_SearchProduct : MarketTestBase
     {
         private UseCase_AddProduct useCase_addProduct_shop1;
-        private Product product1;
+        private Product product1_1;
+        private Product product1_2;
 
         private UseCase_AddProduct useCase_addProduct_shop2;
-        private Product product2;
+        private Product product2_1;
+        private Product product2_2;
 
         public UseCase_SearchProduct(SystemContext systemContext, UserInfo userInfo) :
             base(systemContext, userInfo)
@@ -31,7 +33,7 @@ namespace AcceptanceTests.MarketTests
         public override void Setup()
         {
             base.Setup();
-            product1 = AddProduct(
+            product1_1 = AddProduct(
                 SHOP_NAME,
                 USER_SHOP_OWNER_NAME,
                 USER_SHOP_OWNER_PASSWORD,
@@ -40,13 +42,14 @@ namespace AcceptanceTests.MarketTests
             );
             new UseCase_LogOut(SystemContext, new UserInfo("h", "h"))
                 .Success_Normal();
-            product2 = AddProduct(
+            product2_1 = AddProduct(
                 SHOP_NAME_2,
                 USER_SHOP_OWNER_2_NAME,
                 USER_SHOP_OWNER_2_PASSWORD,
                 new ProductInfo("school bag", 5, 12),
                 out useCase_addProduct_shop2
             );
+            product2_2 = useCase_addProduct_shop2.Success_Normal(new ProductInfo("android charger", 8, 20));
         }
 
         [TearDown]
@@ -65,7 +68,7 @@ namespace AcceptanceTests.MarketTests
         }
 
         [TestCase]
-        public void Success_Normal()
+        public void Success_MultipleShops()
         {
             IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("bag")
             {
@@ -75,18 +78,61 @@ namespace AcceptanceTests.MarketTests
             Assert.IsNotEmpty(products, "Products search - success - empty results");
             using IEnumerator<Product> enumerator = products!.GetEnumerator();
             _ = enumerator.MoveNext();
-            if (product1.Equals(enumerator.Current))
+            if (product1_1.Equals(enumerator.Current))
             {
                 Assert.IsTrue(enumerator.MoveNext(), "Products search - success - expected more than 1 result");
-                Assert.AreEqual(product2, enumerator.Current, $"One of the result products must be {product2}");
+                Assert.AreEqual(product2_1, enumerator.Current, $"One of the result products must be {product2_1}");
             }
             else
             {
-                Assert.AreEqual(product2, enumerator.Current, $"One of the result products must be {product2}");
+                Assert.AreEqual(product2_1, enumerator.Current, $"One of the result products must be {product2_1}");
                 Assert.IsTrue(enumerator.MoveNext(), "Products search - success - expected more than 1 result");
-                Assert.AreEqual(product1, enumerator.Current, $"One of the result products must be {product1}");
+                Assert.AreEqual(product1_1, enumerator.Current, $"One of the result products must be {product1_1}");
             }
             Assert.IsFalse(enumerator.MoveNext(), "Products search - success - expected exactly 2 result");
+        }
+
+        [TestCase]
+        public void Success_OneProduct()
+        {
+            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            {
+                PriceRange_High = 21
+            });
+            Assert.NotNull(products, "Products search - success - null results");
+            Assert.IsNotEmpty(products, "Products search - success - empty results");
+            using IEnumerator<Product> enumerator = products!.GetEnumerator();
+            _ = enumerator.MoveNext();
+            Assert.AreEqual(product2_2, enumerator.Current);
+            Assert.IsFalse(enumerator.MoveNext(), "Products search - success - expected exactly 1 result");
+        }
+
+        [TestCase]
+        public void Failure_MatchingKeywordsButNotFilter()
+        {
+            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            {
+                PriceRange_High = 1
+            });
+            Assert.NotNull(products, "Products search - null results");
+            Assert.IsEmpty(products, "Products search - not matching filter - expected no results");
+        }
+
+        [TestCase]
+        public void Failure_NotMatchingKeywords()
+        {
+            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
+            Assert.NotNull(products, "Products search - null results");
+            Assert.IsEmpty(products, "Products search - not matching keywords - expected no results");
+        }
+
+        [TestCase]
+        public void Failure_Typo()
+        {
+            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("abg"));
+            Assert.NotNull(results, "Products search - null results");
+            Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
+            Assert.AreEqual(results!.TypoFixes, "bag", "Product search - typo - expected fix");
         }
     }
 }

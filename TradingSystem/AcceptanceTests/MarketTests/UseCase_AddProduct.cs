@@ -17,7 +17,7 @@ namespace AcceptanceTests.MarketTests
     public class UseCase_AddProduct : ShopManagementTestBase
     {
         private UseCase_OpenShop useCase_openShop;
-        private Product? product;
+        private Queue<Product> products;
 
         public UseCase_AddProduct(string shopName, string shopUsername, string shopUserPassword) :
             this(shopName, SystemContext.Instance, new UserInfo(shopUsername, shopUserPassword))
@@ -26,6 +26,7 @@ namespace AcceptanceTests.MarketTests
             base(systemContext, userInfo)
         {
             ShopName = shopName;
+            products = new Queue<Product>(3);
         }
 
         public string ShopName { get; }
@@ -43,10 +44,9 @@ namespace AcceptanceTests.MarketTests
         [TearDown]
         public void Teardown()
         {
-            if (product != null)
+            while (products.Count > 0)
             {
-                _ = Bridge.RemoveProduct(Shop, product);
-                product = null;
+                _ = Bridge.RemoveProduct(Shop, products.Dequeue());
             }
             useCase_openShop.Teardown();
         }
@@ -64,7 +64,7 @@ namespace AcceptanceTests.MarketTests
             Assert.AreEqual(productInfo.Quantity, product!.Quantity);
             Assert.AreEqual(productInfo.Price, product!.Price);
             Assert.Greater(product!.Id, 0);
-            this.product = product;
+            products.Enqueue(product);
             return product;
         }
 

@@ -31,7 +31,7 @@ namespace AcceptanceTests.MarketTests
         [TearDown]
         public void Teardown()
         {
-            useCase_login.TearDown();
+            useCase_login?.TearDown();
         }
 
         [Test]

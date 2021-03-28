@@ -57,7 +57,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.RemoveProduct(shop, product);
         }
 
-        public IEnumerable<Product>? SearchProducts(ProductSearchCreteria creteria)
+        public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
         {
             return RealBridge?.SearchProducts(creteria);
         }
