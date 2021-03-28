@@ -6,8 +6,8 @@ namespace AcceptanceTests.AppInterface.Data
 {
     public class Product : ProductInfo
     {
-        public Product(string name, int quantity, int id) :
-            base(name, quantity)
+        public Product(string name, int price, int quantity, int id) :
+            base(name, price, quantity)
         {
             Id = id;
         }

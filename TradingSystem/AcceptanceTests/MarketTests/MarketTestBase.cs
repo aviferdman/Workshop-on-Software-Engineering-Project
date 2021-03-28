@@ -7,13 +7,13 @@ namespace AcceptanceTests.MarketTests
 {
     public class MarketTestBase
     {
-        public const string USER_SHOP_OWNER_NAME = "shopowner78";
-        public const string USER_SHOP_OWNER_PASSWORD = "shopowner_pass78";
+        public const string USER_SHOP_OWNER_NAME = SharedTestsConstants.USER_SHOP_OWNER_NAME;
+        public const string USER_SHOP_OWNER_PASSWORD = SharedTestsConstants.USER_SHOP_OWNER_PASSWORD;
 
-        public const string USER_BUYER_NAME = "buyer78";
-        public const string USER_BUYER_PASSWORD = "buyer_pass78";
+        public const string USER_BUYER_NAME = SharedTestsConstants.USER_BUYER_NAME;
+        public const string USER_BUYER_PASSWORD = SharedTestsConstants.USER_BUYER_PASSWORD;
 
-        public const string SHOP_NAME = "my shop 1";
+        public const string SHOP_NAME = SharedTestsConstants.SHOP_NAME;
 
         public SystemContext SystemContext { get; }
 

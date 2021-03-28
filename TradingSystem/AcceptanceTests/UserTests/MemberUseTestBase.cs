@@ -8,8 +8,8 @@ namespace AcceptanceTests
 {
     public class MemberUseTestBase
     {
-        public const string USERNAME = "user123";
-        public const string PASSWORD = "mypassword1";
+        public const string USERNAME = SharedTestsConstants.USER_OTHER_NAME;
+        public const string PASSWORD = SharedTestsConstants.USER_OTHER_PASSWORD;
 
         protected SystemContext SystemContext { get; }
         public UserInfo UserInfo { get; }
