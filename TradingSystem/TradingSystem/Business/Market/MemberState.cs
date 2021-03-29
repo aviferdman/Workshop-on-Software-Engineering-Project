@@ -17,9 +17,9 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-        public override bool CreateStore(string shopName)
+        public override bool CreateStore(string shopName, BankAccount bank)
         {
-            Store store = new Store();
+            Store store = new Store(shopName, bank);
             _storePermission.AddFounder(_userId, store.Id);
             return true;
         }

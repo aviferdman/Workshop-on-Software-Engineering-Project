@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj": {}
+    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj": {}
   },
   "projects": {
-    "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj": {
+    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+        "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
         "projectName": "TradingSystemTests",
-        "projectPath": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
-        "packagesPath": "C:\\Users\\gilha\\.nuget\\packages\\",
-        "outputPath": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\obj\\",
+        "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\gilha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -31,8 +31,8 @@
           "netcoreapp3.1": {
             "targetAlias": "netcoreapp3.1",
             "projectReferences": {
-              "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
-                "projectPath": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj"
+              "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+                "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj"
               }
             }
           }
@@ -79,24 +79,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
         "projectName": "TradingSystem",
-        "projectPath": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-        "packagesPath": "C:\\Users\\gilha\\.nuget\\packages\\",
-        "outputPath": "D:\\SofterEngineering\\SemesterF\\WorkshopOnSoftwearEngineering\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
+        "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\gilha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -136,7 +136,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

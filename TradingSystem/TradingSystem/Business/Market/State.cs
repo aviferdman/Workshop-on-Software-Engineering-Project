@@ -8,7 +8,7 @@ namespace TradingSystem.Business.Market
     {
         protected static readonly Transaction _transaction = Transaction.Instance;
 
-        abstract public bool CreateStore(string shopName);
+        abstract public bool CreateStore(string shopName, BankAccount bank);
 
         abstract public History GetUserHistory(Guid userId);
 

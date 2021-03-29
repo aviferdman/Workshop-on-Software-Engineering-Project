@@ -10,16 +10,19 @@ namespace TradingSystem.Business.Market
         private State _state;
         private ShoppingCart _shoppingCart;
         private Guid _id;
+        private string username;
 
-        public User()
+        public User(string username)
         {
             this._shoppingCart = new ShoppingCart();
             this._id = new Guid();
             this._state = new GuestState();
+            this.username = username;
         }
 
         public Guid Id { get => _id; set => _id = value; }
         internal State State { get => _state; set => _state = value; }
+        public string Username { get => username; set => username = value; }
 
         public Address GetAddress()
         {
@@ -55,9 +58,9 @@ namespace TradingSystem.Business.Market
             return _shoppingCart.Purchase(_id, GetBankAccount(), GetPhone(), GetAddress(), paySum);
         }
 
-        public override bool CreateStore(string shopName)
+        public override bool CreateStore(string shopName, BankAccount bank)
         {
-            return _state.CreateStore(shopName);
+            return _state.CreateStore(shopName, bank);
         }
 
         public override History GetAllHistory()
