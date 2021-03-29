@@ -22,6 +22,7 @@ namespace TradingSystem.Business.UserManagement
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
         public string Address { get => address; set => address = value; }
+        public bool IsLoggedin { get => isLoggedin; set => isLoggedin = value; }
 
         public override bool Equals(object obj)
         {

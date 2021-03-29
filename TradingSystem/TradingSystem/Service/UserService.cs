@@ -23,5 +23,10 @@ namespace TradingSystem.Service
         {
             return userManagement.SignUp(username, password, address);
         }
+
+        public String login(string username, string password)
+        {
+            return userManagement.LogIn(username, password);
+        }
     }
 }

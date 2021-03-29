@@ -32,5 +32,48 @@ namespace TradingSystemTests
             delete();
 
         }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        [TestMethod]
+        public void TestLoginSuccess()
+        {
+            signup();
+            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456"));
+            delete();
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// already logged in
+        [TestMethod]
+        public void TestLoginFailed1()
+        {
+            signup();
+            UserManagement.Instance.LogIn("inbi2001", "123456");
+            Assert.AreEqual("user is already logged in", UserManagement.Instance.LogIn("inbi2001", "123456"));
+            delete();
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// password doesn't match username
+        [TestMethod]
+        public void TestLoginFailed2()
+        {
+            signup();
+            Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
+            delete();
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// username doesn't exist
+        [TestMethod]
+        public void TestLoginFailed3()
+        {
+            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
+            delete();
+
+        }
     }
 }
