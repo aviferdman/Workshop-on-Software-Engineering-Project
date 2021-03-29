@@ -10,7 +10,9 @@ namespace TradingSystem.Business.Market
     {
         private ICollection<Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
+        private BankAccount bank;
         private Guid _id;
+        private string name;
         private Discount _discount;
         private Policy _policy;
         private Address _address;
@@ -22,15 +24,19 @@ namespace TradingSystem.Business.Market
         internal Address Address { get => _address; set => _address = value; }
         internal ICollection<TransactionStatus> TransactionsHistory { get => _transactionsHistory; set => _transactionsHistory = value; }
         public Guid Id { get => _id; set => _id = value; }
+        public string Name { get => name; set => name = value; }
+        internal BankAccount Bank { get => bank; set => bank = value; }
 
-        public Store()
+        public Store(string name, BankAccount bank)
         {
+            this.name = name;
             this._products = new HashSet<Product>();
             this._transactionsHistory = new HashSet<TransactionStatus>();
             this._lock = new object();
             this._discount = new Discount();
             this._id = new Guid();
             this._policy = new Policy();
+            this.bank = bank;
         }
 
         public PurchaseStatus Purchase(Dictionary<Product, int> product_quantity, Guid clientId, string clientPhone, Address clientAddress, Guid clientBankAccount, double paymentSum)

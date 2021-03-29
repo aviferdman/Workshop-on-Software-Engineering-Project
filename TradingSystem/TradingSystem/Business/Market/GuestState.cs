@@ -16,7 +16,7 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override bool CreateStore(string storeName)
+        public override bool CreateStore(string storeName, BankAccount bank)
         {
             throw new UnauthorizedAccessException();
         }
