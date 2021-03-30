@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class Rule
+    public class Rule
     {
         //Function gets a products and it's quantities and return legal or not
         Func<Dictionary<Product, int>, bool> _r;

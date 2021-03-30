@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class ShoppingCart
+    public class ShoppingCart
     {
         private SortedDictionary<Store, ShoppingBasket> _store_shoppingBasket;
 
@@ -22,9 +22,9 @@ namespace TradingSystem.Business.Market
         public ShoppingBasket GetShoppingBasket(Store store)
         {
             //create if not exists
-            if (_store_shoppingBasket[store] == null)
+            if (!_store_shoppingBasket.ContainsKey(store))
             {
-                _store_shoppingBasket[store] = new ShoppingBasket();
+                _store_shoppingBasket.Add(store, new ShoppingBasket());
             }
             return _store_shoppingBasket[store];
         }
@@ -59,8 +59,7 @@ namespace TradingSystem.Business.Market
             return isLegal;
         }
 
-        //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
-        public bool Purchase(Guid clientId, Guid clientBankAccount, string clientPhone, Address clientAddress, double paySum)
+        public bool Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum)
         {
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
             foreach (KeyValuePair<Store, ShoppingBasket> s_sb in _store_shoppingBasket)

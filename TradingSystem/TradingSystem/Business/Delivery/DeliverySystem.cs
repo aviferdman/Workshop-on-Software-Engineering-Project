@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Delivery
 {
-    class DeliverySystem
+    public class DeliverySystem
     {
         private static readonly Lazy<DeliverySystem>
         _lazy =

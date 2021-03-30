@@ -4,11 +4,47 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class Discount
+    public class Discount
     {
-        public double ApplyDiscounts(ShoppingBasket shoppingBasket)
+        private Guid _id;
+        private ICollection<Rule> _rules;
+        private double _discount;
+
+        public Discount(double discount)
         {
-            throw new NotImplementedException();
+            Id = new Guid();
+            _rules = new HashSet<Rule>();
+            DiscountValue = discount;
+        }
+
+
+
+        public Guid Id { get => _id; set => _id = value; }
+        public double DiscountValue { get => _discount; set => _discount = value; }
+
+        public void AddRule(Rule rule)
+        {
+            _rules.Add(rule);
+        }
+
+        public void RemoveRule(Rule rule)
+        {
+            _rules.Remove(rule);
+        }
+
+        public double ApplyDiscounts(Dictionary<Product, int> product_quantity)
+        {
+            bool isLegal = true;
+            foreach (Rule rule in _rules)
+            {
+                isLegal = isLegal && rule.Check(product_quantity);
+            }
+            if (isLegal)    //all conditions are met, activate discount
+            {
+                return DiscountValue;
+            }
+            //otherwise return 0 means no discount
+            return 0;
         }
     }
 }

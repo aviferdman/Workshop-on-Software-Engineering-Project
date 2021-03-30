@@ -4,34 +4,33 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class MemberState : State
+    public class MemberState : State
     {
-        private StorePermission _storePermission;
+
         private Guid _userId;
+        private StorePermission _storePermission;
 
-
-        public MemberState(Guid userId) : base()
+        public MemberState(Guid userId, StorePermission storePermission) : base(storePermission)
         {
-            this._storePermission = new StorePermission(userId);
+            this._storePermission = GetStorePermission();
             this._userId = userId;
         }
 
-        //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-        public override bool CreateStore(string shopName, BankAccount bank)
+        public override Store CreateStore(string shopName, BankAccount bank, Address address)
         {
-            Store store = new Store(shopName, bank);
-            _storePermission.AddFounder(_userId, store.Id);
-            return true;
+            Store store = new Store(shopName, bank, address);
+            _storePermission.AddFounder(store.Id);
+            return store;
         }
 
-        public override bool AddSubject(Guid newManagerId, Guid storeId, Permission permission)
+        public override bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
         {
-            return _storePermission.AddSubject(newManagerId, storeId, permission);
+            return _storePermission.AddSubject(storeId, permission, subjectStorePermission);
         }
 
-        public override bool RemoveSubject(Guid managerId, Guid storeId)
+        public override bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
         {
-            return _storePermission.RemoveSubject(managerId, storeId);
+            return _storePermission.RemoveSubject(storeId, subjectStorePermission);
         }
 
         public override History GetAllHistory()
@@ -39,7 +38,6 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        //use case 10 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/70
         public override History GetUserHistory(Guid userId)
         {
             if (!_storePermission.GetUserHistory(_userId))
@@ -50,10 +48,9 @@ namespace TradingSystem.Business.Market
             return transaction.GetHistory(userId);
         }
 
-        //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
         public override History GetStoreHistory(Guid storeId)
         {
-            if (!_storePermission.GetStoreHistory(_userId, storeId))
+            if (!_storePermission.GetStoreHistory(storeId))
             {
                 throw new UnauthorizedAccessException();
             }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Delivery
 {
-    class DeliveryStatus
+    public class DeliveryStatus
     {
         Guid _packageId;
         Guid _clientId;

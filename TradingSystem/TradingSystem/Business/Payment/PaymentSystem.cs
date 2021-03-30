@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Delivery
 {
-    class PaymentSystem
+    public class PaymentSystem
     {
         private static readonly Lazy<PaymentSystem>
         _lazy =
@@ -18,7 +19,7 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        public Guid CreatePayment(Guid clientId, Guid clientBankAccountId, Guid recieverBankAccountId, double paymentSum)
+        public Guid CreatePayment(Guid clientId, BankAccount clientBankAccountId, BankAccount recieverBankAccountId, double paymentSum)
         {
             return generatePaymentId();
         }

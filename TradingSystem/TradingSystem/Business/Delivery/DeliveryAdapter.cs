@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Delivery
 {
-    interface DeliveryAdapter
+    public interface DeliveryAdapter
     {
         public DeliveryStatus CreateDelivery(DeliveryDetails deliveryDetails);
         public DeliveryStatus CancelDelivery(DeliveryStatus deliveryStatus);

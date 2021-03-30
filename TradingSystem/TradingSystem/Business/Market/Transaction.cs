@@ -8,7 +8,7 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
 {
-    class Transaction
+    public class Transaction
     {
         private PaymentAdapter _paymentAdapter;
         private DeliveryAdapter _deliveryAdapter;
@@ -27,13 +27,13 @@ namespace TradingSystem.Business.Market
             this._history = new History();
         }
 
-        public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, Guid clientBankAccountId, Guid storeId, Guid recieverBankAccountId, double paymentSum)
+        public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, BankAccount clientBankAccountId, Guid storeId, BankAccount recieverBankAccountId, double paymentSum)
         {
             TransactionStatus transactionStatus;
             DeliveryStatus deliveryStatus;
             PaymentStatus paymentStatus;
             DeliveryDetails deliveryDetails = new DeliveryDetails(clientId, storeId, recieverPhone, weight, source, destination);
-            PaymentDetails paymentDetails = new PaymentDetails(clientId, storeId, clientBankAccountId, recieverBankAccountId, paymentSum);
+            PaymentDetails paymentDetails = new PaymentDetails(clientId, clientBankAccountId, storeId, recieverBankAccountId, paymentSum);
             paymentStatus = _paymentAdapter.CreatePayment(paymentDetails);
             //check if possible to deliver
             if (paymentStatus.Status)

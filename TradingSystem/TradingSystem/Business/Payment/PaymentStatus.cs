@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Payment
 {
-    class PaymentStatus
+    public class PaymentStatus
     {
         Guid _paymentId;
         Guid _clientId;

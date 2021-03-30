@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class Policy
+    public class Policy
     {
         private ICollection<Rule> _rules;
 

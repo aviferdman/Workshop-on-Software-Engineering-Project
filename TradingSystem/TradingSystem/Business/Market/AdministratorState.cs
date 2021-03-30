@@ -4,14 +4,13 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class AdministratorState : MemberState
+    public class AdministratorState : MemberState
     {
-        public AdministratorState(Guid userId): base(userId)
+        public AdministratorState(Guid userId, StorePermission storePermission) : base(userId, storePermission)
         {
 
         }
 
-        //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
         public override History GetAllHistory()
         {
             return GetTransaction().GetAllHistory();

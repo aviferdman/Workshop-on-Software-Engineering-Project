@@ -6,7 +6,7 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Delivery
 {
-    class PaymentImpl : PaymentAdapter
+    public class PaymentImpl : PaymentAdapter
     {
         private readonly string ErrorPaymentId = "";
         private PaymentSystem _paymentSystem;        

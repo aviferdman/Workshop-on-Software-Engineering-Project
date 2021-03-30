@@ -5,38 +5,28 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Market
 {
-    class User : State
+    public class User
     {
         private State _state;
         private ShoppingCart _shoppingCart;
         private Guid _id;
         private string username;
+        private StorePermission _storePermission;
 
         public User(string username)
         {
             this._shoppingCart = new ShoppingCart();
             this._id = new Guid();
-            this._state = new GuestState();
+            this._storePermission = new StorePermission(_id);
+            this._state = new GuestState(_storePermission);
             this.username = username;
         }
 
         public Guid Id { get => _id; set => _id = value; }
         internal State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
-
-        public Address GetAddress()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string GetPhone()
-        {
-            throw new NotImplementedException();
-        }
-        public Guid GetBankAccount()
-        {
-            throw new NotImplementedException();
-        }
+        public ShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
+        internal StorePermission StorePermission { get => _storePermission; set => _storePermission = value; }
 
         public void ChangeState(State state)
         {
@@ -45,47 +35,46 @@ namespace TradingSystem.Business.Market
 
         public void UpdateProductInShoppingBasket(Store store, Product product, int quantity)
         {
-            ShoppingBasket shoppingBasket = _shoppingCart.GetShoppingBasket(store);
+            ShoppingBasket shoppingBasket = ShoppingCart.GetShoppingBasket(store);
             shoppingBasket.UpdateProduct(product, quantity);
         }
 
-        //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
-        public bool PurchaseShoppingCart()
+        public bool PurchaseShoppingCart(BankAccount bank, string phone, Address address)
         {
             //chcek is not empty and legal policy
-            if (_shoppingCart.IsEmpty() || !_shoppingCart.CheckPolicy()) return false;
-            double paySum = _shoppingCart.CalcPaySum();
-            return _shoppingCart.Purchase(_id, GetBankAccount(), GetPhone(), GetAddress(), paySum);
+            if (ShoppingCart.IsEmpty() || !ShoppingCart.CheckPolicy()) return false;
+            double paySum = ShoppingCart.CalcPaySum();
+            return ShoppingCart.Purchase(_id, bank, phone, address, paySum);
         }
 
-        public override bool CreateStore(string shopName, BankAccount bank)
+        public Store CreateStore(string shopName, BankAccount bank, Address address)
         {
-            return _state.CreateStore(shopName, bank);
+            return _state.CreateStore(shopName, bank, address);
         }
 
-        public override History GetAllHistory()
+        public History GetAllHistory()
         {
             return _state.GetAllHistory();
         }
 
-        public override History GetUserHistory(Guid userId)
+        public History GetUserHistory(Guid userId)
         {
             return _state.GetUserHistory(userId);
         }
 
-        public override History GetStoreHistory(Guid storeId)
+        public History GetStoreHistory(Guid storeId)
         {
             return _state.GetStoreHistory(storeId);
         }
 
-        public override bool AddSubject(Guid newManagerId, Guid storeId, Permission permission)
+        public bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
         {
-            return _state.AddSubject(newManagerId, storeId, permission);
+            return _state.AddSubject(storeId, permission, subjectStorePermission);
         }
 
-        public override bool RemoveSubject(Guid newManagerId, Guid storeId)
+        public bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
         {
-            return _state.RemoveSubject(newManagerId, storeId);
+            return _state.RemoveSubject(storeId, subjectStorePermission);
         }
     }
 }

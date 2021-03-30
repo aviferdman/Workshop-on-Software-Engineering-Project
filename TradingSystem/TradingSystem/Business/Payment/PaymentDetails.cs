@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Payment
 {
-    class PaymentDetails
+    public class PaymentDetails
     {
         private Guid _clientId;
-        private Guid _clientBankAccountId;
+        private BankAccount _clientBankAccountId;
         private Guid _storeId;
-        private Guid _recieverBankAccountId;
+        private BankAccount _recieverBankAccountId;
         private double _paymentSum;
 
-        public PaymentDetails(Guid clientId, Guid clientBankAccountId, Guid storeId, Guid recieverBankAccountId, double paymentSum)
+        public PaymentDetails(Guid clientId, BankAccount clientBankAccountId, Guid storeId, BankAccount recieverBankAccountId, double paymentSum)
         {
             this.ClientId = clientId;
             this.ClientBankAccountId = clientBankAccountId;
@@ -22,8 +23,8 @@ namespace TradingSystem.Business.Payment
         }
 
         public Guid ClientId { get => _clientId; set => _clientId = value; }
-        public Guid ClientBankAccountId { get => _clientBankAccountId; set => _clientBankAccountId = value; }
-        public Guid RecieverBankAccountId { get => _recieverBankAccountId; set => _recieverBankAccountId = value; }
+        public BankAccount ClientBankAccountId { get => _clientBankAccountId; set => _clientBankAccountId = value; }
+        public BankAccount RecieverBankAccountId { get => _recieverBankAccountId; set => _recieverBankAccountId = value; }
         public double PaymentSum { get => _paymentSum; set => _paymentSum = value; }
         public Guid StoreId { get => _storeId; set => _storeId = value; }
     }

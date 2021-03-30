@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Payment
 {
-    interface PaymentAdapter
+    public interface PaymentAdapter
     {
         public PaymentStatus CreatePayment(PaymentDetails paymentDetails);
         public PaymentStatus CancelPayment(PaymentStatus paymentStatus);

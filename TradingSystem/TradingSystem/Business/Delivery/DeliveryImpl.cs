@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Delivery
 {
-    class DeliveryImpl : DeliveryAdapter
+    public class DeliveryImpl : DeliveryAdapter
     {
         private readonly string ErrorPackageId = "";
         private DeliverySystem _deliverySystem;

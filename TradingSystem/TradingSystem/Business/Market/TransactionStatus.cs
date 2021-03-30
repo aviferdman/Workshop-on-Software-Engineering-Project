@@ -6,7 +6,7 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
 {
-    class TransactionStatus
+    public class TransactionStatus
     {
         private Guid _id;
         private PaymentStatus _paymentStatus;

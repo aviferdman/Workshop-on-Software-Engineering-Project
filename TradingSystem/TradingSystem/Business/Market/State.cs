@@ -4,11 +4,16 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    abstract class State
+    public abstract class State
     {
+        private static StorePermission _storePermision;
         protected static readonly Transaction _transaction = Transaction.Instance;
 
-        abstract public bool CreateStore(string shopName, BankAccount bank);
+        public State(StorePermission storePermission)
+        {
+            _storePermision = storePermission;
+        }
+        abstract public Store CreateStore(string shopName, BankAccount bank, Address address);
 
         abstract public History GetUserHistory(Guid userId);
 
@@ -16,13 +21,18 @@ namespace TradingSystem.Business.Market
 
         abstract public History GetStoreHistory(Guid storeId);
 
-        abstract public bool AddSubject(Guid newManagerId, Guid storeId, Permission permission);
+        abstract public bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission);
 
-        abstract public bool RemoveSubject(Guid newManagerId, Guid storeId);
+        abstract public bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission);
 
         public Transaction GetTransaction()
         {
             return _transaction;
+        }
+
+        public StorePermission GetStorePermission()
+        {
+            return _storePermision;
         }
     }
 }

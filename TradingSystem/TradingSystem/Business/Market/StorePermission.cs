@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,49 +12,62 @@ namespace TradingSystem.Business.Market
         Manager,
         None
     }
-    class StorePermission
+    public class StorePermission
     {
         private Guid _userId;
         private object _lock;
         private static readonly int FOUNDER = 1;
+        private Dictionary<Guid, Permission> _store_permission;
+        private Dictionary<Guid, int> _store_hierarchy;
 
         public StorePermission(Guid userId)
         {
             this._userId = userId;
             this._lock = new object();
+            this._store_permission = new Dictionary<Guid, Permission>();
+            this._store_hierarchy = new Dictionary<Guid, int>();
+
         }
 
         public Guid UserId { get => _userId; set => _userId = value; }
-        
+        public Dictionary<Guid, Permission> Store_permission { get => _store_permission; set => _store_permission = value; }
+        public Dictionary<Guid, int> Store_hierarchy { get => _store_hierarchy; set => _store_hierarchy = value; }
+
         //Return the degree of hierarchy of the user in this store (1 is the highest degree, 0 means user not in hierarchy)
-        public int GetHierarchy(Guid userId, Guid storeId)
+        public int GetHierarchy(Guid storeId)
         {
-            //Get from DB
-            throw new NotImplementedException();
+            int hierarchy;
+            if (!_store_hierarchy.TryGetValue(storeId, out hierarchy))
+            {
+                return 0;
+            }
+            return hierarchy;
         }
 
-        public void SetHierarchy(Guid userId, Guid storeId, int hierarchy)
+        public void SetHierarchy(Guid storeId, int hierarchy)
         {
-            //Update DB
-            throw new NotImplementedException();
+            _store_hierarchy[storeId] = hierarchy;
         }
 
-        public Permission GetPermission(Guid userId, Guid storeId)
+        public Permission GetPermission(Guid storeId)
         {
-            //Get from DB
-            throw new NotImplementedException();
+            Permission permission;
+            if (!_store_permission.TryGetValue(storeId, out permission))
+            {
+                return Permission.None;
+            }
+            return permission;
         }
 
-        public void SetPermission(Guid userId, Guid storeId, Permission permission)
+        public void SetPermission(Guid storeId, Permission permission)
         {
-            //Update DB
-            throw new NotImplementedException();
+            _store_permission[storeId] = permission;
         }
 
-        public void AddFounder(Guid userId, Guid storeId)
+        public void AddFounder(Guid storeId)
         {
-            SetHierarchy(userId, storeId, FOUNDER);
-            SetPermission(userId, storeId, Permission.Founder);
+            SetHierarchy(storeId, FOUNDER);
+            SetPermission(storeId, Permission.Founder);
         }
 
         public bool GetUserHistory(Guid requestedUserId)
@@ -61,37 +75,37 @@ namespace TradingSystem.Business.Market
             return requestedUserId.Equals(_userId);
         }
 
-        public bool AddSubject(Guid newManagerId, Guid storeId, Permission permission)
+        public bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
         {
             lock (_lock)
             {
-                int myHierarchy = GetHierarchy(_userId, storeId);
-                Permission myPermission = GetPermission(_userId, storeId);
+                int myHierarchy = GetHierarchy(storeId);
+                Permission myPermission = GetPermission(storeId);
                 if (myHierarchy == 0 || permission == Permission.Founder || !CompareGreaterEqual(myPermission, permission)) return false;
-                SetHierarchy(newManagerId, storeId, myHierarchy + 1);
-                SetPermission(newManagerId, storeId, permission);
+                subjectStorePermission.SetHierarchy(storeId, myHierarchy + 1);
+                subjectStorePermission.SetPermission(storeId, permission);
                 return true;
             }
         }
 
-        public bool GetStoreHistory(Guid userId, Guid storeId)
+        public bool GetStoreHistory(Guid storeId)
         {
-            Permission userPermission = GetPermission(userId, storeId);
+            Permission userPermission = GetPermission(storeId);
             return CompareGreaterEqual(userPermission, Permission.Manager);
         }
 
-        public bool RemoveSubject(Guid managerId, Guid storeId)
+        public bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
         {
             lock (_lock)
             {
-                int myHierarchy = GetHierarchy(_userId, storeId);
-                Permission myPermission = GetPermission(_userId, storeId);
-                int removedManagerHierarchy = GetHierarchy(managerId, storeId);
-                Permission removedManagerPermission = GetPermission(managerId, storeId);
-                bool ableToRemove = myHierarchy == 0 || myHierarchy > removedManagerHierarchy || removedManagerPermission == Permission.Founder || !CompareGreaterEqual(myPermission, removedManagerPermission);
+                int myHierarchy = GetHierarchy(storeId);
+                Permission myPermission = GetPermission(storeId);
+                int subjectHierarchy = subjectStorePermission.GetHierarchy(storeId);
+                Permission subjectPermission = subjectStorePermission.GetPermission(storeId);
+                bool ableToRemove = myHierarchy == 0 || myHierarchy > subjectHierarchy || subjectPermission == Permission.Founder || !CompareGreaterEqual(myPermission, subjectPermission);
                 if (!ableToRemove) return false;
-                SetHierarchy(managerId, storeId, 0);
-                SetPermission(managerId, storeId, Permission.None);
+                subjectStorePermission.SetHierarchy(storeId, 0);
+                subjectStorePermission.SetPermission(storeId, Permission.None);
                 return true;
             }
         }

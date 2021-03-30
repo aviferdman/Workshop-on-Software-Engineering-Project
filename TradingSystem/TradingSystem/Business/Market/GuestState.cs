@@ -4,19 +4,19 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class GuestState : State
+    public class GuestState : State
     {
-        public GuestState()
+        public GuestState(StorePermission storePermission) : base(storePermission)
         {
 
         }
 
-        public override bool AddSubject(Guid newManagerId, Guid storeId, Permission permission)
+        public override bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
         {
             throw new UnauthorizedAccessException();
         }
 
-        public override bool CreateStore(string storeName, BankAccount bank)
+        public override Store CreateStore(string storeName, BankAccount bank, Address address)
         {
             throw new UnauthorizedAccessException();
         }
@@ -35,7 +35,7 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override bool RemoveSubject(Guid newManagerId, Guid storeId)
+        public override bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
         {
             throw new UnauthorizedAccessException();
         }

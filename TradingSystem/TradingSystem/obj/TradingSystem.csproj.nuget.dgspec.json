@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
+    "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
   },
   "projects": {
-    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+    "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "projectUniqueName": "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
         "projectName": "TradingSystem",
-        "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
+        "projectPath": "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "packagesPath": "C:\\Users\\gilha\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\gilha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,7 +57,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
         }
       }
     }

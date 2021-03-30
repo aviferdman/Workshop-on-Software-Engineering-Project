@@ -5,7 +5,7 @@ using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Delivery
 {
-    class DeliveryDetails
+    public class DeliveryDetails
     {
         private Guid _recieverId;
         private Guid _storeId;

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class PurchaseStatus
+    public class PurchaseStatus
     {
         private bool _preConditions;
         private TransactionStatus _transactionStatus;
