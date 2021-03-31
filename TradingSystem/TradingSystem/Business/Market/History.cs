@@ -11,41 +11,55 @@ namespace TradingSystem.Business.Market
     {
         ICollection<DeliveryStatus> _deliveries;
         ICollection<PaymentStatus> _payments;
+        ICollection<ProductsStatus> _products;
 
         public History()
         {
-            this._deliveries = new HashSet<DeliveryStatus>();
-            this._payments = new HashSet<PaymentStatus>();
+            this.Deliveries = new HashSet<DeliveryStatus>();
+            this.Payments = new HashSet<PaymentStatus>();
+            this.Products = new HashSet<ProductsStatus>();
         }
 
-        private History(IEnumerable<DeliveryStatus> deliveries, IEnumerable<PaymentStatus> payments)
+        private History(IEnumerable<DeliveryStatus> deliveries, IEnumerable<PaymentStatus> payments, IEnumerable<ProductsStatus> products)
         {
-            this._deliveries = deliveries.ToList();
-            this._payments = payments.ToList();
+            this.Deliveries = deliveries.ToList();
+            this.Payments = payments.ToList();
+            this.Products = products.ToList();
         }
+
+        public ICollection<DeliveryStatus> Deliveries { get => _deliveries; set => _deliveries = value; }
+        public ICollection<PaymentStatus> Payments { get => _payments; set => _payments = value; }
+        public ICollection<ProductsStatus> Products { get => _products; set => _products = value; }
 
         public void AddDelivery(DeliveryStatus deliveryStatus)
         {
-            _deliveries.Add(deliveryStatus);
+            Deliveries.Add(deliveryStatus);
         }
 
         public void AddPayment(PaymentStatus paymentStatus)
         {
-            _payments.Add(paymentStatus);
+            Payments.Add(paymentStatus);
+        }
+
+        public void AddProductsQuantity(ProductsStatus productsStatus)
+        {
+            Products.Add(productsStatus);
         }
 
         public History GetHistory(Guid userId)
         {
-            var deliveries = _deliveries.Where( d => d.ClientId.Equals(userId));
-            var payments = _payments.Where( p => p.ClientId.Equals(userId));
-            return new History(deliveries, payments);
+            var deliveries = Deliveries.Where( d => d.ClientId.Equals(userId));
+            var payments = Payments.Where( p => p.ClientId.Equals(userId));
+            var products = Products.Where( p => p.ClientId.Equals(userId));
+            return new History(deliveries, payments, products);
         }
 
         internal History GetStoreHistory(Guid storeId)
         {
-            var deliveries = _deliveries.Where(d => d.StoreId.Equals(storeId));
-            var payments = _payments.Where(p => p.StoreId.Equals(storeId));
-            return new History(deliveries, payments);
+            var deliveries = Deliveries.Where(d => d.StoreId.Equals(storeId));
+            var payments = Payments.Where(p => p.StoreId.Equals(storeId));
+            var products = Products.Where(p => p.StoreId.Equals(storeId));
+            return new History(deliveries, payments, products);
         }
     }
 }

@@ -7,52 +7,55 @@ namespace TradingSystem.Business.Market
 {
     public class ShoppingCart
     {
-        private SortedDictionary<Store, ShoppingBasket> _store_shoppingBasket;
+        private SortedDictionary<IStore, IShoppingBasket> _store_shoppingBasket;
+
+        public SortedDictionary<IStore, IShoppingBasket> Store_shoppingBasket { get => _store_shoppingBasket; set => _store_shoppingBasket = value; }
 
         public ShoppingCart()
         {
-            this._store_shoppingBasket = new SortedDictionary<Store, ShoppingBasket>();
+            this.Store_shoppingBasket = new SortedDictionary<IStore, IShoppingBasket>();
         }
 
         public bool IsEmpty()
         {
-            var notEmptyBaskets = _store_shoppingBasket.Values.Where(shoppingBasket => !shoppingBasket.IsEmpty());
+            var notEmptyBaskets = Store_shoppingBasket.Values.Where(shoppingBasket => !shoppingBasket.IsEmpty());
             return !notEmptyBaskets.Any();
         }
-        public ShoppingBasket GetShoppingBasket(Store store)
+        public IShoppingBasket GetShoppingBasket(Store store)
         {
             //create if not exists
-            if (!_store_shoppingBasket.ContainsKey(store))
+            if (!Store_shoppingBasket.ContainsKey(store))
             {
-                _store_shoppingBasket.Add(store, new ShoppingBasket());
+                Store_shoppingBasket.Add(store, new ShoppingBasket());
             }
-            return _store_shoppingBasket[store];
+            return Store_shoppingBasket[store];
         }
 
-        public void AddShoppingBasket(Store store, ShoppingBasket shoppingBasket)
+        public void AddShoppingBasket(Store store, IShoppingBasket shoppingBasket)
         {
-            _store_shoppingBasket.Add(store, shoppingBasket);
+            Store_shoppingBasket.Add(store, shoppingBasket);
         }
 
         public void RemoveShoppingBasket(Store store)
         {
-            _store_shoppingBasket.Remove(store);
+            Store_shoppingBasket.Remove(store);
         }
 
-        public void UpdateShoppingBasket(Store store, ShoppingBasket shoppingBasket)
+        public void UpdateShoppingBasket(Store store, IShoppingBasket shoppingBasket)
         {
-            if (_store_shoppingBasket[store] == null)
+            //create if not exists
+            if (!Store_shoppingBasket.Keys.Contains(store))
             {
-                _store_shoppingBasket.Add(store, null);
+                Store_shoppingBasket.Add(store, shoppingBasket);
             }
-            _store_shoppingBasket[store] = shoppingBasket;
+            Store_shoppingBasket[store] = shoppingBasket;
 
         }
 
         public bool CheckPolicy()
         {
             bool isLegal = true;
-            foreach (KeyValuePair<Store, ShoppingBasket> s_sb in _store_shoppingBasket)
+            foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
             {
                 isLegal = isLegal && s_sb.Key.CheckPolicy(s_sb.Value);
             }
@@ -62,14 +65,14 @@ namespace TradingSystem.Business.Market
         public bool Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum)
         {
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
-            foreach (KeyValuePair<Store, ShoppingBasket> s_sb in _store_shoppingBasket)
+            foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
             {
-                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value.Product_quantity, clientId, clientPhone, clientAddress, clientBankAccount, paySum);
+                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value.GetDictionaryProductQuantity(), clientId, clientPhone, clientAddress, clientBankAccount, paySum);
                 purchases.Add(purchaseStatus);
             }
             //If failed to make all the trasactions, need to cancel deliveries and payments
-            IEnumerable<PurchaseStatus> failedPayments = purchases.Where(pur => pur.PreConditions == true && pur.TransactionStatus.PaymentStatus != null && pur.TransactionStatus.PaymentStatus.Status == false);
-            IEnumerable<PurchaseStatus> failedDeliveries = purchases.Where(pur => pur.PreConditions == true && pur.TransactionStatus.DeliveryStatus != null && pur.TransactionStatus.DeliveryStatus.Status == false);
+            IEnumerable<PurchaseStatus> failedPayments = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.PaymentStatus != null && pur.TransactionStatus.PaymentStatus.Status == false);
+            IEnumerable<PurchaseStatus> failedDeliveries = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.DeliveryStatus != null && pur.TransactionStatus.DeliveryStatus.Status == false);
             CancelPurchase(failedPayments, cancelDeliveries: false, cancelPayments: true);
             CancelPurchase(failedDeliveries, cancelDeliveries: true, cancelPayments: false);
             bool allSuceeded = !failedDeliveries.Any() && !failedPayments.Any();
@@ -88,7 +91,7 @@ namespace TradingSystem.Business.Market
 
         public double CalcPaySum()
         {
-            return _store_shoppingBasket.Aggregate(0.0, (total, next) => total + next.Key.CalcPaySum(next.Value));
+            return Store_shoppingBasket.Aggregate(0.0, (total, next) => total + next.Key.CalcPaySum(next.Value));
         }
     }
 }

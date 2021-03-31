@@ -7,13 +7,13 @@ namespace TradingSystem.Business.Market
     public class Discount
     {
         private Guid _id;
-        private ICollection<Rule> _rules;
+        private ICollection<IRule> _rules;
         private double _discount;
 
         public Discount(double discount)
         {
-            Id = new Guid();
-            _rules = new HashSet<Rule>();
+            Id = Guid.NewGuid();
+            _rules = new HashSet<IRule>();
             DiscountValue = discount;
         }
 
@@ -22,12 +22,12 @@ namespace TradingSystem.Business.Market
         public Guid Id { get => _id; set => _id = value; }
         public double DiscountValue { get => _discount; set => _discount = value; }
 
-        public void AddRule(Rule rule)
+        public void AddRule(IRule rule)
         {
             _rules.Add(rule);
         }
 
-        public void RemoveRule(Rule rule)
+        public void RemoveRule(IRule rule)
         {
             _rules.Remove(rule);
         }
@@ -35,7 +35,7 @@ namespace TradingSystem.Business.Market
         public double ApplyDiscounts(Dictionary<Product, int> product_quantity)
         {
             bool isLegal = true;
-            foreach (Rule rule in _rules)
+            foreach (IRule rule in _rules)
             {
                 isLegal = isLegal && rule.Check(product_quantity);
             }

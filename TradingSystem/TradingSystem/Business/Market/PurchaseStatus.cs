@@ -21,7 +21,12 @@ namespace TradingSystem.Business.Market
 
         public bool PreConditions { get => _preConditions; set => _preConditions = value; }
         public Guid StoreId { get => _storeId; set => _storeId = value; }
-        internal TransactionStatus TransactionStatus { get => _transactionStatus; set => _transactionStatus = value; }
+        public TransactionStatus TransactionStatus { get => _transactionStatus; set => _transactionStatus = value; }
         internal Dictionary<Product, int> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
+
+        public bool GetPreConditions()
+        {
+            return PreConditions;
+        }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    public class ShoppingBasket
+    public class ShoppingBasket : IShoppingBasket
     {
         Dictionary<Product, int> _product_quantity;
 
@@ -56,6 +56,16 @@ namespace TradingSystem.Business.Market
                 return _product_quantity[product];
             }
             return 0;
+        }
+
+        public Dictionary<Product, int> GetDictionaryProductQuantity()
+        {
+            return _product_quantity;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return obj.GetHashCode() - GetHashCode();
         }
     }
 }

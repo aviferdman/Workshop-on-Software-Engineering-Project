@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market
 {
     public class GuestState : State
     {
-        public GuestState(StorePermission storePermission) : base(storePermission)
+        public GuestState(IStorePermission storePermission) : base(storePermission)
         {
 
         }
 
-        public override bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
+        public override bool AddSubject(Guid storeId, Permission permission, IStorePermission subjectStorePermission)
         {
             throw new UnauthorizedAccessException();
         }
@@ -35,7 +36,7 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
+        public override bool RemoveSubject(Guid storeId, IStorePermission subjectStorePermission)
         {
             throw new UnauthorizedAccessException();
         }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market
 {
     public class AdministratorState : MemberState
     {
-        public AdministratorState(Guid userId, StorePermission storePermission) : base(userId, storePermission)
+        public AdministratorState(Guid userId, IStorePermission storePermission) : base(userId, storePermission)
         {
 
         }

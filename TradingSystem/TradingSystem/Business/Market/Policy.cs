@@ -6,25 +6,25 @@ namespace TradingSystem.Business.Market
 {
     public class Policy
     {
-        private ICollection<Rule> _rules;
+        private ICollection<IRule> _rules;
 
         public Policy()
         {
-            this._rules = new HashSet<Rule>();
+            this._rules = new HashSet<IRule>();
         }
-        public Policy(ICollection<Rule> rules)
+        public Policy(ICollection<IRule> rules)
         {
             this._rules = rules;
         }
 
-        public ICollection<Rule> Rules { get => _rules; set => _rules = value; }
+        public ICollection<IRule> Rules { get => _rules; set => _rules = value; }
 
-        public void AddRule(Rule rule)
+        public void AddRule(IRule rule)
         {
             _rules.Add(rule);
         }
         
-        public void RemoveRule(Rule rule)
+        public void RemoveRule(IRule rule)
         {
             _rules.Remove(rule);
         }
@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Market
         public bool Check(Dictionary<Product, int> product_quantity)
         {
             bool isLegal = true;
-            foreach (Rule rule in _rules)
+            foreach (IRule rule in _rules)
             {
                 isLegal = isLegal && rule.Check(product_quantity);
             }

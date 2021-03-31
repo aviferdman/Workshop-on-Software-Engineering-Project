@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market
 {
@@ -11,12 +12,12 @@ namespace TradingSystem.Business.Market
         private ShoppingCart _shoppingCart;
         private Guid _id;
         private string username;
-        private StorePermission _storePermission;
+        private IStorePermission _storePermission;
 
         public User(string username)
         {
             this._shoppingCart = new ShoppingCart();
-            this._id = new Guid();
+            this._id = Guid.NewGuid();
             this._storePermission = new StorePermission(_id);
             this._state = new GuestState(_storePermission);
             this.username = username;
@@ -26,7 +27,7 @@ namespace TradingSystem.Business.Market
         internal State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public ShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
-        internal StorePermission StorePermission { get => _storePermission; set => _storePermission = value; }
+        public IStorePermission StorePermission { get => _storePermission; set => _storePermission = value; }
 
         public void ChangeState(State state)
         {
@@ -35,7 +36,7 @@ namespace TradingSystem.Business.Market
 
         public void UpdateProductInShoppingBasket(Store store, Product product, int quantity)
         {
-            ShoppingBasket shoppingBasket = ShoppingCart.GetShoppingBasket(store);
+            IShoppingBasket shoppingBasket = ShoppingCart.GetShoppingBasket(store);
             shoppingBasket.UpdateProduct(product, quantity);
         }
 
@@ -67,12 +68,12 @@ namespace TradingSystem.Business.Market
             return _state.GetStoreHistory(storeId);
         }
 
-        public bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
+        public bool AddSubject(Guid storeId, Permission permission, IStorePermission subjectStorePermission)
         {
             return _state.AddSubject(storeId, permission, subjectStorePermission);
         }
 
-        public bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
+        public bool RemoveSubject(Guid storeId, IStorePermission subjectStorePermission)
         {
             return _state.RemoveSubject(storeId, subjectStorePermission);
         }

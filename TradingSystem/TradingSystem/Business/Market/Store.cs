@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Market
 {
-    public class Store
+    public class Store : IStore
     {
         private ICollection<Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
@@ -35,10 +35,15 @@ namespace TradingSystem.Business.Market
             this._transactionsHistory = new HashSet<TransactionStatus>();
             this._lock = new object();
             this.Discounts = new HashSet<Discount>();
-            this._id = new Guid();
+            this._id = Guid.NewGuid();
             this._policy = new Policy();
             this._bank = bank;
             this._address = address;
+        }
+
+        public Guid GetId()
+        {
+            return _id;
         }
 
         public PurchaseStatus Purchase(Dictionary<Product, int> product_quantity, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum)
@@ -58,7 +63,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, clientBankAccount, _id, _bank, paymentSum);
+            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, clientBankAccount, _id, _bank, paymentSum, product_quantity);
             _transactionsHistory.Add(transactionStatus);
             //transaction failed
             if (!transactionStatus.Status)
@@ -73,16 +78,16 @@ namespace TradingSystem.Business.Market
             UpdateQuantities(product_quantity, false);
         }
 
-        public double CalcPaySum(ShoppingBasket shoppingBasket)
+        public double CalcPaySum(IShoppingBasket shoppingBasket)
         {
             double discount = ApplyDiscounts(shoppingBasket);
             double cost = shoppingBasket.CalcCost();
             return cost - discount;
         }
 
-        public double ApplyDiscounts(ShoppingBasket shoppingBasket)
+        public double ApplyDiscounts(IShoppingBasket shoppingBasket)
         {
-            var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket.Product_quantity));
+            var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket.GetDictionaryProductQuantity()));
             //chose the max value of an available discount
             try
             {
@@ -95,17 +100,17 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 12 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/75
-        public bool CheckPolicy(ShoppingBasket shoppingBasket)
+        public bool CheckPolicy(IShoppingBasket shoppingBasket)
         {
-            return Policy.Check(shoppingBasket.Product_quantity);
+            return Policy.Check(shoppingBasket.GetDictionaryProductQuantity());
         }
 
-        public void AddRule(Rule rule)
+        public void AddRule(IRule rule)
         {
             _policy.AddRule(rule);
         }
 
-        public void RemoveRule(Rule rule)
+        public void RemoveRule(IRule rule)
         {
             _policy.RemoveRule(rule);
         }
@@ -113,7 +118,7 @@ namespace TradingSystem.Business.Market
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);
-            if (p!=null){    //remove old product if exists            {
+            if (p!=null){    //remove old product if exists
                 _products.Remove(p);
             }   
             
@@ -125,7 +130,7 @@ namespace TradingSystem.Business.Market
         {
             Product p = GetProductById(product.Id);
             if (p != null)
-            {    //remove old product if exists            {
+            {    //remove old product if exists
                 _products.Remove(p);
             }
         }
@@ -139,7 +144,7 @@ namespace TradingSystem.Business.Market
         {
             Discount d = GetDiscountById(discountId);
             if (d != null)
-            {    //remove old discount if exists            {
+            {    //remove old discount if exists
                 Discounts.Remove(d);
             }
         }
@@ -184,5 +189,9 @@ namespace TradingSystem.Business.Market
             return discounts.FirstOrDefault();
         }
 
+        public int CompareTo(object obj)
+        {
+            return obj.GetHashCode() - GetHashCode();
+        }
     }
 }

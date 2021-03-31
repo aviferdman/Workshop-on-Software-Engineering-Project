@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market
 {
@@ -8,11 +9,11 @@ namespace TradingSystem.Business.Market
     {
 
         private Guid _userId;
-        private StorePermission _storePermission;
+        private IStorePermission _storePermission;
 
-        public MemberState(Guid userId, StorePermission storePermission) : base(storePermission)
+        public MemberState(Guid userId, IStorePermission storePermission) : base(storePermission)
         {
-            this._storePermission = GetStorePermission();
+            this._storePermission = storePermission;
             this._userId = userId;
         }
 
@@ -23,12 +24,12 @@ namespace TradingSystem.Business.Market
             return store;
         }
 
-        public override bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
+        public override bool AddSubject(Guid storeId, Permission permission, IStorePermission subjectStorePermission)
         {
             return _storePermission.AddSubject(storeId, permission, subjectStorePermission);
         }
 
-        public override bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
+        public override bool RemoveSubject(Guid storeId, IStorePermission subjectStorePermission)
         {
             return _storePermission.RemoveSubject(storeId, subjectStorePermission);
         }

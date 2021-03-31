@@ -18,11 +18,11 @@ namespace TradingSystem.Business.Market
             this._paymentStatus = paymentStatus;
             this._deliveryStatus = deliveryStatus;
             this.Status = status;
-            this._id = new Guid();
+            this._id = Guid.NewGuid();
         }
         public Guid Id { get => _id; set => _id = value; }
         public bool Status { get => _status; set => _status = value; }
-        internal DeliveryStatus DeliveryStatus { get => _deliveryStatus; set => _deliveryStatus = value; }
-        internal PaymentStatus PaymentStatus { get => _paymentStatus; set => _paymentStatus = value; }
+        public DeliveryStatus DeliveryStatus { get => _deliveryStatus; set => _deliveryStatus = value; }
+        public PaymentStatus PaymentStatus { get => _paymentStatus; set => _paymentStatus = value; }
     }
 }

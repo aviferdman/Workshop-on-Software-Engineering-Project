@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market
 {
     public abstract class State
     {
-        private static StorePermission _storePermision;
+        private static IStorePermission _storePermision;
         protected static readonly Transaction _transaction = Transaction.Instance;
 
-        public State(StorePermission storePermission)
+        public State(IStorePermission storePermission)
         {
             _storePermision = storePermission;
         }
@@ -21,16 +22,16 @@ namespace TradingSystem.Business.Market
 
         abstract public History GetStoreHistory(Guid storeId);
 
-        abstract public bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission);
+        abstract public bool AddSubject(Guid storeId, Permission permission, IStorePermission subjectStorePermission);
 
-        abstract public bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission);
+        abstract public bool RemoveSubject(Guid storeId, IStorePermission subjectStorePermission);
 
         public Transaction GetTransaction()
         {
             return _transaction;
         }
 
-        public StorePermission GetStorePermission()
+        public IStorePermission GetStorePermission()
         {
             return _storePermision;
         }

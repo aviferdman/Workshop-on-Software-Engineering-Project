@@ -29,7 +29,7 @@ namespace TradingSystem.Business.Delivery
         }
         private Guid generatePackageId()
         {
-            return new Guid();
+            return Guid.NewGuid();
         }
     }
 }

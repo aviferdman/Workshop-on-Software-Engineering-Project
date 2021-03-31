@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market
 {
@@ -12,7 +14,7 @@ namespace TradingSystem.Business.Market
         Manager,
         None
     }
-    public class StorePermission
+    public class StorePermission : IStorePermission
     {
         private Guid _userId;
         private object _lock;
@@ -36,32 +38,44 @@ namespace TradingSystem.Business.Market
         //Return the degree of hierarchy of the user in this store (1 is the highest degree, 0 means user not in hierarchy)
         public int GetHierarchy(Guid storeId)
         {
-            int hierarchy;
-            if (!_store_hierarchy.TryGetValue(storeId, out hierarchy))
+            if (!_store_hierarchy.Keys.Contains(storeId))
             {
                 return 0;
             }
-            return hierarchy;
+            return _store_hierarchy[storeId];
         }
 
         public void SetHierarchy(Guid storeId, int hierarchy)
         {
-            _store_hierarchy[storeId] = hierarchy;
+            if (!_store_hierarchy.Keys.Contains(storeId))
+            {
+                _store_hierarchy.Add(storeId, hierarchy);
+            }
+            else
+            {
+                _store_hierarchy[storeId] = hierarchy;
+            }
         }
 
         public Permission GetPermission(Guid storeId)
         {
-            Permission permission;
-            if (!_store_permission.TryGetValue(storeId, out permission))
+            if (!_store_permission.Keys.Contains(storeId))
             {
                 return Permission.None;
             }
-            return permission;
+            return _store_permission[storeId];
         }
 
         public void SetPermission(Guid storeId, Permission permission)
         {
-            _store_permission[storeId] = permission;
+            if (!_store_permission.Keys.Contains(storeId))
+            {
+                _store_permission.Add(storeId, permission);
+            }
+            else
+            {
+                _store_permission[storeId] = permission;
+            }
         }
 
         public void AddFounder(Guid storeId)
@@ -75,7 +89,7 @@ namespace TradingSystem.Business.Market
             return requestedUserId.Equals(_userId);
         }
 
-        public bool AddSubject(Guid storeId, Permission permission, StorePermission subjectStorePermission)
+        public bool AddSubject(Guid storeId, Permission permission, IStorePermission subjectStorePermission)
         {
             lock (_lock)
             {
@@ -94,7 +108,7 @@ namespace TradingSystem.Business.Market
             return CompareGreaterEqual(userPermission, Permission.Manager);
         }
 
-        public bool RemoveSubject(Guid storeId, StorePermission subjectStorePermission)
+        public bool RemoveSubject(Guid storeId, IStorePermission subjectStorePermission)
         {
             lock (_lock)
             {
@@ -102,7 +116,7 @@ namespace TradingSystem.Business.Market
                 Permission myPermission = GetPermission(storeId);
                 int subjectHierarchy = subjectStorePermission.GetHierarchy(storeId);
                 Permission subjectPermission = subjectStorePermission.GetPermission(storeId);
-                bool ableToRemove = myHierarchy == 0 || myHierarchy > subjectHierarchy || subjectPermission == Permission.Founder || !CompareGreaterEqual(myPermission, subjectPermission);
+                bool ableToRemove = (myHierarchy != 0 && myHierarchy <= subjectHierarchy && CompareGreaterEqual(myPermission, subjectPermission)) || subjectPermission == Permission.Founder;
                 if (!ableToRemove) return false;
                 subjectStorePermission.SetHierarchy(storeId, 0);
                 subjectStorePermission.SetPermission(storeId, Permission.None);

@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
+    "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+    "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "projectUniqueName": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
         "projectName": "TradingSystem",
-        "projectPath": "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-        "packagesPath": "C:\\Users\\gilha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gilha\\OneDrive\\Desktop\\Workshop-on-Software-Engineering-Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
+        "projectPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\gilha\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -57,7 +54,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

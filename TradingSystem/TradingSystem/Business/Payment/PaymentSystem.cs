@@ -31,7 +31,7 @@ namespace TradingSystem.Business.Delivery
 
         public Guid generatePaymentId()
         {
-            return new Guid();
+            return Guid.NewGuid();
         }
     }
 }

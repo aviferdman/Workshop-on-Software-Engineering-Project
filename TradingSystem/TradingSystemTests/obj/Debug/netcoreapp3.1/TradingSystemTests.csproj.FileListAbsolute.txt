@@ -302,3 +302,5 @@ C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingS
 C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\obj\Debug\netcoreapp3.1\TradingSystemTests.pdb
 C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\obj\Debug\netcoreapp3.1\TradingSystemTests.genruntimeconfig.cache
 C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\bin\Debug\netcoreapp3.1\nunit.framework.dll
+C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\bin\Debug\netcoreapp3.1\Castle.Core.dll
+C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\bin\Debug\netcoreapp3.1\Moq.dll

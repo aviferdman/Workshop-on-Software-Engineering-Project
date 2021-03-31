@@ -16,7 +16,7 @@ namespace TradingSystem.Business.Market
             this._quantity = quantity;
             this._weight = weight;
             this._price = price;
-            this._id = new Guid();
+            this._id = Guid.NewGuid();
         }
 
         public int Quantity { get => _quantity; set => _quantity = value; }
