@@ -49,20 +49,20 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_Normal()
         {
-            Assert.IsTrue(Bridge.RemoveProduct(Shop, product));
+            Assert.IsTrue(Bridge.RemoveProductFromShop(Shop, product));
         }
 
         [TestCase]
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsFalse(Bridge.RemoveProduct(Shop, product));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(Shop, product));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.RemoveProduct(Shop, new Product(product.Name, product.Price, product.Quantity, int.MaxValue - 1)));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(Shop, new Product(product.Name, product.Price, product.Quantity, int.MaxValue - 1)));
         }
     }
 }

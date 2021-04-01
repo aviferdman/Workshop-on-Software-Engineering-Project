@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.UserTests;
 
 using NUnit.Framework;
 
@@ -45,7 +44,7 @@ namespace AcceptanceTests.MarketTests
                 new ProductInfo("traveling bag", 20, 7),
                 out useCase_addProduct_shop1
             );
-            new UseCase_LogOut(SystemContext, new UserInfo("h", "h"))
+            new UseCase_LogOut_TestLogic(SystemContext)
                 .Success_Normal();
             logged_out_from_first = true;
             product2_1 = AddProduct(

@@ -46,7 +46,7 @@ namespace AcceptanceTests.MarketTests
         {
             while (products.Count > 0)
             {
-                _ = Bridge.RemoveProduct(Shop, products.Dequeue());
+                _ = Bridge.RemoveProductFromShop(Shop, products.Dequeue());
             }
             useCase_openShop.Teardown();
         }
@@ -58,7 +58,7 @@ namespace AcceptanceTests.MarketTests
         }
         public Product Success_Normal(ProductInfo productInfo)
         {
-            Product? product = Bridge.AddProduct(Shop, productInfo);
+            Product? product = Bridge.AddProductToShop(Shop, productInfo);
             Assert.IsNotNull(product);
             Assert.AreEqual(productInfo.Name, product!.Name);
             Assert.AreEqual(productInfo.Quantity, product!.Quantity);
@@ -72,19 +72,19 @@ namespace AcceptanceTests.MarketTests
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsNull(Bridge.AddProduct(Shop, new ProductInfo("cucumber", 4, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(Shop, new ProductInfo("cucumber", 4, 3)));
         }
 
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsNull(Bridge.AddProduct(Shop, new ProductInfo("cucumber", -3, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(Shop, new ProductInfo("cucumber", -3, 3)));
         }
 
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsNull(Bridge.AddProduct(Shop, new ProductInfo("", 4, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(Shop, new ProductInfo("", 4, 3)));
         }
     }
 }

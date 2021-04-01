@@ -1,5 +1,6 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.UserTests;
 
 using NUnit.Framework;
 
@@ -14,6 +15,7 @@ namespace AcceptanceTests
     public class UseCase_LogOut : MemberUseTestBase
     {
         private UseCase_Login test_login;
+        private UseCase_LogOut_TestLogic testLogic;
 
         public UseCase_LogOut(string username, string password) :
             this(SystemContext.Instance, new UserInfo(username, password))
@@ -29,12 +31,14 @@ namespace AcceptanceTests
             test_login = new UseCase_Login(SystemContext, UserInfo);
             test_login.Setup();
             test_login.Success_Normal();
+
+            testLogic = new UseCase_LogOut_TestLogic(SystemContext);
         }
 
         [Test]
         public void Success_Normal()
         {
-            Assert.AreEqual(true, Bridge.LogOut());
+            testLogic.Success_Normal();
         }
     }
 }

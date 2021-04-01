@@ -21,10 +21,12 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         /// <param name="shop"></param>
         /// <param name="product"></param>
         /// <returns>The product with its id, null if failed.</returns>
-        Product? AddProduct(Shop shop, ProductInfo product);
+        Product? AddProductToShop(Shop shop, ProductInfo product);
 
-        bool RemoveProduct(Shop shop, Product product);
+        bool RemoveProductFromShop(Shop shop, Product product);
 
         ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);
+
+        bool AddProductToUserCart(Product product);
     }
 }

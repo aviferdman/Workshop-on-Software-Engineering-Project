@@ -47,19 +47,24 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return shop;
         }
 
-        public Product? AddProduct(Shop shop, ProductInfo productInfo)
+        public Product? AddProductToShop(Shop shop, ProductInfo productInfo)
         {
-            return RealBridge?.AddProduct(shop, productInfo);
+            return RealBridge?.AddProductToShop(shop, productInfo);
         }
 
-        public bool RemoveProduct(Shop shop, Product product)
+        public bool RemoveProductFromShop(Shop shop, Product product)
         {
-            return RealBridge != null && RealBridge.RemoveProduct(shop, product);
+            return RealBridge != null && RealBridge.RemoveProductFromShop(shop, product);
         }
 
         public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
         {
             return RealBridge?.SearchProducts(creteria);
+        }
+
+        public bool AddProductToUserCart(Product product)
+        {
+            return RealBridge != null && RealBridge.AddProductToUserCart(product);
         }
     }
 }
