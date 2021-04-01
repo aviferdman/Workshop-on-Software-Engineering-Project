@@ -19,12 +19,16 @@ namespace AcceptanceTests.MarketTests
     {
         private UseCase_AddProduct useCase_addProduct_shop1;
         private Product product1_1;
-        private Product product1_2;
 
         private UseCase_AddProduct useCase_addProduct_shop2;
         private Product product2_1;
         private Product product2_2;
 
+        private bool logged_out_from_first;
+
+        public UseCase_SearchProduct(string username, string password) :
+            this(SystemContext.Instance, new UserInfo(username, password))
+        { }
         public UseCase_SearchProduct(SystemContext systemContext, UserInfo userInfo) :
             base(systemContext, userInfo)
         { }
@@ -33,6 +37,7 @@ namespace AcceptanceTests.MarketTests
         public override void Setup()
         {
             base.Setup();
+            logged_out_from_first = false;
             product1_1 = AddProduct(
                 SHOP_NAME,
                 USER_SHOP_OWNER_NAME,
@@ -42,6 +47,7 @@ namespace AcceptanceTests.MarketTests
             );
             new UseCase_LogOut(SystemContext, new UserInfo("h", "h"))
                 .Success_Normal();
+            logged_out_from_first = true;
             product2_1 = AddProduct(
                 SHOP_NAME_2,
                 USER_SHOP_OWNER_2_NAME,
@@ -55,9 +61,12 @@ namespace AcceptanceTests.MarketTests
         [TearDown]
         public void Teardown()
         {
-            useCase_addProduct_shop2.Teardown();
-            _ = Login(new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD));
-            useCase_addProduct_shop1.Teardown();
+            useCase_addProduct_shop2?.Teardown();
+            if (logged_out_from_first)
+            {
+                _ = Login(new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD));
+            }
+            useCase_addProduct_shop1?.Teardown();
         }
 
         private Product AddProduct(string shopName, string shopUsername, string shopUserPassword, ProductInfo productInfo, out UseCase_AddProduct useCase_addProduct)
