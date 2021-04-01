@@ -4,15 +4,15 @@ using System.Text;
 
 namespace AcceptanceTests.AppInterface.Data
 {
-    public class Shop : ShopInfo
+    public class ShopRefs
     {
-        public Shop(string name, UserInfo owner, int id) : base(name)
+        public ShopRefs(ShopId shopId, UserInfo owner)
         {
+            Id = shopId;
             Owner = owner;
-            Id = id;
         }
 
+        public ShopId Id { get; }
         public UserInfo Owner { get; }
-        public int Id { get; }
     }
 }

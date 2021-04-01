@@ -6,20 +6,23 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public class MarketBridgeProxy : ProxyBase<IMarketBridge>, IMarketBridge
     {
-        private Dictionary<ShopInfo, Shop> shops;
+        private Dictionary<ShopInfo, ShopRefs> shops;
 
-        public MarketBridgeProxy(IMarketBridge? realBridge) : base(realBridge) { }
+        public MarketBridgeProxy(IMarketBridge? realBridge) : base(realBridge)
+        {
+            shops = new Dictionary<ShopInfo, ShopRefs>();
+        }
 
         public override IMarketBridge Bridge => this;
 
-        public Shop? AssureOpenShop(ShopInfo shopInfo)
+        public ShopId? AssureOpenShop(ShopInfo shopInfo)
         {
             if (RealBridge == null)
             {
                 return null;
             }
 
-            Shop? shop;
+            ShopRefs? shop;
             bool exists;
             lock (shops)
             {
@@ -32,27 +35,27 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                     throw new ShopOwnerMismatchException(shopInfo);
                 }
 
-                return shop;
+                return shop.Id;
             }
 
-            shop = RealBridge.AssureOpenShop(shopInfo);
+            ShopId? shopId = RealBridge.AssureOpenShop(shopInfo);
             if (shop != null)
             {
                 lock (shops)
                 {
                     // Shop class might override Equals and GetHashCode
-                    shops.Add(new ShopInfo(shop.Name), shop);
+                    shops.Add(shopInfo, shop);
                 }
             }
-            return shop;
+            return shopId;
         }
 
-        public Product? AddProductToShop(Shop shop, ProductInfo productInfo)
+        public ProductId? AddProductToShop(ShopId shop, ProductInfo productInfo)
         {
             return RealBridge?.AddProductToShop(shop, productInfo);
         }
 
-        public bool RemoveProductFromShop(Shop shop, Product product)
+        public bool RemoveProductFromShop(ShopId shop, ProductId product)
         {
             return RealBridge != null && RealBridge.RemoveProductFromShop(shop, product);
         }
@@ -62,7 +65,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge?.SearchProducts(creteria);
         }
 
-        public bool AddProductToUserCart(Product product)
+        public bool AddProductToUserCart(ProductId product)
         {
             return RealBridge != null && RealBridge.AddProductToUserCart(product);
         }

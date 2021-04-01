@@ -49,7 +49,7 @@ namespace AcceptanceTests.MarketTests
 
         private UseCase_AddProduct useCase_addProduct;
         private UseCase_Login useCase_login_buyer;
-        private Product product;
+        private ProductId product;
 
         [SetUp]
         public override void Setup()

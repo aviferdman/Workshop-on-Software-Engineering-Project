@@ -17,7 +17,7 @@ namespace AcceptanceTests.MarketTests
     public class UseCase_RemoveProduct : ShopManagementTestBase
     {
         private UseCase_AddProduct useCase_addProduct;
-        private Product product;
+        private ProductId product;
 
         public UseCase_RemoveProduct(string shopName, string shopUsername, string shopUserPassword) :
             this(shopName, SystemContext.Instance, new UserInfo(shopUsername, shopUserPassword))
@@ -29,7 +29,7 @@ namespace AcceptanceTests.MarketTests
         }
 
         public string ShopName { get; }
-        public Shop Shop => useCase_addProduct.Shop;
+        public ShopId Shop => useCase_addProduct.Shop;
 
         [SetUp]
         public override void Setup()
@@ -62,7 +62,7 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromShop(Shop, new Product(product.Name, product.Price, product.Quantity, int.MaxValue - 1)));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(Shop, new ProductId(int.MaxValue - 1)));
         }
     }
 }

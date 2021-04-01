@@ -40,13 +40,11 @@ namespace AcceptanceTests.MarketTests
         {
             _ = Success_Normal(new ShopInfo(shopName));
         }
-        public Shop Success_Normal(ShopInfo shopInfo)
+        public ShopId Success_Normal(ShopInfo shopInfo)
         {
-            Shop? shop = Bridge.AssureOpenShop(shopInfo);
+            ShopId? shop = Bridge.AssureOpenShop(shopInfo);
             Assert.IsNotNull(shop);
-            Assert.AreEqual(shopInfo.Name, shop!.Name);
-            Assert.AreEqual(SystemContext.LoggedInUser, shop!.Owner);
-            Assert.Greater(shop!.Id, 0);
+            Assert.Greater(shop!.Value, 0);
             return shop;
         }
     }

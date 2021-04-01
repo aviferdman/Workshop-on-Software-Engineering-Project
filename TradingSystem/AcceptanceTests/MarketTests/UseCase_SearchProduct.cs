@@ -17,11 +17,11 @@ namespace AcceptanceTests.MarketTests
     public class UseCase_SearchProduct : MarketTestBase
     {
         private UseCase_AddProduct useCase_addProduct_shop1;
-        private Product product1_1;
+        private ProductId product1_1;
 
         private UseCase_AddProduct useCase_addProduct_shop2;
-        private Product product2_1;
-        private Product product2_2;
+        private ProductId product2_1;
+        private ProductId product2_2;
 
         private bool logged_out_from_first;
 
@@ -68,7 +68,7 @@ namespace AcceptanceTests.MarketTests
             useCase_addProduct_shop1?.Teardown();
         }
 
-        private Product AddProduct(string shopName, string shopUsername, string shopUserPassword, ProductInfo productInfo, out UseCase_AddProduct useCase_addProduct)
+        private ProductId AddProduct(string shopName, string shopUsername, string shopUserPassword, ProductInfo productInfo, out UseCase_AddProduct useCase_addProduct)
         {
             useCase_addProduct = new UseCase_AddProduct(shopName, SystemContext, new UserInfo(shopUsername, shopUserPassword));
             useCase_addProduct.Setup();
@@ -78,13 +78,13 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_MultipleShops()
         {
-            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("bag")
+            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("bag")
             {
                 PriceRange_Low = 0.5m
             });
             Assert.NotNull(products, "Products search - success - null results");
             Assert.IsNotEmpty(products, "Products search - success - empty results");
-            using IEnumerator<Product> enumerator = products!.GetEnumerator();
+            using IEnumerator<ProductId> enumerator = products!.GetEnumerator();
             _ = enumerator.MoveNext();
             if (product1_1.Equals(enumerator.Current))
             {
@@ -103,13 +103,13 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_OneProduct()
         {
-            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
             {
                 PriceRange_High = 21
             });
             Assert.NotNull(products, "Products search - success - null results");
             Assert.IsNotEmpty(products, "Products search - success - empty results");
-            using IEnumerator<Product> enumerator = products!.GetEnumerator();
+            using IEnumerator<ProductId> enumerator = products!.GetEnumerator();
             _ = enumerator.MoveNext();
             Assert.AreEqual(product2_2, enumerator.Current);
             Assert.IsFalse(enumerator.MoveNext(), "Products search - success - expected exactly 1 result");
@@ -118,7 +118,7 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Failure_MatchingKeywordsButNotFilter()
         {
-            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
             {
                 PriceRange_High = 1
             });
@@ -129,7 +129,7 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Failure_NotMatchingKeywords()
         {
-            IEnumerable<Product>? products = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
+            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
             Assert.NotNull(products, "Products search - null results");
             Assert.IsEmpty(products, "Products search - not matching keywords - expected no results");
         }

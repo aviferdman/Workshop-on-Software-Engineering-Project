@@ -17,7 +17,7 @@ namespace AcceptanceTests.MarketTests
     public class UseCase_AddProduct : ShopManagementTestBase
     {
         private UseCase_OpenShop useCase_openShop;
-        private Queue<Product> products;
+        private Queue<ProductId> products;
 
         public UseCase_AddProduct(string shopName, string shopUsername, string shopUserPassword) :
             this(shopName, SystemContext.Instance, new UserInfo(shopUsername, shopUserPassword))
@@ -26,11 +26,11 @@ namespace AcceptanceTests.MarketTests
             base(systemContext, userInfo)
         {
             ShopName = shopName;
-            products = new Queue<Product>(3);
+            products = new Queue<ProductId>(3);
         }
 
         public string ShopName { get; }
-        public Shop Shop { get; private set; }
+        public ShopId Shop { get; private set; }
 
         [SetUp]
         public override void Setup()
@@ -56,14 +56,11 @@ namespace AcceptanceTests.MarketTests
         {
             _ = Success_Normal(new ProductInfo(productName, quantity, price));
         }
-        public Product Success_Normal(ProductInfo productInfo)
+        public ProductId Success_Normal(ProductInfo productInfo)
         {
-            Product? product = Bridge.AddProductToShop(Shop, productInfo);
+            ProductId? product = Bridge.AddProductToShop(Shop, productInfo);
             Assert.IsNotNull(product);
-            Assert.AreEqual(productInfo.Name, product!.Name);
-            Assert.AreEqual(productInfo.Quantity, product!.Quantity);
-            Assert.AreEqual(productInfo.Price, product!.Price);
-            Assert.Greater(product!.Id, 0);
+            Assert.Greater(product!.Value, 0);
             products.Enqueue(product);
             return product;
         }

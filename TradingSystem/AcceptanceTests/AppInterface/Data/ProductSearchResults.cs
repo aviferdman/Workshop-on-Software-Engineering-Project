@@ -5,18 +5,18 @@ using System.Text;
 
 namespace AcceptanceTests.AppInterface.Data
 {
-    public class ProductSearchResults : IEnumerable<Product>
+    public class ProductSearchResults : IEnumerable<ProductId>
     {
-        public ProductSearchResults(IEnumerable<Product> results, string typoFixes)
+        public ProductSearchResults(IEnumerable<ProductId> results, string typoFixes)
         {
             Results = results;
             TypoFixes = typoFixes;
         }
 
-        public IEnumerable<Product> Results { get; }
+        public IEnumerable<ProductId> Results { get; }
         public string TypoFixes { get; }
 
-        public IEnumerator<Product> GetEnumerator() => Results.GetEnumerator();
+        public IEnumerator<ProductId> GetEnumerator() => Results.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Results).GetEnumerator();
     }
 }
