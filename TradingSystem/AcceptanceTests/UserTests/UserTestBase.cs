@@ -19,8 +19,5 @@ namespace AcceptanceTests.UserTests
         }
 
         protected IUserBridge Bridge => SystemContext.UserBridge;
-
-        [SetUp]
-        public virtual void Setup() { }
     }
 }

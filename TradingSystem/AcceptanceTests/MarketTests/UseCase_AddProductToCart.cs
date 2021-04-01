@@ -16,7 +16,7 @@ namespace AcceptanceTests.MarketTests
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53
     /// </summary>
     [TestFixtureSource(nameof(FixtureArgs))]
-    public class UseCase_AddProductToCart : MarketTestBase
+    public class UseCase_AddProductToCart : MarketMemberTestBase
     {
         private static object[] FixtureArgs =
         {
@@ -51,6 +51,8 @@ namespace AcceptanceTests.MarketTests
         private UseCase_Login useCase_login_buyer;
         private ProductId product;
 
+        private UseCase_AddProductToCart_TestLogic testLogic;
+
         [SetUp]
         public override void Setup()
         {
@@ -64,19 +66,23 @@ namespace AcceptanceTests.MarketTests
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
             useCase_login_buyer.Setup();
             useCase_login_buyer.Success_Normal();
+
+            testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext);
         }
 
         [TearDown]
-        public void Teardown()
+        public override void Teardown()
         {
-            useCase_addProduct?.Teardown();
+            // TODO: remove from cart
             useCase_login_buyer?.TearDown();
+            // TODO: log in back to the shop owner
+            useCase_addProduct?.Teardown();
         }
 
         [TestCase]
         public void Success_Normal()
         {
-            Assert.IsTrue(Bridge.AddProductToUserCart(product));
+            testLogic.Success_Normal(product);
         }
     }
 }

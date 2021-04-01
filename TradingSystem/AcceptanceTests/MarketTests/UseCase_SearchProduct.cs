@@ -14,16 +14,19 @@ namespace AcceptanceTests.MarketTests
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/52
     /// </summary>
     [TestFixture(USER_BUYER_NAME, USER_BUYER_PASSWORD)]
-    public class UseCase_SearchProduct : MarketTestBase
+    public class UseCase_SearchProduct : MarketMemberTestBase
     {
         private UseCase_AddProduct useCase_addProduct_shop1;
-        private ProductId product1_1;
+        public ProductId Product1_1 { get; set; }
 
         private UseCase_AddProduct useCase_addProduct_shop2;
-        private ProductId product2_1;
-        private ProductId product2_2;
+        public ProductId Product2_2 { get; set; }
+        public ProductId Product2_1 { get; set; }
+
+        private UseCase_Login useCase_login_buyer;
 
         private bool logged_out_from_first;
+        private bool logged_out_from_second;
 
         public UseCase_SearchProduct(string username, string password) :
             this(SystemContext.Instance, new UserInfo(username, password))
@@ -37,7 +40,7 @@ namespace AcceptanceTests.MarketTests
         {
             base.Setup();
             logged_out_from_first = false;
-            product1_1 = AddProduct(
+            Product1_1 = AddProduct(
                 SHOP_NAME,
                 USER_SHOP_OWNER_NAME,
                 USER_SHOP_OWNER_PASSWORD,
@@ -47,19 +50,29 @@ namespace AcceptanceTests.MarketTests
             new UseCase_LogOut_TestLogic(SystemContext)
                 .Success_Normal();
             logged_out_from_first = true;
-            product2_1 = AddProduct(
+            Product2_1 = AddProduct(
                 SHOP_NAME_2,
                 USER_SHOP_OWNER_2_NAME,
                 USER_SHOP_OWNER_2_PASSWORD,
                 new ProductInfo("school bag", 5, 12),
                 out useCase_addProduct_shop2
             );
-            product2_2 = useCase_addProduct_shop2.Success_Normal(new ProductInfo("android charger", 8, 20));
+            Product2_2 = useCase_addProduct_shop2.Success_Normal(new ProductInfo("android charger", 8, 20));
+            new UseCase_LogOut_TestLogic(SystemContext)
+                .Success_Normal();
+            useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
+            useCase_login_buyer.Setup();
+            useCase_login_buyer.Success_Normal();
         }
 
         [TearDown]
-        public void Teardown()
+        public override void Teardown()
         {
+            useCase_login_buyer?.TearDown();
+            if (logged_out_from_second)
+            {
+                _ = Login(new UserInfo(USER_SHOP_OWNER_2_NAME, USER_SHOP_OWNER_2_PASSWORD));
+            }
             useCase_addProduct_shop2?.Teardown();
             if (logged_out_from_first)
             {
@@ -82,22 +95,8 @@ namespace AcceptanceTests.MarketTests
             {
                 PriceRange_Low = 0.5m
             });
-            Assert.NotNull(products, "Products search - success - null results");
-            Assert.IsNotEmpty(products, "Products search - success - empty results");
-            using IEnumerator<ProductId> enumerator = products!.GetEnumerator();
-            _ = enumerator.MoveNext();
-            if (product1_1.Equals(enumerator.Current))
-            {
-                Assert.IsTrue(enumerator.MoveNext(), "Products search - success - expected more than 1 result");
-                Assert.AreEqual(product2_1, enumerator.Current, $"One of the result products must be {product2_1}");
-            }
-            else
-            {
-                Assert.AreEqual(product2_1, enumerator.Current, $"One of the result products must be {product2_1}");
-                Assert.IsTrue(enumerator.MoveNext(), "Products search - success - expected more than 1 result");
-                Assert.AreEqual(product1_1, enumerator.Current, $"One of the result products must be {product1_1}");
-            }
-            Assert.IsFalse(enumerator.MoveNext(), "Products search - success - expected exactly 2 result");
+            new Assert_SetEquals<ProductId>("Products search - success multiple shops", Product1_1, Product2_1)
+                .AssertEquals(products);
         }
 
         [TestCase]
@@ -107,12 +106,8 @@ namespace AcceptanceTests.MarketTests
             {
                 PriceRange_High = 21
             });
-            Assert.NotNull(products, "Products search - success - null results");
-            Assert.IsNotEmpty(products, "Products search - success - empty results");
-            using IEnumerator<ProductId> enumerator = products!.GetEnumerator();
-            _ = enumerator.MoveNext();
-            Assert.AreEqual(product2_2, enumerator.Current);
-            Assert.IsFalse(enumerator.MoveNext(), "Products search - success - expected exactly 1 result");
+            new Assert_SetEquals<ProductId>("Products search - success one shop", Product2_2)
+                .AssertEquals(products);
         }
 
         [TestCase]

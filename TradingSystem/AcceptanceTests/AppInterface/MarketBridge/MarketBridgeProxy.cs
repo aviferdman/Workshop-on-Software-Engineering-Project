@@ -69,5 +69,10 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         {
             return RealBridge != null && RealBridge.AddProductToUserCart(product);
         }
+
+        public IEnumerable<ProductId>? GetShoppingCartItems()
+        {
+            return RealBridge?.GetShoppingCartItems();
+        }
     }
 }

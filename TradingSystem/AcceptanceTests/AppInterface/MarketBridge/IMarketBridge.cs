@@ -28,5 +28,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);
 
         bool AddProductToUserCart(ProductId productId);
+
+        IEnumerable<ProductId>? GetShoppingCartItems();
     }
 }

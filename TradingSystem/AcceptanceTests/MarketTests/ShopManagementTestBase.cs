@@ -3,7 +3,7 @@ using AcceptanceTests.AppInterface.Data;
 
 namespace AcceptanceTests.MarketTests
 {
-    public class ShopManagementTestBase : MarketTestBase
+    public class ShopManagementTestBase : MarketMemberTestBase
     {
         public ShopManagementTestBase(SystemContext systemContext, UserInfo userInfo) :
             base(systemContext, userInfo)

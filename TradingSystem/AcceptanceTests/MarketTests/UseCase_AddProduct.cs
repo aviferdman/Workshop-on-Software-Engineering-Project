@@ -42,7 +42,7 @@ namespace AcceptanceTests.MarketTests
         }
 
         [TearDown]
-        public void Teardown()
+        public override void Teardown()
         {
             while (products.Count > 0)
             {
