@@ -68,7 +68,7 @@ namespace AcceptanceTests.MarketTests.Shop
         public void Success_Normal()
         {
             new Assert_SetEquals<ProductId>("View shop products - success", products)
-                .AssertEquals(Bridge.GetShopProducts(useCase_addProduct.Shop));
+                .AssertEquals(Bridge.GetShopProducts(useCase_addProduct.ShopId));
         }
 
         [TestCase]

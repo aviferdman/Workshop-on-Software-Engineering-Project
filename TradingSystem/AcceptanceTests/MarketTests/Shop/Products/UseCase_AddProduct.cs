@@ -30,7 +30,7 @@ namespace AcceptanceTests.MarketTests
         }
 
         public string ShopName { get; }
-        public ShopId Shop { get; private set; }
+        public ShopId ShopId { get; private set; }
 
         [SetUp]
         public override void Setup()
@@ -38,7 +38,7 @@ namespace AcceptanceTests.MarketTests
             base.Setup();
             useCase_openShop = new UseCase_OpenShop(SystemContext, UserInfo);
             useCase_openShop.Setup();
-            Shop = useCase_openShop.Success_Normal(new ShopInfo(ShopName));
+            ShopId = useCase_openShop.Success_Normal(new ShopInfo(ShopName));
         }
 
         [TearDown]
@@ -46,7 +46,7 @@ namespace AcceptanceTests.MarketTests
         {
             while (products.Count > 0)
             {
-                _ = Bridge.RemoveProductFromShop(Shop, products.Dequeue());
+                _ = Bridge.RemoveProductFromShop(ShopId, products.Dequeue());
             }
             useCase_openShop.Teardown();
         }
@@ -58,7 +58,7 @@ namespace AcceptanceTests.MarketTests
         }
         public ProductId Success_Normal(ProductInfo productInfo)
         {
-            ProductId? product = Bridge.AddProductToShop(Shop, productInfo);
+            ProductId? product = Bridge.AddProductToShop(ShopId, productInfo);
             Assert.IsNotNull(product);
             Assert.Greater(product!.Value, 0);
             products.Enqueue(product.Value);
@@ -69,19 +69,19 @@ namespace AcceptanceTests.MarketTests
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsNull(Bridge.AddProductToShop(Shop, new ProductInfo("cucumber", 4, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, 3)));
         }
 
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsNull(Bridge.AddProductToShop(Shop, new ProductInfo("cucumber", -3, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", -3, 3)));
         }
 
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsNull(Bridge.AddProductToShop(Shop, new ProductInfo("", 4, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("", 4, 3)));
         }
     }
 }

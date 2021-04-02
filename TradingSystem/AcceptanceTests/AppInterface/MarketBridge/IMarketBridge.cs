@@ -25,6 +25,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         bool RemoveProductFromShop(ShopId shopId, ProductId productId);
 
+        bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails);
+
         // TODO: add with quantity
         bool AddProductToUserCart(ProductId productId);
         bool RemoveProductFromUserCart(ProductId productId);
@@ -38,6 +40,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         ShopInfo? GetShopDetails(ShopId shopId);
 
         // TODO: results should contain the info too
+        // TODO: also add checks comparing the details in the add and edit product
         IEnumerable<ProductId>? GetShopProducts(ShopId shopId);
     }
 }

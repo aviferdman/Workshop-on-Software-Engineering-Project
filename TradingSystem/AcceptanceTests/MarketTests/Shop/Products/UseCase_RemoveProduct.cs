@@ -11,7 +11,7 @@ namespace AcceptanceTests.MarketTests
 {
     /// <summary>
     /// Acceptance test for
-    /// Use case 24: add product to shop
+    /// Use case 24: remove product from shop
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/19
     [TestFixture(SHOP_NAME, USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD)]
     public class UseCase_RemoveProduct : ShopManagementTestBase
@@ -29,7 +29,7 @@ namespace AcceptanceTests.MarketTests
         }
 
         public string ShopName { get; }
-        public ShopId Shop => useCase_addProduct.Shop;
+        public ShopId ShopId => useCase_addProduct.ShopId;
 
         [SetUp]
         public override void Setup()
@@ -49,20 +49,20 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_Normal()
         {
-            Assert.IsTrue(Bridge.RemoveProductFromShop(Shop, product));
+            Assert.IsTrue(Bridge.RemoveProductFromShop(ShopId, product));
         }
 
         [TestCase]
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsFalse(Bridge.RemoveProductFromShop(Shop, product));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, product));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromShop(Shop, new ProductId(int.MaxValue - 1)));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, new ProductId(int.MaxValue - 1)));
         }
     }
 }
