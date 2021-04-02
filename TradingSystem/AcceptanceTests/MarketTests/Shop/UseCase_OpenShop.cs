@@ -45,7 +45,7 @@ namespace AcceptanceTests.MarketTests
             ShopId? shop = Bridge.AssureOpenShop(shopInfo);
             Assert.IsNotNull(shop);
             Assert.Greater(shop!.Value, 0);
-            return shop;
+            return shop.Value;
         }
     }
 }

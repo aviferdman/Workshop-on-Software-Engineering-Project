@@ -20,5 +20,14 @@ namespace AcceptanceTests.AppInterface.Data
         {
             return $"Product Id {Value}";
         }
+
+        public static implicit operator ProductId(int id)
+        {
+            return new ProductId(id);
+        }
+        public static implicit operator int(ProductId productId)
+        {
+            return productId.Value;
+        }
     }
 }

@@ -25,11 +25,13 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         bool RemoveProductFromShop(ShopId shopId, ProductId productId);
 
-        ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);
-
         bool AddProductToUserCart(ProductId productId);
         bool RemoveProductFromUserCart(ProductId productId);
 
         IEnumerable<ProductId>? GetShoppingCartItems();
+
+        ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);
+
+        ShopInfo? GetShopDetails(ShopId shopId);
     }
 }

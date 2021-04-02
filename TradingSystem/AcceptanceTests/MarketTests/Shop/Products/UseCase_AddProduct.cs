@@ -61,8 +61,8 @@ namespace AcceptanceTests.MarketTests
             ProductId? product = Bridge.AddProductToShop(Shop, productInfo);
             Assert.IsNotNull(product);
             Assert.Greater(product!.Value, 0);
-            products.Enqueue(product);
-            return product;
+            products.Enqueue(product.Value);
+            return product.Value;
         }
 
         [TestCase]

@@ -78,5 +78,10 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         {
             return RealBridge?.GetShoppingCartItems();
         }
+
+        public ShopInfo? GetShopDetails(ShopId shopId)
+        {
+            return RealBridge?.GetShopDetails(shopId);
+        }
     }
 }
