@@ -12,10 +12,11 @@ namespace AcceptanceTests.MarketTests.Shop
 {
     /// <summary>
     /// Acceptance test for
-    /// Use case 20: View shop’s details
-    /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
+    /// Use case 21: View shop’s products
+    /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/79
+    /// </summary>
     [TestFixtureSource(nameof(FixtureArgs))]
-    public class UseCase_ViewShopDetails : MarketTestBase
+    public class UseCase_ViewShopProducts : MarketTestBase
     {
         static object[] FixtureArgs = new object[]
         {
@@ -27,7 +28,7 @@ namespace AcceptanceTests.MarketTests.Shop
             },
         };
 
-        public UseCase_ViewShopDetails(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo) :
+        public UseCase_ViewShopProducts(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo) :
             base(systemContext)
         {
             ShopOwnerUser = shopOwnerUser;
@@ -37,30 +38,37 @@ namespace AcceptanceTests.MarketTests.Shop
         public UserInfo ShopOwnerUser { get; }
         public ShopInfo ShopInfo { get; }
 
-        private UseCase_OpenShop useCase_openShop;
-        private ShopId shopId;
+        private UseCase_AddProduct useCase_addProduct;
+        private IList<ProductId> products;
 
         [SetUp]
         public void Setup()
         {
-            useCase_openShop = new UseCase_OpenShop(SystemContext, ShopOwnerUser);
-            useCase_openShop.Setup();
-            shopId = useCase_openShop.Success_Normal(ShopInfo);
+            ProductId productId;
+            products = new List<ProductId>(2);
+            useCase_addProduct = new UseCase_AddProduct(ShopInfo.Name, SystemContext, ShopOwnerUser);
+            useCase_addProduct.Setup();
+
+            productId = useCase_addProduct.Success_Normal(new ProductInfo("suitcase", 200, 30));
+            products.Add(productId);
+
+            productId = useCase_addProduct.Success_Normal(new ProductInfo("hdmi cable", 7, 321));
+            products.Add(productId);
+
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
         }
 
         [TearDown]
         public void Teardown()
         {
-            useCase_openShop.Teardown();
+            useCase_addProduct?.Teardown();
         }
 
         [TestCase]
         public void Success_Normal()
         {
-            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(shopId);
-            Assert.IsNotNull(returnedShopInfo);
-            Assert.AreEqual(ShopInfo.Name, returnedShopInfo!.Name);
+            new Assert_SetEquals<ProductId>("View shop products - success", products)
+                .AssertEquals(Bridge.GetShopProducts(useCase_addProduct.Shop));
         }
 
         [TestCase]
