@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AcceptanceTests.AppInterface.Data
 {
-    public class ShopId
+    public struct ShopId
     {
         public ShopId(int id)
         {

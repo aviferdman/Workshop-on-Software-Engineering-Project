@@ -49,7 +49,7 @@ namespace AcceptanceTests.MarketTests
 
         private UseCase_AddProduct useCase_addProduct;
         private UseCase_Login useCase_login_buyer;
-        private ProductId product;
+        public ProductId Product { get; private set; }
 
         private UseCase_AddProductToCart_TestLogic testLogic;
 
@@ -60,7 +60,7 @@ namespace AcceptanceTests.MarketTests
 
             useCase_addProduct = new UseCase_AddProduct(ShopName, SystemContext, Shop_Owner_User);
             useCase_addProduct.Setup();
-            product = useCase_addProduct.Success_Normal(ProductInfo);
+            Product = useCase_addProduct.Success_Normal(ProductInfo);
 
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
@@ -73,16 +73,21 @@ namespace AcceptanceTests.MarketTests
         [TearDown]
         public override void Teardown()
         {
-            // TODO: remove from cart
+            _ = Bridge.RemoveProductFromUserCart(Product);
             useCase_login_buyer?.TearDown();
-            // TODO: log in back to the shop owner
-            useCase_addProduct?.Teardown();
+            bool loggedInToShopOwner = SystemContext.UserBridge.Login(Shop_Owner_User);
+            if (loggedInToShopOwner)
+            {
+                useCase_addProduct?.Teardown();
+            }
         }
 
         [TestCase]
         public void Success_Normal()
         {
-            testLogic.Success_Normal(product);
+            testLogic.Success_Normal(Product);
+            new Assert_SetEquals<ProductId>("Add product to cart - success", Product)
+                .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }
 }

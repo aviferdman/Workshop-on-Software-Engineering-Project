@@ -43,7 +43,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             {
                 lock (shops)
                 {
-                    // Shop class might override Equals and GetHashCode
                     shops.Add(shopInfo, shop);
                 }
             }
@@ -68,6 +67,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public bool AddProductToUserCart(ProductId product)
         {
             return RealBridge != null && RealBridge.AddProductToUserCart(product);
+        }
+
+        public bool RemoveProductFromUserCart(ProductId productId)
+        {
+            return RealBridge != null && RealBridge.RemoveProductFromUserCart(productId);
         }
 
         public IEnumerable<ProductId>? GetShoppingCartItems()

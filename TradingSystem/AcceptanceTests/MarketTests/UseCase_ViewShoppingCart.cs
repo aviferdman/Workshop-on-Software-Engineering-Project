@@ -51,9 +51,9 @@ namespace AcceptanceTests.MarketTests
         {
             base.Teardown();
 
-            // TODO:
-            // 1. Remove items from cart
-            // 2. Teardown search
+            _ = Bridge.RemoveProductFromUserCart(useCase_search.Product2_1);
+            _ = Bridge.RemoveProductFromUserCart(useCase_search.Product1_1);
+            useCase_search.Teardown();
         }
 
         [TestCase]
