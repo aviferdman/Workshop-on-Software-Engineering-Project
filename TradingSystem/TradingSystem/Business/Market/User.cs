@@ -12,22 +12,30 @@ namespace TradingSystem.Business.Market
         private ShoppingCart _shoppingCart;
         private Guid _id;
         private string username;
-        private IStorePermission _storePermission;
+        private bool isLoggedIn;
 
         public User(string username)
         {
             this._shoppingCart = new ShoppingCart();
             this._id = Guid.NewGuid();
-            this._storePermission = new StorePermission(_id);
-            this._state = new GuestState(_storePermission);
+            this._state = new GuestState();
             this.username = username;
+            this.isLoggedIn = false;
+        }
+
+        public User()
+        {
+            this._shoppingCart = new ShoppingCart();
+            this._id = Guid.NewGuid();
+            this._state = new GuestState();
+            this.isLoggedIn = false;
         }
 
         public Guid Id { get => _id; set => _id = value; }
         internal State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public ShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
-        public IStorePermission StorePermission { get => _storePermission; set => _storePermission = value; }
+        public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
 
         public void ChangeState(State state)
         {
@@ -48,34 +56,13 @@ namespace TradingSystem.Business.Market
             return ShoppingCart.Purchase(_id, bank, phone, address, paySum);
         }
 
-        public Store CreateStore(string shopName, BankAccount bank, Address address)
-        {
-            return _state.CreateStore(shopName, bank, address);
-        }
-
-        public History GetAllHistory()
-        {
-            return _state.GetAllHistory();
-        }
+     
 
         public History GetUserHistory(Guid userId)
         {
             return _state.GetUserHistory(userId);
         }
 
-        public History GetStoreHistory(Guid storeId)
-        {
-            return _state.GetStoreHistory(storeId);
-        }
-
-        public bool AddSubject(Guid storeId, Permission permission, IStorePermission subjectStorePermission)
-        {
-            return _state.AddSubject(storeId, permission, subjectStorePermission);
-        }
-
-        public bool RemoveSubject(Guid storeId, IStorePermission subjectStorePermission)
-        {
-            return _state.RemoveSubject(storeId, subjectStorePermission);
-        }
+       
     }
 }

@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Market
 {
     public class AdministratorState : MemberState
     {
-        public AdministratorState(Guid userId, IStorePermission storePermission) : base(userId, storePermission)
+        public AdministratorState(Guid userId) : base(userId)
         {
 
         }
