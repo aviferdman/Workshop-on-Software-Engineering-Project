@@ -3,12 +3,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace TradingSystem.Business.Market
 {
-    public class Market
+    public class Market: IMarket
     {
-        private ConcurrentBag<Store> _stores;
+        private ConcurrentDictionary<Guid,Store> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
         private static readonly Lazy<Market>
         _lazy =
@@ -19,31 +20,96 @@ namespace TradingSystem.Business.Market
 
         private Market()
         {
-            _stores = new ConcurrentBag<Store>();
+            _stores = new ConcurrentDictionary<Guid, Store>();
             activeUsers = new ConcurrentDictionary<string, User>();
         }
 
-        //USER FUNCTIONALITY
+        //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
+        public string AddGuest()
+        {
+            User u = new User();
+            string GuidString;
+            do
+            {
+                Guid g = Guid.NewGuid();
+                GuidString = Convert.ToBase64String(g.ToByteArray());
+                GuidString = GuidString.Replace("=", "");
+                GuidString = GuidString.Replace("+", "");
+                u.Username=GuidString;
+            } while (activeUsers.TryAdd(GuidString, u));
+            return u.Username;
+        }
 
-        //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
+        //functional requirement 2.2: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/13
+        public void RemoveGuest(String usrname)
+        {
+            User guest = null;
+            activeUsers.TryRemove(usrname, out guest);
+        }
+
+
+        ///adding member to market after register - <see cref="UserManagement.UserManagement.SignUp(string, string, Address, string)"/> 
+        public bool AddMember(String usrname)
+        {
+            User u = new User(usrname);
+            User guest = null;
+            string GuidString;
+            u.State = new MemberState(u.Id);
+            while (!activeUsers.TryAdd(usrname, u))
+            {
+                if(activeUsers.TryRemove(usrname,out guest))
+                {
+                    do
+                    {
+                        Guid g = Guid.NewGuid();
+                        GuidString = Convert.ToBase64String(g.ToByteArray());
+                        GuidString = GuidString.Replace("=", "");
+                        GuidString = GuidString.Replace("+", "");
+                        u.Username = GuidString;
+                    } while (activeUsers.TryAdd(GuidString, u));
+                }
+                
+            };
+            return true;
+        }
+
+        ///after login- <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> mark that user is logged in
+
+        public bool login(String usrname)
+        {
+            User mem = null;
+            if(activeUsers.TryGetValue(usrname, out mem))
+            {
+                mem.IsLoggedIn = true;
+                return true;
+            }
+            return false;
+        }
+
+            //USER FUNCTIONALITY
+
+            //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
         public Store CreateStore(string name, string username, BankAccount bank, Address address)
         {
             User user = GetUserByUserName(username);
-            Store store = user.CreateStore(name, bank, address);
-            _stores.Add(store);
+            if (typeof(GuestState).IsInstanceOfType(user.State))
+                return null;
+            Store store = new Store(name, bank, address);
+            store.Personnel.TryAdd(user.Id, new Founder(user.Id));
+            if (!_stores.TryAdd(store.Id, store))
+                return null;
             return store;
-            
         }
 
         //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
-        public ConcurrentBag<Store> GetStoresByName(string name)
+        public ICollection<Store> GetStoresByName(string name)
         {
-            ConcurrentBag<Store> stores = new ConcurrentBag<Store>();
-            foreach(Store s in _stores)
+            LinkedList<Store> stores = new LinkedList<Store>();
+            foreach(Store s in _stores.Values)
             {
                 if (s.Name.Equals(name))
                 {
-                    stores.Add(s);
+                    stores.AddLast(s);
                 }
             }
             return stores;
@@ -60,7 +126,7 @@ namespace TradingSystem.Business.Market
         public History GetAllHistory(string username)
         {
             User user = GetUserByUserName(username);
-            return user.GetAllHistory();
+            return user.State.GetAllHistory();
         }
 
         //use case 10 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/70
@@ -75,7 +141,7 @@ namespace TradingSystem.Business.Market
         public History GetStoreHistory(string username, Guid storeId)
         {
             User user = GetUserByUserName(username);
-            return user.GetStoreHistory(storeId);
+            return user.State.GetStoreHistory(storeId);
         }
 
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
@@ -86,18 +152,24 @@ namespace TradingSystem.Business.Market
             return store.ApplyDiscounts(user.ShoppingCart.GetShoppingBasket(store));
         }
 
-        public bool AddSubject(string username, string subjectUsername, Guid storeId, Permission permission)
+        public bool AddPerssonel(string username, string subjectUsername, Guid storeId, AppointmentType permission)
         {
-            User user = GetUserByUserName(username);
-            User subject = GetUserByUserName(subjectUsername);
-            return user.AddSubject(storeId, permission, subject.StorePermission);
+            User u = GetUserByUserName(username);
+            User newUser= GetUserByUserName(subjectUsername);
+            Store store ;
+            if (!_stores.TryGetValue(storeId, out store))
+                return false;
+            return store.AddPerssonel(u.Id,newUser.Id,permission);
         }
 
-        public bool RemoveSubject(string username, string subjectUsername, Guid storeId)
+        public bool RemovePerssonel(string username, string subjectUsername, Guid storeId)
         {
-            User user = GetUserByUserName(username);
-            User subject = GetUserByUserName(subjectUsername);
-            return user.RemoveSubject(storeId, subject.StorePermission);
+            User u = GetUserByUserName(username);
+            User newUser = GetUserByUserName(subjectUsername);
+            Store store;
+            if (!_stores.TryGetValue(storeId, out store))
+                return false;
+            return store.RemovePerssonel(u.Id, newUser.Id);
         }
 
         private User GetUserByUserName(string username)
@@ -112,8 +184,9 @@ namespace TradingSystem.Business.Market
 
         private Store GetStoreById(Guid storeId)
         {
-            var possibleStores = _stores.Where(s => s.Id.Equals(storeId));
-            return possibleStores.FirstOrDefault();
+            Store s=null;
+            _stores.TryGetValue(storeId, out s);
+            return  s;
         }
 
     }

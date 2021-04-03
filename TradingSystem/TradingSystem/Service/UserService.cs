@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Market;
 using TradingSystem.Business.UserManagement;
 
 namespace TradingSystem.Service
@@ -19,14 +20,14 @@ namespace TradingSystem.Service
         }
 
         public static UserService Instance { get { return lazy.Value; } }
-        public String signup(string username, string password, string address)
+        public String signup(string username, string password, string _state, string _city, string _street, string _apartmentNum, string phone)
         {
-            return userManagement.SignUp(username, password, address);
+            return userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone);
         }
 
-        public String login(string username, string password)
+        public String login(string username, string password, string guestusername)
         {
-            return userManagement.LogIn(username, password);
+            return userManagement.LogIn(username, password, guestusername);
         }
     }
 }

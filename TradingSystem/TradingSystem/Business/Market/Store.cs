@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace TradingSystem.Business.Market
     {
         private ICollection<Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
+        private ConcurrentDictionary<Guid, StorePermission> personnel;
         private BankAccount _bank;
         private Guid _id;
         private string name;
@@ -27,6 +29,7 @@ namespace TradingSystem.Business.Market
         public string Name { get => name; set => name = value; }
         internal BankAccount Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
+        public ConcurrentDictionary<Guid, StorePermission> Personnel { get => personnel; set => personnel = value; }
 
         public Store(string name, BankAccount bank, Address address)
         {
@@ -78,6 +81,27 @@ namespace TradingSystem.Business.Market
             UpdateQuantities(product_quantity, false);
         }
 
+        public bool AddPerssonel(Guid username, Guid subjectUsername, AppointmentType permission)
+        {
+            StorePermission user;
+            if (!personnel.TryGetValue(username, out user))
+            {
+                return false;
+            }
+            return personnel.TryAdd(subjectUsername,user.AddAppointment(subjectUsername, permission));
+        }
+        public bool RemovePerssonel(Guid username, Guid subjectUsername)
+        {
+            StorePermission user;
+            StorePermission userToRem;
+            if (!personnel.TryGetValue(username, out user))
+            {
+                return false;
+            }
+            if (!user.canRemoveAppointment(subjectUsername))
+                return false;
+            return personnel.TryRemove(subjectUsername, out userToRem);
+        }
         public double CalcPaySum(IShoppingBasket shoppingBasket)
         {
             double discount = ApplyDiscounts(shoppingBasket);

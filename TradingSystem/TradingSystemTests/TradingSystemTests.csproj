@@ -28,4 +28,8 @@
     <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UserManagementTests\" />
+  </ItemGroup>
+
 </Project>
