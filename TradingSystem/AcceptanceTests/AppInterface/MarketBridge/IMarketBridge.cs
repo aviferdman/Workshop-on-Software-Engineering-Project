@@ -30,6 +30,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         // TODO: add with quantity
         bool AddProductToUserCart(ProductId productId);
         bool RemoveProductFromUserCart(ProductId productId);
+        bool EditProductInUserCart(ProductId productId, int quantity);
 
         // TODO: results should contain the info as well (with the quantity too)
         IEnumerable<ProductId>? GetShoppingCartItems();
