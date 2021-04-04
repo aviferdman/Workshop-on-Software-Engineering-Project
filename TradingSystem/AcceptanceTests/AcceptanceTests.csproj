@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="MarketTests\Shop\UserPermissionsManagement\" />
-    <Folder Include="MarketTests\Shop\PurchaseManagement\" />
+    <Folder Include="Tests\Market\Shop\UserPermissionsManagement\" />
+    <Folder Include="Tests\Market\Shop\PurchaseManagement\" />
   </ItemGroup>
   
 </Project>

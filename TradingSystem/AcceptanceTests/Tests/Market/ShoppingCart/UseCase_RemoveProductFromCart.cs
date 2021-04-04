@@ -32,18 +32,18 @@ namespace AcceptanceTests.MarketTests
 
         public UseCase_RemoveProductFromCart(
             SystemContext systemContext,
-            UserInfo buyer_user,
-            UserInfo shop_owner_user,
+            UserInfo buyerUser,
+            UserInfo shopOwnerUser,
             string shopName,
             ProductInfo productInfo
-        ) : base(systemContext, buyer_user)
+        ) : base(systemContext, buyerUser)
         {
-            Shop_Owner_User = shop_owner_user;
+            ShopOwnerUser = shopOwnerUser;
             ShopName = shopName;
             ProductInfo = productInfo;
         }
 
-        public UserInfo Shop_Owner_User { get; }
+        public UserInfo ShopOwnerUser { get; }
         public string ShopName { get; }
         public ProductInfo ProductInfo { get; }
 
@@ -56,7 +56,7 @@ namespace AcceptanceTests.MarketTests
             useCase_addProductToCart = new UseCase_AddProductToCart(
                 SystemContext,
                 UserInfo,
-                Shop_Owner_User,
+                ShopOwnerUser,
                 ShopName,
                 ProductInfo
             );

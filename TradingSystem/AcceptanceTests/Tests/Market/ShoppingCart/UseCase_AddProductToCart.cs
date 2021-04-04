@@ -30,19 +30,19 @@ namespace AcceptanceTests.MarketTests
             },
         };
 
-        public UserInfo Shop_Owner_User { get; }
+        public UserInfo ShopOwnerUser { get; }
         public string ShopName { get; }
         public ProductInfo ProductInfo { get; }
 
         public UseCase_AddProductToCart(
             SystemContext systemContext,
-            UserInfo buyer_user,
-            UserInfo shop_owner_user,
+            UserInfo buyerUser,
+            UserInfo shopOwnerUser,
             string shopName,
             ProductInfo productInfo
-        ) : base(systemContext, buyer_user)
+        ) : base(systemContext, buyerUser)
         {
-            Shop_Owner_User = shop_owner_user;
+            ShopOwnerUser = shopOwnerUser;
             ShopName = shopName;
             ProductInfo = productInfo;
         }
@@ -58,7 +58,7 @@ namespace AcceptanceTests.MarketTests
         {
             base.Setup();
 
-            useCase_addProduct = new UseCase_AddProduct(ShopName, SystemContext, Shop_Owner_User);
+            useCase_addProduct = new UseCase_AddProduct(ShopName, SystemContext, ShopOwnerUser);
             useCase_addProduct.Setup();
             Product = useCase_addProduct.Success_Normal(ProductInfo);
 
@@ -75,7 +75,7 @@ namespace AcceptanceTests.MarketTests
         {
             _ = Bridge.RemoveProductFromUserCart(Product);
             useCase_login_buyer?.TearDown();
-            bool loggedInToShopOwner = SystemContext.UserBridge.Login(Shop_Owner_User);
+            bool loggedInToShopOwner = SystemContext.UserBridge.Login(ShopOwnerUser);
             if (loggedInToShopOwner)
             {
                 useCase_addProduct?.Teardown();
