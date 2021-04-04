@@ -78,7 +78,15 @@ namespace AcceptanceTests.MarketTests
         public void Success_Normal()
         {
             Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.Product, NewQuantity));
-            new Assert_SetEquals<ProductId>("Edit product in cart", useCase_addProductToCart.Product)
+            new Assert_SetEquals<ProductId>("Edit product in cart - success", useCase_addProductToCart.Product)
+                .AssertEquals(Bridge.GetShoppingCartItems());
+        }
+
+        [TestCase]
+        public void Failure_InvalidQuantity()
+        {
+            Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.Product, -1));
+            new Assert_SetEquals<ProductId>("Edit product in cart - invalid quantity", useCase_addProductToCart.Product)
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }
