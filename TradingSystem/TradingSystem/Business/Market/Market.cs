@@ -189,5 +189,34 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
+        public void AddProduct(ProductData productData, Guid storeID, String username)
+        {
+            Product product = new Product(productData);
+            User user = GetUserByUserName(username);
+            Store store;
+            if (!_stores.TryGetValue(storeID, out store))
+                return;
+            store.AddProduct(product, user.Id);
+        }
+
+        public void RemoveProduct(String productName, Guid storeID, String username)
+        {
+            User user = GetUserByUserName(username);
+            Store store;
+            if (!_stores.TryGetValue(storeID, out store))
+                return;
+            store.RemoveProduct(productName, user.Id);
+        }
+
+        public void EditProduct(String productName, ProductData details, Guid storeID, String username)
+        {
+            Product editedProduct = new Product(details);
+            User user = GetUserByUserName(username);
+            Store store;
+            if (!_stores.TryGetValue(storeID, out store))
+                return;
+            store.EditProduct(productName, editedProduct, user.Id);
+        }
+
     }
 }
