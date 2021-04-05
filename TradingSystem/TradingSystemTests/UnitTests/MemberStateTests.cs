@@ -15,7 +15,7 @@ namespace TradingSystemTests.MarketTests
         //START UNIT TESTING
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(Guid)"/>
-        [TestMethod]
+  /*      [TestMethod]
         public void GetUserHistoryWithPermission()
         {
             Guid id = Guid.NewGuid();
@@ -64,7 +64,7 @@ namespace TradingSystemTests.MarketTests
 
             MemberState memberState = new MemberState(id, storePermission.Object);
             memberState.GetStoreHistory(id);
-        }
+        }*/
 
         [TestCleanup]
         public void DeleteAll()

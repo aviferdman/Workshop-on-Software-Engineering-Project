@@ -21,6 +21,15 @@ namespace TradingSystem.Business.Market
             this._id = Guid.NewGuid();
         }
 
+        public Product(int quantity, double weight, double price)
+        {
+            this._name = "test";
+            this._quantity = quantity;
+            this._weight = weight;
+            this._price = price;
+            this._id = Guid.NewGuid();
+        }
+
         public Product(ProductData data)
         {
             this._name = data._name;

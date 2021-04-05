@@ -10,7 +10,7 @@ namespace TradingSystemTests.IntegrationTests
     public class CreateStoreTests
     {
         /// test for function :<see cref="TradingSystem.Business.Market.User.CreateStore(string, TradingSystem.Business.Market.BankAccount, TradingSystem.Business.Market.Address)"/>
-        [TestMethod]
+ /*       [TestMethod]
         public void CreateStoreAndCheckFounder()
         {
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
@@ -50,6 +50,6 @@ namespace TradingSystemTests.IntegrationTests
         public void DeleteAll()
         {
             Transaction.Instance.DeleteAllTests();
-        }
+        }*/
     }
 }

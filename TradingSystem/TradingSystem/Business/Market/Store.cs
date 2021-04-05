@@ -139,6 +139,7 @@ namespace TradingSystem.Business.Market
             _policy.RemoveRule(rule);
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public void AddProduct(Product product, Guid userID)
         {
             StorePermission permission;
@@ -149,6 +150,7 @@ namespace TradingSystem.Business.Market
             }
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public void RemoveProduct(String productName, Guid userID)
         {
             StorePermission permission;
@@ -160,6 +162,7 @@ namespace TradingSystem.Business.Market
             }
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public void EditProduct(String productName, Product editedProduct, Guid userID)
         {
             StorePermission permission;

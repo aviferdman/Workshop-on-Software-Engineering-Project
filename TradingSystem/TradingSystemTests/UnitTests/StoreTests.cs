@@ -116,6 +116,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
         public void CheckValidAddProduct()
         {
@@ -132,6 +133,7 @@ namespace TradingSystemTests.MarketTests
             Assert.IsTrue(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
         public void CheckAddProductUnauthorizedUser()
         {
@@ -149,6 +151,7 @@ namespace TradingSystemTests.MarketTests
             Assert.IsFalse(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
         public void CheckAddProductInvalidPrice()
         {
@@ -165,6 +168,7 @@ namespace TradingSystemTests.MarketTests
             Assert.IsFalse(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
         public void CheckAddProductInvalidName()
         {
@@ -178,9 +182,10 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
             store.AddProduct(product1, user.Id);
-            Assert.IsTrue(store.Products.ContainsKey("1"));
+            Assert.IsFalse(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
         public void CheckValidRemoveProduct()
         {
@@ -198,6 +203,7 @@ namespace TradingSystemTests.MarketTests
             Assert.IsFalse(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
         public void CheckRemoveProductInvalidUser()
         {
@@ -216,6 +222,7 @@ namespace TradingSystemTests.MarketTests
             Assert.IsTrue(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
         public void CheckRemoveProductInvalidPermission()
         {
@@ -236,6 +243,7 @@ namespace TradingSystemTests.MarketTests
             Assert.IsTrue(store.Products.ContainsKey("1"));
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
         public void CheckValidEditProduct()
         {
@@ -256,6 +264,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(outcome.Price, 20);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         public void CheckEditUnavailablwProduct()
         {
             Product product1 = new Product("1", 10, 10, 10);
@@ -275,6 +284,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(outcome.Price, 10);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
         public void CheckEditNoPermission()
         {
