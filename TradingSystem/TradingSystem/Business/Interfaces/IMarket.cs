@@ -20,6 +20,8 @@ namespace TradingSystem.Business.Market
         public double ApplyDiscounts(string username, Guid storeId);
         public bool AddPerssonel(string username, string subjectUsername, Guid storeId, AppointmentType permission);
         public bool RemovePerssonel(string username, string subjectUsername, Guid storeId);
-
+        public void AddProduct(ProductData product, Guid storeID, String username);
+        public void RemoveProduct(String productName, Guid storeID, String username);
+        public void EditProduct(String productName, ProductData details, Guid storeID, String username);
     }
 }

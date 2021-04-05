@@ -14,6 +14,7 @@ namespace TradingSystem.Business.Market
         AppointManger,
         RemoveProduct,
         GetPersonnelInfo,
+        EditProduct,
 
         CloseShop
     }

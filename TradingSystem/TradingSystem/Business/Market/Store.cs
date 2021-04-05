@@ -9,7 +9,7 @@ namespace TradingSystem.Business.Market
 {
     public class Store : IStore
     {
-        private ICollection<Product> _products;
+        private ConcurrentDictionary<String, Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
         private ConcurrentDictionary<Guid, StorePermission> personnel;
         private BankAccount _bank;
@@ -21,7 +21,7 @@ namespace TradingSystem.Business.Market
         private static Transaction _transaction = Transaction.Instance;
         private object _lock;
 
-        internal ICollection<Product> Products { get => _products; set => _products = value; }
+        public ConcurrentDictionary<String, Product> Products { get => _products; set => _products = value; }
         internal Policy Policy { get => _policy; set => _policy = value; }
         internal Address Address { get => _address; set => _address = value; }
         internal ICollection<TransactionStatus> TransactionsHistory { get => _transactionsHistory; set => _transactionsHistory = value; }
@@ -34,7 +34,7 @@ namespace TradingSystem.Business.Market
         public Store(string name, BankAccount bank, Address address)
         {
             this.name = name;
-            this._products = new HashSet<Product>();
+            this._products = new ConcurrentDictionary<string, Product>();
             this._transactionsHistory = new HashSet<TransactionStatus>();
             this._lock = new object();
             this.Discounts = new HashSet<Discount>();
@@ -139,15 +139,68 @@ namespace TradingSystem.Business.Market
             _policy.RemoveRule(rule);
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
+        public void AddProduct(Product product, Guid userID)
+        {
+            StorePermission permission;
+            Personnel.TryGetValue(userID, out permission);
+            if (permission != null && permission.GetPermission(Permission.AddProduct) && !_products.ContainsKey(product.Name) && validProduct(product))
+            {
+                _products.TryAdd(product.Name, product);
+            }
+        }
+
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
+        public void RemoveProduct(String productName, Guid userID)
+        {
+            StorePermission permission;
+            Personnel.TryGetValue(userID, out permission);
+            if (permission != null && permission.GetPermission(Permission.RemoveProduct))
+            {
+                Product useless;
+                _products.TryRemove(productName, out useless);
+            }
+        }
+
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
+        public void EditProduct(String productName, Product editedProduct, Guid userID)
+        {
+            StorePermission permission;
+            Personnel.TryGetValue(userID, out permission);
+            if (permission != null && permission.GetPermission(Permission.EditProduct) && validProduct(editedProduct))
+            {
+                Product oldProduct;
+                _products.TryGetValue(productName, out oldProduct);
+                if (oldProduct == null)
+                {
+                    return;
+                }
+                editedProduct.Id = oldProduct.Id;
+                _products.TryRemove(productName, out oldProduct);
+                _products.TryAdd(editedProduct.Name, editedProduct);
+            }
+        }
+
+
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);
             if (p!=null){    //remove old product if exists
-                _products.Remove(p);
-            }   
-            
-            _products.Add(product); //add the new product
-           
+                Product useless;
+                _products.TryRemove(product.Name, out useless);
+            }
+
+            _products.TryAdd(product.Name, product); //add the new product
+
+        }
+
+        private bool validProduct(Product product)
+        {
+            if (product.Name == null || product.Name.Equals("") || product.Price < 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public void RemoveProduct(Product product)
@@ -155,7 +208,8 @@ namespace TradingSystem.Business.Market
             Product p = GetProductById(product.Id);
             if (p != null)
             {    //remove old product if exists
-                _products.Remove(p);
+                Product useless;
+                _products.TryRemove(product.Name, out useless);
             }
         }
 
@@ -172,6 +226,7 @@ namespace TradingSystem.Business.Market
                 Discounts.Remove(d);
             }
         }
+
 
         private void UpdateQuantities(Dictionary<Product, int> product_quantity, bool subOrAdd = true)
         {
@@ -203,7 +258,7 @@ namespace TradingSystem.Business.Market
 
         private Product GetProductById(Guid productId)
         {
-            IEnumerable<Product> products = Products.Where(product => product.Id.Equals(productId));
+            IEnumerable<Product> products = Products.Values.Where(product => product.Id.Equals(productId));
             return products.FirstOrDefault();
         }
 
