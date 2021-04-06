@@ -20,10 +20,6 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override History GetStoreHistory(Guid storeId)
-        {
-            throw new UnauthorizedAccessException();
-        }
         public override History GetUserHistory(Guid userId)
         {
             return GetTransaction().GetHistory(_userId);

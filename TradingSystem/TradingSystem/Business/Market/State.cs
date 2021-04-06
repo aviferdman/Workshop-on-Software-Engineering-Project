@@ -17,8 +17,6 @@ namespace TradingSystem.Business.Market
 
         public abstract History GetAllHistory();
 
-        public abstract History GetStoreHistory(Guid storeId);
-
         public Transaction GetTransaction()
         {
             return _transaction;

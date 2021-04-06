@@ -12,142 +12,131 @@ namespace TradingSystemTests.MarketTests
     public class StorePermissionTests
     {
 
-        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddSubject(Guid, Permission, IStorePermission)"/>
- /*       [TestMethod]
-        public void FounderAddManager()
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
+        /// 
+        [TestMethod]
+        public void FounderAddAppointment()
         {
-            Guid clientId = Guid.NewGuid();
-            Guid subjectId = Guid.NewGuid();
-            Guid storeId = Guid.NewGuid();
-            Dictionary<Guid, int> storeId_hir1 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per1 = new Dictionary<Guid, Permission>();
-            storeId_hir1.Add(storeId, 1);
-            storeId_per1.Add(storeId, Permission.Founder);
-
-            StorePermission clientStorePermission = new StorePermission(clientId);
-            clientStorePermission.Store_hierarchy = storeId_hir1;
-            clientStorePermission.Store_permission = storeId_per1;
-            StorePermission subjectStorePermission = new StorePermission(subjectId);
-            Assert.AreEqual(true, clientStorePermission.AddSubject(storeId, Permission.Manager, subjectStorePermission));
-
+            Founder founder = new Founder(Guid.NewGuid());
+            StorePermission storePermission = founder.AddAppointment(Guid.NewGuid(), AppointmentType.Owner);
+            Assert.IsNotNull(storePermission);  //succeeded and not null
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddSubject(Guid, Permission, IStorePermission)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
+        /// 
         [TestMethod]
-        public void ManagerAddManager()
+        public void ManagerAddAppointmentWithPermission()
         {
-            Guid clientId = Guid.NewGuid();
-            Guid subjectId = Guid.NewGuid();
-            Guid storeId = Guid.NewGuid();
-            Dictionary<Guid, int> storeId_hir1 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per1 = new Dictionary<Guid, Permission>();
-            storeId_hir1.Add(storeId, 2);
-            storeId_per1.Add(storeId, Permission.Manager);
-
-            StorePermission clientStorePermission = new StorePermission(clientId);
-            clientStorePermission.Store_hierarchy = storeId_hir1;
-            clientStorePermission.Store_permission = storeId_per1;
-            StorePermission subjectStorePermission = new StorePermission(subjectId);
-            Assert.AreEqual(true, clientStorePermission.AddSubject(storeId, Permission.Manager, subjectStorePermission));
-
+            Manager manager = new Manager(Guid.NewGuid(), new Founder(Guid.NewGuid()));
+            manager.Store_permission.Add(Permission.AppointManger);
+            StorePermission storePermission = manager.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
+            Assert.IsNotNull(storePermission);  //succeeded and not null
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddSubject(Guid, Permission, IStorePermission)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
+        /// 
         [TestMethod]
-        public void FailManagerAddOwner()
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void ManagerAddAppointmentWithoutPermission()
         {
-            Guid clientId = Guid.NewGuid();
-            Guid subjectId = Guid.NewGuid();
-            Guid storeId = Guid.NewGuid();
-            Dictionary<Guid, int> storeId_hir1 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per1 = new Dictionary<Guid, Permission>();
-            storeId_hir1.Add(storeId, 2);
-            storeId_per1.Add(storeId, Permission.Manager);
-
-            StorePermission clientStorePermission = new StorePermission(clientId);
-            clientStorePermission.Store_hierarchy = storeId_hir1;
-            clientStorePermission.Store_permission = storeId_per1;
-            StorePermission subjectStorePermission = new StorePermission(subjectId);
-            Assert.AreEqual(false, clientStorePermission.AddSubject(storeId, Permission.Owner, subjectStorePermission));
-
+            Manager manager = new Manager(Guid.NewGuid(), new Founder(Guid.NewGuid()));
+            manager.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.RemoveSubject(Guid, IStorePermission)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
+        /// 
         [TestMethod]
-        public void FounderRemoveManager()
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void ManagerAddOwnerAppointmentWithPermission()
         {
-            Guid clientId = Guid.NewGuid();
-            Guid subjectId = Guid.NewGuid();
-            Guid storeId = Guid.NewGuid();
-            Dictionary<Guid, int> storeId_hir1 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per1 = new Dictionary<Guid, Permission>();
-            storeId_hir1.Add(storeId, 1);
-            storeId_per1.Add(storeId, Permission.Founder);
-            Dictionary<Guid, int> storeId_hir2 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per2 = new Dictionary<Guid, Permission>();
-            storeId_hir2.Add(storeId, 2);
-            storeId_per2.Add(storeId, Permission.Manager);
-
-            StorePermission clientStorePermission = new StorePermission(clientId);
-            clientStorePermission.Store_hierarchy = storeId_hir1;
-            clientStorePermission.Store_permission = storeId_per1;
-            StorePermission subjectStorePermission = new StorePermission(subjectId);
-            subjectStorePermission.Store_hierarchy = storeId_hir2;
-            subjectStorePermission.Store_permission = storeId_per2;
-            Assert.AreEqual(true, clientStorePermission.RemoveSubject(storeId, subjectStorePermission));
-
+            Manager manager = new Manager(Guid.NewGuid(), new Founder(Guid.NewGuid()));
+            manager.Store_permission.Add(Permission.AppointManger);
+            manager.AddAppointment(Guid.NewGuid(), AppointmentType.Owner);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.RemoveSubject(Guid, IStorePermission)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
+        /// 
         [TestMethod]
-        public void ManagerRemoveManager()
+        public void OwnerAddAppointmentWithPermission()
         {
-            Guid clientId = Guid.NewGuid();
-            Guid subjectId = Guid.NewGuid();
-            Guid storeId = Guid.NewGuid();
-            Dictionary<Guid, int> storeId_hir1 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per1 = new Dictionary<Guid, Permission>();
-            storeId_hir1.Add(storeId, 2);
-            storeId_per1.Add(storeId, Permission.Manager);
-            Dictionary<Guid, int> storeId_hir2 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per2 = new Dictionary<Guid, Permission>();
-            storeId_hir2.Add(storeId, 3);
-            storeId_per2.Add(storeId, Permission.Manager);
-
-            StorePermission clientStorePermission = new StorePermission(clientId);
-            clientStorePermission.Store_hierarchy = storeId_hir1;
-            clientStorePermission.Store_permission = storeId_per1;
-            StorePermission subjectStorePermission = new StorePermission(subjectId);
-            subjectStorePermission.Store_hierarchy = storeId_hir2;
-            subjectStorePermission.Store_permission = storeId_per2;
-            Assert.AreEqual(true, clientStorePermission.RemoveSubject(storeId, subjectStorePermission));
-
+            Owner owner = new Owner(Guid.NewGuid(), new Founder(Guid.NewGuid()));
+            StorePermission storePermission = owner.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
+            Assert.IsNotNull(storePermission);  //succeeded and not null
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.RemoveSubject(Guid, IStorePermission)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
+        /// 
         [TestMethod]
-        public void FailManagerRemoveOwner()
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void OwnerAddOwnerAppointmentWithPermission()
         {
-            Guid clientId = Guid.NewGuid();
-            Guid subjectId = Guid.NewGuid();
-            Guid storeId = Guid.NewGuid();
-            Dictionary<Guid, int> storeId_hir1 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per1 = new Dictionary<Guid, Permission>();
-            storeId_hir1.Add(storeId, 3);
-            storeId_per1.Add(storeId, Permission.Manager);
-            Dictionary<Guid, int> storeId_hir2 = new Dictionary<Guid, int>();
-            Dictionary<Guid, Permission> storeId_per2 = new Dictionary<Guid, Permission>();
-            storeId_hir2.Add(storeId, 3);
-            storeId_per2.Add(storeId, Permission.Owner);
+            Manager manager = new Manager(Guid.NewGuid(), new Founder(Guid.NewGuid()));
+            manager.AddAppointment(Guid.NewGuid(), AppointmentType.Owner);
+        }
 
-            StorePermission clientStorePermission = new StorePermission(clientId);
-            clientStorePermission.Store_hierarchy = storeId_hir1;
-            clientStorePermission.Store_permission = storeId_per1;
-            StorePermission subjectStorePermission = new StorePermission(subjectId);
-            subjectStorePermission.Store_hierarchy = storeId_hir2;
-            subjectStorePermission.Store_permission = storeId_per2;
-            Assert.AreEqual(false, clientStorePermission.RemoveSubject(storeId, subjectStorePermission));
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddPermission(Guid, Permission)"/>
+        /// 
+        [TestMethod]
+        public void AddPermissionForManager()
+        {
+            Guid userId = Guid.NewGuid();
+            Guid userId2 = Guid.NewGuid();
+            StorePermission storePermission = new Founder(userId);
+            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            storePermission2.AddPermission(userId, Permission.AppointManger);   //succeeds
+        }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddPermission(Guid, Permission)"/>
+        /// 
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void AddCloseStorePermissionForManager()
+        {
+            Guid userId = Guid.NewGuid();
+            Guid userId2 = Guid.NewGuid();
+            StorePermission storePermission = new Founder(userId);
+            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            storePermission2.AddPermission(userId, Permission.CloseShop);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddPermission(Guid, Permission)"/>
+        /// 
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void AddPermissionForManagerWithoutAppoitment()
+        {
+            Guid userId = Guid.NewGuid();
+            Guid userId2 = Guid.NewGuid();
+            StorePermission storePermission = new Founder(userId);
+            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            storePermission2.AddPermission(Guid.NewGuid(), Permission.AddProduct);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.RemovePermission(Guid, Permission)"/>
+        /// 
+        [TestMethod]
+        public void RemovePermissionForManager()
+        {
+            Guid userId = Guid.NewGuid();
+            Guid userId2 = Guid.NewGuid();
+            StorePermission storePermission = new Founder(userId);
+            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            storePermission2.AddPermission(userId, Permission.AppointManger);   //succeeds
+            storePermission2.RemovePermission(userId, Permission.AppointManger);    //succeeds
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddPermission(Guid, Permission)"/>
+        /// 
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void RemovePermissionForManagerWithoutAppoitment()
+        {
+            Guid userId = Guid.NewGuid();
+            Guid userId2 = Guid.NewGuid();
+            StorePermission storePermission = new Founder(userId);
+            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            storePermission2.AddPermission(userId, Permission.AddProduct);
+            storePermission2.RemovePermission(Guid.NewGuid(), Permission.AppointManger);
         }
 
 
@@ -155,7 +144,7 @@ namespace TradingSystemTests.MarketTests
         public void DeleteAll()
         {
             Transaction.Instance.DeleteAllTests();
-        }*/
+        }
 
     }
 }

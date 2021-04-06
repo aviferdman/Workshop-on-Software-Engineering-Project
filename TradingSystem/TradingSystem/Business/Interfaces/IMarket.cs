@@ -23,5 +23,9 @@ namespace TradingSystem.Business.Market
         public void AddProduct(ProductData product, Guid storeID, String username);
         public void RemoveProduct(String productName, Guid storeID, String username);
         public void EditProduct(String productName, ProductData details, Guid storeID, String username);
+
+        public User GetUserByUserName(string username);
+
+        public void DeleteAllTests();
     }
 }

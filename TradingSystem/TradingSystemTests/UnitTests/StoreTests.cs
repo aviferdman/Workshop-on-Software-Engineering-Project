@@ -308,6 +308,37 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(outcome.Price, 10);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.GetStoreHistory(Guid)"/>
+        [TestMethod]
+        public void CheckGetStoreHistoryWithPermission()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            User user = new User("user1");
+            Founder founder = new Founder(user.Id);
+            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            personnel.TryAdd(user.Id, founder);
+            store.Personnel = personnel;
+            History history = store.GetStoreHistory(user.Id);
+            Assert.IsNotNull(history);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.GetStoreHistory(Guid)"/>
+        [TestMethod]
+        [ExpectedException(typeof(UnauthorizedAccessException))]
+        public void CheckGetStoreHistoryWithoutPermission()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            User user = new User("user1");
+            Manager manager = new Manager(user.Id, new Founder(Guid.NewGuid()));
+            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            personnel.TryAdd(user.Id, manager);
+            store.Personnel = personnel;
+            History history = store.GetStoreHistory(user.Id);
+        }
 
         public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
         {

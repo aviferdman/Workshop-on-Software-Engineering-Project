@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
+    "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+    "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "projectUniqueName": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
         "projectName": "TradingSystem",
-        "projectPath": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
+        "projectPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ASUS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

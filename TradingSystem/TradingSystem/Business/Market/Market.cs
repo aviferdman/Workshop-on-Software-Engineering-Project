@@ -18,11 +18,15 @@ namespace TradingSystem.Business.Market
 
         public static Market Instance { get { return _lazy.Value; } }
 
+        public ConcurrentDictionary<Guid, Store> Stores { get => _stores; set => _stores = value; }
+        public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
+
         private Market()
         {
-            _stores = new ConcurrentDictionary<Guid, Store>();
-            activeUsers = new ConcurrentDictionary<string, User>();
+            Stores = new ConcurrentDictionary<Guid, Store>();
+            ActiveUsers = new ConcurrentDictionary<string, User>();
         }
+
 
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
         public string AddGuest()
@@ -36,7 +40,7 @@ namespace TradingSystem.Business.Market
                 GuidString = GuidString.Replace("=", "");
                 GuidString = GuidString.Replace("+", "");
                 u.Username=GuidString;
-            } while (activeUsers.TryAdd(GuidString, u));
+            } while (ActiveUsers.TryAdd(GuidString, u));
             return u.Username;
         }
 
@@ -44,7 +48,7 @@ namespace TradingSystem.Business.Market
         public void RemoveGuest(String usrname)
         {
             User guest = null;
-            activeUsers.TryRemove(usrname, out guest);
+            ActiveUsers.TryRemove(usrname, out guest);
         }
 
 
@@ -55,9 +59,9 @@ namespace TradingSystem.Business.Market
             User guest = null;
             string GuidString;
             u.State = new MemberState(u.Id);
-            while (!activeUsers.TryAdd(usrname, u))
+            while (!ActiveUsers.TryAdd(usrname, u))
             {
-                if(activeUsers.TryRemove(usrname,out guest))
+                if(ActiveUsers.TryRemove(usrname,out guest))
                 {
                     do
                     {
@@ -66,7 +70,7 @@ namespace TradingSystem.Business.Market
                         GuidString = GuidString.Replace("=", "");
                         GuidString = GuidString.Replace("+", "");
                         u.Username = GuidString;
-                    } while (activeUsers.TryAdd(GuidString, u));
+                    } while (ActiveUsers.TryAdd(GuidString, u));
                 }
                 
             };
@@ -78,7 +82,7 @@ namespace TradingSystem.Business.Market
         public bool login(String usrname)
         {
             User mem = null;
-            if(activeUsers.TryGetValue(usrname, out mem))
+            if(ActiveUsers.TryGetValue(usrname, out mem))
             {
                 mem.IsLoggedIn = true;
                 return true;
@@ -88,7 +92,7 @@ namespace TradingSystem.Business.Market
 
             //USER FUNCTIONALITY
 
-            //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
+         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
         public Store CreateStore(string name, string username, BankAccount bank, Address address)
         {
             User user = GetUserByUserName(username);
@@ -96,7 +100,7 @@ namespace TradingSystem.Business.Market
                 return null;
             Store store = new Store(name, bank, address);
             store.Personnel.TryAdd(user.Id, new Founder(user.Id));
-            if (!_stores.TryAdd(store.Id, store))
+            if (!Stores.TryAdd(store.Id, store))
                 return null;
             return store;
         }
@@ -105,7 +109,7 @@ namespace TradingSystem.Business.Market
         public ICollection<Store> GetStoresByName(string name)
         {
             LinkedList<Store> stores = new LinkedList<Store>();
-            foreach(Store s in _stores.Values)
+            foreach(Store s in Stores.Values)
             {
                 if (s.Name.Equals(name))
                 {
@@ -140,8 +144,9 @@ namespace TradingSystem.Business.Market
         //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
         public History GetStoreHistory(string username, Guid storeId)
         {
+            Store store = GetStoreById(storeId);
             User user = GetUserByUserName(username);
-            return user.State.GetStoreHistory(storeId);
+            return store.GetStoreHistory(user.Id);
         }
 
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
@@ -157,7 +162,7 @@ namespace TradingSystem.Business.Market
             User u = GetUserByUserName(username);
             User newUser= GetUserByUserName(subjectUsername);
             Store store ;
-            if (!_stores.TryGetValue(storeId, out store))
+            if (!Stores.TryGetValue(storeId, out store))
                 return false;
             return store.AddPerssonel(u.Id,newUser.Id,permission);
         }
@@ -167,15 +172,15 @@ namespace TradingSystem.Business.Market
             User u = GetUserByUserName(username);
             User newUser = GetUserByUserName(subjectUsername);
             Store store;
-            if (!_stores.TryGetValue(storeId, out store))
+            if (!Stores.TryGetValue(storeId, out store))
                 return false;
             return store.RemovePerssonel(u.Id, newUser.Id);
         }
 
-        private User GetUserByUserName(string username)
+        public User GetUserByUserName(string username)
         {
             User u = null;
-            if (!activeUsers.TryGetValue(username, out u))
+            if (!ActiveUsers.TryGetValue(username, out u))
             {
                 return null;
             }
@@ -185,7 +190,7 @@ namespace TradingSystem.Business.Market
         private Store GetStoreById(Guid storeId)
         {
             Store s=null;
-            _stores.TryGetValue(storeId, out s);
+            Stores.TryGetValue(storeId, out s);
             return  s;
         }
 
@@ -194,7 +199,7 @@ namespace TradingSystem.Business.Market
             Product product = new Product(productData);
             User user = GetUserByUserName(username);
             Store store;
-            if (!_stores.TryGetValue(storeID, out store))
+            if (!Stores.TryGetValue(storeID, out store))
                 return;
             store.AddProduct(product, user.Id);
         }
@@ -203,7 +208,7 @@ namespace TradingSystem.Business.Market
         {
             User user = GetUserByUserName(username);
             Store store;
-            if (!_stores.TryGetValue(storeID, out store))
+            if (!Stores.TryGetValue(storeID, out store))
                 return;
             store.RemoveProduct(productName, user.Id);
         }
@@ -213,9 +218,15 @@ namespace TradingSystem.Business.Market
             Product editedProduct = new Product(details);
             User user = GetUserByUserName(username);
             Store store;
-            if (!_stores.TryGetValue(storeID, out store))
+            if (!Stores.TryGetValue(storeID, out store))
                 return;
             store.EditProduct(productName, editedProduct, user.Id);
+        }
+
+        public void DeleteAllTests()
+        {
+            this._stores = new ConcurrentDictionary<Guid, Store>();
+            this.activeUsers = new ConcurrentDictionary<string, User>();
         }
 
     }

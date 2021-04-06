@@ -42,6 +42,7 @@ namespace TradingSystem.Business.Market
             this._policy = new Policy();
             this._bank = bank;
             this._address = address;
+            this.personnel = new ConcurrentDictionary<Guid, StorePermission>();
         }
 
         public Guid GetId()
@@ -266,6 +267,24 @@ namespace TradingSystem.Business.Market
         {
             IEnumerable<Discount> discounts = Discounts.Where(discount => discount.Id.Equals(discountId));
             return discounts.FirstOrDefault();
+        }
+
+        //Use case 41 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/67
+        public History GetStoreHistory(Guid userID)
+        {
+            bool isPermitted = CheckPermission(userID, Permission.GetShopHistory);
+            if (isPermitted)
+            {
+                return _transaction.GetStoreHistory(_id);
+            }
+            throw new UnauthorizedAccessException();
+        }
+
+        private bool CheckPermission(Guid userId, Permission permission)
+        {
+            StorePermission storePermission;
+            Personnel.TryGetValue(userId, out storePermission);
+            return (storePermission != null && storePermission.GetPermission(permission));
         }
 
         public int CompareTo(object obj)

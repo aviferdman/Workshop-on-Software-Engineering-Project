@@ -13,7 +13,7 @@ namespace TradingSystemTests.IntegrationTests
     {
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(Guid)"/>
- /*       [TestMethod]
+        [TestMethod]
         public void GetUserHistoryWithPermission()
         {
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
@@ -21,7 +21,7 @@ namespace TradingSystemTests.IntegrationTests
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", bankAccount, address);
-            MemberState memberState = new MemberState(user.Id, new StorePermission(user.Id));
+            MemberState memberState = new MemberState(user.Id);
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
@@ -32,7 +32,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(1, userHistory.Deliveries.Count);
             Assert.AreEqual(1, userHistory.Products.Count);
 
-        }*/
+        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(Guid)"/>
         [TestMethod]
@@ -52,20 +52,23 @@ namespace TradingSystemTests.IntegrationTests
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Guid)(Guid)"/>
- /*       [TestMethod]
+        [TestMethod]
         public void GetStoreHistoryWithPermission()
         {
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            MemberState memberState = new MemberState(user.Id, new StorePermission(user.Id));
+            MemberState memberState = new MemberState(user.Id);
             user.ChangeState(memberState);
-            Store store = user.CreateStore("storeTest", bankAccount, address);
+            Market market = Market.Instance;
+            market.DeleteAllTests();
+            market.ActiveUsers.TryAdd(user.Username, user);
+            Store store = market.CreateStore("storeTest", user.Username, bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
-            History storeHistory = user.GetStoreHistory(store.Id);
+            History storeHistory = store.GetStoreHistory(user.Id);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(1, storeHistory.Deliveries.Count);
             Assert.AreEqual(1, storeHistory.Deliveries.Count);
@@ -73,11 +76,13 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
+        
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Guid)(Guid)"/>
         [TestMethod]
         [ExpectedException(typeof(UnauthorizedAccessException))]
         public void GetStoreHistoryWithoutPermission()
         {
+            
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
@@ -85,11 +90,14 @@ namespace TradingSystemTests.IntegrationTests
             Store store = new Store("storeTest", bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
+            Market market = Market.Instance;
+            market.ActiveUsers.TryAdd(user.Username, user);
+            market.Stores.TryAdd(store.Id, store);
             Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
-            user.GetStoreHistory(store.Id);
+            market.GetStoreHistory(user.Username, store.Id);
 
         }
-
+        
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetAllHistory()"/>
         [TestMethod]
         public void GetAllHistoryWithPermission()
@@ -98,13 +106,13 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            MemberState adminState = new AdministratorState(user.Id, new StorePermission(user.Id));
+            MemberState adminState = new AdministratorState(user.Id);
             user.ChangeState(adminState);
             Store store = new Store("storeTest", bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
-            History allHistory = user.GetAllHistory();
+            History allHistory = user.State.GetAllHistory();
             Assert.IsNotNull(allHistory);
             Assert.AreEqual(1, allHistory.Deliveries.Count);
             Assert.AreEqual(1, allHistory.Deliveries.Count);
@@ -125,9 +133,9 @@ namespace TradingSystemTests.IntegrationTests
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
-            user.GetAllHistory();
+            user.State.GetAllHistory();
 
-        }*/
+        }
 
         [TestCleanup]
         public void DeleteAll()

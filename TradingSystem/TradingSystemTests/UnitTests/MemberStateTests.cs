@@ -15,56 +15,26 @@ namespace TradingSystemTests.MarketTests
         //START UNIT TESTING
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(Guid)"/>
-  /*      [TestMethod]
-        public void GetUserHistoryWithPermission()
+        [TestMethod]
+        public void GetUserHistoryWithCorrectUserId()
         {
-            Guid id = Guid.NewGuid();
-            Mock<IStorePermission> storePermission = new Mock<IStorePermission>();
-            storePermission.Setup(sp => sp.GetUserHistory(It.IsAny<Guid>())).Returns(true);
-
-            MemberState memberState = new MemberState(id, storePermission.Object);
-            Assert.IsNotNull(memberState.GetUserHistory(id));
+            User user = new User("UserTest");
+            MemberState memberState = new MemberState(user.Id);
+            user.ChangeState(memberState);
+            Assert.IsNotNull(memberState.GetUserHistory(user.Id)); // succeeded and returns an object
 
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(Guid)"/>
         [TestMethod]
-        [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void GetUserHistoryWithoutPermission()
+        public void GetUserHistoryWithWrongUserId()
         {
-            Guid id = Guid.NewGuid();
-            Mock<IStorePermission> storePermission = new Mock<IStorePermission>();
-            storePermission.Setup(sp => sp.GetUserHistory(It.IsAny<Guid>())).Returns(false);
-
-            MemberState memberState = new MemberState(id, storePermission.Object);
-            memberState.GetUserHistory(id);
-        }
-
-        /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Guid)"/>
-        [TestMethod]
-        public void GetStoreHistoryWithPermission()
-        {
-            Guid id = Guid.NewGuid();
-            Mock<IStorePermission> storePermission = new Mock<IStorePermission>();
-            storePermission.Setup(sp => sp.GetStoreHistory(It.IsAny<Guid>())).Returns(true);
-
-            MemberState memberState = new MemberState(id, storePermission.Object);
-            Assert.IsNotNull(memberState.GetStoreHistory(id));
+            User user = new User("UserTest");
+            MemberState memberState = new MemberState(user.Id);
+            user.ChangeState(memberState);
+            Assert.IsNotNull(memberState.GetUserHistory(Guid.NewGuid())); // succeeded and returns an object
 
         }
-
-        /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Guid)"/>
-        [TestMethod]
-        [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void GetStoreHistoryWithoutPermission()
-        {
-            Guid id = Guid.NewGuid();
-            Mock<IStorePermission> storePermission = new Mock<IStorePermission>();
-            storePermission.Setup(sp => sp.GetStoreHistory(It.IsAny<Guid>())).Returns(false);
-
-            MemberState memberState = new MemberState(id, storePermission.Object);
-            memberState.GetStoreHistory(id);
-        }*/
 
         [TestCleanup]
         public void DeleteAll()

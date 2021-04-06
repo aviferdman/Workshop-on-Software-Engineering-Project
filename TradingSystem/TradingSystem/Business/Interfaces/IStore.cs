@@ -34,5 +34,7 @@ namespace TradingSystem.Business.Market
 
         public void RemoveDiscount(Guid discountId);
 
+        public History GetStoreHistory(Guid userID);
+
     }
 }
