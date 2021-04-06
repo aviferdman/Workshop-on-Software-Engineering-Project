@@ -140,45 +140,56 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public void AddProduct(Product product, Guid userID)
+        public String AddProduct(Product product, Guid userID)
         {
             StorePermission permission;
             Personnel.TryGetValue(userID, out permission);
-            if (permission != null && permission.GetPermission(Permission.AddProduct) && !_products.ContainsKey(product.Name) && validProduct(product))
-            {
-                _products.TryAdd(product.Name, product);
-            }
+            if (permission == null)
+                return "Invalid user";
+            if (!permission.GetPermission(Permission.AddProduct))
+                return "No permission";
+            if (!validProduct(product))
+                return "Invalid product";
+            if (_products.ContainsKey(product.Name))
+                return "Product exists";
+            _products.TryAdd(product.Name, product);
+            return "Product added";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public void RemoveProduct(String productName, Guid userID)
+        public String RemoveProduct(String productName, Guid userID)
         {
             StorePermission permission;
             Personnel.TryGetValue(userID, out permission);
-            if (permission != null && permission.GetPermission(Permission.RemoveProduct))
-            {
-                Product useless;
-                _products.TryRemove(productName, out useless);
-            }
+            if (permission == null)
+                return "Invalid user";
+            if (!permission.GetPermission(Permission.RemoveProduct))
+                return "No Permission";
+            Product useless;
+            _products.TryRemove(productName, out useless);
+            return "Product removed";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public void EditProduct(String productName, Product editedProduct, Guid userID)
+        public String EditProduct(String productName, Product editedProduct, Guid userID)
         {
             StorePermission permission;
             Personnel.TryGetValue(userID, out permission);
-            if (permission != null && permission.GetPermission(Permission.EditProduct) && validProduct(editedProduct))
-            {
-                Product oldProduct;
-                _products.TryGetValue(productName, out oldProduct);
-                if (oldProduct == null)
-                {
-                    return;
-                }
-                editedProduct.Id = oldProduct.Id;
-                _products.TryRemove(productName, out oldProduct);
-                _products.TryAdd(editedProduct.Name, editedProduct);
-            }
+            if (permission == null)
+                return "Invalid user"; 
+            if (!permission.GetPermission(Permission.EditProduct))
+                return "No Permission";
+            if (!validProduct(editedProduct))
+                return "Invalid edit";
+            
+            Product oldProduct;
+            _products.TryGetValue(productName, out oldProduct);
+            if (oldProduct == null)
+                return "Product not in the store";
+            editedProduct.Id = oldProduct.Id;
+            _products.TryRemove(productName, out oldProduct);
+            _products.TryAdd(editedProduct.Name, editedProduct);
+            return "Product edited";
         }
 
 
