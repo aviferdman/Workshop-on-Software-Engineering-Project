@@ -194,33 +194,51 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
-        public void AddProduct(ProductData productData, Guid storeID, String username)
+        public String AddProduct(ProductData productData, Guid storeID, String username)
         {
             Product product = new Product(productData);
             User user = GetUserByUserName(username);
             Store store;
+<<<<<<< HEAD
             if (!Stores.TryGetValue(storeID, out store))
                 return;
             store.AddProduct(product, user.Id);
+=======
+            if (!_stores.TryGetValue(storeID, out store))
+                return "Store doesn't exist";
+            return store.AddProduct(product, user.Id);
+>>>>>>> dd961858b934b521dd2dbeb4bde92989277f66dd
         }
 
-        public void RemoveProduct(String productName, Guid storeID, String username)
+        public String RemoveProduct(String productName, Guid storeID, String username)
         {
             User user = GetUserByUserName(username);
             Store store;
+<<<<<<< HEAD
             if (!Stores.TryGetValue(storeID, out store))
                 return;
             store.RemoveProduct(productName, user.Id);
+=======
+            if (!_stores.TryGetValue(storeID, out store))
+                return "Store doesn't exist";
+            return store.RemoveProduct(productName, user.Id);
+>>>>>>> dd961858b934b521dd2dbeb4bde92989277f66dd
         }
 
-        public void EditProduct(String productName, ProductData details, Guid storeID, String username)
+        public String EditProduct(String productName, ProductData details, Guid storeID, String username)
         {
             Product editedProduct = new Product(details);
             User user = GetUserByUserName(username);
             Store store;
+<<<<<<< HEAD
             if (!Stores.TryGetValue(storeID, out store))
                 return;
             store.EditProduct(productName, editedProduct, user.Id);
+=======
+            if (!_stores.TryGetValue(storeID, out store))
+                return "Store doesn't exist";
+            return store.EditProduct(productName, editedProduct, user.Id);
+>>>>>>> dd961858b934b521dd2dbeb4bde92989277f66dd
         }
 
         public void DeleteAllTests()

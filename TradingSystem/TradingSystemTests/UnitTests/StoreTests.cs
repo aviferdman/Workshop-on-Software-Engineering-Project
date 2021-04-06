@@ -129,8 +129,7 @@ namespace TradingSystemTests.MarketTests
             ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
-            store.AddProduct(product1, user.Id);
-            Assert.IsTrue(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.AddProduct(product1, user.Id), "Product added");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
@@ -147,8 +146,7 @@ namespace TradingSystemTests.MarketTests
             ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
             personnel.TryAdd(user1.Id, founder);
             store.Personnel = personnel;
-            store.AddProduct(product1, user2.Id);
-            Assert.IsFalse(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.AddProduct(product1, user2.Id), "Invalid user");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
@@ -164,8 +162,7 @@ namespace TradingSystemTests.MarketTests
             ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
-            store.AddProduct(product1, user.Id);
-            Assert.IsFalse(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.AddProduct(product1, user.Id), "Invalid product");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
@@ -181,8 +178,7 @@ namespace TradingSystemTests.MarketTests
             ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
-            store.AddProduct(product1, user.Id);
-            Assert.IsFalse(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.AddProduct(product1, user.Id), "Invalid product");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
@@ -199,8 +195,7 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            store.RemoveProduct("1", user.Id);
-            Assert.IsFalse(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.RemoveProduct("1", user.Id), "Product removed");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
@@ -218,8 +213,7 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user1.Id, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            store.RemoveProduct("1", user2.Id);
-            Assert.IsTrue(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.RemoveProduct("1", user2.Id), "Invalid user");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
@@ -239,8 +233,7 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user2.Id, manager);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            store.RemoveProduct("1", user2.Id);
-            Assert.IsTrue(store.Products.ContainsKey("1"));
+            Assert.AreEqual(store.RemoveProduct("1", user2.Id), "No Permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
@@ -258,10 +251,7 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            store.EditProduct("1", product2, user.Id);
-            Product outcome;
-            store.Products.TryGetValue("1", out outcome);
-            Assert.AreEqual(outcome.Price, 20);
+            Assert.AreEqual(store.EditProduct("1", product2, user.Id), "Product edited");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
@@ -278,10 +268,7 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user.Id, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            store.EditProduct("2", product2, user.Id);
-            Product outcome;
-            store.Products.TryGetValue("1", out outcome);
-            Assert.AreEqual(outcome.Price, 10);
+            Assert.AreEqual(store.EditProduct("2", product2, user.Id), "Product not in the store");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
@@ -302,10 +289,7 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(user2.Id, manager);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            store.EditProduct("1", product2, user2.Id);
-            Product outcome;
-            store.Products.TryGetValue("1", out outcome);
-            Assert.AreEqual(outcome.Price, 10);
+            Assert.AreEqual(store.EditProduct("1", product2, user2.Id), "No Permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.GetStoreHistory(Guid)"/>

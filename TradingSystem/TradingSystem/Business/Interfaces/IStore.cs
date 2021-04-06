@@ -20,11 +20,11 @@ namespace TradingSystem.Business.Market
 
         public void RemoveRule(IRule rule);
 
-        public void AddProduct(Product product, Guid userID);
+        public String AddProduct(Product product, Guid userID);
 
-        public void RemoveProduct(String productName, Guid userID);
+        public String RemoveProduct(String productName, Guid userID);
 
-        public void EditProduct(String productName, Product editedProduct, Guid userID);
+        public String EditProduct(String productName, Product editedProduct, Guid userID);
 
         public void UpdateProduct(Product product);
 

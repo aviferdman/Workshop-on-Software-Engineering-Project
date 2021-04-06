@@ -9,19 +9,19 @@ namespace TradingSystem.Service
     {
         private Market market;
 
-        public void AddProduct(ProductData product, Guid storeID, String username)
+        public String AddProduct(ProductData product, Guid storeID, String username)
         {
-            market.AddProduct(product, storeID, username);
+            return market.AddProduct(product, storeID, username);
         }
 
-        public void RemoveProduct(String productName, Guid storeID, String username)
+        public String RemoveProduct(String productName, Guid storeID, String username)
         {
-            market.RemoveProduct(productName, storeID, username);
+            return market.RemoveProduct(productName, storeID, username);
         }
 
-        public void EditProduct(String productName, ProductData details, Guid storeID, String username)
+        public String EditProduct(String productName, ProductData details, Guid storeID, String username)
         {
-            market.EditProduct(productName, details, storeID, username);
+            return market.EditProduct(productName, details, storeID, username);
         }
     }
 }
