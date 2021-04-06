@@ -25,6 +25,17 @@ namespace AcceptanceTests.MarketTests
                 SystemContext.Instance,
                 new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
                 new ShopInfo(SHOP_NAME),
+                new ProductEditInfo[]
+                {
+                    new ProductEditInfo(
+                        new ProductInfo("WiiU", 1000, 80),
+                        new ProductInfo("WiiU", 1100, 90)
+                    ),
+                    new ProductEditInfo(
+                        new ProductInfo("garbage can", 20, 100),
+                        new ProductInfo("garbage can not haHAA", 15, 80)
+                    ),
+                },
             },
         };
 

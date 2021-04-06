@@ -6,11 +6,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public class MarketBridgeProxy : ProxyBase<IMarketBridge>, IMarketBridge
     {
-        private Dictionary<ShopInfo, ShopRefs> shops;
+        private readonly Dictionary<string, ShopRefs> shops;
 
         public MarketBridgeProxy(IMarketBridge? realBridge) : base(realBridge)
         {
-            shops = new Dictionary<ShopInfo, ShopRefs>();
+            shops = new Dictionary<string, ShopRefs>();
         }
 
         public override IMarketBridge Bridge => this;
@@ -26,7 +26,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             bool exists;
             lock (shops)
             {
-                exists = shops.TryGetValue(shopInfo, out shop);
+                exists = shops.TryGetValue(shopInfo.Name, out shop);
             }
             if (exists)
             {
@@ -43,7 +43,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             {
                 lock (shops)
                 {
-                    shops.Add(shopInfo, shop);
+                    shops.Add(shopInfo.Name, shop);
                 }
             }
             return shopId;
