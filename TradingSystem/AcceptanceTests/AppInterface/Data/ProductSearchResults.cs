@@ -1,22 +1,28 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace AcceptanceTests.AppInterface.Data
 {
-    public class ProductSearchResults : IEnumerable<ProductSearchResult>
+    public class ProductSearchResults : IEnumerable<ProductIdentifiable>
     {
-        public ProductSearchResults(IEnumerable<ProductSearchResult> results, string typoFixes)
+        public ProductSearchResults(IEnumerable<ProductIdentifiable> results, string typoFixes)
         {
             Results = results;
             TypoFixes = typoFixes;
         }
 
-        public IEnumerable<ProductSearchResult> Results { get; }
+        public IEnumerable<ProductIdentifiable> Results { get; }
         public string TypoFixes { get; }
 
-        public IEnumerator<ProductSearchResult> GetEnumerator() => Results.GetEnumerator();
+        public bool IsValid()
+        {
+            return Results.All(x => x.ProductId.IsValid());
+        }
+
+        public IEnumerator<ProductIdentifiable> GetEnumerator() => Results.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Results).GetEnumerator();
     }
 }

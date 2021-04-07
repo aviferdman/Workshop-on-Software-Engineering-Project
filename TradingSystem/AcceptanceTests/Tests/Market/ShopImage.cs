@@ -8,7 +8,7 @@ namespace AcceptanceTests.Tests.Market
 {
     public class ShopImage
     {
-        public ShopImage(UserInfo ownerUser, ShopInfo shopInfo, ProductInfo[] shopProducts)
+        public ShopImage(UserInfo ownerUser, ShopInfo shopInfo, ProductIdentifiable[] shopProducts)
         {
             OwnerUser = ownerUser;
             ShopInfo = shopInfo;
@@ -17,6 +17,6 @@ namespace AcceptanceTests.Tests.Market
 
         public UserInfo OwnerUser { get; }
         public ShopInfo ShopInfo { get; }
-        public ProductInfo[] ShopProducts { get; }
+        public ProductIdentifiable[] ShopProducts { get; }
     }
 }

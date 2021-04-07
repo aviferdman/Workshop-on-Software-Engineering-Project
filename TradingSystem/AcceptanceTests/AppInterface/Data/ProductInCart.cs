@@ -14,5 +14,20 @@ namespace AcceptanceTests.AppInterface.Data
             ProductId = productId;
             Quantity = quantity;
         }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ProductInCart other && Equals(other);
+        }
+        public bool Equals(ProductInCart other)
+        {
+            return ProductId == other.ProductId &&
+                Quantity == other.Quantity;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

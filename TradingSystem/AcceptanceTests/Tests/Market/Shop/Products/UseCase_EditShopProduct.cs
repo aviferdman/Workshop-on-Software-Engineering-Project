@@ -40,7 +40,6 @@ namespace AcceptanceTests.MarketTests
         };
 
         private UseCase_AddProduct useCase_addProduct;
-        private ProductId product;
 
         public UseCase_EditShopProduct(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, IEnumerable<ProductEditInfo> productInfos) :
             base(systemContext, shopOwnerUser)

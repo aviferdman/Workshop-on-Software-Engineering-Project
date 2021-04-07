@@ -13,6 +13,11 @@ namespace AcceptanceTests.AppInterface.Data
 
         public int Value { get; }
 
+        public bool IsValid()
+        {
+            return Value > 0;
+        }
+
         public override bool Equals(object? obj) => obj is ProductId other && Equals(other);
         public bool Equals(ProductId other) => other.Value == Value;
         public override int GetHashCode() => Value.GetHashCode();

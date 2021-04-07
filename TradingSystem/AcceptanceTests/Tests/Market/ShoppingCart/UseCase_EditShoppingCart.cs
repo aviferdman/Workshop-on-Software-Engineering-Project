@@ -24,19 +24,28 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             {
                 SystemContext.Instance,
                 new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
-                UseCase_SearchProduct.DefaultMarketImage,
+                UseCase_SearchProduct.DefaultMarketImageFactorry,
+                (Func<ShopImage[], IEnumerable<ProductInCart>>)
+                  delegate(ShopImage[] marketImage) {
+                      return new ProductInCart[] {
+                          new ProductInCart(marketImage[1].ShopProducts[0].ProductId, 2),
+                          new ProductInCart(marketImage[0].ShopProducts[0].ProductId, 3),
+                      };
+                  },
             },
         };
 
         private UseCase_ViewShoppingCart useCase_viewShoppingCart;
 
-        public ShopImage[] MarketImage { get; }
-        public IList<IList<ProductId>> Products { get; private set; }
+        public ShopImage[] MarketImage => useCase_viewShoppingCart.MarketImage;
+        public Func<ShopImage[]> MarketImageFactory { get; }
+        public Func<ShopImage[], IEnumerable<ProductInCart>> ChooseProductsForCart { get; }
 
-        public UseCase_EditShoppingCart(SystemContext systemContext, UserInfo userInfo, ShopImage[] marketImage) :
+        public UseCase_EditShoppingCart(SystemContext systemContext, UserInfo userInfo, Func<ShopImage[]> marketImageFactory, Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart) :
             base(systemContext, userInfo)
         {
-            MarketImage = marketImage;
+            MarketImageFactory = marketImageFactory;
+            ChooseProductsForCart = chooseProductsForCart;
         }
 
         public override void Setup()
@@ -47,14 +56,10 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_viewShoppingCart = new UseCase_ViewShoppingCart(
                 SystemContext,
                 UserInfo,
-                MarketImage,
-                products => new ProductInCart[] {
-                    new ProductInCart(products[1][0], 6),
-                    new ProductInCart(products[0][0], 7),
-                }
+                MarketImageFactory,
+                ChooseProductsForCart
             );
             useCase_viewShoppingCart.Setup();
-            Products = useCase_viewShoppingCart.Products;
         }
 
         public override void Teardown()
@@ -67,9 +72,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Success_AllChanged()
         {
             Assert.IsTrue(Bridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(Products[1][1], 10) },
-                new HashSet<ProductId> { Products[1][0] },
-                new HashSet<ProductInCart> { new ProductInCart(Products[0][0], 5) }
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
             /// TODO: check cart items changed properly
             /// <see cref="AcceptanceTests.AppInterface.MarketBridge.IMarketBridge.GetShoppingCartItems"/>
@@ -79,19 +84,19 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Failure_NotMutuallyDisjoint()
         {
             Assert.IsFalse(Bridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(Products[1][1], 10) },
-                new HashSet<ProductId> { Products[1][1] },
-                new HashSet<ProductInCart> { new ProductInCart(Products[0][0], 5) }
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                new HashSet<ProductId> { MarketImage[1].ShopProducts[1].ProductId },
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
             Assert.IsFalse(Bridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(Products[1][1], 10) },
-                new HashSet<ProductId> { Products[0][0] },
-                new HashSet<ProductInCart> { new ProductInCart(Products[0][0], 5) }
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                new HashSet<ProductId> { MarketImage[0].ShopProducts[0].ProductId },
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
             Assert.IsFalse(Bridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(Products[1][1], 10) },
-                new HashSet<ProductId> { Products[1][0] },
-                new HashSet<ProductInCart> { new ProductInCart(Products[1][1], 5) }
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
+                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 5) }
             ));
         }
     }
