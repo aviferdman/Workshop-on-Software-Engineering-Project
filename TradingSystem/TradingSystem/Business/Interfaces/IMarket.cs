@@ -9,8 +9,7 @@ namespace TradingSystem.Business.Market
     {
         public string AddGuest();
         public void RemoveGuest(String usrname);
-        public bool AddMember(String usrname);
-        public bool login(String usrname);
+        public bool AddMember(String usrname, string guestusername, Guid id);
         public Store CreateStore(string name, string username, BankAccount bank, Address address);
         public ICollection<Store> GetStoresByName(string name);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
@@ -23,5 +22,6 @@ namespace TradingSystem.Business.Market
         public void AddProduct(ProductData product, Guid storeID, String username);
         public void RemoveProduct(String productName, Guid storeID, String username);
         public void EditProduct(String productName, ProductData details, Guid storeID, String username);
+        bool logout(string username);
     }
 }

@@ -22,6 +22,14 @@ namespace TradingSystem.Business.Market
             return !possitiveQuantities.Any();
         }
 
+        public string addProduct(Product p, int q)
+        {
+            if (_product_quantity.ContainsKey(p))
+                return "product is already in shopping basket";
+            _product_quantity.Add(p, q);
+            return "product added to shopping basket";
+        }
+
         public void RemoveProduct(Product product)
         {
             _product_quantity.Remove(product);

@@ -21,6 +21,7 @@ namespace TradingSystem.Business.Market
             {
                 throw new UnauthorizedAccessException();
             }
+            appointments.TryAdd(user, prem);
             return prem;
         }
         public Manager(Guid userId, StorePermission appoint) : base(userId)
@@ -33,7 +34,7 @@ namespace TradingSystem.Business.Market
         {
             if (Permission.CloseShop.Equals(permission)) //only founder can close shop
                 throw new UnauthorizedAccessException();
-            if (!appointer.Equals(user))
+            if (!appointer.UserId.Equals(user))
                 throw new UnauthorizedAccessException();
             if (!_store_permission.Contains(permission))
             {
@@ -45,7 +46,7 @@ namespace TradingSystem.Business.Market
 
         public override void RemovePermission(Guid user, Permission permission)
         {
-            if (!appointer.Equals(user))
+            if (!appointer.UserId.Equals(user))
                 throw new UnauthorizedAccessException();
             if (!_store_permission.Contains(permission))
             {

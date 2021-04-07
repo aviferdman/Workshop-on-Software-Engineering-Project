@@ -34,5 +34,8 @@ namespace TradingSystem.Business.Market
 
         public void RemoveDiscount(Guid discountId);
 
+        public bool RemovePerssonel(Guid username, Guid subjectUsername);
+        public bool AddPerssonel(Guid username, Guid subjectUsername, AppointmentType permission);
+
     }
 }

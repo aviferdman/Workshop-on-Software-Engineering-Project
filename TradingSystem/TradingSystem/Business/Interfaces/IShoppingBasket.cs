@@ -19,5 +19,7 @@ namespace TradingSystem.Business.Market
 
         public Dictionary<Product, int> GetDictionaryProductQuantity();
 
+        public string addProduct(Product p, int q);
+
     }
 }

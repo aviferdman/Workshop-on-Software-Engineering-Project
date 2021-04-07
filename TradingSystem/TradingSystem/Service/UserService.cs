@@ -29,5 +29,10 @@ namespace TradingSystem.Service
         {
             return userManagement.LogIn(username, password, guestusername);
         }
+
+        public bool logout(string username)
+        {
+            return userManagement.Logout(username);
+        }
     }
 }

@@ -129,6 +129,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum));
 
         }
+        
 
 
         [TestCleanup]

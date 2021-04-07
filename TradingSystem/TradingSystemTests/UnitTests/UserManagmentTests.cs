@@ -2,6 +2,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using TradingSystem.Business.UserManagement;
 using TradingSystem.Business.Market;
+using System;
+
 namespace TradingSystemTests
 {
     [TestClass]
@@ -11,8 +13,8 @@ namespace TradingSystemTests
         public static void setMarket(TestContext testContext)
         {
             Mock<IMarket> market = new Mock<IMarket>();
-            market.Setup(m => m.AddMember(It.IsAny<string>())).Returns(true);
-            market.Setup(m => m.RemoveGuest(It.IsAny<string>()));
+            market.Setup(m => m.AddMember(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(true);
+            market.Setup(m => m.logout(It.IsAny<string>())).Returns(true);
             UserManagement.Instance.Marketo = market.Object;
         }
 
@@ -84,6 +86,37 @@ namespace TradingSystemTests
         {
             Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
             delete();
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
+        [TestMethod]
+        public void TestLogoutSuccess()
+        {
+            signup();
+            UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
+            Assert.AreEqual(true, UserManagement.Instance.Logout("inbi2001"));
+            delete();
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
+        /// not logged in
+        [TestMethod]
+        public void TestLogoutFail1()
+        {
+            signup();
+            Assert.AreEqual(false, UserManagement.Instance.Logout("inbi2001"));
+            delete();
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
+        /// user doesn't exist
+        [TestMethod]
+        public void TestLogoutFail2()
+        {
+            Assert.AreEqual(false, UserManagement.Instance.Logout("inbi200151"));
 
         }
 

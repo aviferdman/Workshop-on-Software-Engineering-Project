@@ -9,10 +9,13 @@
   <ItemGroup>
     <Compile Remove="DeliveryTests\**" />
     <Compile Remove="PaymentTests\**" />
+    <Compile Remove="UserManagementTests\**" />
     <EmbeddedResource Remove="DeliveryTests\**" />
     <EmbeddedResource Remove="PaymentTests\**" />
+    <EmbeddedResource Remove="UserManagementTests\**" />
     <None Remove="DeliveryTests\**" />
     <None Remove="PaymentTests\**" />
+    <None Remove="UserManagementTests\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,10 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UserManagementTests\" />
   </ItemGroup>
 
 </Project>
