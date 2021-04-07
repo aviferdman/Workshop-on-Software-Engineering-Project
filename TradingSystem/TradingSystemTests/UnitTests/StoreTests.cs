@@ -292,13 +292,14 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(store.EditProduct("1", product2, user2.Id), "No Permission");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.makeOwner(Guid, User)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         public void CheckValidMakeOwner()
         {
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
+
             User assigner = new User("assigner");
             Guid assignee = new Guid();
             Founder founder = new Founder(assigner.Id);
@@ -306,10 +307,10 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(assigner.Id, founder);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.makeOwner(assignee, assigner), "Success");
+            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Owner), "Success");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.makeOwner(Guid, User)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         public void CheckMakeOwnerAlreadyAssigned()
         {
@@ -325,12 +326,12 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(assignee, owner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.makeOwner(assignee, assigner), "this member is already assigned as a store owner or manager");
+            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Owner), "this member is already assigned as a store owner or manager");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.makeOwner(Guid, User)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
-        public void CheckMakeInvalidAssigner()
+        public void CheckMakeOwnerInvalidAssigner()
         {
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
@@ -342,8 +343,63 @@ namespace TradingSystemTests.MarketTests
             personnel.TryAdd(assigner.Id, manager);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.makeOwner(assignee, assigner), "Invalid assigner");
+            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Owner), "Invalid assigner");
         }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        [TestMethod]
+        public void CheckValidMakeManager()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+
+            User assigner = new User("assigner");
+            Guid assignee = new Guid();
+            Founder founder = new Founder(assigner.Id);
+            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            personnel.TryAdd(assigner.Id, founder);
+            store.Personnel = personnel;
+
+            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Manager), "Success");
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        [TestMethod]
+        public void CheckMakeManagerAlreadyAssigned()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            User assigner = new User("assigner");
+            Guid assignee = new Guid();
+            Founder founder = new Founder(assigner.Id);
+            Owner owner = new Owner(assignee, founder);
+            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            personnel.TryAdd(assigner.Id, founder);
+            personnel.TryAdd(assignee, owner);
+            store.Personnel = personnel;
+
+            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Manager), "this member is already assigned as a store owner or manager");
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        [TestMethod]
+        public void CheckMakeManagerInvalidAssigner()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            User assigner = new User("assigner");
+            Guid assignee = new Guid();
+            Manager manager = new Manager(assigner.Id, null);
+            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            personnel.TryAdd(assigner.Id, manager);
+            store.Personnel = personnel;
+
+            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Manager), "Invalid assigner");
+        }
+
 
         public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
         {

@@ -24,5 +24,6 @@ namespace TradingSystem.Business.Market
         public String RemoveProduct(String productName, Guid storeID, String username);
         public String EditProduct(String productName, ProductData details, Guid storeID, String username);
         public String makeOwner(String assigneeName, Guid storeID, String assignerName);
+        public String makeManager(String assignee, Guid storeID, String assigner);
     }
 }

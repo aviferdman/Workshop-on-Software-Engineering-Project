@@ -193,6 +193,7 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(ProductData productData, Guid storeID, String username)
         {
             Product product = new Product(productData);
@@ -203,6 +204,7 @@ namespace TradingSystem.Business.Market
             return store.AddProduct(product, user.Id);
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(String productName, Guid storeID, String username)
         {
             User user = GetUserByUserName(username);
@@ -212,6 +214,7 @@ namespace TradingSystem.Business.Market
             return store.RemoveProduct(productName, user.Id);
         }
 
+        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(String productName, ProductData details, Guid storeID, String username)
         {
             Product editedProduct = new Product(details);
@@ -222,18 +225,31 @@ namespace TradingSystem.Business.Market
             return store.EditProduct(productName, editedProduct, user.Id);
         }
 
+        //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
         public String makeOwner(String assigneeName, Guid storeID, String assignerName)
+        {
+            return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Owner);
+        }
+
+        //functional requirement 4.5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/55
+        public String makeManager(String assigneeName, Guid storeID, String assignerName)
+        {
+            return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Manager);
+        }
+
+        public String AssignMember(String assigneeName, Guid storeID, String assignerName, AppointmentType type)
         {
             Guid assigneeID;
             try
             {
                 assigneeID = userManagementI.getIdByUsername(assigneeName);
-            } catch { return "Assignee is not a member"; }
-            User assigner = GetUserByUserName(assignerName); 
+            }
+            catch { return "Assignee is not a member"; }
+            User assigner = GetUserByUserName(assignerName);
             Store store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.makeOwner(assigneeID, assigner);
+            return store.AssignMember(assigneeID, assigner, type);
         }
 
     }
