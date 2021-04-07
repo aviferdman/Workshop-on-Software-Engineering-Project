@@ -33,7 +33,8 @@ namespace AcceptanceTests.MarketTests
                 new ShopInfo(SHOP_NAME),
                 new ProductInfo[]
                 {
-                    new ProductInfo("traveling bag", 20, 7),
+                    new ProductInfo("school bag", 5, 12),
+                    new ProductInfo("android charger", 8, 20),
                 }
             ),
         };
@@ -43,7 +44,6 @@ namespace AcceptanceTests.MarketTests
             new object[]
             {
                 SystemContext.Instance,
-
                 new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
                 DefaultMarketImage
             },

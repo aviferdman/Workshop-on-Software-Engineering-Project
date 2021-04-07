@@ -25,19 +25,36 @@ namespace AcceptanceTests.MarketTests
                 SystemContext.Instance,
                 new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
                 UseCase_SearchProduct.DefaultMarketImage,
-            },
+                (Func<IList<IList<ProductId>>, IEnumerable<ProductId>>)
+                  delegate(IList<IList<ProductId>> products) {
+                      return new ProductId[] {
+                          products[1][0],
+                          products[0][0]
+                      };
+                  },
+            }
         };
 
-        public UseCase_ViewShoppingCart(SystemContext systemContext, UserInfo userInfo, ShopImage[] marketImage)
+        private readonly Func<IList<IList<ProductId>>, IEnumerable<ProductId>> chooseProductsForCart;
+
+        public UseCase_ViewShoppingCart(
+            SystemContext systemContext,
+            UserInfo userInfo,
+            ShopImage[] marketImage,
+            Func<IList<IList<ProductId>>, IEnumerable<ProductId>> chooseProductsForCart
+        )
             : base(systemContext, userInfo)
         {
             MarketImage = marketImage;
+            this.chooseProductsForCart = chooseProductsForCart;
         }
 
         private UseCase_SearchProduct useCase_search;
         private UseCase_AddProductToCart_TestLogic addToCart_logic;
 
         public ShopImage[] MarketImage { get; }
+        public IList<IList<ProductId>> Products { get; private set; }
+        public IEnumerable<ProductId> ChosenProducts { get; private set; }
 
         public override void Setup()
         {
@@ -46,19 +63,25 @@ namespace AcceptanceTests.MarketTests
             // We actually just want this for the setup
             useCase_search = new UseCase_SearchProduct(SystemContext, UserInfo, MarketImage);
             useCase_search.Setup();
+            Products = useCase_search.Products;
+            ChosenProducts = chooseProductsForCart(Products);
 
-            addToCart_logic = new UseCase_AddProductToCart_TestLogic(SystemContext);
             // already setup earlier
-            addToCart_logic.Success_Normal(useCase_search.Products[1][0]);
-            addToCart_logic.Success_Normal(useCase_search.Products[0][0]);
+            addToCart_logic = new UseCase_AddProductToCart_TestLogic(SystemContext);
+            foreach (ProductId productId in ChosenProducts)
+            {
+                addToCart_logic.Success_Normal(productId);
+            }
         }
 
         public override void Teardown()
         {
             base.Teardown();
 
-            _ = Bridge.RemoveProductFromUserCart(useCase_search.Products[1][0]);
-            _ = Bridge.RemoveProductFromUserCart(useCase_search.Products[0][0]);
+            foreach (ProductId productId in ChosenProducts)
+            {
+                _ = Bridge.RemoveProductFromUserCart(productId);
+            }
             useCase_search.Teardown();
         }
 
@@ -66,7 +89,7 @@ namespace AcceptanceTests.MarketTests
         public void Success_Normal()
         {
             IEnumerable<ProductId>? cartItems = Bridge.GetShoppingCartItems();
-            new Assert_SetEquals<ProductId>("View shopping cart - success", useCase_search.Products[1][0], useCase_search.Products[0][0])
+            new Assert_SetEquals<ProductId>("View shopping cart - success", ChosenProducts)
                 .AssertEquals(cartItems);
         }
     }
