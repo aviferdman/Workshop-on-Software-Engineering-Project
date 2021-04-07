@@ -23,5 +23,10 @@ namespace TradingSystem.Service
         {
             return market.EditProduct(productName, details, storeID, username);
         }
+
+        public String makeOwner(String assignee, Guid storeID, String assigner)
+        {
+            return market.makeOwner(assignee, storeID, assigner);
+        }
     }
 }

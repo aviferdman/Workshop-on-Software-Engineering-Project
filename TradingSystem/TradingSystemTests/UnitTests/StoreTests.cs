@@ -292,36 +292,57 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(store.EditProduct("1", product2, user2.Id), "No Permission");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.GetStoreHistory(Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.makeOwner(Guid, User)"/>
         [TestMethod]
-        public void CheckGetStoreHistoryWithPermission()
+        public void CheckValidMakeOwner()
         {
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user1");
-            Founder founder = new Founder(user.Id);
+            User assigner = new User("assigner");
+            Guid assignee = new Guid();
+            Founder founder = new Founder(assigner.Id);
             ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            personnel.TryAdd(assigner.Id, founder);
             store.Personnel = personnel;
-            History history = store.GetStoreHistory(user.Id);
-            Assert.IsNotNull(history);
+
+            Assert.AreEqual(store.makeOwner(assignee, assigner), "Success");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.GetStoreHistory(Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.makeOwner(Guid, User)"/>
         [TestMethod]
-        [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void CheckGetStoreHistoryWithoutPermission()
+        public void CheckMakeOwnerAlreadyAssigned()
         {
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user1");
-            Manager manager = new Manager(user.Id, new Founder(Guid.NewGuid()));
+            User assigner = new User("assigner");
+            Guid assignee = new Guid();
+            Founder founder = new Founder(assigner.Id);
+            Owner owner = new Owner(assignee, founder);
             ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, manager);
+            personnel.TryAdd(assigner.Id, founder);
+            personnel.TryAdd(assignee, owner);
             store.Personnel = personnel;
-            History history = store.GetStoreHistory(user.Id);
+
+            Assert.AreEqual(store.makeOwner(assignee, assigner), "this member is already assigned as a store owner or manager");
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.makeOwner(Guid, User)"/>
+        [TestMethod]
+        public void CheckMakeInvalidAssigner()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            User assigner = new User("assigner");
+            Guid assignee = new Guid();
+            Manager manager = new Manager(assigner.Id, null);
+            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            personnel.TryAdd(assigner.Id, manager);
+            store.Personnel = personnel;
+
+            Assert.AreEqual(store.makeOwner(assignee, assigner), "Invalid assigner");
         }
 
         public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
