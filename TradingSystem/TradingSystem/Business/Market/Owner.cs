@@ -6,7 +6,6 @@ namespace TradingSystem.Business.Market
 {
     public class Owner : StorePermission
     {
-
         public override StorePermission AddAppointment(Guid user, AppointmentType appointment)
         {
             StorePermission prem;
@@ -18,6 +17,7 @@ namespace TradingSystem.Business.Market
             {
                 prem = new Owner(user, this);
             }
+            appointments.TryAdd(user, prem);
             return prem;
         }
         public Owner(Guid userId, StorePermission appoint) : base(userId)

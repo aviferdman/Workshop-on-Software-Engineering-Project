@@ -20,11 +20,11 @@ namespace TradingSystem.Business.Market
 
         public void RemoveRule(IRule rule);
 
-        public String AddProduct(Product product, Guid userID);
+        public void AddProduct(Product product, Guid userID);
 
-        public String RemoveProduct(String productName, Guid userID);
+        public void RemoveProduct(String productName, Guid userID);
 
-        public String EditProduct(String productName, Product editedProduct, Guid userID);
+        public void EditProduct(String productName, Product editedProduct, Guid userID);
 
         public void UpdateProduct(Product product);
 
@@ -34,7 +34,8 @@ namespace TradingSystem.Business.Market
 
         public void RemoveDiscount(Guid discountId);
 
-        public History GetStoreHistory(Guid userID);
+        public bool RemovePerssonel(Guid username, Guid subjectUsername);
+        public bool AddPerssonel(Guid username, Guid subjectUsername, AppointmentType permission);
 
     }
 }

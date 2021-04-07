@@ -22,6 +22,7 @@ namespace TradingSystem.Business.Market
             {
                 prem = new Owner(user, this);
             }
+            appointments.TryAdd(user, prem);
             return prem;
         }
 

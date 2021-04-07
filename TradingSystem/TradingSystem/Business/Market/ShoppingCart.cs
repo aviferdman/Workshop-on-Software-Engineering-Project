@@ -5,7 +5,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    public class ShoppingCart
+    public class ShoppingCart :IShoppingCart
     {
         private SortedDictionary<IStore, IShoppingBasket> _store_shoppingBasket;
 
@@ -21,7 +21,7 @@ namespace TradingSystem.Business.Market
             var notEmptyBaskets = Store_shoppingBasket.Values.Where(shoppingBasket => !shoppingBasket.IsEmpty());
             return !notEmptyBaskets.Any();
         }
-        public IShoppingBasket GetShoppingBasket(Store store)
+        public IShoppingBasket GetShoppingBasket(IStore store)
         {
             //create if not exists
             if (!Store_shoppingBasket.ContainsKey(store))
@@ -31,17 +31,17 @@ namespace TradingSystem.Business.Market
             return Store_shoppingBasket[store];
         }
 
-        public void AddShoppingBasket(Store store, IShoppingBasket shoppingBasket)
+        public void AddShoppingBasket(IStore store, IShoppingBasket shoppingBasket)
         {
             Store_shoppingBasket.Add(store, shoppingBasket);
         }
 
-        public void RemoveShoppingBasket(Store store)
+        public void RemoveShoppingBasket(IStore store)
         {
             Store_shoppingBasket.Remove(store);
         }
 
-        public void UpdateShoppingBasket(Store store, IShoppingBasket shoppingBasket)
+        public void UpdateShoppingBasket(IStore store, IShoppingBasket shoppingBasket)
         {
             //create if not exists
             if (!Store_shoppingBasket.Keys.Contains(store))

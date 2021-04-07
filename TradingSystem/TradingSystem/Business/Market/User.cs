@@ -9,7 +9,7 @@ namespace TradingSystem.Business.Market
     public class User
     {
         private State _state;
-        private ShoppingCart _shoppingCart;
+        private IShoppingCart _shoppingCart;
         private Guid _id;
         private string username;
         private bool isLoggedIn;
@@ -34,7 +34,7 @@ namespace TradingSystem.Business.Market
         public Guid Id { get => _id; set => _id = value; }
         public State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
-        public ShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
+        public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
 
         public void ChangeState(State state)

@@ -32,17 +32,13 @@ namespace TradingSystem.Business.UserManagement
         public string SignUp(string username, string password, Address address, string phone)
         {
             if (dataUsers.TryAdd(username, new DataUser(username, password, address, phone)))
-                if (marketo.AddMember(username))
                     return "success";
-                else
-                    return "somthing went wrong";
             return "username: "+username+" is already taken please choose a different one";
         }
 
         //use case 2 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
         public string LogIn(string username, string password, string guestusername)
         {
-            marketo.RemoveGuest(guestusername);
             DataUser u = null;
             if (dataUsers.TryGetValue(username, out u))
             {
@@ -52,6 +48,8 @@ namespace TradingSystem.Business.UserManagement
                         return "user is already logged in";
                     else
                     {
+                        if(!marketo.AddMember(username,guestusername, u.Id))
+                            return "a problem has occurred";
                         u.IsLoggedin = true;
                         return "success";
                     }
@@ -92,6 +90,32 @@ namespace TradingSystem.Business.UserManagement
             }
             return new Result<Address>(null, true, "username doesn't exist");
         }
+
+        //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
+        public bool Logout(string username)
+        {
+            DataUser u = null;
+            if (dataUsers.TryGetValue(username, out u))
+            {
+                if (u.IsLoggedin == false)
+                    return false;
+                u.IsLoggedin = false;
+                return marketo.logout(username);
+            }
+            return false;
+        }
+
+        public Guid getIdByUsername(string username)
+        {
+            Guid d;
+            DataUser u = null;
+            if (dataUsers.TryGetValue(username, out u))
+            {
+                return u.Id;
+            }
+            throw new UnauthorizedAccessException();
+        }
+
 
     }
 }
