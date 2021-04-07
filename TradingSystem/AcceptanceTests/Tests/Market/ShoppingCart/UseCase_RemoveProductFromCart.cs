@@ -79,7 +79,7 @@ namespace AcceptanceTests.MarketTests
         public void Success_Normal()
         {
             Assert.IsTrue(Bridge.RemoveProductFromUserCart(useCase_addProductToCart.ProductId));
-            new Assert_SetEquals<ProductId>("Remove product from cart", Enumerable.Empty<ProductId>())
+            new Assert_SetEquals<ProductInCart>("Remove product from cart", Enumerable.Empty<ProductInCart>())
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }

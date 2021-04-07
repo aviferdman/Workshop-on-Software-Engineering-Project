@@ -27,14 +27,12 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails);
 
-        // TODO: add with quantity
         bool AddProductToUserCart(ProductInCart product);
         bool RemoveProductFromUserCart(ProductId productId);
         bool EditProductInUserCart(ProductId productId, int quantity);
         bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit);
 
-        // TODO: results should contain the info as well (with the quantity too)
-        IEnumerable<ProductId>? GetShoppingCartItems();
+        IEnumerable<ProductInCart>? GetShoppingCartItems();
 
         // TODO: results should contain the info as well
         ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);

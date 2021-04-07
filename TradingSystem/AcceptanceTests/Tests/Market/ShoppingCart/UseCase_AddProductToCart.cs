@@ -90,7 +90,7 @@ namespace AcceptanceTests.MarketTests
         public void Success_Normal()
         {
             testLogic.Success_Normal(new ProductInCart(ProductId, Quantity));
-            new Assert_SetEquals<ProductId>("Add product to cart - success", ProductId)
+            new Assert_SetEquals<ProductInCart>("Add product to cart - success", new ProductInCart(ProductId, Quantity))
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }

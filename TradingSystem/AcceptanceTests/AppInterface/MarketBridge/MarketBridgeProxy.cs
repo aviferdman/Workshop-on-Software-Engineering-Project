@@ -74,7 +74,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.RemoveProductFromUserCart(productId);
         }
 
-        public IEnumerable<ProductId>? GetShoppingCartItems()
+        public IEnumerable<ProductInCart>? GetShoppingCartItems()
         {
             return RealBridge?.GetShoppingCartItems();
         }

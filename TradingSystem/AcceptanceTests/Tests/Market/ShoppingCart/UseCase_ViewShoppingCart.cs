@@ -79,9 +79,12 @@ namespace AcceptanceTests.MarketTests
         {
             base.Teardown();
 
-            foreach (ProductInCart product in ChosenProducts)
+            if (ChosenProducts != null)
             {
-                _ = Bridge.RemoveProductFromUserCart(product.ProductId);
+                foreach (ProductInCart product in ChosenProducts)
+                {
+                    _ = Bridge.RemoveProductFromUserCart(product.ProductId);
+                }
             }
             useCase_search.Teardown();
         }
@@ -89,12 +92,9 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_Normal()
         {
-            IEnumerable<ProductId>? cartItems = Bridge.GetShoppingCartItems();
+            IEnumerable<ProductInCart>? cartItems = Bridge.GetShoppingCartItems();
             new Assert_SetEquals<ProductInCart>("View shopping cart - success", ChosenProducts)
-                .AssertEquals(
-                    // TODO: change later to cartItems
-                    cartItems.Select((productId, i) => new ProductInCart(productId, i + 2))
-                );
+                .AssertEquals(cartItems);
         }
     }
 }
