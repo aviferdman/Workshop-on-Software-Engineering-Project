@@ -23,5 +23,6 @@ namespace TradingSystem.Business.Market
         public String AddProduct(ProductData product, Guid storeID, String username);
         public String RemoveProduct(String productName, Guid storeID, String username);
         public String EditProduct(String productName, ProductData details, Guid storeID, String username);
+        public String makeOwner(String assigneeName, Guid storeID, String assignerName);
     }
 }

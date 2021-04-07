@@ -193,6 +193,24 @@ namespace TradingSystem.Business.Market
         }
 
 
+        //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
+        public String makeOwner(Guid assigneeID, User assigner)
+        {
+            StorePermission assignee;
+            StorePermission assignerPermission;
+            if (personnel.TryGetValue(assigneeID, out assignee))
+                return "this member is already assigned as a store owner or manager";
+            if (!personnel.TryGetValue(assigner.Id, out assignerPermission))
+                return "Invalid assigner";
+            try
+            {
+                assignee = assignerPermission.AddAppointment(assigneeID, AppointmentType.Owner);
+            } catch { return "Invalid assigner"; }
+
+            personnel.TryAdd(assigneeID, assignee);
+
+            return "Success";
+        }
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);

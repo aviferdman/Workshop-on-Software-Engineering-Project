@@ -11,6 +11,7 @@ namespace TradingSystem.Business.Market
     {
         private ConcurrentDictionary<Guid,Store> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
+        private UserManagement.UserManagement userManagementI;
         private static readonly Lazy<Market>
         _lazy =
         new Lazy<Market>
@@ -18,10 +19,13 @@ namespace TradingSystem.Business.Market
 
         public static Market Instance { get { return _lazy.Value; } }
 
+        public UserManagement.UserManagement UserManagementI { get => userManagementI; set => userManagementI = value; }
+
         private Market()
         {
             _stores = new ConcurrentDictionary<Guid, Store>();
             activeUsers = new ConcurrentDictionary<string, User>();
+            userManagementI = UserManagement.UserManagement.Instance;
         }
 
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
@@ -216,6 +220,20 @@ namespace TradingSystem.Business.Market
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
             return store.EditProduct(productName, editedProduct, user.Id);
+        }
+
+        public String makeOwner(String assigneeName, Guid storeID, String assignerName)
+        {
+            Guid assigneeID;
+            try
+            {
+                assigneeID = userManagementI.getIdByUsername(assigneeName);
+            } catch { return "Assignee is not a member"; }
+            User assigner = GetUserByUserName(assignerName); 
+            Store store;
+            if (!_stores.TryGetValue(storeID, out store))
+                return "Store doesn't exist";
+            return store.makeOwner(assigneeID, assigner);
         }
 
     }

@@ -26,6 +26,8 @@ namespace TradingSystem.Business.Market
 
         public String EditProduct(String productName, Product editedProduct, Guid userID);
 
+        public String makeOwner(Guid assigneeID, User assigner);
+
         public void UpdateProduct(Product product);
 
         public void RemoveProduct(Product product);
@@ -33,6 +35,7 @@ namespace TradingSystem.Business.Market
         public void AddDiscount(Discount discount);
 
         public void RemoveDiscount(Guid discountId);
+
 
     }
 }
