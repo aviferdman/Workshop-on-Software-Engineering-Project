@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AcceptanceTests.AppInterface.Data
 {
-    public class ProductSearchCreteria
+    public struct ProductSearchCreteria
     {
         public ProductSearchCreteria(string keywords)
         {

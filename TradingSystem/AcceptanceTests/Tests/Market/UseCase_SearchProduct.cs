@@ -106,42 +106,68 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_MultipleShops()
         {
-            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("bag")
+            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("bag")
             {
                 PriceRange_Low = 0.5m
             });
-            new Assert_SetEquals<ProductId>("Products search - success multiple shops", Products[0][0], Products[1][0])
-                .AssertEquals(products);
+            Assert.IsNotNull(results);
+            Assert.IsNull(results!.TypoFixes);
+
+            new Assert_SetEquals<ProductSearchResult>(
+                "Products search - success multiple shops",
+                new ProductSearchResult[]
+                {
+                    new ProductSearchResult(
+                        Products[0][0],
+                        MarketImage[0].ShopProducts[0]
+                    ),
+                    new ProductSearchResult(
+                        Products[1][0],
+                        MarketImage[1].ShopProducts[0]
+                    )
+                }
+            ).AssertEquals(results);
         }
 
         [TestCase]
         public void Success_OneProduct()
         {
-            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("charger")
             {
                 PriceRange_High = 21
             });
-            new Assert_SetEquals<ProductId>("Products search - success one shop", Products[1][1])
-                .AssertEquals(products);
+            Assert.IsNotNull(results);
+            Assert.IsNull(results!.TypoFixes);
+
+            new Assert_SetEquals<ProductSearchResult>(
+                "Products search - success one shop",
+                new ProductSearchResult[]
+                {
+                    new ProductSearchResult(
+                        Products[1][1],
+                        MarketImage[1].ShopProducts[1]
+                    ),
+                }
+            ).AssertEquals(results);
         }
 
         [TestCase]
         public void Failure_MatchingKeywordsButNotFilter()
         {
-            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("charger")
             {
                 PriceRange_High = 1
             });
-            Assert.NotNull(products, "Products search - null results");
-            Assert.IsEmpty(products, "Products search - not matching filter - expected no results");
+            Assert.NotNull(results, "Products search - null results");
+            Assert.IsEmpty(results, "Products search - not matching filter - expected no results");
         }
 
         [TestCase]
         public void Failure_NotMatchingKeywords()
         {
-            IEnumerable<ProductId>? products = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
-            Assert.NotNull(products, "Products search - null results");
-            Assert.IsEmpty(products, "Products search - not matching keywords - expected no results");
+            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
+            Assert.NotNull(results, "Products search - null results");
+            Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
         }
 
         [TestCase]

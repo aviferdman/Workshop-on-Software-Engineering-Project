@@ -10,16 +10,6 @@ namespace AcceptanceTests.MarketTests.Shop.Products
     {
         public ProductEditInfo(ProductInfo productInfoOriginal, ProductInfo productInfoEdit)
         {
-            if (productInfoOriginal is null)
-            {
-                throw new ArgumentNullException(nameof(productInfoOriginal));
-            }
-
-            if (productInfoEdit is null)
-            {
-                throw new ArgumentNullException(nameof(productInfoEdit));
-            }
-
             ProductInfoOriginal = productInfoOriginal;
             ProductInfoEdit = productInfoEdit;
         }

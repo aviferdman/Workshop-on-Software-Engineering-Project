@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AcceptanceTests.AppInterface.Data
 {
-    public class ProductInfo
+    public struct ProductInfo
     {
         public ProductInfo(string name, int price, int quantity)
         {

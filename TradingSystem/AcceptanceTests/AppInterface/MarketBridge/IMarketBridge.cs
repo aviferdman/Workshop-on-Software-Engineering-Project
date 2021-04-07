@@ -34,7 +34,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         IEnumerable<ProductInCart>? GetShoppingCartItems();
 
-        // TODO: results should contain the info as well
         ProductSearchResults? SearchProducts(ProductSearchCreteria creteria);
 
         ShopInfo? GetShopDetails(ShopId shopId);
