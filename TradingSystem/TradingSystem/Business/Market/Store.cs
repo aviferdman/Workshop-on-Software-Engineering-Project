@@ -193,9 +193,7 @@ namespace TradingSystem.Business.Market
             return "Product edited";
         }
 
-
-        //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
-        public String makeOwner(Guid assigneeID, User assigner)
+        public String AssignMember(Guid assigneeID, User assigner, AppointmentType type)
         {
             StorePermission assignee;
             StorePermission assignerPermission;
@@ -205,13 +203,16 @@ namespace TradingSystem.Business.Market
                 return "Invalid assigner";
             try
             {
-                assignee = assignerPermission.AddAppointment(assigneeID, AppointmentType.Owner);
-            } catch { return "Invalid assigner"; }
+                assignee = assignerPermission.AddAppointment(assigneeID, type);
+            }
+            catch { return "Invalid assigner"; }
 
             personnel.TryAdd(assigneeID, assignee);
 
             return "Success";
         }
+
+
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);

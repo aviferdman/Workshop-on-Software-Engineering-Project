@@ -28,5 +28,10 @@ namespace TradingSystem.Service
         {
             return market.makeOwner(assignee, storeID, assigner);
         }
+
+        public String makeManager(String assignee, Guid storeID, String assigner)
+        {
+            return market.makeManager(assignee, storeID, assigner);
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace TradingSystem.Business.Market
 
         public String EditProduct(String productName, Product editedProduct, Guid userID);
 
-        public String makeOwner(Guid assigneeID, User assigner);
+        public String AssignMember(Guid assigneeID, User assigner, AppointmentType type);
 
         public void UpdateProduct(Product product);
 
