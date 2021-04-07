@@ -31,6 +31,11 @@ namespace AcceptanceTests.AppInterface.Data
             }
         }
 
+        public static bool DeepEquals(ProductIdentifiable p1, ProductIdentifiable p2)
+        {
+            return p1.ProductId == p2.ProductId && p1.ProductInfo.Equals(p2.ProductInfo);
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is ProductIdentifiable other && Equals(other);

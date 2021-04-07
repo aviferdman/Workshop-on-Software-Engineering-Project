@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using AcceptanceTests.AppInterface;
@@ -25,35 +26,38 @@ namespace AcceptanceTests.MarketTests.Shop
                 SystemContext.Instance,
                 new UserInfo(USER_SHOP_OWNER_NAME, USER_BUYER_PASSWORD),
                 new ShopInfo(SHOP_NAME),
+                new ProductIdentifiable[]
+                {
+                    new ProductIdentifiable(new ProductInfo("suitcase", 200, 30)),
+                    new ProductIdentifiable(new ProductInfo("hdmi cable", 7, 321)),
+                }
             },
         };
 
-        public UseCase_ViewShopProducts(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo) :
+        public UseCase_ViewShopProducts(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, ProductIdentifiable[] products) :
             base(systemContext)
         {
             ShopOwnerUser = shopOwnerUser;
             ShopInfo = shopInfo;
+            Products = products;
         }
 
         public UserInfo ShopOwnerUser { get; }
         public ShopInfo ShopInfo { get; }
+        public ProductIdentifiable[] Products { get; }
 
         private UseCase_AddProduct useCase_addProduct;
-        private IList<ProductId> products;
 
         [SetUp]
         public void Setup()
         {
-            ProductId productId;
-            products = new List<ProductId>(2);
             useCase_addProduct = new UseCase_AddProduct(ShopInfo.Name, SystemContext, ShopOwnerUser);
             useCase_addProduct.Setup();
 
-            productId = useCase_addProduct.Success_Normal(new ProductInfo("suitcase", 200, 30));
-            products.Add(productId);
-
-            productId = useCase_addProduct.Success_Normal(new ProductInfo("hdmi cable", 7, 321));
-            products.Add(productId);
+            foreach (ProductIdentifiable product in Products)
+            {
+                product.ProductId = useCase_addProduct.Success_Normal(product.ProductInfo);
+            }
 
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
         }
@@ -67,8 +71,14 @@ namespace AcceptanceTests.MarketTests.Shop
         [TestCase]
         public void Success_Normal()
         {
-            new Assert_SetEquals<ProductId>("View shop products - success", products)
-                .AssertEquals(Bridge.GetShopProducts(useCase_addProduct.ShopId));
+            IEnumerable<ProductIdentifiable>? resultProducts = Bridge.GetShopProducts(useCase_addProduct.ShopId);
+            Assert.IsNotNull(resultProducts);
+            Assert.IsTrue(resultProducts.All(x => x.ProductId.IsValid()), "View shopping cart - success - contains invalid product IDs");
+            new Assert_SetEquals<ProductIdentifiable>(
+                "View shopping cart - success",
+                Products,
+                ProductIdentifiable.DeepEquals
+            ).AssertEquals(resultProducts);
         }
 
         [TestCase]

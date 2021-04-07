@@ -38,8 +38,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         ShopInfo? GetShopDetails(ShopId shopId);
 
-        // TODO: results should contain the info too
-        // TODO: also add checks comparing the details in the add and edit product
-        IEnumerable<ProductId>? GetShopProducts(ShopId shopId);
+        IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId);
     }
 }

@@ -84,7 +84,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge?.GetShopDetails(shopId);
         }
 
-        public IEnumerable<ProductId>? GetShopProducts(ShopId shopId)
+        public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
         {
             return RealBridge?.GetShopProducts(shopId);
         }

@@ -114,7 +114,7 @@ namespace AcceptanceTests.MarketTests
             new Assert_SetEquals<ProductIdentifiable>(
                 testName,
                 expectedResults,
-                (p1, p2) => p1.ProductId == p2.ProductId && p1.ProductInfo.Equals(p2.ProductInfo)
+                ProductIdentifiable.DeepEquals
             ).AssertEquals(results);
         }
 
