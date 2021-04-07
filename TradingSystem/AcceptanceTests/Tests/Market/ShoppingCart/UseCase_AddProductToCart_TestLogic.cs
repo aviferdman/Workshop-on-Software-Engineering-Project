@@ -15,9 +15,9 @@ namespace AcceptanceTests.MarketTests
             base(systemContext)
         { }
 
-        public void Success_Normal(ProductId productId)
+        public void Success_Normal(ProductInCart product)
         {
-            Assert.IsTrue(Bridge.AddProductToUserCart(productId));
+            Assert.IsTrue(Bridge.AddProductToUserCart(product));
         }
     }
 }

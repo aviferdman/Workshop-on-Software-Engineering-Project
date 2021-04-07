@@ -27,7 +27,8 @@ namespace AcceptanceTests.MarketTests
                 new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
                 SHOP_NAME,
                 new ProductInfo("speakers", 30, 90),
-                20
+                10,
+                20,
             },
         };
 
@@ -37,18 +38,21 @@ namespace AcceptanceTests.MarketTests
             UserInfo shopOwnerUser,
             string shopName,
             ProductInfo productInfo,
+            int addToCartQuantity,
             int newQuantity
         ) : base(systemContext, buyerUser)
         {
             ShopOwnerUser = shopOwnerUser;
             ShopName = shopName;
             ProductInfo = productInfo;
+            PrevQuantity = addToCartQuantity;
             NewQuantity = newQuantity;
         }
 
         public UserInfo ShopOwnerUser { get; }
         public string ShopName { get; }
         public ProductInfo ProductInfo { get; }
+        public int PrevQuantity { get; }
         public int NewQuantity { get; }
 
         private UseCase_AddProductToCart useCase_addProductToCart;
@@ -62,7 +66,8 @@ namespace AcceptanceTests.MarketTests
                 UserInfo,
                 ShopOwnerUser,
                 ShopName,
-                ProductInfo
+                ProductInfo,
+                PrevQuantity
             );
             useCase_addProductToCart.Setup();
             useCase_addProductToCart.Success_Normal();
@@ -77,16 +82,16 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_Normal()
         {
-            Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.Product, NewQuantity));
-            new Assert_SetEquals<ProductId>("Edit product in cart - success", useCase_addProductToCart.Product)
+            Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, NewQuantity));
+            new Assert_SetEquals<ProductId>("Edit product in cart - success", useCase_addProductToCart.ProductId)
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
 
         [TestCase]
         public void Failure_InvalidQuantity()
         {
-            Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.Product, -1));
-            new Assert_SetEquals<ProductId>("Edit product in cart - invalid quantity", useCase_addProductToCart.Product)
+            Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, -1));
+            new Assert_SetEquals<ProductId>("Edit product in cart - invalid quantity", useCase_addProductToCart.ProductId)
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }

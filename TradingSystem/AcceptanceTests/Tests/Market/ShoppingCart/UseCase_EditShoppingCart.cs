@@ -15,7 +15,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
     /// Use case 7: edit shopping cart
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/59
     /// </summary>
-    [TestFixture]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_EditShoppingCart : MarketMemberTestBase
     {
         private static readonly object[] FixtureArgs =
@@ -48,9 +48,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SystemContext,
                 UserInfo,
                 MarketImage,
-                products => new ProductId[] {
-                    products[1][0],
-                    products[0][0]
+                products => new ProductInCart[] {
+                    new ProductInCart(products[1][0], 6),
+                    new ProductInCart(products[0][0], 7),
                 }
             );
             useCase_viewShoppingCart.Setup();

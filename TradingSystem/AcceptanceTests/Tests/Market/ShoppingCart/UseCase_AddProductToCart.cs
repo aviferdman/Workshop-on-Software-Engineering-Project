@@ -27,29 +27,33 @@ namespace AcceptanceTests.MarketTests
                 new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
                 SHOP_NAME,
                 new ProductInfo("speakers", 30, 90),
+                60
             },
         };
 
         public UserInfo ShopOwnerUser { get; }
         public string ShopName { get; }
         public ProductInfo ProductInfo { get; }
+        public int Quantity { get; }
 
         public UseCase_AddProductToCart(
             SystemContext systemContext,
             UserInfo buyerUser,
             UserInfo shopOwnerUser,
             string shopName,
-            ProductInfo productInfo
+            ProductInfo productInfo,
+            int quantity
         ) : base(systemContext, buyerUser)
         {
             ShopOwnerUser = shopOwnerUser;
             ShopName = shopName;
             ProductInfo = productInfo;
+            Quantity = quantity;
         }
 
         private UseCase_AddProduct useCase_addProduct;
         private UseCase_Login useCase_login_buyer;
-        public ProductId Product { get; private set; }
+        public ProductId ProductId { get; private set; }
 
         private UseCase_AddProductToCart_TestLogic testLogic;
 
@@ -60,7 +64,7 @@ namespace AcceptanceTests.MarketTests
 
             useCase_addProduct = new UseCase_AddProduct(ShopName, SystemContext, ShopOwnerUser);
             useCase_addProduct.Setup();
-            Product = useCase_addProduct.Success_Normal(ProductInfo);
+            ProductId = useCase_addProduct.Success_Normal(ProductInfo);
 
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
@@ -73,7 +77,7 @@ namespace AcceptanceTests.MarketTests
         [TearDown]
         public override void Teardown()
         {
-            _ = Bridge.RemoveProductFromUserCart(Product);
+            _ = Bridge.RemoveProductFromUserCart(ProductId);
             useCase_login_buyer?.TearDown();
             bool loggedInToShopOwner = SystemContext.UserBridge.Login(ShopOwnerUser);
             if (loggedInToShopOwner)
@@ -85,8 +89,8 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_Normal()
         {
-            testLogic.Success_Normal(Product);
-            new Assert_SetEquals<ProductId>("Add product to cart - success", Product)
+            testLogic.Success_Normal(new ProductInCart(ProductId, Quantity));
+            new Assert_SetEquals<ProductId>("Add product to cart - success", ProductId)
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }

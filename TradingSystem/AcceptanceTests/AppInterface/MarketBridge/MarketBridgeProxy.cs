@@ -64,7 +64,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge?.SearchProducts(creteria);
         }
 
-        public bool AddProductToUserCart(ProductId product)
+        public bool AddProductToUserCart(ProductInCart product)
         {
             return RealBridge != null && RealBridge.AddProductToUserCart(product);
         }
@@ -97,6 +97,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public bool EditProductInUserCart(ProductId productId, int quantity)
         {
             return RealBridge != null && RealBridge.EditProductInUserCart(productId, quantity);
+        }
+
+        public bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit)
+        {
+            return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
         }
     }
 }

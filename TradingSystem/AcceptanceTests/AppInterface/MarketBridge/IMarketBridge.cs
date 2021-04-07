@@ -28,7 +28,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails);
 
         // TODO: add with quantity
-        bool AddProductToUserCart(ProductId productId);
+        bool AddProductToUserCart(ProductInCart product);
         bool RemoveProductFromUserCart(ProductId productId);
         bool EditProductInUserCart(ProductId productId, int quantity);
         bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit);

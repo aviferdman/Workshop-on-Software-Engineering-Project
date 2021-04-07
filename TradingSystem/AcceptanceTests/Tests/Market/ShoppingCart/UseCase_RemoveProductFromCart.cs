@@ -27,6 +27,7 @@ namespace AcceptanceTests.MarketTests
                 new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
                 SHOP_NAME,
                 new ProductInfo("speakers", 30, 90),
+                30
             },
         };
 
@@ -35,17 +36,20 @@ namespace AcceptanceTests.MarketTests
             UserInfo buyerUser,
             UserInfo shopOwnerUser,
             string shopName,
-            ProductInfo productInfo
+            ProductInfo productInfo,
+            int addToCartQuantity
         ) : base(systemContext, buyerUser)
         {
             ShopOwnerUser = shopOwnerUser;
             ShopName = shopName;
             ProductInfo = productInfo;
+            AddToCartQuantity = addToCartQuantity;
         }
 
         public UserInfo ShopOwnerUser { get; }
         public string ShopName { get; }
         public ProductInfo ProductInfo { get; }
+        public int AddToCartQuantity { get; }
 
         private UseCase_AddProductToCart useCase_addProductToCart;
 
@@ -58,7 +62,8 @@ namespace AcceptanceTests.MarketTests
                 UserInfo,
                 ShopOwnerUser,
                 ShopName,
-                ProductInfo
+                ProductInfo,
+                AddToCartQuantity
             );
             useCase_addProductToCart.Setup();
             useCase_addProductToCart.Success_Normal();
@@ -73,7 +78,7 @@ namespace AcceptanceTests.MarketTests
         [TestCase]
         public void Success_Normal()
         {
-            Assert.IsTrue(Bridge.RemoveProductFromUserCart(useCase_addProductToCart.Product));
+            Assert.IsTrue(Bridge.RemoveProductFromUserCart(useCase_addProductToCart.ProductId));
             new Assert_SetEquals<ProductId>("Remove product from cart", Enumerable.Empty<ProductId>())
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
