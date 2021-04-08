@@ -22,7 +22,7 @@ namespace TradingSystem.Business.Market
         }
         public Owner(Guid userId, StorePermission appoint) : base(userId)
         {
-            base.Appointer = appoint;
+            base.appointer = appoint;
         }
         
         public override void AddPermission(Guid user, Permission permission)

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
 using TradingSystem.Service;
-
+/*
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
@@ -62,4 +62,4 @@ namespace TradingSystemTests.IntegrationTests
             Transaction.Instance.DeleteAllTests();
         }
     }
-}
+}*/

@@ -29,9 +29,9 @@ namespace TradingSystem.Business.Market
     {
         private Guid userId;
         protected object _lock;
-        private ICollection<Permission> store_permission; //users the user appointed
-        private ConcurrentDictionary<Guid, StorePermission> appointments;
-        private StorePermission appointer;//the user that appointed the user, null for founder
+        protected ICollection<Permission> store_permission; //users the user appointed
+        protected ConcurrentDictionary<Guid, StorePermission> appointments;
+        protected StorePermission appointer;//the user that appointed the user, null for founder
 
         public StorePermission(Guid userId)
         {

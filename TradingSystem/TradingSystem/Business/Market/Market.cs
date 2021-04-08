@@ -12,7 +12,6 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<Guid,IStore> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
-        private UserManagement.UserManagement userManagementI;
         private static readonly Lazy<Market>
         _lazy =
         new Lazy<Market>
@@ -21,14 +20,13 @@ namespace TradingSystem.Business.Market
         public static Market Instance { get { return _lazy.Value; } }
 
         public ConcurrentDictionary<Guid, IStore> Stores { get => _stores; set => _stores = value; }
-        public UserManagement.UserManagement UserManagementI { get => userManagementI; set => userManagementI = value; }
+        public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
 
         private Market()
         {
             _stores = new ConcurrentDictionary<Guid, IStore>();
             activeUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
-            userManagementI = UserManagement.UserManagement.Instance;
         }
 
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
@@ -167,25 +165,7 @@ namespace TradingSystem.Business.Market
             return store.ApplyDiscounts(user.ShoppingCart.GetShoppingBasket(store));
         }
 
-        public bool AddPerssonel(string username, string subjectUsername, Guid storeId, AppointmentType permission)
-        {
-            User u = GetUserByUserName(username);
-            User newUser= GetUserByUserName(subjectUsername);
-            IStore store ;
-            if (!_stores.TryGetValue(storeId, out store))
-                return false;
-            return store.AddPerssonel(u.Id,newUser.Id,permission);
-        }
-
-        public bool RemovePerssonel(string username, string subjectUsername, Guid storeId)
-        {
-            User u = GetUserByUserName(username);
-            User newUser = GetUserByUserName(subjectUsername);
-            IStore store;
-            if (!_stores.TryGetValue(storeId, out store))
-                return false;
-            return store.RemovePerssonel(u.Id, newUser.Id);
-        }
+       
 
         public User GetUserByUserName(string username)
         {
@@ -211,8 +191,8 @@ namespace TradingSystem.Business.Market
             User user = GetUserByUserName(username);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
-                return;
-            store.AddProduct(product, user.Id);
+                return "Store doesn't exist";
+            return store.AddProduct(product, user.Id);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -221,8 +201,8 @@ namespace TradingSystem.Business.Market
             User user = GetUserByUserName(username);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
-                return;
-            store.RemoveProduct(productName, user.Id);
+                return "Store doesn't exist";
+            return store.RemoveProduct(productName, user.Id);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -232,8 +212,8 @@ namespace TradingSystem.Business.Market
             User user = GetUserByUserName(username);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
-                return;
-            store.EditProduct(productName, editedProduct, user.Id);
+                return "Store doesn't exist";
+            return store.EditProduct(productName, editedProduct, user.Id);
         }
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53
@@ -283,11 +263,11 @@ namespace TradingSystem.Business.Market
             Guid assigneeID;
             try
             {
-                assigneeID = userManagementI.getIdByUsername(assigneeName);
+                assigneeID = UserManagement.UserManagement.Instance.getIdByUsername(assigneeName);
             }
             catch { return "Assignee is not a member"; }
             User assigner = GetUserByUserName(assignerName);
-            Store store;
+            IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
             return store.AssignMember(assigneeID, assigner, type);

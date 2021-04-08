@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Market
         }
 
         public Guid Id { get => _id; set => _id = value; }
-        public State State { get => _state; set => _state = value; }
+        internal State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }

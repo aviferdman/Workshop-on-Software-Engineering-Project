@@ -17,8 +17,6 @@ namespace TradingSystem.Business.Market
         public History GetUserHistory(string username);
         public History GetStoreHistory(string username, Guid storeId);
         public double ApplyDiscounts(string username, Guid storeId);
-        public bool AddPerssonel(string username, string subjectUsername, Guid storeId, AppointmentType permission);
-        public bool RemovePerssonel(string username, string subjectUsername, Guid storeId);
         bool logout(string username);
         public String AddProduct(ProductData product, Guid storeID, String username);
         public String RemoveProduct(String productName, Guid storeID, String username);
