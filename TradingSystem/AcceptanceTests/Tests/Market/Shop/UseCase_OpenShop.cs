@@ -48,5 +48,20 @@ namespace AcceptanceTests.Tests.Market.Shop
             Assert.Greater(shop!.Value, 0);
             return shop.Value;
         }
+
+        [TestCase]
+        public void Failure_NotLoggedIn()
+        {
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo("non existing shop")));
+        }
+
+        [TestCase]
+        public void Failure_InvalidName()
+        {
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo("")));
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo("    ")));
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo("    \n  \t")));
+        }
     }
 }

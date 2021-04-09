@@ -103,5 +103,10 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         {
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
         }
+
+        public ShopId? OpenShop(ShopInfo shopInfo)
+        {
+            return RealBridge?.OpenShop(shopInfo);
+        }
     }
 }

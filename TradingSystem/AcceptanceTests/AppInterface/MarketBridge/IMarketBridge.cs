@@ -7,12 +7,18 @@ namespace AcceptanceTests.AppInterface.MarketBridge
     public interface IMarketBridge
     {
         /// <summary>
-        /// Makes sure the sgop with the specified shop is open and returns the shop id.
+        /// Tries to open the shop with the specified info.
+        /// </summary>
+        /// <returns>The opened shop id, null if failed.</returns>
+        ShopId? OpenShop(ShopInfo shopInfo);
+
+        /// <summary>
+        /// Makes sure the shop with the specified shop is open and returns the shop id.
         /// Might send a request to create a new shop.
         /// Since shops cannot be deleted, we take similar measures to
         /// <seealso cref="UserBridge.IUserBridge.AssureSignUp(UserInfo)"/>
         /// </summary>
-        /// <returns>The opened shop with its id, null if failed.</returns>
+        /// <returns>The opened shop id, null if failed.</returns>
         ShopId? AssureOpenShop(ShopInfo shopInfo);
 
         /// <summary>
@@ -20,7 +26,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         /// </summary>
         /// <param name="shopId"></param>
         /// <param name="productInfo"></param>
-        /// <returns>The product with its id, null if failed.</returns>
+        /// <returns>The product id, null if failed.</returns>
         ProductId? AddProductToShop(ShopId shopId, ProductInfo productInfo);
 
         bool RemoveProductFromShop(ShopId shopId, ProductId productId);
