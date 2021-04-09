@@ -51,7 +51,7 @@ namespace AcceptanceTests.MarketTests
             Quantity = quantity;
         }
 
-        private UseCase_AddProduct useCase_addProduct;
+        private UseCase_AddProductToShop useCase_addProduct;
         private UseCase_Login useCase_login_buyer;
         public ProductId ProductId { get; private set; }
 
@@ -62,7 +62,7 @@ namespace AcceptanceTests.MarketTests
         {
             base.Setup();
 
-            useCase_addProduct = new UseCase_AddProduct(ShopName, SystemContext, ShopOwnerUser);
+            useCase_addProduct = new UseCase_AddProductToShop(ShopName, SystemContext, ShopOwnerUser);
             useCase_addProduct.Setup();
             ProductId = useCase_addProduct.Success_Normal(ProductInfo);
 

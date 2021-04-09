@@ -16,7 +16,7 @@ namespace AcceptanceTests.MarketTests
     /// Use case 25: edit product in shop
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/20
     [TestFixtureSource(nameof(FixtureArgs))]
-    public class UseCase_EditShopProduct : ShopManagementTestBase
+    public class UseCase_EditShopProductInShop : ShopManagementTestBase
     {
         private static object[] FixtureArgs = new object[]
         {
@@ -39,9 +39,9 @@ namespace AcceptanceTests.MarketTests
             },
         };
 
-        private UseCase_AddProduct useCase_addProduct;
+        private UseCase_AddProductToShop useCase_addProduct;
 
-        public UseCase_EditShopProduct(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, IEnumerable<ProductEditInfo> productInfos) :
+        public UseCase_EditShopProductInShop(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, IEnumerable<ProductEditInfo> productInfos) :
             base(systemContext, shopOwnerUser)
         {
             if (productInfos is null)
@@ -68,7 +68,7 @@ namespace AcceptanceTests.MarketTests
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProduct(ShopInfo.Name, SystemContext.Instance, UserInfo);
+            useCase_addProduct = new UseCase_AddProductToShop(ShopInfo.Name, SystemContext.Instance, UserInfo);
             useCase_addProduct.Setup();
             foreach (ProductEditInfo productEditInfo in ProductEditInfos)
             {

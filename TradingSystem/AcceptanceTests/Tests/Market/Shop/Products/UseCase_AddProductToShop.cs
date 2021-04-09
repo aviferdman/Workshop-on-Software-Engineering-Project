@@ -14,15 +14,15 @@ namespace AcceptanceTests.MarketTests
     /// Use case 23: add product to shop
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/18
     [TestFixture(SHOP_NAME, USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD)]
-    public class UseCase_AddProduct : ShopManagementTestBase
+    public class UseCase_AddProductToShop : ShopManagementTestBase
     {
         private UseCase_OpenShop useCase_openShop;
         private Queue<ProductId> products;
 
-        public UseCase_AddProduct(string shopName, string shopUsername, string shopUserPassword) :
+        public UseCase_AddProductToShop(string shopName, string shopUsername, string shopUserPassword) :
             this(shopName, SystemContext.Instance, new UserInfo(shopUsername, shopUserPassword))
         { }
-        public UseCase_AddProduct(string shopName, SystemContext systemContext, UserInfo userInfo) :
+        public UseCase_AddProductToShop(string shopName, SystemContext systemContext, UserInfo userInfo) :
             base(systemContext, userInfo)
         {
             ShopName = shopName;

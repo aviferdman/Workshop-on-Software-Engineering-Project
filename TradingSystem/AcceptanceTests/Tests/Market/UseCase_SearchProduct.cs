@@ -181,7 +181,7 @@ namespace AcceptanceTests.MarketTests
 
         private class ShopTestState
         {
-            private UseCase_AddProduct? useCase_addProduct;
+            private UseCase_AddProductToShop? useCase_addProduct;
 
             public ShopTestState(SystemContext systemContext, ShopImage shopImage)
             {
@@ -202,7 +202,7 @@ namespace AcceptanceTests.MarketTests
 
             public void Login()
             {
-                useCase_addProduct = new UseCase_AddProduct(ShopImage.ShopInfo.Name, SystemContext, ShopImage.OwnerUser);
+                useCase_addProduct = new UseCase_AddProductToShop(ShopImage.ShopInfo.Name, SystemContext, ShopImage.OwnerUser);
                 useCase_addProduct.Setup();
             }
 

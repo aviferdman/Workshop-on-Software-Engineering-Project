@@ -46,12 +46,12 @@ namespace AcceptanceTests.MarketTests.Shop
         public ShopInfo ShopInfo { get; }
         public ProductIdentifiable[] Products { get; }
 
-        private UseCase_AddProduct useCase_addProduct;
+        private UseCase_AddProductToShop useCase_addProduct;
 
         [SetUp]
         public void Setup()
         {
-            useCase_addProduct = new UseCase_AddProduct(ShopInfo.Name, SystemContext, ShopOwnerUser);
+            useCase_addProduct = new UseCase_AddProductToShop(ShopInfo.Name, SystemContext, ShopOwnerUser);
             useCase_addProduct.Setup();
 
             foreach (ProductIdentifiable product in Products)
