@@ -1,6 +1,5 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
-using AcceptanceTests.AppInterface.MarketBridge;
 using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;

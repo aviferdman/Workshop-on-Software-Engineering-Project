@@ -1,6 +1,5 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
-using AcceptanceTests.AppInterface.UserBridge;
 
 using NUnit.Framework;
 

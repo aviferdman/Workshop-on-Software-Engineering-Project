@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AcceptanceTests
+﻿namespace AcceptanceTests
 {
     /// <summary>
     /// Manages all of the shared data in one place
