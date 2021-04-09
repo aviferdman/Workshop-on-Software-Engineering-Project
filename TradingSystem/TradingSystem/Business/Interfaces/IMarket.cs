@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
 {
     public interface IMarket 
     {
+        void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode);
         public string AddGuest();
         public void RemoveGuest(String usrname);
         public bool AddMember(String usrname, string guestusername, Guid id);

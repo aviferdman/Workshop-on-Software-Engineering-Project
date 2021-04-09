@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
 {
@@ -12,6 +15,7 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<Guid,IStore> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
+        private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<Market>
         _lazy =
         new Lazy<Market>
@@ -27,6 +31,11 @@ namespace TradingSystem.Business.Market
             _stores = new ConcurrentDictionary<Guid, IStore>();
             activeUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
+        }
+
+        public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
+        {
+            _transaction.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
         }
 
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10

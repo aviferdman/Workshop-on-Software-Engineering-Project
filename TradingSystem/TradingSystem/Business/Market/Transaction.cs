@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,6 +30,20 @@ namespace TradingSystem.Business.Market
             this.PaymentAdapter = new PaymentImpl();
             this.DeliveryAdapter = new DeliveryImpl();
             this.History = new History();
+        }
+
+        internal void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
+        {
+            if (debugMode)
+            {
+                this._deliveryAdapter = deliveryAdapter.Object;
+                this._paymentAdapter = paymentAdapter.Object;
+            }
+            else
+            {
+                this._deliveryAdapter = new DeliveryImpl();
+                this._paymentAdapter = new PaymentImpl();
+            }
         }
 
         public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, BankAccount clientBankAccountId, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, Dictionary<Product, int> product_quantity)
