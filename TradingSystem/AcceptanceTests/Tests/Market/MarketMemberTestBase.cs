@@ -1,10 +1,11 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market
 {
     public class MarketMemberTestBase : MarketTestBase
     {

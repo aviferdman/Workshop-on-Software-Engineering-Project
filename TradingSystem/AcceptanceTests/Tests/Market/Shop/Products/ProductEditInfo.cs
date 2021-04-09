@@ -4,7 +4,7 @@ using System.Text;
 
 using AcceptanceTests.AppInterface.Data;
 
-namespace AcceptanceTests.MarketTests.Shop.Products
+namespace AcceptanceTests.Tests.Market.Shop.Products
 {
     public class ProductEditInfo
     {

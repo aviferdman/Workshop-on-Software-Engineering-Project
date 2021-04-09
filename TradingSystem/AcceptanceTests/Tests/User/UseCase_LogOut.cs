@@ -1,10 +1,9 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
-using AcceptanceTests.UserTests;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests
+namespace AcceptanceTests.Tests.User
 {
     /// <summary>
     /// Acceptance test for

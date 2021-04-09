@@ -1,9 +1,10 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market.Shop
 {
     /// <summary>
     /// Acceptance test for

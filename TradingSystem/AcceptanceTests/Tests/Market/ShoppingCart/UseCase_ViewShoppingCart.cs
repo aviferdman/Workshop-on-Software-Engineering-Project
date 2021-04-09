@@ -9,7 +9,7 @@ using AcceptanceTests.Tests.Market;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market.ShoppingCart
 {
     /// <summary>
     /// Acceptance test for

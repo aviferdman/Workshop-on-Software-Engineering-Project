@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 
 using AcceptanceTests.AppInterface;
-using AcceptanceTests.UserTests;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.UserTests
+namespace AcceptanceTests.Tests.User
 {
     public class UseCase_LogOut_TestLogic : UserTestBase
     {

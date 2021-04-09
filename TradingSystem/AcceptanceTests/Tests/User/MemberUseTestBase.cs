@@ -1,11 +1,10 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.UserBridge;
-using AcceptanceTests.UserTests;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests
+namespace AcceptanceTests.Tests.User
 {
     public class MemberUseTestBase : UserTestBase
     {

@@ -3,7 +3,7 @@ using AcceptanceTests.AppInterface.Data;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests
+namespace AcceptanceTests.Tests.User
 {
     /// <summary>
     /// Acceptance test for

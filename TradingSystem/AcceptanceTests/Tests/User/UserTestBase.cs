@@ -7,7 +7,7 @@ using AcceptanceTests.AppInterface.UserBridge;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.UserTests
+namespace AcceptanceTests.Tests.User
 {
     public class UserTestBase
     {

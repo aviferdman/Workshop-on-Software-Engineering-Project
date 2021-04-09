@@ -4,10 +4,11 @@ using System.Text;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.Market;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market.ShoppingCart
 {
     public class UseCase_AddProductToCart_TestLogic : MarketTestBase
     {

@@ -1,8 +1,7 @@
-﻿
-using AcceptanceTests.AppInterface;
+﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.MarketBridge;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market
 {
     public class MarketTestBase
     {

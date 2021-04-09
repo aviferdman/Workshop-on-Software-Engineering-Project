@@ -5,11 +5,11 @@ using System.Text;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
-using AcceptanceTests.MarketTests.Shop.Products;
+using AcceptanceTests.Tests.Market.Shop;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market.Shop.Products
 {
     /// <summary>
     /// Acceptance test for

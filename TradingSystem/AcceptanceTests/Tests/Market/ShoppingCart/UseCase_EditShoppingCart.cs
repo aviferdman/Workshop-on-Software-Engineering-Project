@@ -4,7 +4,6 @@ using System.Text;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
-using AcceptanceTests.MarketTests;
 
 using NUnit.Framework;
 

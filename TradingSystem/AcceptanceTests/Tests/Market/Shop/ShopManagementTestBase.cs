@@ -1,7 +1,8 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.Market;
 
-namespace AcceptanceTests.MarketTests
+namespace AcceptanceTests.Tests.Market.Shop
 {
     public class ShopManagementTestBase : MarketMemberTestBase
     {

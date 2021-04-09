@@ -4,11 +4,12 @@ using System.Text;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
-using AcceptanceTests.UserTests;
+using AcceptanceTests.Tests.Market;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.MarketTests.Shop
+namespace AcceptanceTests.Tests.Market.Shop
 {
     /// <summary>
     /// Acceptance test for
