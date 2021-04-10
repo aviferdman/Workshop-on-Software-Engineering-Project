@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.UserManagement
 {
@@ -18,7 +17,7 @@ namespace TradingSystem.Business.UserManagement
 
         public DataUser(string username, string password, Address address, string phone)
         {
-            id = new Guid();
+            id = Guid.NewGuid();
             this.username = username;
             this.password = password;
             this.address = address;
