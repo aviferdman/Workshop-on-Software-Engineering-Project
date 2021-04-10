@@ -107,7 +107,6 @@ namespace TradingSystem.Business.UserManagement
 
         public Guid getIdByUsername(string username)
         {
-            Guid d;
             DataUser u = null;
             if (dataUsers.TryGetValue(username, out u))
             {

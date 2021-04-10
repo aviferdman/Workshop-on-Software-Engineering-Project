@@ -321,5 +321,26 @@ namespace TradingSystem.Business.Market
         {
             return obj.GetHashCode() - GetHashCode();
         }
+
+        public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
+        {
+            List<Product> products = new List<Product>();
+            foreach(Product p in _products.Values)
+            {
+                if(p.Name.Contains(keyword)|| p.Category.Contains(keyword))
+                {
+                    if (category != null&& !category.Equals(p.Category))
+                        continue;
+                    if (price_range_low != -1 && price_range_low < p.Price)
+                        continue;
+                    if (price_range_high != -1 && price_range_high > p.Price)
+                        continue;
+                    if (rating != -1 && rating != p.Rating)
+                        continue;
+                    products.Add(p);
+                }
+            }
+            return products;
+        }
     }
 }

@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Market
     {
         public bool IsEmpty();
 
-        public void RemoveProduct(Product product);
+        public bool RemoveProduct(Product product);
 
         public void UpdateProduct(Product product, int quantity);
 

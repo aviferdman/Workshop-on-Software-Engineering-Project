@@ -11,6 +11,8 @@ namespace TradingSystem.Business.Market
         private int _quantity;
         private double _weight;
         private double _price;
+        private string category;
+        private int rating;
 
         public Product(String name, int quantity, double weight, double price)
         {
@@ -19,6 +21,8 @@ namespace TradingSystem.Business.Market
             this._weight = weight;
             this._price = price;
             this._id = Guid.NewGuid();
+            category = null;
+            rating = -1;
         }
 
         public Product(int quantity, double weight, double price)
@@ -28,6 +32,8 @@ namespace TradingSystem.Business.Market
             this._weight = weight;
             this._price = price;
             this._id = Guid.NewGuid();
+            category = null;
+            rating = -1;
         }
 
         public Product(ProductData data)
@@ -44,5 +50,7 @@ namespace TradingSystem.Business.Market
         public double Weight { get => _weight; set => _weight = value; }
         public Guid Id { get => _id; set => _id = value; }
         public double Price { get => _price; set => _price = value; }
+        public string Category { get => category; set => category = value; }
+        public int Rating { get => rating; set => rating = value; }
     }
 }

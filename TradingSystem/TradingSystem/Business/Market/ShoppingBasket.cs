@@ -30,9 +30,9 @@ namespace TradingSystem.Business.Market
             return "product added to shopping basket";
         }
 
-        public void RemoveProduct(Product product)
+        public bool RemoveProduct(Product product)
         {
-            _product_quantity.Remove(product);
+            return _product_quantity.Remove(product);
         }
 
         public void UpdateProduct(Product product, int quantity)

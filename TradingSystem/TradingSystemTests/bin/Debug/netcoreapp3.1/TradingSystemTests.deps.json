@@ -794,6 +794,9 @@
         }
       },
       "TradingSystem/1.0.0": {
+        "dependencies": {
+          "Moq": "4.16.1"
+        },
         "runtime": {
           "TradingSystem.dll": {}
         }

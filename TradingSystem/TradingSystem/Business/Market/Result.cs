@@ -4,21 +4,21 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    class Result<T>
+    public class Result<T>
     {
         private T ret;
         private bool isErr;
-        private string err;
+        private string mess;
 
         public Result(T ret, bool isErr, string err)
         {
             this.ret = ret;
             this.isErr = isErr;
-            this.err = err;
+            this.mess = mess;
         }
 
         public T Ret { get => ret; set => ret = value; }
         public bool IsErr { get => isErr; set => isErr = value; }
-        public string Err { get => err; set => err = value; }
+        public string Mess { get => mess; set => mess = value; }
     }
 }
