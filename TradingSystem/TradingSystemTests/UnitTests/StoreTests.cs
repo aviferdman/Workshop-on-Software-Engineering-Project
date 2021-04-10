@@ -23,7 +23,7 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             //Mock<BankAccount> bankAccount = new Mock<BankAccount>();
             //bankAccount.Setup(ba => ba.CheckEnoughtCurrent(It.IsAny<double>())).Returns(true);
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             double paySum = 1;
             Product product1 = new Product("1", 10, 10, 10);
             Product product2 = new Product("2", 20, 20, 20);
@@ -47,7 +47,7 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             //Mock<BankAccount> bankAccount = new Mock<BankAccount>();
             //bankAccount.Setup(ba => ba.CheckEnoughtCurrent(It.IsAny<double>())).Returns(true);
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             double paySum = 1;
             Product product1 = new Product("1", 10, 10, 10);
             Product product2 = new Product("2", 20, 20, 20);
@@ -70,7 +70,7 @@ namespace TradingSystemTests.MarketTests
             Product product1 = new Product("1", 10, 10, 10);
             shoppingBasket.UpdateProduct(product1, 5);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
             Assert.AreEqual(0,store.ApplyDiscounts(shoppingBasket));
@@ -84,7 +84,7 @@ namespace TradingSystemTests.MarketTests
             Product product1 = new Product("1", 10, 10, 10);
             shoppingBasket.UpdateProduct(product1, 30);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
             Discount discount1 = new Discount(100);
@@ -104,7 +104,7 @@ namespace TradingSystemTests.MarketTests
             Product product1 = new Product("1", 10, 10, 10);
             shoppingBasket.UpdateProduct(product1, 19);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
             Discount discount1 = new Discount(100);
@@ -122,7 +122,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user = new User("user");
             Founder founder = new Founder(user.Id);
@@ -138,7 +138,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user1 = new User("user1");
             User user2 = new User("user2");
@@ -155,7 +155,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, -10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user = new User("user");
             Founder founder = new Founder(user.Id);
@@ -171,7 +171,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("", 10, 10, 10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user = new User("user");
             Founder founder = new Founder(user.Id);
@@ -187,7 +187,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user = new User("user");
             Founder founder = new Founder(user.Id);
@@ -204,7 +204,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user1 = new User("user1");
             User user2 = new User("user2");
@@ -222,7 +222,7 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user1 = new User("user1");
             User user2 = new User("user2");
@@ -243,7 +243,7 @@ namespace TradingSystemTests.MarketTests
             Product product1 = new Product("1", 10, 10, 10);
             Product product2 = new Product("1", 10, 10, 20);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user = new User("user");
             Founder founder = new Founder(user.Id);
@@ -260,7 +260,7 @@ namespace TradingSystemTests.MarketTests
             Product product1 = new Product("1", 10, 10, 10);
             Product product2 = new Product("1", 10, 10, 20);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user = new User("user");
             Founder founder = new Founder(user.Id);
@@ -278,7 +278,7 @@ namespace TradingSystemTests.MarketTests
             Product product1 = new Product("1", 10, 10, 10);
             Product product2 = new Product("1", 10, 10, 20);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User user1 = new User("user1");
             User user2 = new User("user2");
@@ -297,7 +297,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckValidMakeOwner()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
 
             User assigner = new User("assigner");
@@ -315,7 +315,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckMakeOwnerAlreadyAssigned()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User assigner = new User("assigner");
             Guid assignee = new Guid();
@@ -334,7 +334,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckMakeOwnerInvalidAssigner()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User assigner = new User("assigner");
             Guid assignee = new Guid();
@@ -351,7 +351,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckValidMakeManager()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
 
             User assigner = new User("assigner");
@@ -369,7 +369,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckMakeManagerAlreadyAssigned()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User assigner = new User("assigner");
             Guid assignee = new Guid();
@@ -388,7 +388,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckMakeManagerInvalidAssigner()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             User assigner = new User("assigner");
             Guid assignee = new Guid();

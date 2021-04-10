@@ -53,7 +53,7 @@ namespace TradingSystemTests.MarketTests
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(200, 200, 200);
+            BankAccount bankAccount = new BankAccount(200, 200);
             double paySum = 1;
             Product product1 = new Product(10, 10, 10);
             Product product2 = new Product(20, 20, 20);
@@ -80,7 +80,7 @@ namespace TradingSystemTests.MarketTests
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(200, 200, 200);
+            BankAccount bankAccount = new BankAccount(200, 200);
             double paySum = 1;
             Product product1 = new Product(10, 10, 10);
             Product product2 = new Product(20, 20, 20);
@@ -110,7 +110,7 @@ namespace TradingSystemTests.MarketTests
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(200, 200, 200);
+            BankAccount bankAccount = new BankAccount(200, 200);
             double paySum = 1;
             Product product1 = new Product(10, 10, 10);
             Product product2 = new Product(20, 20, 20);

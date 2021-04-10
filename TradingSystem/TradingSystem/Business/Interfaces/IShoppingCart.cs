@@ -15,6 +15,8 @@ namespace TradingSystem.Business.Market
         public bool Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum);
         public double CalcPaySum();
 
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts();
+
         public bool IsEmpty();
     }
 }

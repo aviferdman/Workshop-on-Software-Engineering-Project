@@ -390,6 +390,18 @@
           }
         }
       },
+      "NSubstitute/4.2.2": {
+        "dependencies": {
+          "Castle.Core": "4.4.0",
+          "System.Threading.Tasks.Extensions": "4.5.4"
+        },
+        "runtime": {
+          "lib/netstandard2.0/NSubstitute.dll": {
+            "assemblyVersion": "4.2.0.0",
+            "fileVersion": "4.2.2.0"
+          }
+        }
+      },
       "NuGet.Frameworks/5.0.0": {
         "runtime": {
           "lib/netstandard2.0/NuGet.Frameworks.dll": {
@@ -794,6 +806,11 @@
         }
       },
       "TradingSystem/1.0.0": {
+        "dependencies": {
+          "Moq": "4.16.1",
+          "NSubstitute": "4.2.2",
+          "System.Collections": "4.3.0"
+        },
         "runtime": {
           "TradingSystem.dll": {}
         }
@@ -903,6 +920,13 @@
       "sha512": "sha512-U82mHQSKaIk+lpSVCbWYKNavmNH1i5xrExDEquU1i6I5pV6UMOqRnJRSlKO3cMPfcpp0RgDY+8jUXHdQ4IfXvw==",
       "path": "newtonsoft.json/9.0.1",
       "hashPath": "newtonsoft.json.9.0.1.nupkg.sha512"
+    },
+    "NSubstitute/4.2.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-s+H1fUo+WSymYxNdZlwhekdNDLv4w0ZvmwYheMEe4tWACcMDNoqfcDpeL66RyWfurNvvIYQJNP3VUwX2aAC1gw==",
+      "path": "nsubstitute/4.2.2",
+      "hashPath": "nsubstitute.4.2.2.nupkg.sha512"
     },
     "NuGet.Frameworks/5.0.0": {
       "type": "package",

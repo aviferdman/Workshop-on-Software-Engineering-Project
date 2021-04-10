@@ -14,6 +14,8 @@ namespace TradingSystem.Business.Market
         public string AddGuest();
         public void RemoveGuest(String usrname);
         public bool AddMember(String usrname, string guestusername, Guid id);
+
+        bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity);
         public Store CreateStore(string name, string username, BankAccount bank, Address address);
         public ICollection<Store> GetStoresByName(string name);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
@@ -27,5 +29,6 @@ namespace TradingSystem.Business.Market
         public String EditProduct(String productName, ProductData details, Guid storeID, String username);
         public String makeOwner(String assigneeName, Guid storeID, String assignerName);
         public String makeManager(String assignee, Guid storeID, String assigner);
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId);
     }
 }

@@ -512,3 +512,4 @@ C:\Users\Owner\Desktop\Workshop-on-Software-Engineering-Project\TradingSystem\Tr
 C:\Users\Owner\Desktop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\bin\Debug\netcoreapp3.1\TradingSystem.pdb
 C:\Users\Owner\Desktop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\obj\Debug\netcoreapp3.1\TradingSystemTests.csproj.CopyComplete
 C:\Users\Owner\Desktop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\obj\Debug\netcoreapp3.1\TradingSystemTests.genruntimeconfig.cache
+C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystemTests\bin\Debug\netcoreapp3.1\NSubstitute.dll

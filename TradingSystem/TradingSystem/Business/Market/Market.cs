@@ -38,6 +38,19 @@ namespace TradingSystem.Business.Market
             _transaction.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
         }
 
+        public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
+        {
+            User user = GetUserById(userId);
+            IStore store = GetStoreById(storeId);
+            user.UpdateProductInShoppingBasket(store, product, quantity);
+            return true;
+        }
+
+        private User GetUserById(Guid userId)
+        {
+            return activeUsers.Values.Where(u => u.Id.Equals(userId)).FirstOrDefault();
+        }
+
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
         public string AddGuest()
         {
@@ -282,5 +295,10 @@ namespace TradingSystem.Business.Market
             return store.AssignMember(assigneeID, assigner, type);
         }
 
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId)
+        {
+            User user = GetUserById(userId);
+            return user.GetShopingCartProducts();
+        }
     }
 }

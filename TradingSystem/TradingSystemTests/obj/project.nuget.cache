@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "RBJwKq37rEyHNC//PEjw2reSJHsqWzLxvMCwSTBpR/MBi0zt+MtWGMSY8Ohf362HmkHJ/GRs0J/2YJhbpL6Zeg==",
+  "dgSpecHash": "ajaC9674s1y5kQViHPUpUIih381LboWjGy3e93hk0kLyLISefoNDk5o62QGxBo77ZOESaiQdteliI2h0UsPxgg==",
   "success": true,
   "projectFilePath": "C:\\Users\\ASUS\\Desktop\\Workshop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystemTests\\TradingSystemTests.csproj",
   "expectedPackageFiles": [
@@ -18,6 +18,7 @@
     "C:\\Users\\ASUS\\.nuget\\packages\\mstest.testframework\\2.1.1\\mstest.testframework.2.1.1.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\newtonsoft.json\\9.0.1\\newtonsoft.json.9.0.1.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\nsubstitute\\4.2.2\\nsubstitute.4.2.2.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\nuget.frameworks\\5.0.0\\nuget.frameworks.5.0.0.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\nunit\\3.13.1\\nunit.3.13.1.nupkg.sha512",
     "C:\\Users\\ASUS\\.nuget\\packages\\runtime.native.system\\4.3.0\\runtime.native.system.4.3.0.nupkg.sha512",
