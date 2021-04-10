@@ -42,7 +42,7 @@ namespace TradingSystem.Business.Market
             State = state;
         }
 
-        public void UpdateProductInShoppingBasket(Store store, Product product, int quantity)
+        public void UpdateProductInShoppingBasket(IStore store, Product product, int quantity)
         {
             IShoppingBasket shoppingBasket = ShoppingCart.GetShoppingBasket(store);
             shoppingBasket.UpdateProduct(product, quantity);
@@ -56,7 +56,13 @@ namespace TradingSystem.Business.Market
             return ShoppingCart.Purchase(_id, bank, phone, address, paySum);
         }
 
-     
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()
+        {
+            return _shoppingCart.GetShopingCartProducts();
+        }
+
+
+
 
         public History GetUserHistory(Guid userId)
         {

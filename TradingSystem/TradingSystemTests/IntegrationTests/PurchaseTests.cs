@@ -33,8 +33,8 @@ namespace TradingSystemTests.IntegrationTests
             product = new Product(QUANTITY1, WEIGHT1, PRICE1);
             testUserAddress = new Address("1", "1", "1", "1");
             testStoreAddress = new Address("2", "2", "2", "2");
-            testUserBankAccount = new BankAccount(1, 1, 1000);
-            testUserBankAccount = new BankAccount(2, 2, 2000);
+            testUserBankAccount = new BankAccount(1, 1);
+            testUserBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
         }

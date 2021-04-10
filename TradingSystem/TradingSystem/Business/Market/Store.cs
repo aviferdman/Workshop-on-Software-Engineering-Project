@@ -52,12 +52,9 @@ namespace TradingSystem.Business.Market
 
         public PurchaseStatus Purchase(Dictionary<Product, int> product_quantity, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum)
         {
-            bool enoughtQuantity, enoughtCurrent;
+            bool enoughtQuantity;
             TransactionStatus transactionStatus;
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
-            enoughtCurrent = clientBankAccount.CheckEnoughtCurrent(paymentSum);
-            //pre-conditions not legal
-            if (!enoughtCurrent) return new PurchaseStatus(false, null, _id, product_quantity);
 
             lock (_lock)
             {

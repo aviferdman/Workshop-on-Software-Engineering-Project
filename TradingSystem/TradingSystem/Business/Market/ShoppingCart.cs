@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NSubstitute.ReceivedExtensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -92,6 +93,29 @@ namespace TradingSystem.Business.Market
         public double CalcPaySum()
         {
             return Store_shoppingBasket.Aggregate(0.0, (total, next) => total + next.Key.CalcPaySum(next.Value));
+        }
+
+        public IDictionary<Guid, IDictionary<Guid , int >> GetShopingCartProducts()
+        {
+            IDictionary<Guid, IDictionary<Guid, int>> ret = new Dictionary<Guid, IDictionary<Guid, int>>();
+            foreach (IStore store in _store_shoppingBasket.Keys)
+            {
+                IDictionary<Product, int> dict = _store_shoppingBasket[store].GetDictionaryProductQuantity();
+                IDictionary<Guid, int> dictToAdd = FilterDictionary(dict);
+                ret.Add(store.GetId(), dictToAdd);
+            }
+
+            return ret;
+        }
+
+        private IDictionary<Guid, int> FilterDictionary(IDictionary<Product, int> dict)
+        {
+            IDictionary<Guid, int> ret = new Dictionary<Guid, int>();
+            foreach (Product p in dict.Keys)
+            {
+                ret.Add(p.Id, dict[p]);
+            }
+            return ret;
         }
     }
 }

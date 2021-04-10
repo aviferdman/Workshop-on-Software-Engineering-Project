@@ -42,17 +42,22 @@ namespace TradingSystem.Service
             return market.makeManager(assignee, storeID, assigner);
         }
 
-        public StoreData CreateStore(string name, string username, int accountNumber, int branch, double current, string state, string city, string street, string apartmentNum)
+        public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
         {
-            BankAccount bankAccount = new BankAccount(accountNumber, branch, current);
+            return market.UpdateProductInShoppingBasket(userId, storeId, product, quantity);
+        }
+
+        public StoreData CreateStore(string name, string username, int accountNumber, int branch, string state, string city, string street, string apartmentNum)
+        {
+            BankAccount bankAccount = new BankAccount(accountNumber, branch);
             Address address = new Address(state, city, street, apartmentNum);
             Store store = market.CreateStore(name, username, bankAccount, address);
             return new StoreData(store);
         }
 
-        public bool PurchaseShoppingCart(string username, int accountNumber, int branch, double current, string phone, string state, string city, string street, string apartmentNum)
+        public bool PurchaseShoppingCart(string username, int accountNumber, int branch, string phone, string state, string city, string street, string apartmentNum)
         {
-            BankAccount bankAccount = new BankAccount(accountNumber, branch, current);
+            BankAccount bankAccount = new BankAccount(accountNumber, branch);
             Address address = new Address(state, city, street, apartmentNum);
             return market.PurchaseShoppingCart(username, bankAccount, phone, address);
         }
@@ -75,6 +80,11 @@ namespace TradingSystem.Service
         public double ApplyDiscounts(string username, Guid storeId)
         {
             return this.market.ApplyDiscounts(username, storeId);
+        }
+
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId)
+        {
+            return market.GetShopingCartProducts(userId);
         }
     }
 }
