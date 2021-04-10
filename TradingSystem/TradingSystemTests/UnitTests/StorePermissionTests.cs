@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
-using TradingSystem.Business.Interfaces;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -18,7 +17,7 @@ namespace TradingSystemTests.MarketTests
         public void FounderAddAppointment()
         {
             Founder founder = new Founder(Guid.NewGuid());
-            StorePermission storePermission = founder.AddAppointment(Guid.NewGuid(), AppointmentType.Owner);
+            IStorePermission storePermission = founder.AddAppointment(Guid.NewGuid(), AppointmentType.Owner);
             Assert.IsNotNull(storePermission);  //succeeded and not null
         }
 
@@ -29,7 +28,7 @@ namespace TradingSystemTests.MarketTests
         {
             Manager manager = new Manager(Guid.NewGuid(), new Founder(Guid.NewGuid()));
             manager.Store_permission.Add(Permission.AppointManger);
-            StorePermission storePermission = manager.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
+            IStorePermission storePermission = manager.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
             Assert.IsNotNull(storePermission);  //succeeded and not null
         }
 
@@ -60,7 +59,7 @@ namespace TradingSystemTests.MarketTests
         public void OwnerAddAppointmentWithPermission()
         {
             Owner owner = new Owner(Guid.NewGuid(), new Founder(Guid.NewGuid()));
-            StorePermission storePermission = owner.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
+            IStorePermission storePermission = owner.AddAppointment(Guid.NewGuid(), AppointmentType.Manager);
             Assert.IsNotNull(storePermission);  //succeeded and not null
         }
 
@@ -82,7 +81,7 @@ namespace TradingSystemTests.MarketTests
             Guid userId = Guid.NewGuid();
             Guid userId2 = Guid.NewGuid();
             StorePermission storePermission = new Founder(userId);
-            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            IStorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
             storePermission2.AddPermission(userId, Permission.AppointManger);   //succeeds
         }
 
@@ -95,7 +94,7 @@ namespace TradingSystemTests.MarketTests
             Guid userId = Guid.NewGuid();
             Guid userId2 = Guid.NewGuid();
             StorePermission storePermission = new Founder(userId);
-            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            IStorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
             storePermission2.AddPermission(userId, Permission.CloseShop);
         }
 
@@ -108,7 +107,7 @@ namespace TradingSystemTests.MarketTests
             Guid userId = Guid.NewGuid();
             Guid userId2 = Guid.NewGuid();
             StorePermission storePermission = new Founder(userId);
-            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            IStorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
             storePermission2.AddPermission(Guid.NewGuid(), Permission.AddProduct);
         }
 
@@ -120,7 +119,7 @@ namespace TradingSystemTests.MarketTests
             Guid userId = Guid.NewGuid();
             Guid userId2 = Guid.NewGuid();
             StorePermission storePermission = new Founder(userId);
-            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            IStorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
             storePermission2.AddPermission(userId, Permission.AppointManger);   //succeeds
             storePermission2.RemovePermission(userId, Permission.AppointManger);    //succeeds
         }
@@ -134,7 +133,7 @@ namespace TradingSystemTests.MarketTests
             Guid userId = Guid.NewGuid();
             Guid userId2 = Guid.NewGuid();
             StorePermission storePermission = new Founder(userId);
-            StorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
+            IStorePermission storePermission2 = storePermission.AddAppointment(userId2, AppointmentType.Manager);
             storePermission2.AddPermission(userId, Permission.AddProduct);
             storePermission2.RemovePermission(Guid.NewGuid(), Permission.AppointManger);
         }

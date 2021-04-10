@@ -3,7 +3,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 /*
 namespace TradingSystemTests.IntegrationTests

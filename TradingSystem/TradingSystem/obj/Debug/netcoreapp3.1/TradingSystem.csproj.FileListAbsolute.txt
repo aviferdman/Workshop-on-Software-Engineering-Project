@@ -67,3 +67,7 @@ C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingS
 C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\Moq.dll
 C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.csproj.CopyComplete
 C:\Users\ASUS\Desktop\Workshop\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\NSubstitute.dll
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\Castle.Core.dll
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\Moq.dll
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\bin\Debug\netcoreapp3.1\NSubstitute.dll
+F:\university\2020-2021\spring\Workshop on Software Engineering Project\Workshop-on-Software-Engineering-Project\TradingSystem\TradingSystem\obj\Debug\netcoreapp3.1\TradingSystem.csproj.CopyComplete

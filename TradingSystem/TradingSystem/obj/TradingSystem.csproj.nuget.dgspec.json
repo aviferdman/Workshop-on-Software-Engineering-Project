@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
+    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
+    "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
         "projectName": "TradingSystem",
-        "projectPath": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-        "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
+        "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
+        "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
