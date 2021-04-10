@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Market
 {
@@ -16,6 +16,7 @@ namespace TradingSystem.Business.Market
         GetPersonnelInfo,
         EditProduct,
         GetShopHistory,
+        EditPermissions,
 
         CloseShop
     }
@@ -45,7 +46,7 @@ namespace TradingSystem.Business.Market
         public Guid UserId { get => userId; set => userId = value; }
         public ICollection<Permission> Store_permission { get => store_permission; set => store_permission = value; }
         protected ConcurrentDictionary<Guid, StorePermission> Appointments { get => appointments; set => appointments = value; }
-        protected StorePermission Appointer { get => appointer; set => appointer = value; }
+        public StorePermission Appointer { get => appointer; set => appointer = value; }
 
         //Return the degree of hierarchy of the user in this store (1 is the highest degree, 0 means user not in hierarchy)
 
@@ -64,7 +65,7 @@ namespace TradingSystem.Business.Market
         /// checks if this user can appoint a user and if he does crates a new StorePremmition according to appointment 
         /// and adds him to <see cref="Appointments"/>
         /// returns the new StorePremmition or null if user can't be appointed
-        public abstract StorePermission AddAppointment(Guid user, AppointmentType appointment );
+        public abstract IStorePermission AddAppointment(Guid user, AppointmentType appointment );
 
         /// checks if this user can remove the appiontment of a user and if he does removes him from <see cref="Appointments"/>
         public bool canRemoveAppointment( Guid userToRemove)

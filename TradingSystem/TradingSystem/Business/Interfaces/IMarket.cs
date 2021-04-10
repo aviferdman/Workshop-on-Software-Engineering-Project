@@ -30,5 +30,7 @@ namespace TradingSystem.Business.Market
         public String makeOwner(String assigneeName, Guid storeID, String assignerName);
         public String makeManager(String assignee, Guid storeID, String assigner);
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId);
+
+        public String DefineManagerPermissions(String manager, Guid storeID, String assigner, List<Permission> permissions);
     }
 }

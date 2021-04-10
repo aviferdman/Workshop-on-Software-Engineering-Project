@@ -176,5 +176,9 @@ namespace TradingSystem.Service
 
 
 
+        public String DefineManagerPermissions(String manager, Guid storeID, String assigner, List<Permission> permissions)
+        {
+            return market.DefineManagerPermissions(manager, storeID, assigner, permissions);
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace TradingSystem.Business.Market
 
         }
 
-        public override StorePermission AddAppointment(Guid user, AppointmentType appointment)
+        public override IStorePermission AddAppointment(Guid user, AppointmentType appointment)
         {
             StorePermission prem;
             if (appointment.Equals(AppointmentType.Manager))

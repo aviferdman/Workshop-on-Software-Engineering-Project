@@ -6,7 +6,7 @@ namespace TradingSystem.Business.Market
 {
     public class Owner : StorePermission
     {
-        public override StorePermission AddAppointment(Guid user, AppointmentType appointment)
+        public override IStorePermission AddAppointment(Guid user, AppointmentType appointment)
         {
             StorePermission prem;
             if (appointment.Equals(AppointmentType.Manager))

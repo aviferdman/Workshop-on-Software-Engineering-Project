@@ -124,12 +124,14 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user");
-            Founder founder = new Founder(user.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            Guid founderID = Guid.NewGuid();
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, user.Id), "Product added");
+            Assert.AreEqual(store.AddProduct(product1, founderID), "Product added");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
@@ -140,13 +142,15 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user1 = new User("user1");
-            User user2 = new User("user2");
-            Founder founder = new Founder(user1.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user1.Id, founder);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Guid founderID = Guid.NewGuid();
+            Guid user = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, user2.Id), "Invalid user");
+            Assert.AreEqual(store.AddProduct(product1, user), "Invalid user");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
@@ -157,12 +161,14 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user");
-            Founder founder = new Founder(user.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Guid founderID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, user.Id), "Invalid product");
+            Assert.AreEqual(store.AddProduct(product1, founderID), "Invalid product");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
@@ -173,12 +179,14 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user");
-            Founder founder = new Founder(user.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Guid founderID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, user.Id), "Invalid product");
+            Assert.AreEqual(store.AddProduct(product1, founderID), "Invalid product");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
@@ -189,13 +197,15 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user");
-            Founder founder = new Founder(user.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Guid founderID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.RemoveProduct("1", user.Id), "Product removed");
+            Assert.AreEqual(store.RemoveProduct("1", founderID), "Product removed");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
@@ -206,14 +216,11 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user1 = new User("user1");
-            User user2 = new User("user2");
-            Founder founder = new Founder(user1.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user1.Id, founder);
+            Guid userID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.RemoveProduct("1", user2.Id), "Invalid user");
+            Assert.AreEqual(store.RemoveProduct("1", userID), "Invalid user");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
@@ -224,16 +231,20 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user1 = new User("user1");
-            User user2 = new User("user2");
-            Founder founder = new Founder(user1.Id);
-            Manager manager = new Manager(user2.Id, founder);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user1.Id, founder);
-            personnel.TryAdd(user2.Id, manager);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Mock<IManager> imanager = new Mock<IManager>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(false);
+            IManager manager = imanager.Object;
+            Guid founderID = Guid.NewGuid();
+            Guid managerID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
+            personnel.TryAdd(managerID, manager);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.RemoveProduct("1", user2.Id), "No Permission");
+            Assert.AreEqual(store.RemoveProduct("1", managerID), "No Permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
@@ -245,13 +256,15 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user");
-            Founder founder = new Founder(user.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Guid founderID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.EditProduct("1", product2, user.Id), "Product edited");
+            Assert.AreEqual(store.EditProduct("1", product2, founderID), "Product edited");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
@@ -262,13 +275,15 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user = new User("user");
-            Founder founder = new Founder(user.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user.Id, founder);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Guid founderID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.EditProduct("2", product2, user.Id), "Product not in the store");
+            Assert.AreEqual(store.EditProduct("2", product2, founderID), "Product not in the store");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
@@ -280,16 +295,20 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User user1 = new User("user1");
-            User user2 = new User("user2");
-            Founder founder = new Founder(user1.Id);
-            Manager manager = new Manager(user2.Id, founder);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(user1.Id, founder);
-            personnel.TryAdd(user2.Id, manager);
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(true);
+            IFounder founder = ifounder.Object;
+            Mock<IManager> imanager = new Mock<IManager>();
+            ifounder.Setup(f => f.GetPermission(It.IsAny<Permission>())).Returns(false);
+            IManager manager = imanager.Object;
+            Guid founderID = Guid.NewGuid();
+            Guid managerID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(founderID, founder);
+            personnel.TryAdd(managerID, manager);
             store.Personnel = personnel;
             store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.EditProduct("1", product2, user2.Id), "No Permission");
+            Assert.AreEqual(store.EditProduct("1", product2, managerID), "No Permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -299,15 +318,17 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-
-            User assigner = new User("assigner");
-            Guid assignee = new Guid();
-            Founder founder = new Founder(assigner.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(assigner.Id, founder);
+            Mock<IOwner> iowner = new Mock<IOwner>();
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Returns(iowner.Object);
+            IFounder assigner = ifounder.Object;
+            User user = new User("assigner");
+            Guid assigneeID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(user.Id, assigner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Owner), "Success");
+            Assert.AreEqual(store.AssignMember(assigneeID, user, AppointmentType.Owner), "Success");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -317,16 +338,19 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User assigner = new User("assigner");
-            Guid assignee = new Guid();
-            Founder founder = new Founder(assigner.Id);
-            Owner owner = new Owner(assignee, founder);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(assigner.Id, founder);
-            personnel.TryAdd(assignee, owner);
+            Mock<IOwner> iowner = new Mock<IOwner>();
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Returns(iowner.Object);
+            IFounder assigner = ifounder.Object;
+            IOwner owner = iowner.Object;
+            User user = new User("assigner");
+            Guid assigneeID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(user.Id, assigner);
+            personnel.TryAdd(assigneeID, owner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Owner), "this member is already assigned as a store owner or manager");
+            Assert.AreEqual(store.AssignMember(assigneeID, user, AppointmentType.Owner), "this member is already assigned as a store owner or manager");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -336,14 +360,16 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User assigner = new User("assigner");
-            Guid assignee = new Guid();
-            Manager manager = new Manager(assigner.Id, null);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(assigner.Id, manager);
+            Mock<IManager> imanager = new Mock<IManager>();
+            imanager.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Throws(new UnauthorizedAccessException());
+            IManager assigner = imanager.Object;
+            User uAssigner = new User("manager");
+            Guid assignee = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(uAssigner.Id, assigner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Owner), "Invalid assigner");
+            Assert.AreEqual(store.AssignMember(assignee, uAssigner, AppointmentType.Owner), "Invalid assigner");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -353,15 +379,17 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-
-            User assigner = new User("assigner");
-            Guid assignee = new Guid();
-            Founder founder = new Founder(assigner.Id);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(assigner.Id, founder);
+            Mock<IOwner> iowner = new Mock<IOwner>();
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Returns(iowner.Object);
+            IFounder assigner = ifounder.Object;
+            User user = new User("assigner");
+            Guid assigneeID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(user.Id, assigner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Manager), "Success");
+            Assert.AreEqual(store.AssignMember(assigneeID, user, AppointmentType.Manager), "Success");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -371,16 +399,19 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User assigner = new User("assigner");
-            Guid assignee = new Guid();
-            Founder founder = new Founder(assigner.Id);
-            Owner owner = new Owner(assignee, founder);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(assigner.Id, founder);
-            personnel.TryAdd(assignee, owner);
+            Mock<IOwner> iowner = new Mock<IOwner>();
+            Mock<IFounder> ifounder = new Mock<IFounder>();
+            ifounder.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Returns(iowner.Object);
+            IFounder assigner = ifounder.Object;
+            IOwner owner = iowner.Object;
+            User user = new User("assigner");
+            Guid assigneeID = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(user.Id, assigner);
+            personnel.TryAdd(assigneeID, owner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Manager), "this member is already assigned as a store owner or manager");
+            Assert.AreEqual(store.AssignMember(assigneeID, user, AppointmentType.Manager), "this member is already assigned as a store owner or manager");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -390,16 +421,83 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            User assigner = new User("assigner");
-            Guid assignee = new Guid();
-            Manager manager = new Manager(assigner.Id, null);
-            ConcurrentDictionary<Guid, StorePermission> personnel = new ConcurrentDictionary<Guid, StorePermission>();
-            personnel.TryAdd(assigner.Id, manager);
+            Mock<IManager> imanager = new Mock<IManager>();
+            imanager.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Throws(new UnauthorizedAccessException());
+            IManager assigner = imanager.Object;
+            User uAssigner = new User("manager");
+            Guid assignee = Guid.NewGuid();
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(uAssigner.Id, assigner);
             store.Personnel = personnel;
 
-            Assert.AreEqual(store.AssignMember(assignee, assigner, AppointmentType.Manager), "Invalid assigner");
+            Assert.AreEqual(store.AssignMember(assignee, uAssigner, AppointmentType.Manager), "Invalid assigner");
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
+        [TestMethod]
+        public void CheckValidDefinePermissions()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            Guid assignerID = Guid.NewGuid();
+            Guid managerID = Guid.NewGuid();
+            Founder assigner = new Founder(assignerID);
+            Manager manager = new Manager(managerID, assigner);
+            manager.Appointer = assigner;
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(assignerID, assigner);
+            personnel.TryAdd(managerID, manager);
+            store.Personnel = personnel;
+            List<Permission> permissions = new List<Permission>();
+            permissions.Add(Permission.AddProduct);
+
+            Assert.AreEqual(store.DefineManagerPermissions(managerID, assignerID, permissions), "Success");
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
+        [TestMethod]
+        public void CheckDefinePermissionsInvalidAssigner()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            Guid user1ID = Guid.NewGuid();
+            Guid user2ID = Guid.NewGuid();
+            Guid managerID = Guid.NewGuid();
+            Founder user1 = new Founder(user1ID);
+            Founder user2 = new Founder(user2ID);
+            Manager manager = new Manager(managerID, user1);
+            manager.Appointer = user1;
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(user1ID, user1);
+            personnel.TryAdd(user2ID, user2);
+            personnel.TryAdd(managerID, manager);
+            store.Personnel = personnel;
+            List<Permission> permissions = new List<Permission>();
+            permissions.Add(Permission.AddProduct);
+
+            Assert.AreEqual(store.DefineManagerPermissions(managerID, user2ID, permissions), "The manager must be appointed by the user");
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
+        [TestMethod]
+        public void CheckDefinePermissionsNoManager()
+        {
+            Address address = new Address("1", "1", "1", "1");
+            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            Store store = new Store("testStore", bankAccount, address);
+            Guid assignerID = Guid.NewGuid();
+            Guid managerID = Guid.NewGuid();
+            Founder assigner = new Founder(assignerID);
+            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            personnel.TryAdd(assignerID, assigner);
+            store.Personnel = personnel;
+            List<Permission> permissions = new List<Permission>();
+            permissions.Add(Permission.AddProduct);
+
+            Assert.AreEqual(store.DefineManagerPermissions(managerID, assignerID, permissions), "Manager doesn't exist");
+        }
 
         public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
         {

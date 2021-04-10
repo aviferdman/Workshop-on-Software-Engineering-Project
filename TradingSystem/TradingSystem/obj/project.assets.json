@@ -5061,23 +5061,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Owner\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+      "projectUniqueName": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
       "projectName": "TradingSystem",
-      "projectPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "F:\\university\\2020-2021\\spring\\Workshop on Software Engineering Project\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
+      "projectPath": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\TradingSystem.csproj",
+      "packagesPath": "C:\\Users\\Owner\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Owner\\Desktop\\Workshop-on-Software-Engineering-Project\\TradingSystem\\TradingSystem\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Owner\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
