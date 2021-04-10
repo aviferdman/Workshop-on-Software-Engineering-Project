@@ -438,7 +438,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckValidDefinePermissions()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             Guid assignerID = Guid.NewGuid();
             Guid managerID = Guid.NewGuid();
@@ -460,7 +460,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckDefinePermissionsInvalidAssigner()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             Guid user1ID = Guid.NewGuid();
             Guid user2ID = Guid.NewGuid();
@@ -485,7 +485,7 @@ namespace TradingSystemTests.MarketTests
         public void CheckDefinePermissionsNoManager()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000, 1000);
+            BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             Guid assignerID = Guid.NewGuid();
             Guid managerID = Guid.NewGuid();

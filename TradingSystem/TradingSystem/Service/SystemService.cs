@@ -8,6 +8,5 @@ namespace TradingSystem.Service
     {
         private MarketService marketService;
         private UserService userService;
-        private ValidationService validationService;
     }
 }

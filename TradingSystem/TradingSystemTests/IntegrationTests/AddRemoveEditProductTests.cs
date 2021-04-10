@@ -19,7 +19,7 @@ namespace TradingSystemTests.IntegrationTests
         public void TestInitialize()
         {
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1, 1, 1);
+            BankAccount bankAccount = new BankAccount( 1, 1);
             store = new Store("1", bankAccount, address);
             market = Market.Instance;
         }

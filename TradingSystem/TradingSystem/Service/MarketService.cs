@@ -17,6 +17,7 @@ namespace TradingSystem.Service
             market = Market.Instance;
         }
 
+        //returns uniqe username for guest
         public string AddGuest()
         {
             return market.AddGuest();
@@ -31,16 +32,18 @@ namespace TradingSystem.Service
             market.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
         }
 
+        //"Product added"
         public String AddProduct(ProductData product, Guid storeID, String username)
         {
             return market.AddProduct(product, storeID, username);
         }
 
+        //"Product removed"
         public String RemoveProduct(String productName, Guid storeID, String username)
         {
             return market.RemoveProduct(productName, storeID, username);
         }
-
+        //"Product edited"
         public String EditProduct(String productName, ProductData details, Guid storeID, String username)
         {
             return market.EditProduct(productName, details, storeID, username);
@@ -54,11 +57,6 @@ namespace TradingSystem.Service
         public String makeManager(String assignee, Guid storeID, String assigner)
         {
             return market.makeManager(assignee, storeID, assigner);
-        }
-
-        public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
-        {
-            return market.UpdateProductInShoppingBasket(userId, storeId, product, quantity);
         }
 
         public StoreData CreateStore(string name, string username, int accountNumber, int branch, string state, string city, string street, string apartmentNum)
@@ -91,15 +89,7 @@ namespace TradingSystem.Service
             History history = market.GetStoreHistory(username, storeId);
             return new HistoryData(history);
         }
-        public double ApplyDiscounts(string username, Guid storeId)
-        {
-            return this.market.ApplyDiscounts(username, storeId);
-        }
 
-        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId)
-        {
-            return market.GetShopingCartProducts(userId);
-        }
         public ICollection<StoreData> findStoresByname(string name)
         {
             ICollection<Store> stores = market.GetStoresByName(name);
