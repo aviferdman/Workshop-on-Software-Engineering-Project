@@ -33,5 +33,10 @@ namespace TradingSystem.Service
         {
             return market.makeManager(assignee, storeID, assigner);
         }
+
+        public String DefineManagerPermissions(String manager, Guid storeID, String assigner, List<Permission> permissions)
+        {
+            return market.DefineManagerPermissions(manager, storeID, assigner, permissions);
+        }
     }
 }

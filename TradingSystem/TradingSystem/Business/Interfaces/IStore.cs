@@ -36,6 +36,6 @@ namespace TradingSystem.Business.Market
 
         public void RemoveDiscount(Guid discountId);
 
-
+        public String DefineManagerPermissions(Guid managerID, Guid assignerID, List<Permission> permissions);
     }
 }

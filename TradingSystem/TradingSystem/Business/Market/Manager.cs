@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Market
     public class Manager : StorePermission
     {
 
-        public override StorePermission AddAppointment(Guid user, AppointmentType appointment)
+        public override IStorePermission AddAppointment(Guid user, AppointmentType appointment)
         {
             StorePermission prem;
             if(!this.GetPermission(Permission.AppointManger))
@@ -24,9 +24,9 @@ namespace TradingSystem.Business.Market
             appointments.TryAdd(user, prem);
             return prem;
         }
-        public Manager(Guid userId, StorePermission appoint) : base(userId)
+        public Manager(Guid userId, IStorePermission appoint) : base(userId)
         {
-            appointer = appoint;
+            appointer = (StorePermission)appoint;
             store_permission.Add(Permission.GetPersonnelInfo);
         }
 

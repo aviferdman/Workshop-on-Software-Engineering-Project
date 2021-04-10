@@ -258,6 +258,27 @@ namespace TradingSystem.Business.Market
             return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Manager);
         }
 
+        //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
+        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
+        {
+            User assigner = GetUserByUserName(assignerName);
+            IStore store;
+            Guid managerID;
+            try
+            {
+                managerID = UserManagement.UserManagement.Instance.getIdByUsername(managerName);
+            }catch { return "Manager doesn't exist"; }
+            Guid assignerID;
+            try
+            {
+                assignerID = UserManagement.UserManagement.Instance.getIdByUsername(assignerName);
+            }
+            catch { return "Manager doesn't exist"; }
+            if (!_stores.TryGetValue(storeID, out store))
+                return "Store doesn't exist";
+            return store.DefineManagerPermissions(managerID, assignerID, permissions);
+        }
+
         public String AssignMember(String assigneeName, Guid storeID, String assignerName, AppointmentType type)
         {
             Guid assigneeID;

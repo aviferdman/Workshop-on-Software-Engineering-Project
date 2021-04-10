@@ -11,7 +11,7 @@ namespace TradingSystem.Business.Market
     {
         private ConcurrentDictionary<String, Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
-        private ConcurrentDictionary<Guid, StorePermission> personnel;
+        private ConcurrentDictionary<Guid, IStorePermission> personnel;
         private BankAccount _bank;
         private Guid _id;
         private string name;
@@ -29,7 +29,7 @@ namespace TradingSystem.Business.Market
         public string Name { get => name; set => name = value; }
         internal BankAccount Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
-        public ConcurrentDictionary<Guid, StorePermission> Personnel { get => personnel; set => personnel = value; }
+        public ConcurrentDictionary<Guid, IStorePermission> Personnel { get => personnel; set => personnel = value; }
 
         public Store(string name, BankAccount bank, Address address)
         {
@@ -42,7 +42,7 @@ namespace TradingSystem.Business.Market
             this._policy = new Policy();
             this._bank = bank;
             this._address = address;
-            this.personnel = new ConcurrentDictionary<Guid, StorePermission>();
+            this.personnel = new ConcurrentDictionary<Guid, IStorePermission>();
         }
 
         public Guid GetId()
@@ -84,7 +84,7 @@ namespace TradingSystem.Business.Market
 
         public bool AddPerssonel(Guid username, Guid subjectUsername, AppointmentType permission)
         {
-            StorePermission user;
+            IStorePermission user;
             if (!personnel.TryGetValue(username, out user))
             {
                 return false;
@@ -93,8 +93,8 @@ namespace TradingSystem.Business.Market
         }
         public bool RemovePerssonel(Guid username, Guid subjectUsername)
         {
-            StorePermission user;
-            StorePermission userToRem;
+            IStorePermission user;
+            IStorePermission userToRem;
             if (!personnel.TryGetValue(username, out user))
             {
                 return false;
@@ -143,7 +143,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(Product product, Guid userID)
         {
-            StorePermission permission;
+            IStorePermission permission;
             Personnel.TryGetValue(userID, out permission);
             if (permission == null)
                 return "Invalid user";
@@ -160,7 +160,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(String productName, Guid userID)
         {
-            StorePermission permission;
+            IStorePermission permission;
             Personnel.TryGetValue(userID, out permission);
             if (permission == null)
                 return "Invalid user";
@@ -174,7 +174,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(String productName, Product editedProduct, Guid userID)
         {
-            StorePermission permission;
+            IStorePermission permission;
             Personnel.TryGetValue(userID, out permission);
             if (permission == null)
                 return "Invalid user"; 
@@ -195,8 +195,8 @@ namespace TradingSystem.Business.Market
 
         public String AssignMember(Guid assigneeID, User assigner, AppointmentType type)
         {
-            StorePermission assignee;
-            StorePermission assignerPermission;
+            IStorePermission assignee;
+            IStorePermission assignerPermission;
             if (personnel.TryGetValue(assigneeID, out assignee))
                 return "this member is already assigned as a store owner or manager";
             if (!personnel.TryGetValue(assigner.Id, out assignerPermission))
@@ -209,6 +209,21 @@ namespace TradingSystem.Business.Market
 
             personnel.TryAdd(assigneeID, assignee);
 
+            return "Success";
+        }
+
+        //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
+        public String DefineManagerPermissions(Guid managerID, Guid assignerID, List<Permission> permissions)
+        {
+            IStorePermission manager;
+            IStorePermission assignerPermission;
+            if (!personnel.TryGetValue(managerID, out manager))
+                return "Manager doesn't exist";
+            if (!personnel.TryGetValue(assignerID, out assignerPermission))
+                return "Invalid assigner";
+            if (!((StorePermission)manager).Appointer.UserId.Equals(assignerID))
+                return "The manager must be appointed by the user";
+            ((StorePermission)manager).Store_permission = permissions;
             return "Success";
         }
 
@@ -312,7 +327,7 @@ namespace TradingSystem.Business.Market
 
         private bool CheckPermission(Guid userId, Permission permission)
         {
-            StorePermission storePermission;
+            IStorePermission storePermission;
             Personnel.TryGetValue(userId, out storePermission);
             return (storePermission != null && storePermission.GetPermission(permission));
         }
