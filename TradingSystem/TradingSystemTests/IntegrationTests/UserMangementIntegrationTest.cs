@@ -1,61 +1,45 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using TradingSystem.Business.UserManagement;
-using TradingSystem.Business.Market;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Text;
+using TradingSystem.Business.Market;
+using TradingSystem.Business.UserManagement;
 
-namespace TradingSystemTests
+namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
-    public class UserManagmentTests
+    public class UserMangementIntegrationTest
     {
-        [ClassInitialize]
-        public static void setMarket(TestContext testContext)
-        {
-            Mock<IMarket> market = new Mock<IMarket>();
-            market.Setup(m => m.AddMember(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(true);
-            market.Setup(m => m.logout(It.IsAny<string>())).Returns("lla");
-            UserManagement.Instance.Marketo = market.Object;
-        }
-
         private string signup()
         {
-           return UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala","lala","la"), "0501234733");
+            UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733");
+            return Market.Instance.AddGuest();
         }
 
-        private bool delete()
+        private bool delete(string username)
         {
+            Market.Instance.logout(username);
+            Market.Instance.RemoveGuest(username);
+            return UserManagement.Instance.DeleteUser("inbi2001");
+        }
+        private bool delete2(string username)
+        {
+            Market.Instance.RemoveGuest(username);
             return UserManagement.Instance.DeleteUser("inbi2001");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.SignUp(string, string, string)"/>
-        [TestMethod]
-        [TestCategory("uc1")]
-        public void TestSignUpSuccess()
-        {
-            Assert.AreEqual("success", signup());
-            delete();
-        }
-
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.SignUp(string, string, string)"/>
-        [TestMethod]
-        [TestCategory("uc1")]
-        public void TestSignUpFail()
-        {
-            signup();
-            Assert.AreNotEqual("success", signup());
-            delete();
-
-        }
 
         /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestLoginSuccess()
+        public void TestIntegLoginSuccess()
         {
-            signup();
-            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456","lala"));
-            delete();
+            string user=signup();
+            
+            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456", "lala"));
+            delete(user);
 
         }
 
@@ -63,12 +47,12 @@ namespace TradingSystemTests
         /// already logged in
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestLoginFailed1()
+        public void TestIntegLoginFailed1()
         {
-            signup();
+            string user = signup();
             UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
             Assert.AreEqual("user is already logged in", UserManagement.Instance.LogIn("inbi2001", "123456", "lala"));
-            delete();
+            delete(user);
 
         }
 
@@ -76,11 +60,11 @@ namespace TradingSystemTests
         /// password doesn't match username
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestLoginFailed2()
+        public void TestIntegLoginFailed2()
         {
-            signup();
+            string user = signup();
             Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
-            delete();
+            delete(user);
 
         }
 
@@ -88,22 +72,21 @@ namespace TradingSystemTests
         /// username doesn't exist
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestLoginFailed3()
+        public void TestIntegLoginFailed3()
         {
             Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
-            delete();
 
         }
 
         /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
         [TestMethod]
         [TestCategory("uc3")]
-        public void TestLogoutSuccess()
+        public void TestIntegLogoutSuccess()
         {
-            signup();
+            string user = signup();
             UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
             Assert.AreNotEqual(null, UserManagement.Instance.Logout("inbi2001"));
-            delete();
+            delete(user);
 
         }
 
@@ -111,11 +94,11 @@ namespace TradingSystemTests
         /// not logged in
         [TestMethod]
         [TestCategory("uc3")]
-        public void TestLogoutFail1()
+        public void TestIntegLogoutFail1()
         {
-            signup();
+            string user = signup();
             Assert.AreEqual(null, UserManagement.Instance.Logout("inbi2001"));
-            delete();
+            delete2(user);
 
         }
 
@@ -123,15 +106,11 @@ namespace TradingSystemTests
         /// user doesn't exist
         [TestMethod]
         [TestCategory("uc3")]
-        public void TestLogoutFail2()
+        public void TestIntegLogoutFail2()
         {
             Assert.AreEqual(null, UserManagement.Instance.Logout("inbi200151"));
 
         }
 
-        [ClassCleanup]
-        public static void removeMockMarket() {
-            UserManagement.Instance.Marketo = Market.Instance;
-        }
     }
 }

@@ -92,17 +92,17 @@ namespace TradingSystem.Business.UserManagement
         }
 
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
-        public bool Logout(string username)
+        public string Logout(string username)
         {
             DataUser u = null;
             if (dataUsers.TryGetValue(username, out u))
             {
                 if (u.IsLoggedin == false)
-                    return false;
+                    return null;
                 u.IsLoggedin = false;
                 return marketo.logout(username);
             }
-            return false;
+            return null;
         }
 
         public Guid getIdByUsername(string username)
