@@ -4,6 +4,9 @@ namespace AcceptanceTests.AppInterface.UserBridge
 {
     public interface IUserBridge
     {
+        bool Connect();
+        bool Disconnect();
+
         // TODO:
         // Find out how to make the password safer when invoking this method.
         // Find out how the developers used a safe password protocol and use it's client.

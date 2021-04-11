@@ -16,6 +16,16 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public override IUserBridge Bridge => this;
 
+        public bool Connect()
+        {
+            return RealBridge != null && RealBridge.Connect();
+        }
+
+        public bool Disconnect()
+        {
+            return RealBridge != null && RealBridge.Disconnect();
+        }
+
         public bool AssureSignUp(UserInfo signupInfo)
         {
             if (registeredUsers.TryGetValue(signupInfo, out UserInfo? registeredUser))

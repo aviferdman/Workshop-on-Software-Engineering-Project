@@ -6,7 +6,7 @@ using TradingSystem.Business.UserManagement;
 
 namespace TradingSystem.Service
 {
-    class UserService
+    public class UserService
     {
         private UserManagement userManagement;
         private static readonly Lazy<UserService>

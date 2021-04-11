@@ -97,7 +97,7 @@ namespace AcceptanceTests.Tests.Market
         [TearDown]
         public override void Teardown()
         {
-            useCase_login_buyer?.TearDown();
+            useCase_login_buyer?.Teardown();
             for (int i = MarketState.Length - 1; i >= 0; i--)
             {
                 ShopTestState shop = MarketState[i];

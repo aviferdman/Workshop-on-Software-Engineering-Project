@@ -19,5 +19,8 @@ namespace AcceptanceTests.Tests.User
 
         [SetUp]
         public virtual void Setup() { }
+
+        [TearDown]
+        public virtual void Teardown() { }
     }
 }

@@ -5,7 +5,7 @@ using TradingSystem.Business.Market;
 
 namespace TradingSystem.Service
 {
-    class StoreData
+    public class StoreData
     {
         private Guid _id;
         public StoreData(Store store)

@@ -76,7 +76,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public override void Teardown()
         {
             _ = Bridge.RemoveProductFromUserCart(ProductId);
-            useCase_login_buyer?.TearDown();
+            useCase_login_buyer?.Teardown();
             bool loggedInToShopOwner = SystemContext.UserBridge.Login(ShopOwnerUser);
             if (loggedInToShopOwner)
             {

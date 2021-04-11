@@ -8,7 +8,7 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Service
 {
-    class MarketService
+    public class MarketService
     {
         private Market market;
 

@@ -17,16 +17,19 @@ namespace AcceptanceTests.AppInterface
         private readonly ProxyBase<IUserBridge> userBridge;
         private readonly ProxyBase<IMarketBridge> marketBridge;
 
-        private SystemContext()
+        private SystemContext(ProxyBase<IUserBridge> userBridge, ProxyBase<IMarketBridge> marketBridge)
         {
-            userBridge = new UserBridgeProxy(null);
-            marketBridge = new MarketBridgeProxy(null);
+            this.userBridge = userBridge;
+            this.marketBridge = marketBridge;
             LoggedInUser = null;
         }
 
         private static SystemContext New()
         {
-            var system = new SystemContext();
+            var system = new SystemContext(
+                userBridge:   new UserBridgeProxy(UserBridgeAdapter.New()),
+                marketBridge: new MarketBridgeProxy(null)
+            );
             system.userBridge.SystemContext = system;
             system.marketBridge.SystemContext = system;
             return system;

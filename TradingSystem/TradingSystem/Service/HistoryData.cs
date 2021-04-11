@@ -7,7 +7,7 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Service
 {
-    class HistoryData
+    public class HistoryData
     {
         ICollection<DeliveryStatus> _deliveries;
         ICollection<PaymentStatus> _payments;

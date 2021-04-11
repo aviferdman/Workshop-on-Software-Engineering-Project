@@ -24,6 +24,7 @@ namespace AcceptanceTests.Tests.User
 
         private UseCase_Login test_login;
         private UseCase_LogOut_TestLogic testLogic;
+        private bool logged_out;
 
         public UseCase_LogOut(SystemContext systemContext, UserInfo loginInfo) :
             base(systemContext, loginInfo)
@@ -38,12 +39,27 @@ namespace AcceptanceTests.Tests.User
             test_login.Success_Normal();
 
             testLogic = new UseCase_LogOut_TestLogic(SystemContext);
+            logged_out = false;
+        }
+
+        public override void Teardown()
+        {
+            if (logged_out)
+            {
+                test_login.test_signUp.Teardown();
+            }
+            else
+            {
+                test_login.Teardown();
+            }
+            base.Teardown();
         }
 
         [Test]
         public void Success_Normal()
         {
             testLogic.Success_Normal();
+            logged_out = true;
         }
     }
 }

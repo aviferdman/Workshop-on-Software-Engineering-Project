@@ -38,7 +38,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TearDown]
         public override void Teardown()
         {
-            useCase_login?.TearDown();
+            useCase_login?.Teardown();
         }
 
         [Test]

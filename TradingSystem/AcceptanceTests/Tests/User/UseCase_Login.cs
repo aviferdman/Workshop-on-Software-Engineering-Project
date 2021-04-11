@@ -22,7 +22,7 @@ namespace AcceptanceTests.Tests.User
             },
         };
 
-        private UseCase_SignUp test_signUp;
+        internal UseCase_SignUp test_signUp;
 
         public UseCase_Login(SystemContext systemContext, UserInfo loginInfo) :
             base(systemContext, loginInfo)
@@ -37,11 +37,11 @@ namespace AcceptanceTests.Tests.User
             test_signUp.Success_Normal();
         }
 
-        [TearDown]
-        public void TearDown()
+        public override void Teardown()
         {
-            // Should we use even use assertions in a teardown?
             _ = Bridge.LogOut();
+            test_signUp.Teardown();
+            base.Teardown();
         }
 
         [Test]

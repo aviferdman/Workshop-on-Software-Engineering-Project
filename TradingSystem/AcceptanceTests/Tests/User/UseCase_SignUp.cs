@@ -26,17 +26,29 @@ namespace AcceptanceTests.Tests.User
             base(systemContext, signupInfo)
         { }
 
+        public override void Setup()
+        {
+            base.Setup();
+            Assert.IsTrue(Bridge.Connect());
+        }
+
+        public override void Teardown()
+        {
+            _ = Bridge.Disconnect();
+            base.Teardown();
+        }
+
         [Test]
         public void Success_Normal()
         {
-            Assert.AreEqual(true, Bridge.AssureSignUp(UserInfo));
+            Assert.IsTrue(Bridge.AssureSignUp(UserInfo));
         }
 
         [Test]
         public void Failure_UsernameTaken()
         {
             Success_Normal();
-            Assert.AreEqual(true, Bridge.SignUp(UserInfo.WithDifferentPassword("abcd1234")));
+            Assert.IsFalse(Bridge.SignUp(UserInfo.WithDifferentPassword("abcd1234")));
         }
     }
 }
