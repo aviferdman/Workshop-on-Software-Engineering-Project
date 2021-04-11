@@ -11,9 +11,19 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
     /// Acceptance test for
     /// Use case 23: add product to shop
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/18
-    [TestFixture(SHOP_NAME, USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD)]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_AddProductToShop : ShopManagementTestBase
     {
+        private static readonly object[] FixtureArgs =
+        {
+            new object[]
+            {
+                SystemContext.Instance,
+                User_ShopOwner1,
+                SHOP_NAME,
+            },
+        };
+
         private static readonly object[] TestProductInfo =
         {
             new object[]
@@ -25,10 +35,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         private UseCase_OpenShop useCase_openShop;
         private Queue<ProductId> products;
 
-        public UseCase_AddProductToShop(string shopName, string shopUsername, string shopUserPassword) :
-            this(shopName, SystemContext.Instance, new UserInfo(shopUsername, shopUserPassword))
-        { }
-        public UseCase_AddProductToShop(string shopName, SystemContext systemContext, UserInfo userInfo) :
+        public UseCase_AddProductToShop(SystemContext systemContext, UserInfo userInfo, string shopName) :
             base(systemContext, userInfo)
         {
             ShopName = shopName;

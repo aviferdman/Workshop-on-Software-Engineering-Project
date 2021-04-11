@@ -1,5 +1,6 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 namespace AcceptanceTests.Tests.Market.Shop
 {
@@ -11,8 +12,8 @@ namespace AcceptanceTests.Tests.Market.Shop
 
         protected void LoginToBuyer()
         {
-            _ = SystemContext.UserBridge.LogOut();
-            _ = Login(new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD));
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            _ = Login(User_Buyer);
         }
     }
 }

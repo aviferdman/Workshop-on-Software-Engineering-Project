@@ -10,12 +10,18 @@ namespace AcceptanceTests.Tests.User
     /// Use case 1: Sign Up
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
     /// </summary>
-    [TestFixture(USERNAME, PASSWORD)]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_SignUp : MemberUseTestBase
     {
-        public UseCase_SignUp(string username, string password) :
-            this(SystemContext.Instance, new UserInfo(username, password))
-        { }
+        private static readonly object[] FixtureArgs =
+        {
+            new object[]
+            {
+                SystemContext.Instance,
+                User,
+            },
+        };
+
         public UseCase_SignUp(SystemContext systemContext, UserInfo signupInfo) :
             base(systemContext, signupInfo)
         { }

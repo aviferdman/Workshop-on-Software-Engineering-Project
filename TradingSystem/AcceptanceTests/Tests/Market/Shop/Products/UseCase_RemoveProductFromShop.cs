@@ -10,16 +10,23 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
     /// Acceptance test for
     /// Use case 24: remove product from shop
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/19
-    [TestFixture(SHOP_NAME, USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD)]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_RemoveProductFromShop : ShopManagementTestBase
     {
+        private static readonly object[] FixtureArgs =
+        {
+            new object[]
+            {
+                SystemContext.Instance,
+                User_ShopOwner1,
+                SHOP_NAME,
+            },
+        };
+
         private UseCase_AddProductToShop useCase_addProduct;
         private ProductId product;
 
-        public UseCase_RemoveProductFromShop(string shopName, string shopUsername, string shopUserPassword) :
-            this(shopName, SystemContext.Instance, new UserInfo(shopUsername, shopUserPassword))
-        { }
-        public UseCase_RemoveProductFromShop(string shopName, SystemContext systemContext, UserInfo userInfo) :
+        public UseCase_RemoveProductFromShop(SystemContext systemContext, UserInfo userInfo, string shopName) :
             base(systemContext, userInfo)
         {
             ShopName = shopName;
@@ -32,7 +39,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProductToShop(ShopName, SystemContext.Instance, UserInfo);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopName);
             useCase_addProduct.Setup();
             product = useCase_addProduct.Success_Normal(new ProductInfo("cucumber", 4, 7));
         }

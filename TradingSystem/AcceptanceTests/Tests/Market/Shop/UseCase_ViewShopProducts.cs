@@ -23,7 +23,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_SHOP_OWNER_NAME, USER_BUYER_PASSWORD),
+                User_ShopOwner1,
                 new ShopInfo(SHOP_NAME),
                 new ProductIdentifiable[]
                 {
@@ -50,7 +50,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [SetUp]
         public void Setup()
         {
-            useCase_addProduct = new UseCase_AddProductToShop(ShopInfo.Name, SystemContext, ShopOwnerUser);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopOwnerUser, ShopInfo.Name);
             useCase_addProduct.Setup();
 
             foreach (ProductIdentifiable product in Products)

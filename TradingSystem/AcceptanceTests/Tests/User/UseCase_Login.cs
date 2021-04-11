@@ -10,13 +10,20 @@ namespace AcceptanceTests.Tests.User
     /// Use case 2: Login
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
     /// </summary>
-    [TestFixture(USERNAME, PASSWORD)]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_Login : MemberUseTestBase
     {
+        private static readonly object[] FixtureArgs =
+        {
+            new object[]
+            {
+                SystemContext.Instance,
+                User,
+            },
+        };
+
         private UseCase_SignUp test_signUp;
-        public UseCase_Login(string username, string password) :
-            this(SystemContext.Instance, new UserInfo(username, password))
-        { }
+
         public UseCase_Login(SystemContext systemContext, UserInfo loginInfo) :
             base(systemContext, loginInfo)
         { }
@@ -33,7 +40,6 @@ namespace AcceptanceTests.Tests.User
         [TearDown]
         public void TearDown()
         {
-
             // Should we use even use assertions in a teardown?
             _ = Bridge.LogOut();
         }
@@ -53,7 +59,13 @@ namespace AcceptanceTests.Tests.User
         [Test]
         public void Failure_UsernameDoesntExist()
         {
-            Assert.AreEqual(false, Bridge.Login(new UserInfo("invaliduser1", "wrongpasswrod")));
+            Assert.AreEqual(false, Bridge.Login(new UserInfo("invaliduser1", "wrongpasswrod", "0501478963", new Address
+            {
+                State = "Israel",
+                City = "City 2",
+                Street = "Hello",
+                ApartmentNum = "5",
+            })));
         }
 
         [Test]

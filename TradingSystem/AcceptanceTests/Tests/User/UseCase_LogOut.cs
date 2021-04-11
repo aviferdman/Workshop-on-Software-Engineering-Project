@@ -10,15 +10,21 @@ namespace AcceptanceTests.Tests.User
     /// Use case 3: Log out
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
     /// </summary>
-    [TestFixture(USERNAME, PASSWORD)]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_LogOut : MemberUseTestBase
     {
+        private static readonly object[] FixtureArgs =
+        {
+            new object[]
+            {
+                SystemContext.Instance,
+                User,
+            },
+        };
+
         private UseCase_Login test_login;
         private UseCase_LogOut_TestLogic testLogic;
 
-        public UseCase_LogOut(string username, string password) :
-            this(SystemContext.Instance, new UserInfo(username, password))
-        { }
         public UseCase_LogOut(SystemContext systemContext, UserInfo loginInfo) :
             base(systemContext, loginInfo)
         { }

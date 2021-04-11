@@ -19,7 +19,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_SHOP_OWNER_NAME, USER_BUYER_PASSWORD),
+                User_ShopOwner1,
                 new ShopInfo(SHOP_NAME),
             },
         };

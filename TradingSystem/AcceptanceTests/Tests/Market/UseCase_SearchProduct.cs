@@ -23,7 +23,7 @@ namespace AcceptanceTests.Tests.Market
             new ShopImage[]
             {
                 new ShopImage(
-                    new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
+                    User_ShopOwner1,
                     new ShopInfo(SHOP_NAME),
                     new ProductIdentifiable[]
                     {
@@ -31,7 +31,7 @@ namespace AcceptanceTests.Tests.Market
                     }
                 ),
                 new ShopImage(
-                    new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
+                    User_ShopOwner1,
                     new ShopInfo(SHOP_NAME),
                     new ProductIdentifiable[]
                     {
@@ -46,7 +46,7 @@ namespace AcceptanceTests.Tests.Market
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
+                User_Buyer,
                 DefaultMarketImageFactorry
             },
         };
@@ -202,7 +202,7 @@ namespace AcceptanceTests.Tests.Market
 
             public void Login()
             {
-                useCase_addProduct = new UseCase_AddProductToShop(ShopImage.ShopInfo.Name, SystemContext, ShopImage.OwnerUser);
+                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage.OwnerUser, ShopImage.ShopInfo.Name);
                 useCase_addProduct.Setup();
             }
 

@@ -5,24 +5,18 @@ namespace AcceptanceTests.AppInterface.Data
 {
     public class UserInfo : IEquatable<UserInfo>
     {
-        public UserInfo(string username, string password)
+        public UserInfo(string username, string password, string phoneNumber, Address address)
         {
-            if (string.IsNullOrWhiteSpace(username))
-            {
-                throw new ArgumentException($"'{nameof(username)}' cannot be null or whitespace.", nameof(username));
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                throw new ArgumentException($"'{nameof(password)}' cannot be null or whitespace.", nameof(password));
-            }
-
             Username = username;
             Password = password;
+            Address = address;
+            PhoneNumber = phoneNumber;
         }
 
         public string Username { get; }
         public string Password { get; }
+        public string PhoneNumber { get; }
+        public Address Address { get; }
 
         public UserInfo WithDifferentPassword(string password)
         {
@@ -31,7 +25,7 @@ namespace AcceptanceTests.AppInterface.Data
                 throw new ArgumentException("Trying to create the same user with a different password, but the password provided is the same.", nameof(password));
             }
 
-            return new UserInfo(Username, password);
+            return new UserInfo(Username, password, PhoneNumber, Address);
         }
 
         public override bool Equals(object? obj) => obj is UserInfo other && Equals(other);

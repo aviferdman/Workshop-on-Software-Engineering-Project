@@ -21,8 +21,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
-                new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
+                User_Buyer,
+                User_ShopOwner1,
                 SHOP_NAME,
                 new ProductInfo("speakers", 30, 90),
                 60
@@ -60,7 +60,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             base.Setup();
 
-            useCase_addProduct = new UseCase_AddProductToShop(ShopName, SystemContext, ShopOwnerUser);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopOwnerUser, ShopName);
             useCase_addProduct.Setup();
             ProductId = useCase_addProduct.Success_Normal(ProductInfo);
 

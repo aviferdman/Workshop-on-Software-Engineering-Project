@@ -7,8 +7,7 @@ namespace AcceptanceTests.Tests.User
 {
     public class MemberUseTestBase : UserTestBase
     {
-        public const string USERNAME = SharedTestsConstants.USER_OTHER_NAME;
-        public const string PASSWORD = SharedTestsConstants.USER_OTHER_PASSWORD;
+        public static readonly UserInfo User = SharedTestsData.User_Other;
 
         public UserInfo UserInfo { get; }
 

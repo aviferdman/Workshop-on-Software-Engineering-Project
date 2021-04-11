@@ -19,8 +19,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
-                new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
+                User_Buyer,
+                User_ShopOwner1,
                 SHOP_NAME,
                 new ProductInfo("speakers", 30, 90),
                 10,

@@ -10,14 +10,20 @@ namespace AcceptanceTests.Tests.Market.Shop
     /// Acceptance test for
     /// Use case 22: Open shop
     /// https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-    [TestFixture(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD)]
+    [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_OpenShop : ShopManagementTestBase
     {
+        private static readonly object[] FixtureArgs =
+        {
+            new object[]
+            {
+                SystemContext.Instance,
+                User_ShopOwner1,
+            },
+        };
+
         public UseCase_Login useCase_login;
 
-        public UseCase_OpenShop(string username, string password) :
-            this(SystemContext.Instance, new UserInfo(username, password))
-        { }
         public UseCase_OpenShop(SystemContext systemContext, UserInfo userInfo) :
             base(systemContext, userInfo)
         { }

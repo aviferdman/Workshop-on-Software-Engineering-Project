@@ -21,7 +21,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_SHOP_OWNER_NAME, USER_SHOP_OWNER_PASSWORD),
+                User_ShopOwner1,
                 new ShopInfo(SHOP_NAME),
                 new ProductEditInfo[]
                 {
@@ -66,7 +66,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProductToShop(ShopInfo.Name, SystemContext.Instance, UserInfo);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo.Name);
             useCase_addProduct.Setup();
             foreach (ProductEditInfo productEditInfo in ProductEditInfos)
             {

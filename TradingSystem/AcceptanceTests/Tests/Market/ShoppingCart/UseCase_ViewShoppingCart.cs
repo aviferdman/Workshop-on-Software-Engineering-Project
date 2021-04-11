@@ -21,7 +21,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             new object[]
             {
                 SystemContext.Instance,
-                new UserInfo(USER_BUYER_NAME, USER_BUYER_PASSWORD),
+                User_Buyer,
                 UseCase_SearchProduct.DefaultMarketImageFactorry,
                 (Func<ShopImage[], IEnumerable<ProductInCart>>)
                   delegate(ShopImage[] marketImage) {
