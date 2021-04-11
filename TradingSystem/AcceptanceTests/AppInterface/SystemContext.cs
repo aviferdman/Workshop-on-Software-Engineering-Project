@@ -5,7 +5,9 @@ using AcceptanceTests.AppInterface.UserBridge;
 namespace AcceptanceTests.AppInterface
 {
     /// <summary>
-    /// Preserves the state within a single test's execution
+    /// It seems redundant now and it's too much of a hassle to change it now.
+    /// 
+    /// Was initially for preserving the state within a single test's execution
     /// such that other sub-tests it calls will remember this state.
     /// Running a new test will not interfere with this state (not as a sub-test),
     /// so we are not relaying on certain global state or execution order.
