@@ -86,6 +86,7 @@ namespace TradingSystem.Business.Market
             string GuidString;
             u.State = new MemberState(u.Id);
             u.Id = id;
+            u.Username = usrname;
             u.IsLoggedIn = true;
             if (membersShoppingCarts.TryGetValue(usrname, out s))
                 u.ShoppingCart = s;
@@ -101,7 +102,7 @@ namespace TradingSystem.Business.Market
                         GuidString = Convert.ToBase64String(g.ToByteArray());
                         GuidString = GuidString.Replace("=", "");
                         GuidString = GuidString.Replace("+", "");
-                        u.Username = GuidString;
+                        guest.Username = GuidString;
                     } while (!activeUsers.TryAdd(GuidString, guest));
                 }
                 
@@ -110,14 +111,24 @@ namespace TradingSystem.Business.Market
         }
 
         ///after logout - <see cref="UserManagement.UserManagement.Logout(string)"/> 
-        public bool logout(string username)
+        public string logout(string username)
         {
             User u;
-            if (!activeUsers.TryGetValue(username, out u))
-                return false;
+            if (!activeUsers.TryRemove(username, out u))
+                return null;
+            u.Id = Guid.NewGuid();
             u.ChangeState(new MemberState(u.Id));
             u.ShoppingCart = new ShoppingCart();
-            return true;
+            string GuidString;
+            do
+            {
+                Guid g = Guid.NewGuid();
+                GuidString = Convert.ToBase64String(g.ToByteArray());
+                GuidString = GuidString.Replace("=", "");
+                GuidString = GuidString.Replace("+", "");
+                u.Username = GuidString;
+            } while (!activeUsers.TryAdd(GuidString, u));
+            return u.Username;
         }
 
 
