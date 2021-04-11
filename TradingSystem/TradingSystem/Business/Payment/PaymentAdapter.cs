@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace TradingSystem.Business.Delivery
+namespace TradingSystem.Business.Payment
 {
-    class PaymentAdapter
+    public interface PaymentAdapter
     {
+        public PaymentStatus CreatePayment(PaymentDetails paymentDetails);
+        public PaymentStatus CancelPayment(PaymentStatus paymentStatus);
     }
 }

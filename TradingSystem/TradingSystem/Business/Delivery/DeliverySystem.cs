@@ -1,20 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Delivery
 {
-    class DeliverySystem
+    public class DeliverySystem
     {
         private static readonly Lazy<DeliverySystem>
-        lazy =
+        _lazy =
         new Lazy<DeliverySystem>
             (() => new DeliverySystem());
 
-        public static DeliverySystem Instance { get { return lazy.Value; } }
+        public static DeliverySystem Instance { get { return _lazy.Value; } }
 
         private DeliverySystem()
         {
+        }
+
+        public Guid CreateDelivery(Guid recieverId, string recieverPhone, double weight, string source, string destination)
+        {
+            return generatePackageId();
+        }
+
+        public Guid CancelDelivery(Guid packageId)
+        {
+            return generatePackageId();
+        }
+        private Guid generatePackageId()
+        {
+            return Guid.NewGuid();
         }
     }
 }
