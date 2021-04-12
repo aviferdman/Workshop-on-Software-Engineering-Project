@@ -29,7 +29,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(storePermissionType, new Founder(user.Id).GetType());
 
         }
-        
+         
         /// test for function :<see cref="TradingSystem.Business.Market.User.CreateStore(string, TradingSystem.Business.Market.BankAccount, TradingSystem.Business.Market.Address)"/>
         [TestMethod]
         public void NotCreateStoreAndCheckNotFounder()
