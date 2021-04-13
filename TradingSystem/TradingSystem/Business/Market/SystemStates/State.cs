@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Market
@@ -13,11 +14,11 @@ namespace TradingSystem.Business.Market
         {
         }
 
-        public abstract History GetUserHistory(Guid userId);
+        public abstract UserHistory GetUserHistory(Guid userId);
 
-        public abstract History GetAllHistory();
+        public abstract StoreHistory GetStoreHistory(Store store);
 
-        public abstract History GetStoreHistory(Guid storeId);
+        public abstract ICollection<IHistory> GetAllHistory();
 
         public Transaction GetTransaction()
         {

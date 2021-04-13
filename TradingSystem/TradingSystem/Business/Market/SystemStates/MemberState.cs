@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Market
@@ -9,24 +10,27 @@ namespace TradingSystem.Business.Market
     {
 
         private Guid _userId;
+        private UserHistory _userHistory;
 
-        public MemberState(Guid userId) : base()
+        public MemberState(Guid userId, UserHistory userHistory) : base()
         {
             this._userId = userId;
+            this._userHistory = userHistory;
         }
 
-        public override History GetAllHistory()
+        public override ICollection<IHistory> GetAllHistory()
         {
             throw new UnauthorizedAccessException();
         }
 
-        public override History GetStoreHistory(Guid storeId)
+        public override StoreHistory GetStoreHistory(Store store)
         {
             throw new UnauthorizedAccessException();
         }
-        public override History GetUserHistory(Guid userId)
+
+        public override UserHistory GetUserHistory(Guid userId)
         {
-            return GetTransaction().GetHistory(_userId);
+            return _userHistory;
         }
     }
 }

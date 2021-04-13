@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Market
@@ -12,17 +13,17 @@ namespace TradingSystem.Business.Market
 
         }
 
-        public override History GetAllHistory()
+        public override ICollection<IHistory> GetAllHistory()
         {
             throw new UnauthorizedAccessException();
         }
 
-        public override History GetStoreHistory(Guid storeId)
+        public override StoreHistory GetStoreHistory(Store store)
         {
             throw new UnauthorizedAccessException();
         }
 
-        public override History GetUserHistory(Guid userId)
+        public override UserHistory GetUserHistory(Guid userId)
         {
             throw new UnauthorizedAccessException();
         }

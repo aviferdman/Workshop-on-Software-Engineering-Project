@@ -14,7 +14,7 @@ namespace TradingSystem.Business.Market
             this._product_quantity = new Dictionary<Product, int>();
         }
 
-        internal Dictionary<Product, int> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
+        public Dictionary<Product, int> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
 
         public bool IsEmpty()
         {

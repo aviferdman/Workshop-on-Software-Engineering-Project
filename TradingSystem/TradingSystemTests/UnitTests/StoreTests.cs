@@ -29,10 +29,12 @@ namespace TradingSystemTests.MarketTests
             Product product2 = new Product("2", 20, 20, 20);
             product_quantity.Add(product1, 1);
             product_quantity.Add(product2, 2);
+            ShoppingBasket shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Product_quantity = product_quantity;
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
-            PurchaseStatus purchaseStatus = store.Purchase(product_quantity, clienId, clientPhone, address, bankAccount, paySum);
+            PurchaseStatus purchaseStatus = store.Purchase(shoppingBasket, clienId, clientPhone, address, bankAccount, paySum);
             Assert.AreEqual(true, purchaseStatus.TransactionStatus.Status);
 
         }
@@ -56,7 +58,9 @@ namespace TradingSystemTests.MarketTests
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
-            PurchaseStatus purchaseStatus = store.Purchase(product_quantity, clienId, clientPhone, address, bankAccount, paySum);
+            ShoppingBasket shoppingBasket = new ShoppingBasket();
+            shoppingBasket.Product_quantity = product_quantity;
+            PurchaseStatus purchaseStatus = store.Purchase(shoppingBasket, clienId, clientPhone, address, bankAccount, paySum);
             Assert.AreEqual(false, purchaseStatus.PreConditions);
 
         }

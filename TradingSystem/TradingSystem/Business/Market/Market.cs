@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
@@ -15,6 +16,7 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<Guid,IStore> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
+        private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<Market>
         _lazy =
@@ -31,6 +33,7 @@ namespace TradingSystem.Business.Market
             _stores = new ConcurrentDictionary<Guid, IStore>();
             activeUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
+            historyManager = HistoryManager.Instance;
         }
 
         public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
@@ -84,7 +87,7 @@ namespace TradingSystem.Business.Market
             if (!activeUsers.TryRemove(guestusername, out u))
                 return false;
             string GuidString;
-            u.State = new MemberState(u.Id);
+            u.State = new MemberState(u.Id, new UserHistory());
             u.Id = id;
             u.Username = usrname;
             u.IsLoggedIn = true;
@@ -117,7 +120,7 @@ namespace TradingSystem.Business.Market
             if (!activeUsers.TryRemove(username, out u))
                 return null;
             u.Id = Guid.NewGuid();
-            u.ChangeState(new MemberState(u.Id));
+            u.ChangeState(new MemberState(u.Id, new UserHistory()));
             u.ShoppingCart = new ShoppingCart();
             string GuidString;
             do
@@ -169,14 +172,14 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
-        public History GetAllHistory(string username)
+        public ICollection<IHistory> GetAllHistory(string username)
         {
             User user = GetUserByUserName(username);
             return user.State.GetAllHistory();
         }
 
         //use case 10 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/70
-        public History GetUserHistory(string username)
+        public UserHistory GetUserHistory(string username)
         {
             User user = GetUserByUserName(username);
             Guid userId = user.Id;
@@ -184,10 +187,11 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
-        public History GetStoreHistory(string username, Guid storeId)
+        public StoreHistory GetStoreHistory(string username, Guid storeId)
         {
             User user = GetUserByUserName(username);
-            return user.State.GetStoreHistory(storeId);
+            IStore store = GetStoreById(storeId);
+            return store.GetStoreHistory(user.Id);
         }
 
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76

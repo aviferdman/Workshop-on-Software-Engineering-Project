@@ -59,14 +59,14 @@ namespace TradingSystemTests.MarketTests
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(product1, 1);
             product_quantity.Add(product2, 2);
-            PurchaseStatus purchaseStatus = new PurchaseStatus(false, null, storeId, product_quantity);
+            PurchaseStatus purchaseStatus = new PurchaseStatus(false, null, storeId);
 
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<Dictionary<Product, int>>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
             shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
-            Assert.AreEqual(true, shoppingCart.Purchase(clienId, bankAccount, clientPhone, clientAddress, paySum));
+            Assert.AreEqual(true, shoppingCart.Purchase(clienId, bankAccount, clientPhone, clientAddress, paySum).Status);
 
         }
 
@@ -88,15 +88,16 @@ namespace TradingSystemTests.MarketTests
             product_quantity.Add(product2, 2);
             DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid(), clientId, storeId, false);
             PaymentStatus paymentStatus = new PaymentStatus(Guid.NewGuid(), clientId, storeId, true);
-            TransactionStatus transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, true);
-            PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId, product_quantity);
-
-            Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<Dictionary<Product, int>>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
+            TransactionStatus transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket1.Object, true);
+            PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
+
+            Mock<IStore> store1 = new Mock<IStore>();
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
+
             shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
-            Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum));
+            Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum).Status);
 
         }
 
@@ -118,15 +119,15 @@ namespace TradingSystemTests.MarketTests
             product_quantity.Add(product2, 2);
             DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid(), clientId, storeId, true);
             PaymentStatus paymentStatus = new PaymentStatus(Guid.NewGuid(), clientId, storeId, false);
-            TransactionStatus transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, true);
-            PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId, product_quantity);
-
-            Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<Dictionary<Product, int>>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
+            TransactionStatus transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket1.Object, true);
+            PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
+            Mock<IStore> store1 = new Mock<IStore>();
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
+
             shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
-            Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum));
+            Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum).Status);
 
         }
         

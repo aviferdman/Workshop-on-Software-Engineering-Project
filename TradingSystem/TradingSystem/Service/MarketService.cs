@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Payment;
 
@@ -74,19 +75,24 @@ namespace TradingSystem.Service
             return market.PurchaseShoppingCart(username, bankAccount, phone, address);
         }
 
-        public HistoryData GetAllHistory(string username)
+        public ICollection<HistoryData> GetAllHistory(string username)
         {
-            History history = market.GetAllHistory(username);
-            return new HistoryData(history);
+            ICollection<IHistory> histories = market.GetAllHistory(username);
+            ICollection<HistoryData> ret = new HashSet<HistoryData>();
+            foreach (var his in histories)
+            {
+                ret.Add(new HistoryData(his));
+            }
+            return ret;
         }
         public HistoryData GetUserHistory(string username)
         {
-            History history = market.GetUserHistory(username);
+            UserHistory history = market.GetUserHistory(username);
             return new HistoryData(history);
         }
         public HistoryData GetStoreHistory(string username, Guid storeId)
         {
-            History history = market.GetStoreHistory(username, storeId);
+            StoreHistory history = market.GetStoreHistory(username, storeId);
             return new HistoryData(history);
         }
 

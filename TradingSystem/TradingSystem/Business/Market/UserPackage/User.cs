@@ -13,6 +13,7 @@ namespace TradingSystem.Business.Market
         private Guid _id;
         private string username;
         private bool isLoggedIn;
+        private UserHistory userHistory;
 
         public User(string username)
         {
@@ -21,6 +22,7 @@ namespace TradingSystem.Business.Market
             this._state = new GuestState();
             this.username = username;
             this.isLoggedIn = false;
+            this.UserHistory = new UserHistory();
         }
 
         public User()
@@ -36,6 +38,7 @@ namespace TradingSystem.Business.Market
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
+        public UserHistory UserHistory { get => userHistory; set => userHistory = value; }
 
         public void ChangeState(State state)
         {
@@ -53,7 +56,9 @@ namespace TradingSystem.Business.Market
             //chcek is not empty and legal policy
             if (ShoppingCart.IsEmpty() || !ShoppingCart.CheckPolicy()) return false;
             double paySum = ShoppingCart.CalcPaySum();
-            return ShoppingCart.Purchase(_id, bank, phone, address, paySum);
+            BuyStatus buyStatus = ShoppingCart.Purchase(_id, bank, phone, address, paySum);
+            userHistory.AddHistory(buyStatus.PurchaseStatuses);
+            return buyStatus.Status;
         }
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()
@@ -61,10 +66,7 @@ namespace TradingSystem.Business.Market
             return _shoppingCart.GetShopingCartProducts();
         }
 
-
-
-
-        public History GetUserHistory(Guid userId)
+        public UserHistory GetUserHistory(Guid userId)
         {
             return _state.GetUserHistory(userId);
         }

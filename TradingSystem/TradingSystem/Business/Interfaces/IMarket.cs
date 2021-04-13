@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
@@ -19,9 +20,9 @@ namespace TradingSystem.Business.Market
         public Store CreateStore(string name, string username, BankAccount bank, Address address);
         public ICollection<Store> GetStoresByName(string name);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
-        public History GetAllHistory(string username);
-        public History GetUserHistory(string username);
-        public History GetStoreHistory(string username, Guid storeId);
+        public ICollection<IHistory> GetAllHistory(string username);
+        public UserHistory GetUserHistory(string username);
+        public StoreHistory GetStoreHistory(string username, Guid storeId);
         public double ApplyDiscounts(string username, Guid storeId);
         public string logout(string username);
         public String AddProduct(ProductData product, Guid storeID, String username);

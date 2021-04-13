@@ -34,7 +34,7 @@ namespace TradingSystemTests.IntegrationTests
             testUserAddress = new Address("1", "1", "1", "1");
             testStoreAddress = new Address("2", "2", "2", "2");
             testUserBankAccount = new BankAccount(1, 1);
-            testUserBankAccount = new BankAccount(2, 2);
+            testStoreBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
         }
@@ -91,7 +91,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckLegalTransaction()
         {
             Transaction transaction = Transaction.Instance;
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new Dictionary<Product, int>());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, true);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, true);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
@@ -106,7 +106,7 @@ namespace TradingSystemTests.IntegrationTests
             paymentAdapter.Setup(p => p.CreatePayment(It.IsAny<PaymentDetails>())).Returns(paymentStatus);
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter = paymentAdapter.Object;
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new Dictionary<Product, int>());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.IsNull(transactionStatus.DeliveryStatus);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, false);
@@ -121,7 +121,7 @@ namespace TradingSystemTests.IntegrationTests
             deliveryAdapter.Setup(d => d.CreateDelivery(It.IsAny<DeliveryDetails>())).Returns(deliveryStatus);
             Transaction transaction = Transaction.Instance;
             transaction.DeliveryAdapter = deliveryAdapter.Object;
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new Dictionary<Product, int>());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, false);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);

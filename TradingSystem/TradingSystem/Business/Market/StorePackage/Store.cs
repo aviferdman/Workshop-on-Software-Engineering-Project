@@ -19,6 +19,7 @@ namespace TradingSystem.Business.Market
         private Policy _policy;
         private Address _address;
         private static Transaction _transaction = Transaction.Instance;
+        private StoreHistory history;
         private object _lock;
 
         public ConcurrentDictionary<String, Product> Products { get => _products; set => _products = value; }
@@ -30,6 +31,7 @@ namespace TradingSystem.Business.Market
         internal BankAccount Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public ConcurrentDictionary<Guid, IStorePermission> Personnel { get => personnel; set => personnel = value; }
+        public StoreHistory History { get => history; set => history = value; }
 
         public Store(string name, BankAccount bank, Address address)
         {
@@ -43,6 +45,7 @@ namespace TradingSystem.Business.Market
             this._bank = bank;
             this._address = address;
             this.personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            this.History = new StoreHistory();
         }
 
         public Guid GetId()
@@ -50,28 +53,28 @@ namespace TradingSystem.Business.Market
             return _id;
         }
 
-        public PurchaseStatus Purchase(Dictionary<Product, int> product_quantity, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum)
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
+            Dictionary<Product, int> product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
-
             lock (_lock)
             {
                 enoughtQuantity = EnoughQuantity(product_quantity);
                 //pre-conditions not legal
-                if (!enoughtQuantity) return new PurchaseStatus(false, null, _id, product_quantity);
+                if (!enoughtQuantity) return new PurchaseStatus(false, null, _id);
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, clientBankAccount, _id, _bank, paymentSum, product_quantity);
-            _transactionsHistory.Add(transactionStatus);
+            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, clientBankAccount, _id, _bank, paymentSum, shoppingBasket);
+            history.Add(transactionStatus);
             //transaction failed
             if (!transactionStatus.Status)
             {
                 CancelTransaction(product_quantity);
             }
-            return new PurchaseStatus(true, transactionStatus, _id, product_quantity);
+            return new PurchaseStatus(true, transactionStatus, _id);
         }
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity)
@@ -312,12 +315,12 @@ namespace TradingSystem.Business.Market
         }
 
         //Use case 41 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/67
-        public History GetStoreHistory(Guid userID)
+        public StoreHistory GetStoreHistory(Guid userID)
         {
             bool isPermitted = CheckPermission(userID, Permission.GetShopHistory);
             if (isPermitted)
             {
-                return _transaction.GetStoreHistory(_id);
+                return History;
             }
             throw new UnauthorizedAccessException();
         }

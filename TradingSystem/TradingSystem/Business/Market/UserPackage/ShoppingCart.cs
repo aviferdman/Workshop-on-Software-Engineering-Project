@@ -63,22 +63,22 @@ namespace TradingSystem.Business.Market
             return isLegal;
         }
 
-        public bool Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum)
+        public BuyStatus Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum)
         {
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
             foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
             {
-                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value.GetDictionaryProductQuantity(), clientId, clientPhone, clientAddress, clientBankAccount, paySum);
+                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value, clientId, clientPhone, clientAddress, clientBankAccount, paySum);
                 purchases.Add(purchaseStatus);
             }
             //If failed to make all the trasactions, need to cancel deliveries and payments
             IEnumerable<PurchaseStatus> failedPayments = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.PaymentStatus != null && pur.TransactionStatus.PaymentStatus.Status == false);
             IEnumerable<PurchaseStatus> failedDeliveries = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.DeliveryStatus != null && pur.TransactionStatus.DeliveryStatus.Status == false);
-            CancelPurchase(failedPayments, cancelDeliveries: false, cancelPayments: true);
-            CancelPurchase(failedDeliveries, cancelDeliveries: true, cancelPayments: false);
-            bool allSuceeded = !failedDeliveries.Any() && !failedPayments.Any();
+            CancelPurchase(failedPayments, cancelPayments: true);
+            CancelPurchase(failedDeliveries, cancelDeliveries: true);
             //means no transactions failed
-            return allSuceeded;
+            bool allSuceeded = !failedDeliveries.Any() && !failedPayments.Any();
+            return new BuyStatus(allSuceeded, purchases);
         }
 
         private void CancelPurchase(IEnumerable<PurchaseStatus> purchases, bool cancelDeliveries = false, bool cancelPayments = false)

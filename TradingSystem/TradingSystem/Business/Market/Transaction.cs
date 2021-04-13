@@ -13,7 +13,6 @@ namespace TradingSystem.Business.Market
     {
         private PaymentAdapter _paymentAdapter;
         private DeliveryAdapter _deliveryAdapter;
-        private History _history;
         private static readonly Lazy<Transaction>
         _lazy =
         new Lazy<Transaction>
@@ -23,13 +22,11 @@ namespace TradingSystem.Business.Market
 
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }
-        public History History { get => _history; set => _history = value; }
 
         private Transaction()
         {
             this.PaymentAdapter = new PaymentImpl();
             this.DeliveryAdapter = new DeliveryImpl();
-            this.History = new History();
         }
 
         internal void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
@@ -46,11 +43,12 @@ namespace TradingSystem.Business.Market
             }
         }
 
-        public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, BankAccount clientBankAccountId, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, Dictionary<Product, int> product_quantity)
+        public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, BankAccount clientBankAccountId, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
         {
             TransactionStatus transactionStatus;
             DeliveryStatus deliveryStatus;
             PaymentStatus paymentStatus;
+            var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             DeliveryDetails deliveryDetails = new DeliveryDetails(clientId, storeId, recieverPhone, weight, source, destination);
             PaymentDetails paymentDetails = new PaymentDetails(clientId, clientBankAccountId, storeId, recieverBankAccountId, paymentSum);
             ProductsStatus productsDetails = new ProductsStatus(clientId, storeId, product_quantity);
@@ -59,34 +57,16 @@ namespace TradingSystem.Business.Market
             if (paymentStatus.Status)
             {
                 deliveryStatus = DeliveryAdapter.CreateDelivery(deliveryDetails);
-                History.AddDelivery(deliveryStatus);
-                History.AddPayment(paymentStatus);
-                History.AddProductsQuantity(productsDetails);
-                transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, deliveryStatus.Status);
+                transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
             }
             else
             {
-                transactionStatus = new TransactionStatus(paymentStatus, null, false);
+                transactionStatus = new TransactionStatus(paymentStatus, null, shoppingBasket, false);
             }
             return transactionStatus;
         }
 
-        public History GetHistory(Guid userId)
-        {
-            return History.GetHistory(userId);
-        }
-
-        internal History GetStoreHistory(Guid storeId)
-        {
-            return History.GetStoreHistory(storeId);
-        }
-
-        public History GetAllHistory()
-        {
-            return History;
-        }
-
-        public TransactionStatus CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
+        public bool CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
         {
             PaymentStatus paymentStatus = null;
             DeliveryStatus deliveryStatus = null;
@@ -99,14 +79,14 @@ namespace TradingSystem.Business.Market
                 deliveryStatus = DeliveryAdapter.CancelDelivery(transactionStatus.DeliveryStatus);
             }
             bool allSucceeded = (deliveryStatus == null || deliveryStatus.Status) && (paymentStatus == null || paymentStatus.Status);
-            return new TransactionStatus(paymentStatus, deliveryStatus, allSucceeded);
+            return allSucceeded;
         }
 
         public void DeleteAllTests()
         {
             this.PaymentAdapter = new PaymentImpl();
             this.DeliveryAdapter = new DeliveryImpl();
-            this.History = new History();
+
         }
     }
 }

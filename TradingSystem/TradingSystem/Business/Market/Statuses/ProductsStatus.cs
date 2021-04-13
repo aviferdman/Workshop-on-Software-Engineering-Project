@@ -7,17 +7,21 @@ namespace TradingSystem.Business.Market
     {
         private Guid clientId;
         private Guid storeId;
-        private Dictionary<Product, int> product_quantity;
+        private ProductHistoryData productHistories;
 
         public ProductsStatus(Guid clientId, Guid storeId, Dictionary<Product, int> product_quantity)
         {
             this.ClientId = clientId;
             this.StoreId = storeId;
-            this.Product_quantity = product_quantity;
+            ProductHistories = new ProductHistoryData();
+            foreach (var p_q in product_quantity)
+            {
+                ProductHistories.Add(p_q.Key, p_q.Value);
+            }
         }
 
         public Guid ClientId { get => clientId; set => clientId = value; }
         public Guid StoreId { get => storeId; set => storeId = value; }
-        public Dictionary<Product, int> Product_quantity { get => product_quantity; set => product_quantity = value; }
+        public ProductHistoryData ProductHistories { get => productHistories; set => productHistories = value; }
     }
 }

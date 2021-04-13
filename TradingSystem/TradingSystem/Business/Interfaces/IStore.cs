@@ -6,7 +6,7 @@ namespace TradingSystem.Business.Market
     public interface IStore : IComparable
     {
         public Guid GetId();
-        public PurchaseStatus Purchase(Dictionary<Product, int> product_quantity, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum);
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum);
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity);
 
@@ -35,6 +35,8 @@ namespace TradingSystem.Business.Market
         public void AddDiscount(Discount discount);
 
         public void RemoveDiscount(Guid discountId);
+
+        public StoreHistory GetStoreHistory(Guid userID);
 
         public String DefineManagerPermissions(Guid managerID, Guid assignerID, List<Permission> permissions);
     }
