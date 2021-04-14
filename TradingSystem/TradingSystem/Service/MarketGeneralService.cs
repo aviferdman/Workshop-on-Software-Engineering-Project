@@ -11,14 +11,18 @@ namespace TradingSystem.Service
 {
     public class MarketGeneralService
     {
+        private static readonly Lazy<MarketGeneralService> instanceLazy = new Lazy<MarketGeneralService>(() => new MarketGeneralService(), true);
+
         private readonly MarketUsers marketUsers;
         private readonly MarketStores marketStores;
 
-        public MarketGeneralService()
+        private MarketGeneralService()
         {
             marketUsers = MarketUsers.Instance;
             marketStores = MarketStores.Instance;
         }
+
+        public static MarketGeneralService Instance => instanceLazy.Value;
 
         public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode = false)
         {

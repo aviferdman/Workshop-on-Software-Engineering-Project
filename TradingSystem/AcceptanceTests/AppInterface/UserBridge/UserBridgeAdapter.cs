@@ -22,7 +22,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public static UserBridgeAdapter New()
         {
-            return new UserBridgeAdapter(UserService.Instance, new MarketUserService());
+            return new UserBridgeAdapter(UserService.Instance, MarketUserService.Instance);
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool SignUp(UserInfo signupInfo)
         {
-            string result = userService.signup
+            string result = userService.Signup
             (
                 signupInfo.Username,
                 signupInfo.Password,
@@ -75,7 +75,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool Login(UserInfo loginInfo)
         {
-            bool success = userService.login(loginInfo.Username, loginInfo.Password, username) == "success";
+            bool success = userService.Login(loginInfo.Username, loginInfo.Password, username) == "success";
             if (success)
             {
                 username = loginInfo.Username;
@@ -98,7 +98,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private string LogoutCore()
         {
-            return userService.logout(username);
+            return userService.Logout(username);
         }
 
         private bool IdentifyAsGuestCore()

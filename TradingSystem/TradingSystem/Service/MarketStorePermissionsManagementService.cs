@@ -7,12 +7,17 @@ namespace TradingSystem.Service
 {
     public class MarketStorePermissionsManagementService
     {
+        private static readonly Lazy<MarketStorePermissionsManagementService> instanceLazy =
+            new Lazy<MarketStorePermissionsManagementService>(() => new MarketStorePermissionsManagementService(), true);
+
         private readonly MarketStores marketStores;
 
-        public MarketStorePermissionsManagementService()
+        private MarketStorePermissionsManagementService()
         {
             marketStores = MarketStores.Instance;
         }
+
+        public static MarketStorePermissionsManagementService Instance => instanceLazy.Value;
 
         public string MakeOwner(string assignee, Guid storeID, string assigner)
         {

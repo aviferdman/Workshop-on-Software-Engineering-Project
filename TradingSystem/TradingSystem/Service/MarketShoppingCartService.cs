@@ -7,12 +7,16 @@ namespace TradingSystem.Service
 {
     public class MarketShoppingCartService
     {
+        private static readonly Lazy<MarketShoppingCartService> instanceLazy = new Lazy<MarketShoppingCartService>(() => new MarketShoppingCartService(), true);
+
         private readonly MarketUsers marketUsers;
 
-        public MarketShoppingCartService()
+        private MarketShoppingCartService()
         {
             marketUsers = MarketUsers.Instance;
         }
+
+        public static MarketShoppingCartService Instance => instanceLazy.Value;
 
         public Dictionary<Guid, Dictionary<ProductData, int>> ViewShoppingCart(string username)
         {

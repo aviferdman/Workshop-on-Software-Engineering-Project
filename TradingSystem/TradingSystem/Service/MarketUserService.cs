@@ -1,15 +1,21 @@
-﻿using TradingSystem.Business.Market;
+﻿using System;
+
+using TradingSystem.Business.Market;
 
 namespace TradingSystem.Service
 {
     public class MarketUserService
     {
+        private static readonly Lazy<MarketUserService> instanceLazy = new Lazy<MarketUserService>(() => new MarketUserService(), true);
+
         private readonly MarketUsers marketUsers;
 
-        public MarketUserService()
+        private MarketUserService()
         {
             marketUsers = MarketUsers.Instance;
         }
+
+        public static MarketUserService Instance => instanceLazy.Value;
 
         //returns uniqe username for guest
         public string AddGuest()
