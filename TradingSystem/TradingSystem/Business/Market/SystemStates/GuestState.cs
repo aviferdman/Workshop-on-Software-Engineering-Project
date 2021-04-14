@@ -18,12 +18,12 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override StoreHistory GetStoreHistory(Store store)
+        public override ICollection<IHistory> GetStoreHistory(Store store)
         {
             throw new UnauthorizedAccessException();
         }
 
-        public override UserHistory GetUserHistory(Guid userId)
+        public override ICollection<IHistory> GetUserHistory(Guid userId)
         {
             throw new UnauthorizedAccessException();
         }

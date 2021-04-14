@@ -9,12 +9,11 @@ namespace TradingSystem.Business.Interfaces
 {
     public interface IHistory
     {
-        public void Add(TransactionStatus t);
 
-        public ICollection<DeliveryStatus> GetDeliveryStatuses();
+        public DeliveryStatus GetDeliveryStatus();
 
-        public ICollection<PaymentStatus> GetPaymentStatuses();
+        public PaymentStatus GetPaymentStatus();
 
-        public ICollection<ProductHistoryData> GetProductsStatuses();
+        public ProductHistoryData GetProductsStatus();
     }
 }

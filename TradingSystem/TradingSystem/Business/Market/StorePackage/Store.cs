@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.Histories;
 
 namespace TradingSystem.Business.Market
 {
@@ -19,7 +21,7 @@ namespace TradingSystem.Business.Market
         private Policy _policy;
         private Address _address;
         private static Transaction _transaction = Transaction.Instance;
-        private StoreHistory history;
+        private ICollection<IHistory> history;
         private object _lock;
 
         public ConcurrentDictionary<String, Product> Products { get => _products; set => _products = value; }
@@ -31,7 +33,7 @@ namespace TradingSystem.Business.Market
         internal BankAccount Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public ConcurrentDictionary<Guid, IStorePermission> Personnel { get => personnel; set => personnel = value; }
-        public StoreHistory History { get => history; set => history = value; }
+        public ICollection<IHistory> History { get => history; set => history = value; }
 
         public Store(string name, BankAccount bank, Address address)
         {
@@ -45,7 +47,7 @@ namespace TradingSystem.Business.Market
             this._bank = bank;
             this._address = address;
             this.personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            this.History = new StoreHistory();
+            this.History = new HashSet<IHistory>();
         }
 
         public Guid GetId()
@@ -53,7 +55,7 @@ namespace TradingSystem.Business.Market
             return _id;
         }
 
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum)
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
@@ -67,8 +69,8 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, clientBankAccount, _id, _bank, paymentSum, shoppingBasket);
-            history.Add(transactionStatus);
+            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
+            history.Add(new TransactionHistory(transactionStatus));
             //transaction failed
             if (!transactionStatus.Status)
             {
@@ -110,6 +112,7 @@ namespace TradingSystem.Business.Market
             return cost - discount;
         }
 
+        //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
         public double ApplyDiscounts(IShoppingBasket shoppingBasket)
         {
             var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket.GetDictionaryProductQuantity()));
@@ -315,7 +318,7 @@ namespace TradingSystem.Business.Market
         }
 
         //Use case 41 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/67
-        public StoreHistory GetStoreHistory(Guid userID)
+        public ICollection<IHistory> GetStoreHistory(Guid userID)
         {
             bool isPermitted = CheckPermission(userID, Permission.GetShopHistory);
             if (isPermitted)

@@ -18,7 +18,7 @@ namespace TradingSystem.Business.Market
         bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
         public ICollection<IHistory> GetAllHistory(string username);
-        public UserHistory GetUserHistory(string username);
+        public ICollection<IHistory> GetUserHistory(string username);
         public string logout(string username);
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId);
 

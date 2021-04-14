@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
 namespace TradingSystemTests.MarketTests
@@ -18,7 +19,7 @@ namespace TradingSystemTests.MarketTests
         public void GetUserHistoryWithCorrectUserId()
         {
             User user = new User("UserTest");
-            MemberState memberState = new MemberState(user.Id, new UserHistory());
+            MemberState memberState = new MemberState(user.Id, new HashSet<IHistory>());
             user.ChangeState(memberState);
             Assert.IsNotNull(memberState.GetUserHistory(user.Id)); // succeeded and returns an object
 
@@ -29,7 +30,7 @@ namespace TradingSystemTests.MarketTests
         public void GetUserHistoryWithWrongUserId()
         {
             User user = new User("UserTest");
-            MemberState memberState = new MemberState(user.Id, new UserHistory());
+            MemberState memberState = new MemberState(user.Id, new HashSet<IHistory>());
             user.ChangeState(memberState);
             Assert.IsNotNull(memberState.GetUserHistory(Guid.NewGuid())); // succeeded and returns an object
 

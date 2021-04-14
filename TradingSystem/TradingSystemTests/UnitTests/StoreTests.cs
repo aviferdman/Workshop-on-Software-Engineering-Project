@@ -21,8 +21,6 @@ namespace TradingSystemTests.MarketTests
             Guid clienId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1");
-            //Mock<BankAccount> bankAccount = new Mock<BankAccount>();
-            //bankAccount.Setup(ba => ba.CheckEnoughtCurrent(It.IsAny<double>())).Returns(true);
             BankAccount bankAccount = new BankAccount(1000, 1000);
             double paySum = 1;
             Product product1 = new Product("1", 10, 10, 10);
@@ -47,8 +45,6 @@ namespace TradingSystemTests.MarketTests
             Guid clienId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1");
-            //Mock<BankAccount> bankAccount = new Mock<BankAccount>();
-            //bankAccount.Setup(ba => ba.CheckEnoughtCurrent(It.IsAny<double>())).Returns(true);
             BankAccount bankAccount = new BankAccount(1000, 1000);
             double paySum = 1;
             Product product1 = new Product("1", 10, 10, 10);
