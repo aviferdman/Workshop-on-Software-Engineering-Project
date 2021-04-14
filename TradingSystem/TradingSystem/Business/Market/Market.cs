@@ -13,8 +13,11 @@ namespace TradingSystem.Business.Market
 {
     public class Market: IMarket
     {
+        private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
+
         private ConcurrentDictionary<Guid,IStore> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
+        private ConcurrentDictionary<string, User> adminUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
@@ -32,13 +35,48 @@ namespace TradingSystem.Business.Market
         {
             _stores = new ConcurrentDictionary<Guid, IStore>();
             activeUsers = new ConcurrentDictionary<string, User>();
+            adminUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
+            User defaultAdmin = CreateDefaultAdmin();
+            adminUsers.TryAdd(defaultAdmin.Username, defaultAdmin);
+        }
+
+        private User CreateDefaultAdmin()
+        {
+            User user = new User(DEFAULT_ADMIN_USERNAME);
+            user.ChangeState(new AdministratorState(user.Id, user.UserHistory));
+            return user;
         }
 
         public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
         {
             _transaction.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
+        }
+
+        public bool AddSystemAdmin(User admin)
+        {
+            User user = GetAdminByUserName(admin.Username);
+            // not possible two admins with the same username
+            if (user != null)
+            {
+                return false;
+            }
+
+            return adminUsers.TryAdd(admin.Username, admin);
+        }
+
+        public bool RemoveAdmin(User admin)
+        {
+            User removed;
+            // at least one admin for the market
+            if (adminUsers.Count < 2)
+            {
+                return false;
+            }
+
+            return adminUsers.TryRemove(admin.Username, out removed);
+            
         }
 
         public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
@@ -208,6 +246,16 @@ namespace TradingSystem.Business.Market
         {
             User u = null;
             if (!activeUsers.TryGetValue(username, out u))
+            {
+                return null;
+            }
+            return u;
+        }
+
+        public User GetAdminByUserName(string username)
+        {
+            User u = null;
+            if (!adminUsers.TryGetValue(username, out u))
             {
                 return null;
             }
