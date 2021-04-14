@@ -11,18 +11,18 @@ namespace AcceptanceTests.AppInterface.UserBridge
     public class UserBridgeAdapter : IUserBridge
     {
         private string? username;
-        private UserService userService;
-        private MarketService marketService;
+        private readonly UserService userService;
+        private readonly MarketUserService marketUserService;
 
-        private UserBridgeAdapter(UserService userService, MarketService marketService)
+        private UserBridgeAdapter(UserService userService, MarketUserService marketService)
         {
             this.userService = userService;
-            this.marketService = marketService;
+            this.marketUserService = marketService;
         }
 
         public static UserBridgeAdapter New()
         {
-            return new UserBridgeAdapter(UserService.Instance, new MarketService());
+            return new UserBridgeAdapter(UserService.Instance, MarketUserService.Instance);
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private void DisconnectCore()
         {
-            marketService.RemoveGuest(username);
+            marketUserService.RemoveGuest(username);
             username = null;
         }
 
@@ -60,7 +60,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool SignUp(UserInfo signupInfo)
         {
-            string result = userService.signup
+            string result = userService.Signup
             (
                 signupInfo.Username,
                 signupInfo.Password,
@@ -75,7 +75,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool Login(UserInfo loginInfo)
         {
-            bool success = userService.login(loginInfo.Username, loginInfo.Password, username) == "success";
+            bool success = userService.Login(loginInfo.Username, loginInfo.Password, username) == "success";
             if (success)
             {
                 username = loginInfo.Username;
@@ -98,12 +98,12 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private string LogoutCore()
         {
-            return userService.logout(username);
+            return userService.Logout(username);
         }
 
         private bool IdentifyAsGuestCore()
         {
-            username = marketService.AddGuest();
+            username = marketUserService.AddGuest();
             return IsUsernameValid();
         }
 
