@@ -10,8 +10,8 @@ namespace TradingSystemTests.IntegrationTests
     [TestClass]
     public class MarketIntegrationTests
     {
-        private Market m = Market.Instance;
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        private MarketUsers m = MarketUsers.Instance;
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductSuccess()
@@ -26,7 +26,7 @@ namespace TradingSystemTests.IntegrationTests
             m.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id,p.Name, 5));
         }
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductFail1()
@@ -39,7 +39,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, p.Name, 5));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductFail2()
@@ -47,7 +47,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(),"lala", 5));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductFail3()

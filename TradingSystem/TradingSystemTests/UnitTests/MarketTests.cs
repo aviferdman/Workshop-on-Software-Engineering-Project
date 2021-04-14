@@ -10,8 +10,8 @@ namespace TradingSystemTests.MarketTests
     [TestClass]
     public class MarketTests
     {
-        private Market m = Market.Instance;
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        private MarketUsers m = MarketUsers.Instance;
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductInCartSuccess()
@@ -29,7 +29,7 @@ namespace TradingSystemTests.MarketTests
             m.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id,p.Name, 5));
         }
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductInCartFail1()
@@ -45,7 +45,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, p.Name, 5));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductInCartFail2()
@@ -53,7 +53,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(),"lala", 5));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.AddProductToCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
         public void AddProductInCartFail3()
@@ -72,7 +72,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, p.Name, 500000));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.RemoveProductFromCart(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc8")]
         public void removeProductInCartSuccess()
@@ -90,7 +90,7 @@ namespace TradingSystemTests.MarketTests
             m.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product removed from shopping basket",m.RemoveProductFromCart(username, p.Id, p.Name));
         }
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.RemoveProductFromCart(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc8")]
         public void removeProductInCartFail1()
@@ -109,7 +109,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id, "lala"));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.RemoveProductFromCart(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc8")]
         public void removeProductInCartFail2()
@@ -117,7 +117,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("user doesn't exist", m.RemoveProductFromCart("11111", Guid.NewGuid(), "lala"));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.RemoveProductFromCart(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc8")]
         public void removeProductInCartFail3()
@@ -136,7 +136,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("product isn't in basket", m.RemoveProductFromCart(username, p.Id, p.Name));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.ChangeProductQuanInCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc9")]
         public void updateProductInCartSuccess()
@@ -154,7 +154,7 @@ namespace TradingSystemTests.MarketTests
             m.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product updated", m.ChangeProductQuanInCart(username, p.Id, p.Name, 5));
         }
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.ChangeProductQuanInCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc9")]
         public void updateProductInCartFail1()
@@ -170,7 +170,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("product doesn't exist", m.ChangeProductQuanInCart(username, p.Id, p.Name, 5));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.ChangeProductQuanInCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc9")]
         public void updateProductInCartFail2()
@@ -178,7 +178,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("user doesn't exist", m.ChangeProductQuanInCart("lala", Guid.NewGuid(), "lala", 5));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.ChangeProductQuanInCart(string, Guid, string, int)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc9")]
         public void updateProductInCartFail3()
@@ -197,7 +197,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual("product's quantity is insufficient", m.ChangeProductQuanInCart(username, p.Id, p.Name, 500000));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.viewShoppingCart(string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.viewShoppingCart(string)"/>
         [TestMethod]
         [TestCategory("uc6")]
         public void ViewShoppingCartTestSuccess()
@@ -208,7 +208,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(u.ShoppingCart, m.viewShoppingCart(username));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Market.viewShoppingCart(string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.viewShoppingCart(string)"/>
         [TestMethod]
         [TestCategory("uc6")]
         public void ViewShoppingCartTestFail()

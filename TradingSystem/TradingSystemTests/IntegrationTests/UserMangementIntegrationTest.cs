@@ -15,18 +15,18 @@ namespace TradingSystemTests.IntegrationTests
         private string signup()
         {
             UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733");
-            return Market.Instance.AddGuest();
+            return MarketUsers.Instance.AddGuest();
         }
 
         private bool delete(string username)
         {
-            Market.Instance.logout(username);
-            Market.Instance.RemoveGuest(username);
+            MarketUsers.Instance.logout(username);
+            MarketUsers.Instance.RemoveGuest(username);
             return UserManagement.Instance.DeleteUser("inbi2001");
         }
         private bool delete2(string username)
         {
-            Market.Instance.RemoveGuest(username);
+            MarketUsers.Instance.RemoveGuest(username);
             return UserManagement.Instance.DeleteUser("inbi2001");
         }
 

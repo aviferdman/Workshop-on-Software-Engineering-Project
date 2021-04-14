@@ -11,60 +11,62 @@ namespace TradingSystem.Service
 {
     public class MarketService
     {
-        private Market market;
+        private MarketUsers marketusers;
+        private MarketStores marketstores;
 
         public MarketService()
         {
-            market = Market.Instance;
+            marketusers = MarketUsers.Instance;
+            marketstores = MarketStores.Instance;
         }
 
         //returns uniqe username for guest
         public string AddGuest()
         {
-            return market.AddGuest();
+            return marketusers.AddGuest();
         }
 
         public void RemoveGuest(String usrname)
         {
-            market.RemoveGuest(usrname);
+            marketusers.RemoveGuest(usrname);
         }
         public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode = false)
         {
-            market.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
+            marketstores.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
         }
 
         //"Product added"
         public String AddProduct(ProductData product, Guid storeID, String username)
         {
-            return market.AddProduct(product, storeID, username);
+            return marketstores.AddProduct(product, storeID, username);
         }
 
         //"Product removed"
         public String RemoveProduct(String productName, Guid storeID, String username)
         {
-            return market.RemoveProduct(productName, storeID, username);
+            return marketstores.RemoveProduct(productName, storeID, username);
         }
         //"Product edited"
         public String EditProduct(String productName, ProductData details, Guid storeID, String username)
         {
-            return market.EditProduct(productName, details, storeID, username);
+            return marketstores.EditProduct(productName, details, storeID, username);
         }
 
         public String makeOwner(String assignee, Guid storeID, String assigner)
         {
-            return market.makeOwner(assignee, storeID, assigner);
+            return marketstores.makeOwner(assignee, storeID, assigner);
         }
 
         public String makeManager(String assignee, Guid storeID, String assigner)
         {
-            return market.makeManager(assignee, storeID, assigner);
+            return marketstores.makeManager(assignee, storeID, assigner);
         }
 
         public StoreData CreateStore(string name, string username, int accountNumber, int branch, string state, string city, string street, string apartmentNum)
         {
             BankAccount bankAccount = new BankAccount(accountNumber, branch);
             Address address = new Address(state, city, street, apartmentNum);
-            Store store = market.CreateStore(name, username, bankAccount, address);
+            Store store = marketstores.CreateStore(name, username, bankAccount, address);
             return new StoreData(store);
         }
 
@@ -72,12 +74,12 @@ namespace TradingSystem.Service
         {
             BankAccount bankAccount = new BankAccount(accountNumber, branch);
             Address address = new Address(state, city, street, apartmentNum);
-            return market.PurchaseShoppingCart(username, bankAccount, phone, address);
+            return marketusers.PurchaseShoppingCart(username, bankAccount, phone, address);
         }
 
         public ICollection<HistoryData> GetAllHistory(string username)
         {
-            ICollection<IHistory> histories = market.GetAllHistory(username);
+            ICollection<IHistory> histories = marketusers.GetAllHistory(username);
             ICollection<HistoryData> ret = new HashSet<HistoryData>();
             foreach (var his in histories)
             {
@@ -87,18 +89,18 @@ namespace TradingSystem.Service
         }
         public HistoryData GetUserHistory(string username)
         {
-            UserHistory history = market.GetUserHistory(username);
+            UserHistory history = marketusers.GetUserHistory(username);
             return new HistoryData(history);
         }
         public HistoryData GetStoreHistory(string username, Guid storeId)
         {
-            StoreHistory history = market.GetStoreHistory(username, storeId);
+            StoreHistory history = marketstores.GetStoreHistory(username, storeId);
             return new HistoryData(history);
         }
 
         public ICollection<StoreData> findStoresByname(string name)
         {
-            ICollection<Store> stores = market.GetStoresByName(name);
+            ICollection<Store> stores = marketstores.GetStoresByName(name);
             ICollection<StoreData> dataStores = new LinkedList<StoreData>();
             foreach(Store s in stores)
             {
@@ -109,7 +111,7 @@ namespace TradingSystem.Service
 
         public ICollection<ProductData> findProductsByStores(string name)
         {
-            ICollection<Store> stores = market.GetStoresByName(name);
+            ICollection<Store> stores = marketstores.GetStoresByName(name);
             ICollection<ProductData> products = new LinkedList<ProductData>();
             foreach (Store s in stores)
             {
@@ -123,7 +125,7 @@ namespace TradingSystem.Service
 
         public Dictionary<Guid, Dictionary<ProductData, int>> viewShoppingCart(string username)
         {
-            ShoppingCart cart = (ShoppingCart) market.viewShoppingCart(username);
+            ShoppingCart cart = (ShoppingCart)marketusers.viewShoppingCart(username);
             if (cart == null)
                 return null;
             Dictionary<Guid, Dictionary<ProductData, int>> dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
@@ -140,7 +142,7 @@ namespace TradingSystem.Service
 
         public Result<Dictionary<Guid, Dictionary<ProductData, int>>>  editShoppingCart(string username, Dictionary<Guid, string> products_removed, Dictionary<Guid, KeyValuePair<string, int>> products_added, Dictionary<Guid, KeyValuePair<string, int>> products_quan)
         {
-            Result<IShoppingCart> res =market.editShoppingCart(username,  products_removed, products_added, products_quan);
+            Result<IShoppingCart> res = marketusers.editShoppingCart(username,  products_removed, products_added, products_quan);
             if (res.IsErr)
                 return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(null, true, res.Mess);
             ShoppingCart cart = (ShoppingCart)res.Ret;
@@ -161,7 +163,7 @@ namespace TradingSystem.Service
 
         public ICollection<ProductData> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
-            ICollection<Product> pro = market.findProducts(keyword, price_range_low, price_range_high, rating, category);
+            ICollection<Product> pro = marketstores.findProducts(keyword, price_range_low, price_range_high, rating, category);
             ICollection<ProductData> products = new LinkedList<ProductData>();
                 foreach (Product p in pro)
                 {
@@ -174,7 +176,7 @@ namespace TradingSystem.Service
 
         public String DefineManagerPermissions(String manager, Guid storeID, String assigner, List<Permission> permissions)
         {
-            return market.DefineManagerPermissions(manager, storeID, assigner, permissions);
+            return marketstores.DefineManagerPermissions(manager, storeID, assigner, permissions);
         }
     }
 }

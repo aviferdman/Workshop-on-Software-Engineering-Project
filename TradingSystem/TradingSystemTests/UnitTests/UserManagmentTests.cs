@@ -131,7 +131,7 @@ namespace TradingSystemTests
 
         [ClassCleanup]
         public static void removeMockMarket() {
-            UserManagement.Instance.Marketo = Market.Instance;
+            UserManagement.Instance.Marketo = MarketUsers.Instance;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace TradingSystemTests.IntegrationTests
     public class AddRemoveEditProductTests
     {
         Store store;
-        Market market;
+        MarketUsers market;
 
         [TestInitialize]
         public void TestInitialize()
@@ -21,7 +21,7 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount( 1, 1);
             store = new Store("1", bankAccount, address);
-            market = Market.Instance;
+            market = MarketUsers.Instance;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>

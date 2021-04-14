@@ -11,29 +11,26 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
 {
-    public class Market: IMarket
+    public class MarketUsers: IMarketUsers
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
-        private ConcurrentDictionary<Guid,IStore> _stores;
         private ConcurrentDictionary<string, User> activeUsers;
         private ConcurrentDictionary<string, User> adminUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
-        private static readonly Lazy<Market>
+        private static readonly Lazy<MarketUsers>
         _lazy =
-        new Lazy<Market>
-            (() => new Market());
+        new Lazy<MarketUsers>
+            (() => new MarketUsers());
 
-        public static Market Instance { get { return _lazy.Value; } }
+        public static MarketUsers Instance { get { return _lazy.Value; } }
 
-        public ConcurrentDictionary<Guid, IStore> Stores { get => _stores; set => _stores = value; }
         public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
 
-        private Market()
+        private MarketUsers()
         {
-            _stores = new ConcurrentDictionary<Guid, IStore>();
             activeUsers = new ConcurrentDictionary<string, User>();
             adminUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
@@ -49,10 +46,7 @@ namespace TradingSystem.Business.Market
             return user;
         }
 
-        public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
-        {
-            _transaction.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
-        }
+        
 
         public bool AddSystemAdmin(User admin)
         {
@@ -82,7 +76,7 @@ namespace TradingSystem.Business.Market
         public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
         {
             User user = GetUserById(userId);
-            IStore store = GetStoreById(storeId);
+            IStore store = MarketStores.Instance.GetStoreById(storeId);
             user.UpdateProductInShoppingBasket(store, product, quantity);
             return true;
         }
@@ -175,33 +169,6 @@ namespace TradingSystem.Business.Market
 
         //USER FUNCTIONALITY
 
-        //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-        public Store CreateStore(string name, string username, BankAccount bank, Address address)
-        {
-            User user = GetUserByUserName(username);
-            if (typeof(GuestState).IsInstanceOfType(user.State))
-                return null;
-            Store store = new Store(name, bank, address);
-            store.Personnel.TryAdd(user.Id, new Founder(user.Id));
-            if (!_stores.TryAdd(store.Id, store))
-                return null;
-            return store;
-        }
-
-        //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
-        public ICollection<Store> GetStoresByName(string name)
-        {
-            LinkedList<Store> stores = new LinkedList<Store>();
-            foreach(Store s in _stores.Values)
-            {
-                if (s.Name.Equals(name))
-                {
-                    stores.AddLast(s);
-                }
-            }
-            return stores;
-        }
-
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
         {
@@ -224,23 +191,7 @@ namespace TradingSystem.Business.Market
             return user.GetUserHistory(userId);
         }
 
-        //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
-        public StoreHistory GetStoreHistory(string username, Guid storeId)
-        {
-            User user = GetUserByUserName(username);
-            IStore store = GetStoreById(storeId);
-            return store.GetStoreHistory(user.Id);
-        }
 
-        //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
-        public double ApplyDiscounts(string username, Guid storeId)
-        {
-            IStore store = GetStoreById(storeId);
-            User user = GetUserByUserName(username);
-            return store.ApplyDiscounts(user.ShoppingCart.GetShoppingBasket(store));
-        }
-
-       
 
         public User GetUserByUserName(string username)
         {
@@ -262,44 +213,6 @@ namespace TradingSystem.Business.Market
             return u;
         }
 
-        private IStore GetStoreById(Guid storeId)
-        {
-            IStore s=null;
-            _stores.TryGetValue(storeId, out s);
-            return  s;
-        }
-
-        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String AddProduct(ProductData productData, Guid storeID, String username)
-        {
-            Product product = new Product(productData);
-            User user = GetUserByUserName(username);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.AddProduct(product, user.Id);
-        }
-
-        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String RemoveProduct(String productName, Guid storeID, String username)
-        {
-            User user = GetUserByUserName(username);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.RemoveProduct(productName, user.Id);
-        }
-
-        //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(String productName, ProductData details, Guid storeID, String username)
-        {
-            Product editedProduct = new Product(details);
-            User user = GetUserByUserName(username);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.EditProduct(productName, editedProduct, user.Id);
-        }
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53
         public string AddProductToCart(string username, Guid pid, string pname, int quantity)
@@ -309,7 +222,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p=null;
             Store found=null;
-            foreach (Store s in _stores.Values)
+            /*foreach (Store s in _stores.Values)
             {
                 if(s.Products.TryGetValue(pname,out p))
                 {
@@ -320,7 +233,7 @@ namespace TradingSystem.Business.Market
                     }
                 }
                     
-            }
+            }*/
             if (found == null||p==null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
@@ -330,54 +243,7 @@ namespace TradingSystem.Business.Market
 
         }
 
-        //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
-        public String makeOwner(String assigneeName, Guid storeID, String assignerName)
-        {
-            return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Owner);
-        }
-
-        //functional requirement 4.5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/55
-        public String makeManager(String assigneeName, Guid storeID, String assignerName)
-        {
-            return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Manager);
-        }
-
-        //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
-        {
-            User assigner = GetUserByUserName(assignerName);
-            IStore store;
-            Guid managerID;
-            try
-            {
-                managerID = UserManagement.UserManagement.Instance.getIdByUsername(managerName);
-            }catch { return "Manager doesn't exist"; }
-            Guid assignerID;
-            try
-            {
-                assignerID = UserManagement.UserManagement.Instance.getIdByUsername(assignerName);
-            }
-            catch { return "Manager doesn't exist"; }
-            if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.DefineManagerPermissions(managerID, assignerID, permissions);
-        }
-
-        public String AssignMember(String assigneeName, Guid storeID, String assignerName, AppointmentType type)
-        {
-            Guid assigneeID;
-            try
-            {
-                assigneeID = UserManagement.UserManagement.Instance.getIdByUsername(assigneeName);
-            }
-            catch { return "Assignee is not a member"; }
-            User assigner = GetUserByUserName(assignerName);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.AssignMember(assigneeID, assigner, type);
-        }
-
+       
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId)
         {
             User user = GetUserById(userId);
@@ -399,7 +265,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            foreach (Store s in _stores.Values)
+            /*foreach (Store s in _stores.Values)
             {
                 if (s.Products.TryGetValue(pname, out p))
                 {
@@ -410,7 +276,7 @@ namespace TradingSystem.Business.Market
                     }
                 }
 
-            }
+            }*/
             if (found == null || p == null)
                 return "product doesn't exist";
             IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
@@ -426,7 +292,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            foreach (Store s in _stores.Values)
+            /*foreach (Store s in _stores.Values)
             {
                 if (s.Products.TryGetValue(pname, out p))
                 {
@@ -437,7 +303,7 @@ namespace TradingSystem.Business.Market
                     }
                 }
 
-            }
+            }*/
             if (found == null || p == null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
@@ -475,15 +341,7 @@ namespace TradingSystem.Business.Market
             }
             return new Result<IShoppingCart>(u.ShoppingCart, false, null);
         }
-        public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
-        {
-            List<Product> products = new List<Product>();
-            foreach (Store s in _stores.Values)
-            {
-                products.AddRange(s.findProducts(keyword, price_range_low, price_range_high, rating, category));
-            }
-            return products;
-        }
+
 
     }
 }
