@@ -7,10 +7,11 @@ namespace TradingSystem.Service
 {
     public class StoreData
     {
-        private Guid _id;
         public StoreData(Store store)
         {
-            this._id = store.Id;
+            Id = store.Id;
         }
+
+        public Guid Id { get; }
     }
 }

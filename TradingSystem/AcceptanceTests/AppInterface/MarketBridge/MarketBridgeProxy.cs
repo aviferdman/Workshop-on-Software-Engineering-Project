@@ -8,12 +8,23 @@ namespace AcceptanceTests.AppInterface.MarketBridge
     {
         private readonly Dictionary<string, ShopRefs> shops;
 
+        public MarketBridgeProxy() : this(null) { }
         public MarketBridgeProxy(IMarketBridge? realBridge) : base(realBridge)
         {
             shops = new Dictionary<string, ShopRefs>();
         }
 
         public override IMarketBridge Bridge => this;
+
+        public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
+        {
+            return RealBridge?.SearchProducts(creteria);
+        }
+
+        public ShopId? OpenShop(ShopInfo shopInfo)
+        {
+            return RealBridge?.OpenShop(shopInfo);
+        }
 
         public ShopId? AssureOpenShop(ShopInfo shopInfo)
         {
@@ -38,7 +49,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 return shop.Id;
             }
 
-            ShopId? shopId = RealBridge.AssureOpenShop(shopInfo);
+            ShopId? shopId = RealBridge.OpenShop(shopInfo);
             if (shop != null)
             {
                 lock (shops)
@@ -47,36 +58,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 }
             }
             return shopId;
-        }
-
-        public ProductId? AddProductToShop(ShopId shop, ProductInfo productInfo)
-        {
-            return RealBridge?.AddProductToShop(shop, productInfo);
-        }
-
-        public bool RemoveProductFromShop(ShopId shop, ProductId product)
-        {
-            return RealBridge != null && RealBridge.RemoveProductFromShop(shop, product);
-        }
-
-        public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
-        {
-            return RealBridge?.SearchProducts(creteria);
-        }
-
-        public bool AddProductToUserCart(ProductInCart product)
-        {
-            return RealBridge != null && RealBridge.AddProductToUserCart(product);
-        }
-
-        public bool RemoveProductFromUserCart(ProductId productId)
-        {
-            return RealBridge != null && RealBridge.RemoveProductFromUserCart(productId);
-        }
-
-        public IEnumerable<ProductInCart>? GetShoppingCartItems()
-        {
-            return RealBridge?.GetShoppingCartItems();
         }
 
         public ShopInfo? GetShopDetails(ShopId shopId)
@@ -89,9 +70,34 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge?.GetShopProducts(shopId);
         }
 
+        public ProductId? AddProductToShop(ShopId shop, ProductInfo productInfo)
+        {
+            return RealBridge?.AddProductToShop(shop, productInfo);
+        }
+
+        public bool RemoveProductFromShop(ShopId shop, ProductId product)
+        {
+            return RealBridge != null && RealBridge.RemoveProductFromShop(shop, product);
+        }
+
         public bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails)
         {
             return RealBridge != null && RealBridge.EditProductInShop(shopId, productId, newProductDetails);
+        }
+
+        public IEnumerable<ProductInCart>? GetShoppingCartItems()
+        {
+            return RealBridge?.GetShoppingCartItems();
+        }
+
+        public bool AddProductToUserCart(ProductInCart product)
+        {
+            return RealBridge != null && RealBridge.AddProductToUserCart(product);
+        }
+
+        public bool RemoveProductFromUserCart(ProductId productId)
+        {
+            return RealBridge != null && RealBridge.RemoveProductFromUserCart(productId);
         }
 
         public bool EditProductInUserCart(ProductId productId, int quantity)
@@ -102,11 +108,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit)
         {
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
-        }
-
-        public ShopId? OpenShop(ShopInfo shopInfo)
-        {
-            return RealBridge?.OpenShop(shopInfo);
         }
     }
 }

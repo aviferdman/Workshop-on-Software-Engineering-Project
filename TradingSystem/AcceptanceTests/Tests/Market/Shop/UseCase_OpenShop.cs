@@ -50,6 +50,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         };
 
         [Test]
+        [TestCaseSource(nameof(Args_Sucess_Normal_Source))]
         public void Success_Normal_Test(ShopInfo shopInfo)
         {
             _ = Success_Normal(shopInfo);
@@ -58,8 +59,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         {
             ShopId? shop = Bridge.AssureOpenShop(shopInfo);
             Assert.IsNotNull(shop);
-            Assert.Greater(shop!.Value, 0);
-            return shop.Value;
+            return shop!.Value;
         }
 
         [TestCase]
@@ -68,7 +68,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             Assert.IsNull(Bridge.OpenShop(new ShopInfo(
                 name: "non existing shop",
-                branch: 3,
+                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
                 new Address
                 {
                     State = "Victoria Island",
@@ -84,7 +84,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         {
             Assert.IsNull(Bridge.OpenShop(new ShopInfo(
                 name: "",
-                branch: 3,
+                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
                 new Address
                 {
                     State = "Victoria Island",
@@ -95,7 +95,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             )));
             Assert.IsNull(Bridge.OpenShop(new ShopInfo(
                 name: "    ",
-                branch: 3,
+                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
                 new Address
                 {
                     State = "Victoria Island",
@@ -106,7 +106,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             )));
             Assert.IsNull(Bridge.OpenShop(new ShopInfo(
                 name: "    \n  \t",
-                branch: 3,
+                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
                 new Address
                 {
                     State = "Victoria Island",

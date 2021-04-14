@@ -10,7 +10,6 @@ namespace AcceptanceTests.AppInterface.UserBridge
 {
     public class UserBridgeAdapter : IUserBridge
     {
-        private string? username;
         private readonly SystemContext systemContext;
         private readonly UserService userService;
         private readonly MarketUserService marketUserService;
@@ -59,7 +58,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool AssureSignUp(UserInfo signupInfo)
         {
-            throw new InvalidOperationException("Should not call this method, use SignUp method instead.");
+            throw new InvalidOperationException($"Should not call this method, use {nameof(SignUp)} method instead.");
         }
 
         public bool SignUp(UserInfo signupInfo)

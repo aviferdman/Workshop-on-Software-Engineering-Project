@@ -66,7 +66,7 @@ namespace AcceptanceTests
         public static readonly ShopInfo Shop1 = new ShopInfo
         (
             name: "my shop 1",
-            branch: 2,
+            bankAccount: new BankAccount(branch: 2, accountNumber: 8),
             address: new Address
             {
                 State = "U.S.",
@@ -79,7 +79,7 @@ namespace AcceptanceTests
         public static readonly ShopInfo Shop2 = new ShopInfo
         (
             name: "another shop",
-            branch: 1,
+            bankAccount: new BankAccount(branch: 1, accountNumber: 2),
             address: new Address
             {
                 State = "Israel",

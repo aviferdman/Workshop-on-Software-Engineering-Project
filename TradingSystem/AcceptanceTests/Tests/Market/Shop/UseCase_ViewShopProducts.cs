@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AcceptanceTests.AppInterface;
@@ -83,7 +84,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TestCase]
         public void Failure_ShopDoesNotExist()
         {
-            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(int.MaxValue - 1);
+            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(Guid.NewGuid());
             Assert.IsNull(returnedShopInfo);
         }
     }

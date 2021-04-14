@@ -106,12 +106,5 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("     \t    ", 4, 3)));
             Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("    \n \t", 4, 3)));
         }
-
-        [TestCaseSource(nameof(TestProductInfo))]
-        public void Failure_InvalidShopId(ProductInfo productInfo)
-        {
-            Assert.IsNull(Bridge.AddProductToShop(-1, productInfo));
-            Assert.IsNull(Bridge.AddProductToShop(-6, productInfo));
-        }
     }
 }

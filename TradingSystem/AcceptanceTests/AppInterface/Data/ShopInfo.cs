@@ -2,15 +2,15 @@
 {
     public class ShopInfo
     {
-        public ShopInfo(string name, int branch, Address address)
+        public ShopInfo(string name, BankAccount bankAccount, Address address)
         {
             Name = name;
-            Branch = branch;
+            BankAccount = bankAccount;
             Address = address;
         }
 
         public string Name { get; }
-        public int Branch { get; }
+        public BankAccount BankAccount { get; }
         public Address Address { get; }
 
         public override bool Equals(object? obj) => obj is ShopInfo other && Equals(other);

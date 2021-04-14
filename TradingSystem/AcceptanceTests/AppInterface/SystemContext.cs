@@ -28,14 +28,15 @@ namespace AcceptanceTests.AppInterface
 
         private static SystemContext New()
         {
-            var system = new SystemContext(
+            var systemContext = new SystemContext(
                 userBridge:   new UserBridgeProxy(),
-                marketBridge: new MarketBridgeProxy(null)
+                marketBridge: new MarketBridgeProxy()
             );
-            system.userBridge.SystemContext = system;
-            system.userBridge.RealBridge = UserBridgeAdapter.New(system);
-            system.marketBridge.SystemContext = system;
-            return system;
+            systemContext.userBridge.SystemContext = systemContext;
+            systemContext.userBridge.RealBridge = UserBridgeAdapter.New(systemContext);
+            systemContext.marketBridge.SystemContext = systemContext;
+            systemContext.marketBridge.RealBridge = MarketBridgeAdapter.New(systemContext);
+            return systemContext;
         }
 
         public static SystemContext Instance { get; } = New();
