@@ -11,25 +11,29 @@ namespace AcceptanceTests.AppInterface.UserBridge
     public class UserBridgeAdapter : IUserBridge
     {
         private string? username;
+        private readonly SystemContext systemContext;
         private readonly UserService userService;
         private readonly MarketUserService marketUserService;
 
-        private UserBridgeAdapter(UserService userService, MarketUserService marketService)
+        private UserBridgeAdapter(SystemContext systemContext, UserService userService, MarketUserService marketService)
         {
+            this.systemContext = systemContext;
             this.userService = userService;
             this.marketUserService = marketService;
         }
 
-        public static UserBridgeAdapter New()
+        public static UserBridgeAdapter New(SystemContext systemContext)
         {
-            return new UserBridgeAdapter(UserService.Instance, MarketUserService.Instance);
+            return new UserBridgeAdapter(systemContext, UserService.Instance, MarketUserService.Instance);
         }
 
         /// <summary>
         /// Determines whether we can inteferface with the system,
         /// either as a guest or as a member.
         /// </summary>
-        public bool IsConnected => username != null;
+        public bool IsConnected => Username != null;
+
+        public string? Username { get => systemContext.TokenUsername; set => systemContext.TokenUsername = value; }
 
         public bool Connect()
         {
@@ -49,8 +53,8 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private void DisconnectCore()
         {
-            marketUserService.RemoveGuest(username);
-            username = null;
+            marketUserService.RemoveGuest(Username);
+            Username = null;
         }
 
         public bool AssureSignUp(UserInfo signupInfo)
@@ -75,10 +79,10 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool Login(UserInfo loginInfo)
         {
-            bool success = userService.Login(loginInfo.Username, loginInfo.Password, username) == "success";
+            bool success = userService.Login(loginInfo.Username, loginInfo.Password, Username) == "success";
             if (success)
             {
-                username = loginInfo.Username;
+                Username = loginInfo.Username;
             }
 
             return success;
@@ -92,24 +96,24 @@ namespace AcceptanceTests.AppInterface.UserBridge
                 return false;
             }
 
-            username = guestUsername;
+            Username = guestUsername;
             return true;
         }
 
         private string LogoutCore()
         {
-            return userService.Logout(username);
+            return userService.Logout(Username);
         }
 
         private bool IdentifyAsGuestCore()
         {
-            username = marketUserService.AddGuest();
+            Username = marketUserService.AddGuest();
             return IsUsernameValid();
         }
 
         private bool IsUsernameValid()
         {
-            return IsUsernameValid(username);
+            return IsUsernameValid(Username);
         }
         private static bool IsUsernameValid(string? username)
         {

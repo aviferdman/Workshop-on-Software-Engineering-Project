@@ -9,6 +9,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
         // The key lookup is by username. We also want to know the password that the user registered with.
         private readonly IDictionary<UserInfo, UserInfo> registeredUsers;
 
+        public UserBridgeProxy() : this(null) { }
         public UserBridgeProxy(IUserBridge? realBridge) : base(realBridge)
         {
             registeredUsers = new Dictionary<UserInfo, UserInfo>();

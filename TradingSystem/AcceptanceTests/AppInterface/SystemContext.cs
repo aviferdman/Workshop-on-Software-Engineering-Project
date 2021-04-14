@@ -29,10 +29,11 @@ namespace AcceptanceTests.AppInterface
         private static SystemContext New()
         {
             var system = new SystemContext(
-                userBridge:   new UserBridgeProxy(UserBridgeAdapter.New()),
+                userBridge:   new UserBridgeProxy(),
                 marketBridge: new MarketBridgeProxy(null)
             );
             system.userBridge.SystemContext = system;
+            system.userBridge.RealBridge = UserBridgeAdapter.New(system);
             system.marketBridge.SystemContext = system;
             return system;
         }
@@ -41,6 +42,7 @@ namespace AcceptanceTests.AppInterface
 
         public IUserBridge UserBridge => userBridge.Bridge;
         public IMarketBridge MarketBridge => marketBridge.Bridge;
+        internal string? TokenUsername { get; set; }
         public UserInfo? LoggedInUser { get; internal set; }
     }
 }
