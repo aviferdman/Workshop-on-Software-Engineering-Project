@@ -11,18 +11,18 @@ namespace AcceptanceTests.AppInterface.UserBridge
     public class UserBridgeAdapter : IUserBridge
     {
         private string? username;
-        private UserService userService;
-        private MarketService marketService;
+        private readonly UserService userService;
+        private readonly MarketUserService marketUserService;
 
-        private UserBridgeAdapter(UserService userService, MarketService marketService)
+        private UserBridgeAdapter(UserService userService, MarketUserService marketService)
         {
             this.userService = userService;
-            this.marketService = marketService;
+            this.marketUserService = marketService;
         }
 
         public static UserBridgeAdapter New()
         {
-            return new UserBridgeAdapter(UserService.Instance, new MarketService());
+            return new UserBridgeAdapter(UserService.Instance, new MarketUserService());
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private void DisconnectCore()
         {
-            marketService.RemoveGuest(username);
+            marketUserService.RemoveGuest(username);
             username = null;
         }
 
@@ -103,7 +103,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private bool IdentifyAsGuestCore()
         {
-            username = marketService.AddGuest();
+            username = marketUserService.AddGuest();
             return IsUsernameValid();
         }
 
