@@ -24,7 +24,7 @@ namespace AcceptanceTests.Tests.Market
             {
                 new ShopImage(
                     User_ShopOwner1,
-                    new ShopInfo(SHOP_NAME),
+                    Shop1,
                     new ProductIdentifiable[]
                     {
                         new ProductIdentifiable(new ProductInfo("traveling bag", 20, 7)),
@@ -32,7 +32,7 @@ namespace AcceptanceTests.Tests.Market
                 ),
                 new ShopImage(
                     User_ShopOwner1,
-                    new ShopInfo(SHOP_NAME),
+                    Shop2,
                     new ProductIdentifiable[]
                     {
                         new ProductIdentifiable(new ProductInfo("school bag", 5, 12)),
@@ -202,7 +202,7 @@ namespace AcceptanceTests.Tests.Market
 
             public void Login()
             {
-                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage.OwnerUser, ShopImage.ShopInfo.Name);
+                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage.OwnerUser, ShopImage.ShopInfo);
                 useCase_addProduct.Setup();
             }
 

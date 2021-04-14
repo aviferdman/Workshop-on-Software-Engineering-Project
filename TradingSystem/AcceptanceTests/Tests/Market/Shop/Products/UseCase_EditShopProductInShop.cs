@@ -22,7 +22,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             {
                 SystemContext.Instance,
                 User_ShopOwner1,
-                new ShopInfo(SHOP_NAME),
+                Shop1,
                 new ProductEditInfo[]
                 {
                     new ProductEditInfo(
@@ -66,7 +66,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo.Name);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo);
             useCase_addProduct.Setup();
             foreach (ProductEditInfo productEditInfo in ProductEditInfos)
             {

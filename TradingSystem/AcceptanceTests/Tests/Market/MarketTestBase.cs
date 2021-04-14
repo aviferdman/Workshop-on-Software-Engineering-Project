@@ -10,8 +10,8 @@ namespace AcceptanceTests.Tests.Market
         public static readonly UserInfo User_ShopOwner1 = SharedTestsData.User_ShopOwner1;
         public static readonly UserInfo User_ShopOwner2 = SharedTestsData.User_ShopOwner2;
 
-        public const string SHOP_NAME = SharedTestsData.SHOP_NAME;
-        public const string SHOP_NAME_2 = SharedTestsData.SHOP_NAME_2;
+        public static readonly ShopInfo Shop1 = SharedTestsData.Shop1;
+        public static readonly ShopInfo Shop2 = SharedTestsData.Shop2;
 
         public SystemContext SystemContext { get; }
 

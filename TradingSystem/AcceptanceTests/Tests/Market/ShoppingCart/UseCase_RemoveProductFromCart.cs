@@ -22,7 +22,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SystemContext.Instance,
                 User_Buyer,
                 User_ShopOwner1,
-                SHOP_NAME,
+                Shop1,
                 new ProductInfo("speakers", 30, 90),
                 30
             },
@@ -32,19 +32,19 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             SystemContext systemContext,
             UserInfo buyerUser,
             UserInfo shopOwnerUser,
-            string shopName,
+            ShopInfo shopInfo,
             ProductInfo productInfo,
             int addToCartQuantity
         ) : base(systemContext, buyerUser)
         {
             ShopOwnerUser = shopOwnerUser;
-            ShopName = shopName;
+            ShopInfo = shopInfo;
             ProductInfo = productInfo;
             AddToCartQuantity = addToCartQuantity;
         }
 
         public UserInfo ShopOwnerUser { get; }
-        public string ShopName { get; }
+        public ShopInfo ShopInfo { get; }
         public ProductInfo ProductInfo { get; }
         public int AddToCartQuantity { get; }
 
@@ -58,7 +58,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SystemContext,
                 UserInfo,
                 ShopOwnerUser,
-                ShopName,
+                ShopInfo,
                 ProductInfo,
                 AddToCartQuantity
             );

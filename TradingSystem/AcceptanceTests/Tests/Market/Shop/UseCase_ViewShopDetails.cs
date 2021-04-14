@@ -20,7 +20,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             {
                 SystemContext.Instance,
                 User_ShopOwner1,
-                new ShopInfo(SHOP_NAME),
+                Shop1,
             },
         };
 

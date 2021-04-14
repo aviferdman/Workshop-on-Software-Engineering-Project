@@ -23,14 +23,14 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SystemContext.Instance,
                 User_Buyer,
                 User_ShopOwner1,
-                SHOP_NAME,
+                Shop1,
                 new ProductInfo("speakers", 30, 90),
                 60
             },
         };
 
         public UserInfo ShopOwnerUser { get; }
-        public string ShopName { get; }
+        public ShopInfo ShopInfo { get; }
         public ProductInfo ProductInfo { get; }
         public int Quantity { get; }
 
@@ -38,13 +38,13 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             SystemContext systemContext,
             UserInfo buyerUser,
             UserInfo shopOwnerUser,
-            string shopName,
+            ShopInfo shopInfo,
             ProductInfo productInfo,
             int quantity
         ) : base(systemContext, buyerUser)
         {
             ShopOwnerUser = shopOwnerUser;
-            ShopName = shopName;
+            ShopInfo = shopInfo;
             ProductInfo = productInfo;
             Quantity = quantity;
         }
@@ -60,7 +60,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             base.Setup();
 
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopOwnerUser, ShopName);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopOwnerUser, ShopInfo);
             useCase_addProduct.Setup();
             ProductId = useCase_addProduct.Success_Normal(ProductInfo);
 

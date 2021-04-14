@@ -41,11 +41,18 @@ namespace AcceptanceTests.Tests.Market.Shop
             useCase_login?.Teardown();
         }
 
-        [Test]
-        [TestCase(SHOP_NAME)]
-        public void Success_Normal_Test(string shopName)
+        private static readonly object[] Args_Sucess_Normal_Source =
         {
-            _ = Success_Normal(new ShopInfo(shopName));
+            new object[]
+            {
+                Shop1,
+            },
+        };
+
+        [Test]
+        public void Success_Normal_Test(ShopInfo shopInfo)
+        {
+            _ = Success_Normal(shopInfo);
         }
         public ShopId Success_Normal(ShopInfo shopInfo)
         {
@@ -59,15 +66,55 @@ namespace AcceptanceTests.Tests.Market.Shop
         public void Failure_NotLoggedIn()
         {
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo("non existing shop")));
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
+                name: "non existing shop",
+                branch: 3,
+                new Address
+                {
+                    State = "Victoria Island",
+                    City = "Henesys",
+                    Street = "Free Market",
+                    ApartmentNum = "52",
+                }
+            )));
         }
 
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo("")));
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo("    ")));
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo("    \n  \t")));
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
+                name: "",
+                branch: 3,
+                new Address
+                {
+                    State = "Victoria Island",
+                    City = "Ellinia",
+                    Street = "Giant Tree",
+                    ApartmentNum = "52",
+                }
+            )));
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
+                name: "    ",
+                branch: 3,
+                new Address
+                {
+                    State = "Victoria Island",
+                    City = "Perion",
+                    Street = "Dusty Wind Hill",
+                    ApartmentNum = "52",
+                }
+            )));
+            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
+                name: "    \n  \t",
+                branch: 3,
+                new Address
+                {
+                    State = "Victoria Island",
+                    City = "Perion",
+                    Street = "Dusty Wind Hill",
+                    ApartmentNum = "52",
+                }
+            )));
         }
     }
 }

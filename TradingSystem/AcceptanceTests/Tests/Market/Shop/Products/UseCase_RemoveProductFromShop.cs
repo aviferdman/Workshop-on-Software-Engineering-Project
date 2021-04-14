@@ -19,27 +19,27 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             {
                 SystemContext.Instance,
                 User_ShopOwner1,
-                SHOP_NAME,
+                Shop1,
             },
         };
 
         private UseCase_AddProductToShop useCase_addProduct;
         private ProductId product;
 
-        public UseCase_RemoveProductFromShop(SystemContext systemContext, UserInfo userInfo, string shopName) :
+        public UseCase_RemoveProductFromShop(SystemContext systemContext, UserInfo userInfo, ShopInfo shopInfo) :
             base(systemContext, userInfo)
         {
-            ShopName = shopName;
+            ShopInfo = shopInfo;
         }
 
-        public string ShopName { get; }
+        public ShopInfo ShopInfo { get; }
         public ShopId ShopId => useCase_addProduct.ShopId;
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopName);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo);
             useCase_addProduct.Setup();
             product = useCase_addProduct.Success_Normal(new ProductInfo("cucumber", 4, 7));
         }

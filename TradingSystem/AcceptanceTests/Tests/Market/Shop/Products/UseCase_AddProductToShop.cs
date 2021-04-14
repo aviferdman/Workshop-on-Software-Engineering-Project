@@ -20,7 +20,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             {
                 SystemContext.Instance,
                 User_ShopOwner1,
-                SHOP_NAME,
+                Shop1,
             },
         };
 
@@ -35,14 +35,14 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         private UseCase_OpenShop useCase_openShop;
         private Queue<ProductId> products;
 
-        public UseCase_AddProductToShop(SystemContext systemContext, UserInfo userInfo, string shopName) :
+        public UseCase_AddProductToShop(SystemContext systemContext, UserInfo userInfo, ShopInfo shopInfo) :
             base(systemContext, userInfo)
         {
-            ShopName = shopName;
+            ShopInfo = shopInfo;
             products = new Queue<ProductId>(3);
         }
 
-        public string ShopName { get; }
+        public ShopInfo ShopInfo { get; }
         public ShopId ShopId { get; private set; }
 
         [SetUp]
@@ -51,7 +51,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             base.Setup();
             useCase_openShop = new UseCase_OpenShop(SystemContext, UserInfo);
             useCase_openShop.Setup();
-            ShopId = useCase_openShop.Success_Normal(new ShopInfo(ShopName));
+            ShopId = useCase_openShop.Success_Normal(ShopInfo);
         }
 
         [TearDown]
