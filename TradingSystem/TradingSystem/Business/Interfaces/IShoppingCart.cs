@@ -12,7 +12,7 @@ namespace TradingSystem.Business.Market
         public void RemoveShoppingBasket(IStore store);
         public void UpdateShoppingBasket(IStore store, IShoppingBasket shoppingBasket);
         public bool CheckPolicy();
-        public BuyStatus Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum);
+        public BuyStatus Purchase(Guid clientId, PaymentMethod method, string clientPhone, Address clientAddress, double paySum);
         public double CalcPaySum();
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts();

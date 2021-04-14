@@ -34,9 +34,9 @@ namespace TradingSystem.Business.Market
             historyManager = HistoryManager.Instance;
         }
 
-        public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
+        public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
         {
-            _transaction.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
+            _transaction.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
         }
 
         //USER FUNCTIONALITY
@@ -44,6 +44,7 @@ namespace TradingSystem.Business.Market
         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
         public Store CreateStore(string name, string username, BankAccount bank, Address address)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
             User user = MarketUsers.Instance.GetUserByUserName(username);
             if (typeof(GuestState).IsInstanceOfType(user.State))
                 return null;
@@ -57,6 +58,7 @@ namespace TradingSystem.Business.Market
         //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
         public ICollection<Store> GetStoresByName(string name)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoresByName));
             LinkedList<Store> stores = new LinkedList<Store>();
             foreach(Store s in _stores.Values)
             {
@@ -70,19 +72,12 @@ namespace TradingSystem.Business.Market
 
 
         //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
-        public StoreHistory GetStoreHistory(string username, Guid storeId)
+        public ICollection<IHistory> GetStoreHistory(string username, Guid storeId)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoreHistory));
             User user = MarketUsers.Instance.GetUserByUserName(username);
             IStore store = GetStoreById(storeId);
             return store.GetStoreHistory(user.Id);
-        }
-
-        //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
-        public double ApplyDiscounts(string username, Guid storeId)
-        {
-            IStore store = GetStoreById(storeId);
-            User user = MarketUsers.Instance.GetUserByUserName(username);
-            return store.ApplyDiscounts(user.ShoppingCart.GetShoppingBasket(store));
         }
 
 
@@ -129,18 +124,21 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
         public String makeOwner(String assigneeName, Guid storeID, String assignerName)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(makeOwner));
             return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Owner);
         }
 
         //functional requirement 4.5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/55
         public String makeManager(String assigneeName, Guid storeID, String assignerName)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(makeManager));
             return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Manager);
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
         public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
             Guid managerID;
@@ -161,6 +159,7 @@ namespace TradingSystem.Business.Market
 
         public String AssignMember(String assigneeName, Guid storeID, String assignerName, AppointmentType type)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(AssignMember));
             Guid assigneeID;
             try
             {

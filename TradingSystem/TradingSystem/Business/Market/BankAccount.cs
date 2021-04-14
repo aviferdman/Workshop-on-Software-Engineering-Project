@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    public class BankAccount
+    public class BankAccount : PaymentMethod
     {
         private int accountNumber;
         private int branch;
@@ -17,6 +17,11 @@ namespace TradingSystem.Business.Market
         {
             AccountNumber = accountNumber;
             Branch = branch;
+        }
+
+        public string GeneratePaymentDetails()
+        {
+            return String.Format("BankMethod:\\{0}\\{1}", accountNumber, Branch);
         }
     }
 }

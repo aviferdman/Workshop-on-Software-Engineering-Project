@@ -10,9 +10,9 @@ namespace TradingSystem.Business.Market
     {
 
         private Guid _userId;
-        private UserHistory _userHistory;
+        private ICollection<IHistory> _userHistory;
 
-        public MemberState(Guid userId, UserHistory userHistory) : base()
+        public MemberState(Guid userId, ICollection<IHistory> userHistory) : base()
         {
             this._userId = userId;
             this._userHistory = userHistory;
@@ -23,12 +23,12 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override StoreHistory GetStoreHistory(Store store)
+        public override ICollection<IHistory> GetStoreHistory(Store store)
         {
             throw new UnauthorizedAccessException();
         }
 
-        public override UserHistory GetUserHistory(Guid userId)
+        public override ICollection<IHistory> GetUserHistory(Guid userId)
         {
             return _userHistory;
         }

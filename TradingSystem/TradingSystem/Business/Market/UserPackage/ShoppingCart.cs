@@ -63,12 +63,12 @@ namespace TradingSystem.Business.Market
             return isLegal;
         }
 
-        public BuyStatus Purchase(Guid clientId, BankAccount clientBankAccount, string clientPhone, Address clientAddress, double paySum)
+        public BuyStatus Purchase(Guid clientId, PaymentMethod method, string clientPhone, Address clientAddress, double paySum)
         {
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
             foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
             {
-                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value, clientId, clientPhone, clientAddress, clientBankAccount, paySum);
+                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value, clientId, clientPhone, clientAddress, method, paySum);
                 purchases.Add(purchaseStatus);
             }
             //If failed to make all the trasactions, need to cancel deliveries and payments

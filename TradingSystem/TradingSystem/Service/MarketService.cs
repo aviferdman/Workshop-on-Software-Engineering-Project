@@ -30,9 +30,9 @@ namespace TradingSystem.Service
         {
             marketusers.RemoveGuest(usrname);
         }
-        public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode = false)
+        public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode = false)
         {
-            marketstores.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
+            marketstores.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
         }
 
         //"Product added"
@@ -87,15 +87,25 @@ namespace TradingSystem.Service
             }
             return ret;
         }
-        public HistoryData GetUserHistory(string username)
+        public ICollection<HistoryData> GetUserHistory(string username)
         {
-            UserHistory history = marketusers.GetUserHistory(username);
-            return new HistoryData(history);
+            ICollection<IHistory> history = marketusers.GetUserHistory(username);
+            ICollection<HistoryData> historyDatas = new HashSet<HistoryData>();
+            foreach (var h in history)
+            {
+                historyDatas.Add(new HistoryData(h));
+            }
+            return historyDatas;
         }
-        public HistoryData GetStoreHistory(string username, Guid storeId)
+        public ICollection<HistoryData> GetStoreHistory(string username, Guid storeId)
         {
-            StoreHistory history = marketstores.GetStoreHistory(username, storeId);
-            return new HistoryData(history);
+            ICollection<IHistory> history = marketstores.GetStoreHistory(username, storeId);
+            ICollection<HistoryData> historyDatas = new HashSet<HistoryData>();
+            foreach (var h in history)
+            {
+                historyDatas.Add(new HistoryData(h));
+            }
+            return historyDatas;
         }
 
         public ICollection<StoreData> findStoresByname(string name)

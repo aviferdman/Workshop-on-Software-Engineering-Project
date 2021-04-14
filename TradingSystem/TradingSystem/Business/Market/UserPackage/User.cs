@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.Histories;
 
 namespace TradingSystem.Business.Market
 {
@@ -13,7 +15,7 @@ namespace TradingSystem.Business.Market
         private Guid _id;
         private string username;
         private bool isLoggedIn;
-        private UserHistory userHistory;
+        private ICollection<IHistory> userHistory;
 
         public User(string username)
         {
@@ -22,7 +24,7 @@ namespace TradingSystem.Business.Market
             this._state = new GuestState();
             this.username = username;
             this.isLoggedIn = false;
-            this.UserHistory = new UserHistory();
+            this.UserHistory = new HashSet<IHistory>();
         }
 
         public User()
@@ -38,7 +40,7 @@ namespace TradingSystem.Business.Market
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
-        public UserHistory UserHistory { get => userHistory; set => userHistory = value; }
+        public ICollection<IHistory> UserHistory { get => userHistory; set => userHistory = value; }
 
         public void ChangeState(State state)
         {
@@ -51,13 +53,16 @@ namespace TradingSystem.Business.Market
             shoppingBasket.UpdateProduct(product, quantity);
         }
 
-        public bool PurchaseShoppingCart(BankAccount bank, string phone, Address address)
+        public bool PurchaseShoppingCart(PaymentMethod method, string phone, Address address)
         {
             //chcek is not empty and legal policy
             if (ShoppingCart.IsEmpty() || !ShoppingCart.CheckPolicy()) return false;
             double paySum = ShoppingCart.CalcPaySum();
-            BuyStatus buyStatus = ShoppingCart.Purchase(_id, bank, phone, address, paySum);
-            userHistory.AddHistory(buyStatus.PurchaseStatuses);
+            BuyStatus buyStatus = ShoppingCart.Purchase(_id, method, phone, address, paySum);
+            foreach (var p in buyStatus.PurchaseStatuses)
+            {
+                userHistory.Add(new TransactionHistory(p));
+            }
             return buyStatus.Status;
         }
 
@@ -66,7 +71,7 @@ namespace TradingSystem.Business.Market
             return _shoppingCart.GetShopingCartProducts();
         }
 
-        public UserHistory GetUserHistory(Guid userId)
+        public ICollection<IHistory> GetUserHistory(Guid userId)
         {
             return _state.GetUserHistory(userId);
         }

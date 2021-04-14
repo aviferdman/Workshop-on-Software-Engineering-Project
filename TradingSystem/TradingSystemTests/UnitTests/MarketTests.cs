@@ -11,6 +11,7 @@ namespace TradingSystemTests.MarketTests
     public class MarketTests
     {
         private MarketUsers m = MarketUsers.Instance;
+        private MarketStores marketStores = MarketStores.Instance;
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
@@ -26,7 +27,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala", 8,50, 500);
             Store s = new Store("lalali", null, null);
             s.Products.TryAdd("lala", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id,p.Name, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -68,7 +69,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala2", 8, 50, 500);
             Store s = new Store("lalali2", null, null);
             s.Products.TryAdd("lala2", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, p.Name, 500000));
         }
 
@@ -87,7 +88,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala3", 8, 50, 500);
             Store s = new Store("lalalil55", null, null);
             s.Products.TryAdd("lala3", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product removed from shopping basket",m.RemoveProductFromCart(username, p.Id, p.Name));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
@@ -105,7 +106,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala3", 8, 50, 500);
             Store s = new Store("lalalil55", null, null);
             s.Products.TryAdd("lala3", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id, "lala"));
         }
 
@@ -132,7 +133,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala3", 8, 50, 500);
             Store s = new Store("lalalil55", null, null);
             s.Products.TryAdd("lala3", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product isn't in basket", m.RemoveProductFromCart(username, p.Id, p.Name));
         }
 
@@ -151,7 +152,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala8", 8, 50, 500);
             Store s = new Store("lalali80", null, null);
             s.Products.TryAdd("lala8", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product updated", m.ChangeProductQuanInCart(username, p.Id, p.Name, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
@@ -193,7 +194,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala70", 8, 50, 500);
             Store s = new Store("lalali70", null, null);
             s.Products.TryAdd("lala70", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product's quantity is insufficient", m.ChangeProductQuanInCart(username, p.Id, p.Name, 500000));
         }
 
