@@ -7,7 +7,7 @@ namespace AcceptanceTests.AppInterface.Data
         private ProductId productId;
 
         public ProductIdentifiable(ProductInfo productInfo)
-            : this(productInfo, -1) { }
+            : this(productInfo, default) { }
         public ProductIdentifiable(ProductInfo productInfo, ProductId productId)
         {
             ProductInfo = productInfo;
@@ -38,7 +38,7 @@ namespace AcceptanceTests.AppInterface.Data
         {
             return obj is ProductIdentifiable other && Equals(other);
         }
-        public bool Equals(ProductIdentifiable? other)
+        public bool Equals(ProductIdentifiable other)
         {
             return other != null && ProductId == other.ProductId;
         }
@@ -50,7 +50,7 @@ namespace AcceptanceTests.AppInterface.Data
 
         public override string ToString()
         {
-            return $"Product identifiable {{ {ProductId}, '{ProductInfo.Name}' }}";
+            return $"Product identifiable {{{ProductId}, '{ProductInfo.Name}'}}";
         }
     }
 }

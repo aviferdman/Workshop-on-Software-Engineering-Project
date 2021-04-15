@@ -59,6 +59,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         {
             ShopId? shop = Bridge.AssureOpenShop(shopInfo);
             Assert.IsNotNull(shop);
+            // TODO: check the owner and the founder
             return shop!.Value;
         }
 
@@ -74,44 +75,6 @@ namespace AcceptanceTests.Tests.Market.Shop
                     State = "Victoria Island",
                     City = "Henesys",
                     Street = "Free Market",
-                    ApartmentNum = "52",
-                }
-            )));
-        }
-
-        [TestCase]
-        public void Failure_InvalidName()
-        {
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
-                name: "",
-                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
-                new Address
-                {
-                    State = "Victoria Island",
-                    City = "Ellinia",
-                    Street = "Giant Tree",
-                    ApartmentNum = "52",
-                }
-            )));
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
-                name: "    ",
-                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
-                new Address
-                {
-                    State = "Victoria Island",
-                    City = "Perion",
-                    Street = "Dusty Wind Hill",
-                    ApartmentNum = "52",
-                }
-            )));
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
-                name: "    \n  \t",
-                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
-                new Address
-                {
-                    State = "Victoria Island",
-                    City = "Perion",
-                    Street = "Dusty Wind Hill",
                     ApartmentNum = "52",
                 }
             )));

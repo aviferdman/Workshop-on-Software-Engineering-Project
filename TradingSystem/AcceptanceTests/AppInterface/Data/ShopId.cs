@@ -19,6 +19,15 @@ namespace AcceptanceTests.AppInterface.Data
             return $"Shop Id {Value}";
         }
 
+        public static bool operator ==(ShopId x1, ShopId x2)
+        {
+            return x1.Equals(x2);
+        }
+        public static bool operator !=(ShopId x1, ShopId x2)
+        {
+            return !(x1 == x2);
+        }
+
         public static implicit operator ShopId(Guid id)
         {
             return new ShopId(id);

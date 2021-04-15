@@ -71,11 +71,11 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         }
         public ProductId Success_Normal(ProductInfo productInfo)
         {
-            ProductId? product = Bridge.AddProductToShop(ShopId, productInfo);
-            Assert.IsNotNull(product);
-            Assert.Greater(product!.Value, 0);
-            products.Enqueue(product.Value);
-            return product.Value;
+            ProductId? productId = Bridge.AddProductToShop(ShopId, productInfo);
+            Assert.IsNotNull(productId);
+            // TODO: check the store products here
+            products.Enqueue(productId!.Value);
+            return productId.Value;
         }
 
         [TestCase]

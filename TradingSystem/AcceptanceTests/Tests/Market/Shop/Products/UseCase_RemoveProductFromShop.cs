@@ -54,6 +54,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public void Success_Normal()
         {
             Assert.IsTrue(Bridge.RemoveProductFromShop(ShopId, product));
+            // TODO: check the store products here
         }
 
         [TestCase]
@@ -66,7 +67,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, new ProductId(int.MaxValue - 1)));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, default));
         }
     }
 }

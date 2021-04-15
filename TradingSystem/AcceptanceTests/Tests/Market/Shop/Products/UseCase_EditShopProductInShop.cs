@@ -91,6 +91,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             {
                 Assert.IsTrue(Bridge.EditProductInShop(ShopId, item.ProductId, item.ProductEditInfo));
             }
+            // TODO: check the store products here
         }
 
         [TestCase]
@@ -103,7 +104,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, new ProductId(int.MaxValue - 1), ProductEditInfos.First().ProductInfoEdit));
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, default, ProductEditInfos.First().ProductInfoEdit));
         }
 
         [TestCase]
