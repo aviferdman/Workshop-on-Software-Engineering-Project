@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
@@ -46,9 +48,9 @@ namespace TradingSystem.Business.Market
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
             User user = MarketUsers.Instance.GetUserByUserName(username);
-            if (typeof(GuestState).IsInstanceOfType(user.State))
+            if (user == null || typeof(GuestState).IsInstanceOfType(user.State))
                 return null;
-            Store store = new Store(name, bank, address, new IFounder(username));
+            Store store = new Store(name, bank, address, new Founder(username));
             if (!_stores.TryAdd(store.Id, store))
                 return null;
             return store;
@@ -76,7 +78,7 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoreHistory));
             User user = MarketUsers.Instance.GetUserByUserName(username);
             IStore store = GetStoreById(storeId);
-            return store.GetStoreHistory(user.Id);
+            return store.GetStoreHistory(username);
         }
 
 

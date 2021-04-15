@@ -205,7 +205,7 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetUserHistory));
             User user = GetUserByUserName(username);
             string userId = user.Username;
-            return user.GetUserHistory(userId);
+            return user.GetUserHistory(username);
         }
 
 

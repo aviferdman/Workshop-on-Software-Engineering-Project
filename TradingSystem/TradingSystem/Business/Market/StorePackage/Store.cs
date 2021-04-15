@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.Histories;
 using TradingSystem.Business.Market.StoreStates;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
@@ -62,7 +63,7 @@ namespace TradingSystem.Business.Market
             return _id;
         }
 
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
@@ -76,7 +77,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = _transaction.ActivateTransaction(clientId, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
+            transactionStatus = _transaction.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
             history.Add(new TransactionHistory(transactionStatus));
             //transaction failed
             if (!transactionStatus.Status)
@@ -327,7 +328,7 @@ namespace TradingSystem.Business.Market
         //Use case 41 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/67
         public ICollection<IHistory> GetStoreHistory(string username)
         {
-            bool isPermitted = CheckPermission(userID, Permission.GetShopHistory);
+            bool isPermitted = CheckPermission(username, Permission.GetShopHistory);
             if (isPermitted)
             {
                 return History;
@@ -335,11 +336,13 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        private bool CheckPermission(Guid userId, Permission permission)
+        private bool CheckPermission(string username, Permission permission)
         {
-            IStorePermission storePermission;
-            Personnel.TryGetValue(userId, out storePermission);
-            return (storePermission != null && storePermission.GetPermission(permission));
+            Manager manager;
+            managers.TryGetValue(username, out manager);
+            Owner owner;
+            owners.TryGetValue(username, out owner);
+            return ((manager != null && manager.GetPermission(permission)) || (owner != null) || founder.Username.Equals(username));
         }
 
         public int CompareTo(object obj)

@@ -18,7 +18,7 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        public Guid CreateDelivery(Guid recieverId, string recieverPhone, double weight, string source, string destination)
+        public Guid CreateDelivery(string username, string recieverPhone, double weight, string source, string destination)
         {
             return generatePackageId();
         }

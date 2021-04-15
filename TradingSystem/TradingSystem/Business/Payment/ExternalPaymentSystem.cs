@@ -10,6 +10,6 @@ namespace TradingSystem.Business.Payment
 
         public Guid generatePaymentId();
 
-        public Guid CreatePayment(Guid clientId, string paymentMethod, int accountNumber2, int branch2, double paymentSum);
+        public Guid CreatePayment(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum);
     }
 }

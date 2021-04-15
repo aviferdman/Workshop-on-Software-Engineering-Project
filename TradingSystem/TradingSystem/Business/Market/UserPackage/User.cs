@@ -54,7 +54,7 @@ namespace TradingSystem.Business.Market
             //chcek is not empty and legal policy
             if (ShoppingCart.IsEmpty() || !ShoppingCart.CheckPolicy()) return false;
             double paySum = ShoppingCart.CalcPaySum();
-            BuyStatus buyStatus = ShoppingCart.Purchase(_id, method, phone, address, paySum);
+            BuyStatus buyStatus = ShoppingCart.Purchase(username, method, phone, address, paySum);
             foreach (var p in buyStatus.PurchaseStatuses)
             {
                 userHistory.Add(new TransactionHistory(p));
@@ -67,9 +67,9 @@ namespace TradingSystem.Business.Market
             return _shoppingCart.GetShopingCartProducts();
         }
 
-        public ICollection<IHistory> GetUserHistory(Guid userId)
+        public ICollection<IHistory> GetUserHistory(string username)
         {
-            return _state.GetUserHistory(userId);
+            return _state.GetUserHistory(username);
         }
 
        

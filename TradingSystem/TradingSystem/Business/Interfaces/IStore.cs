@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Market
     public interface IStore : IComparable
     {
         public Guid GetId();
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum);
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum);
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity);
 
@@ -21,13 +21,13 @@ namespace TradingSystem.Business.Market
 
         public void RemoveRule(IRule rule);
 
-        public String AddProduct(Product product, Guid userID);
+        public String AddProduct(Product product, string username);
 
-        public String RemoveProduct(String productName, Guid userID);
+        public String RemoveProduct(String productName, string username);
 
-        public String EditProduct(String productName, Product editedProduct, Guid userID);
+        public String EditProduct(String productName, Product editedProduct, string username);
 
-        public String AssignMember(Guid assigneeID, User assigner, AppointmentType type);
+        public String AssignMember(string username, User assigner, AppointmentType type);
 
         public void UpdateProduct(Product product);
 
@@ -37,8 +37,8 @@ namespace TradingSystem.Business.Market
 
         public void RemoveDiscount(Guid discountId);
 
-        public ICollection<IHistory> GetStoreHistory(Guid userID);
+        public ICollection<IHistory> GetStoreHistory(string username);
 
-        public String DefineManagerPermissions(Guid managerID, Guid assignerID, List<Permission> permissions);
+        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissions);
     }
 }

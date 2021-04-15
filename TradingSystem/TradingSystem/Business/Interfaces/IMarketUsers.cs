@@ -15,12 +15,12 @@ namespace TradingSystem.Business.Market
         public void RemoveGuest(String usrname);
         public string AddMember(String usrname, string password, string guestusername);
 
-        bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity);
+        bool UpdateProductInShoppingBasket(string username, Guid storeId, Product product, int quantity);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
         public ICollection<IHistory> GetAllHistory(string username);
         public ICollection<IHistory> GetUserHistory(string username);
         public string logout(string username);
-        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId);
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(string username);
 
     }
 }

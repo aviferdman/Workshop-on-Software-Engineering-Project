@@ -23,7 +23,7 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        public override ICollection<IHistory> GetUserHistory(Guid userId)
+        public override ICollection<IHistory> GetUserHistory(string username)
         {
             throw new UnauthorizedAccessException();
         }
