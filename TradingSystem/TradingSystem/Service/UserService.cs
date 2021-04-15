@@ -23,14 +23,6 @@ namespace TradingSystem.Service
             return userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone);
         }
 
-        public string Login(string username, string password, string guestusername)
-        {
-            return userManagement.LogIn(username, password, guestusername);
-        }
-
-        public string Logout(string username)
-        {
-            return userManagement.Logout(username);
-        }
+       
     }
 }
