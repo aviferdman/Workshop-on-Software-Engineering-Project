@@ -18,6 +18,7 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<string, User> activeUsers;
         private ConcurrentDictionary<string, User> adminUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
+        private ConcurrentDictionary<string, MemberState> memberStates;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketUsers>
@@ -28,6 +29,7 @@ namespace TradingSystem.Business.Market
         public static MarketUsers Instance { get { return _lazy.Value; } }
 
         public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
+        public ConcurrentDictionary<string, MemberState> MemberStates { get => memberStates; set => memberStates = value; }
 
         private MarketUsers()
         {
@@ -130,7 +132,14 @@ namespace TradingSystem.Business.Market
             if (!activeUsers.TryRemove(guestusername, out u))
                 return "user not found in market";
             string GuidString;
-            u.State = new MemberState(u.Username, new HashSet<IHistory>());
+            MemberState m;
+            if(!memberStates.TryGetValue(usrname, out m))
+            {
+                m = new MemberState(u.Username, new HashSet<IHistory>());
+                memberStates.TryAdd(usrname, m);
+            }
+                
+            u.State = m;
             u.Username = usrname;
             u.IsLoggedIn = true;
             if (membersShoppingCarts.TryGetValue(usrname, out s))

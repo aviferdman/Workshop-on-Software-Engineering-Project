@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TradingSystem.Business.Market
 {
-    public interface IManager : IStorePermission
+    public interface IManager
     {
     }
 }

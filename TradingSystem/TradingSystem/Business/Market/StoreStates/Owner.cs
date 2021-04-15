@@ -9,26 +9,37 @@ namespace TradingSystem.Business.Market.StoreStates
     public class Owner:Appointer
     {
         private string username;
+        private MemberState m;
+        private Store s;
         private ConcurrentDictionary<string, Manager> managerAppointments;
         private ConcurrentDictionary<string, Owner> ownerAppointments;
         private Appointer appointer;
-        public Owner(string username, Appointer appointer)
+        private Owner(MemberState m, Store s, Appointer appointer)
         {
-            this.username = username;
+            this.username = m.UserId;
+            this.m = m;
+            this.s = s;
             this.appointer = appointer;
             managerAppointments = new ConcurrentDictionary<string, Manager>();
             ownerAppointments = new ConcurrentDictionary<string, Owner>();
         }
 
-        public Manager AddAppointmentManager(string username)
+        public static Owner makeOwner(MemberState m, Store s, Appointer appointer)
         {
-            Manager prem = new Manager(username, this);
+            if (m.isStaff(s) || s.isStaff(m.UserId))
+                throw new InvalidOperationException();
+            return new Owner(m, s, appointer);
+        }
+
+        public Manager AddAppointmentManager(MemberState m, Store s)
+        {
+            Manager prem = Manager.makeManager(m, s, this);
             managerAppointments.TryAdd(username, prem);
             return prem;
         }
-        public Owner AddAppointmentOwner(string username)
+        public Owner AddAppointmentOwner(MemberState m, Store s)
         {
-            Owner prem = new Owner(username, this);
+            Owner prem = makeOwner(m,s, this);
             ownerAppointments.TryAdd(username, prem);
             return prem;
         }

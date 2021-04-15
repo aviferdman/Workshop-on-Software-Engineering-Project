@@ -27,6 +27,7 @@ namespace TradingSystem.Business.Market
         private static Transaction _transaction = Transaction.Instance;
         private ICollection<IHistory> history;
         private object _lock;
+        private object prem_lock;
 
         public ConcurrentDictionary<String, Product> Products { get => _products; set => _products = value; }
         internal Policy Policy { get => _policy; set => _policy = value; }
@@ -40,6 +41,7 @@ namespace TradingSystem.Business.Market
         public ConcurrentDictionary<string, Manager> Managers { get => managers; set => managers = value; }
         public ConcurrentDictionary<string, Owner> Owners { get => owners; set => owners = value; }
         public Founder Founder { get => founder; set => founder = value; }
+        public object Prem_lock { get => prem_lock; set => prem_lock = value; }
 
         public Store(string name, BankAccount bank, Address address, Founder f)
         {
@@ -48,6 +50,7 @@ namespace TradingSystem.Business.Market
             this._products = new ConcurrentDictionary<string, Product>();
             this._transactionsHistory = new HashSet<TransactionStatus>();
             this._lock = new object();
+            this.prem_lock = new object();
             this.Discounts = new HashSet<Discount>();
             this._id = Guid.NewGuid();
             this._policy = new Policy();
@@ -62,7 +65,10 @@ namespace TradingSystem.Business.Market
         {
             return _id;
         }
-
+        public bool isStaff(string username)
+        {
+            return founder.Username.Equals(username) || managers.ContainsKey(username) || owners.ContainsKey(username);
+        }
         public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
         {
             bool enoughtQuantity;

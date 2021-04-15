@@ -7,6 +7,8 @@ namespace TradingSystem.Business.Market.StoreStates
     public class Manager 
     {
         private Appointer appointer;
+        private MemberState m;
+        private Store s;
         private string username;
         private ICollection<Permission> store_permission;
 
@@ -24,12 +26,20 @@ namespace TradingSystem.Business.Market.StoreStates
             CloseShop
         }
 
-        public Manager(string username, Appointer appointer) 
+        private Manager(MemberState m, Store s, Appointer appointer) 
         {
-            this.username = username;
+            this.username = m.UserId;
+            this.m = m;
+            this.s = s;
             this.appointer = appointer;
             store_permission = new LinkedList<Permission>();
             store_permission.Add(Permission.GetPersonnelInfo);
+        }
+        public static Manager makeManager(MemberState m, Store s, Appointer appointer)
+        {
+            if (m.isStaff(s) || s.isStaff(m.UserId))
+                throw new InvalidOperationException();
+            return new Manager(m, s, appointer);
         }
 
         public bool GetPermission(Permission permission)
