@@ -21,7 +21,6 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             new object[]
             {
-                "Remove product from shop - setup",
                 SystemContext.Instance,
                 new ShopImage
                 (
@@ -45,18 +44,15 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
 
         public UseCase_RemoveProductFromShop
         (
-            string testName,
             SystemContext systemContext,
             ShopImage shopImage,
             Func<ShopImage, IEnumerable<ProductIdentifiable>> productsProviderRemove
         ) : base(systemContext, shopImage.OwnerUser)
         {
-            TestName = testName;
             ShopImage = shopImage;
             ProductsProviderRemove = productsProviderRemove;
         }
 
-        public string TestName { get; }
         public ShopImage ShopImage { get; }
         public Func<ShopImage, IEnumerable<ProductIdentifiable>> ProductsProviderRemove { get; }
 
@@ -71,7 +67,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             base.Setup();
             useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
-            useCase_addProduct.Success_Normal_CheckStoreProducts(TestName);
+            useCase_addProduct.Success_Normal_CheckStoreProducts();
             productsToRemove = ProductsProviderRemove(ShopImage);
         }
 
@@ -86,7 +82,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             IEnumerable<ProductIdentifiable> expected = Success_NoCheckStoreProducts();
             new UseCase_ViewShopProducts_TestLogic(SystemContext)
-                .Success_Normal(TestName, ShopId, expected);
+                .Success_Normal(ShopId, expected);
         }
 
         public IEnumerable<ProductIdentifiable> Success_NoCheckStoreProducts()

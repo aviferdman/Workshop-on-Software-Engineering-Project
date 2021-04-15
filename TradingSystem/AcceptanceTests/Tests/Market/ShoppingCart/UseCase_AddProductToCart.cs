@@ -70,7 +70,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             var productIdentifiables = new ProductIdentifiable[] { new ProductIdentifiable(ProductInfo) };
             useCase_addProduct = new UseCase_AddProductToShop(SystemContext, new ShopImage(ShopOwnerUser, ShopInfo, productIdentifiables));
             useCase_addProduct.Setup();
-            ProductId = useCase_addProduct.Success_Normal_CheckStoreProducts(ProductInfo, productIdentifiables, "add products to cart");
+            ProductId = useCase_addProduct.Success_Normal_CheckStoreProducts(ProductInfo, productIdentifiables);
 
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
@@ -98,7 +98,6 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             testLogic.Success_Normal(new ProductInCart(ProductId, Quantity));
             new Assert_SetEquals<ProductId, ProductInCart>
             (
-                "Add product to cart - success",
                 new ProductInCart[] { new ProductInCart(ProductId, Quantity) },
                 x => x.ProductId
             ).AssertEquals(Bridge.GetShoppingCartItems());

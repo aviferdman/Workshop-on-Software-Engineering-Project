@@ -100,7 +100,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             ProductEditInfos = ProductsProvidersEdit(ShopImage);
             useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
-            useCase_addProduct.Success_Normal_CheckStoreProducts("edit product in shop - setup");
+            useCase_addProduct.Success_Normal_CheckStoreProducts();
         }
 
         [TearDown]
@@ -114,7 +114,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             IEnumerable<ProductIdentifiable> expected = Success_NoCheckStoreProducts();
             new UseCase_ViewShopProducts_TestLogic(SystemContext)
-                .Success_Normal("edit product in shop - success", ShopId, expected);
+                .Success_Normal(ShopId, expected);
         }
 
         public IEnumerable<ProductIdentifiable> Success_NoCheckStoreProducts()

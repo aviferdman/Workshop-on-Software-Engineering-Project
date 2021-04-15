@@ -85,8 +85,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Success_Normal()
         {
             Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, NewQuantity));
-            new Assert_SetEquals<ProductId, ProductInCart>(
-                "Edit product in cart - success",
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
                 new ProductInCart[] { new ProductInCart(useCase_addProductToCart.ProductId, NewQuantity) },
                 x => x.ProductId
             ).AssertEquals(Bridge.GetShoppingCartItems());
@@ -97,8 +97,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, -1));
             Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, 0));
-            new Assert_SetEquals<ProductId, ProductInCart>(
-                "Edit product in cart - invalid quantity",
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
                 new ProductInCart[] { new ProductInCart(useCase_addProductToCart.ProductId, PrevQuantity) },
                 x => x.ProductId
             ).AssertEquals(Bridge.GetShoppingCartItems());

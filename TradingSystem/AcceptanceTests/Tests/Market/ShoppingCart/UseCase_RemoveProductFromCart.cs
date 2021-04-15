@@ -82,7 +82,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Success_Normal()
         {
             Assert.IsTrue(Bridge.RemoveProductFromUserCart(useCase_addProductToCart.ProductId));
-            new Assert_SetEquals<ProductInCart>("Remove product from cart", Enumerable.Empty<ProductInCart>())
+            new Assert_SetEquals<ProductInCart>(Enumerable.Empty<ProductInCart>())
                 .AssertEquals(Bridge.GetShoppingCartItems());
         }
     }

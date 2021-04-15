@@ -122,10 +122,10 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             useCase_openShop.Teardown();
         }
 
-        [TestCase("Add product to shop - success")]
-        public void Success_Normal_CheckStoreProducts(string testName)
+        [TestCase]
+        public void Success_Normal_CheckStoreProducts()
         {
-            Success_Normal_CheckStoreProducts(ShopImage.ShopProducts, ShopImage.ShopProducts, testName);
+            Success_Normal_CheckStoreProducts(ShopImage.ShopProducts, ShopImage.ShopProducts);
         }
         public void Success_Normal_NoCheckStoreProducts()
         {
@@ -142,13 +142,12 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public void Success_Normal_CheckStoreProducts
         (
             IEnumerable<ProductIdentifiable> products,
-            IEnumerable<ProductIdentifiable> expectedStoreProducts,
-            string testName
+            IEnumerable<ProductIdentifiable> expectedStoreProducts
         )
         {
             Success_Normal_NoCheckStoreProducts(products);
             new UseCase_ViewShopProducts_TestLogic(SystemContext)
-                .Success_Normal(testName, ShopId, expectedStoreProducts);
+                .Success_Normal(ShopId, expectedStoreProducts);
         }
 
         public ProductId Success_Normal_NoCheckStoreProducts(ProductInfo productInfo)
@@ -161,13 +160,12 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public ProductId Success_Normal_CheckStoreProducts
         (
             ProductInfo productInfo,
-            IEnumerable<ProductIdentifiable> expectedStoreProducts,
-            string testName
+            IEnumerable<ProductIdentifiable> expectedStoreProducts
         )
         {
             ProductId productId = Success_Normal_NoCheckStoreProducts(productInfo);
             new UseCase_ViewShopProducts_TestLogic(SystemContext)
-                .Success_Normal(testName, ShopId, expectedStoreProducts);
+                .Success_Normal(ShopId, expectedStoreProducts);
             return productId;
         }
 

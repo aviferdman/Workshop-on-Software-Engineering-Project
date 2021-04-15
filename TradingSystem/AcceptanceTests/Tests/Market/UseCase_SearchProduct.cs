@@ -63,7 +63,6 @@ namespace AcceptanceTests.Tests.Market
         {
             new object[]
             {
-                "Search product - setup",
                 SystemContext.Instance,
                 User_Buyer,
                 DefaultMarketImageFactorry
@@ -76,17 +75,14 @@ namespace AcceptanceTests.Tests.Market
         public ShopImage[] MarketImage { get; private set; }
         private ShopTestState[] MarketState { get; set; }
 
-        public string TestName { get; }
-
-        public UseCase_SearchProduct(
-            string testName,
+        public UseCase_SearchProduct
+        (
             SystemContext systemContext,
             UserInfo buyerUser,
             Func<ShopImage[]> marketImageFactory
         ) : base(systemContext, buyerUser)
         {
             MarketImageFactory = marketImageFactory;
-            TestName = testName;
         }
 
         [SetUp]
@@ -94,13 +90,13 @@ namespace AcceptanceTests.Tests.Market
         {
             base.Setup();
 
-            PrepareMarket(TestName);
+            PrepareMarket();
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
             useCase_login_buyer.Setup();
             useCase_login_buyer.Success_Normal();
         }
 
-        private void PrepareMarket(string testName)
+        private void PrepareMarket()
         {
             MarketImage = MarketImageFactory();
             MarketState = MarketImage
@@ -111,7 +107,7 @@ namespace AcceptanceTests.Tests.Market
             {
                 prevShop?.Logout();
                 shop.Login();
-                shop.AddAllProducts(testName);
+                shop.AddAllProducts();
                 prevShop = shop;
             }
             prevShop?.Logout();
@@ -128,15 +124,14 @@ namespace AcceptanceTests.Tests.Market
             }
         }
 
-        private void TestSuccess(string testName, ProductSearchCreteria searchCreteria, IEnumerable<ProductIdentifiable> expectedResults)
+        private void TestSuccess(ProductSearchCreteria searchCreteria, IEnumerable<ProductIdentifiable> expectedResults)
         {
             ProductSearchResults? results = Bridge.SearchProducts(searchCreteria);
             Assert.IsNotNull(results);
-            Assert.IsNull(results!.TypoFixes, $"{testName}: expected no typo fixes");
-            Assert.IsTrue(results!.IsValid(), $"{testName}: expect valid results (valid IDs)");
+            Assert.IsNull(results!.TypoFixes, $"expected no typo fixes");
+            Assert.IsTrue(results!.IsValid(), $"expect valid results (valid IDs)");
             new Assert_SetEquals<ProductIdentifiable>
             (
-                testName,
                 expectedResults,
                 ProductIdentifiable.DeepEquals
             ).AssertEquals(results);
@@ -147,7 +142,6 @@ namespace AcceptanceTests.Tests.Market
         {
             TestSuccess
             (
-                "Products search - success - multiple shops",
                 new ProductSearchCreteria("bag")
                 {
                     PriceRange_Low = 0.5m
@@ -165,7 +159,6 @@ namespace AcceptanceTests.Tests.Market
         {
             TestSuccess
             (
-                "Products search - success - one shop",
                 new ProductSearchCreteria("charger")
                 {
                     PriceRange_High = 21
@@ -218,9 +211,9 @@ namespace AcceptanceTests.Tests.Market
             public SystemContext SystemContext { get; }
             public ShopImage ShopImage { get; }
 
-            public void AddAllProducts(string testName)
+            public void AddAllProducts()
             {
-                useCase_addProduct!.Success_Normal_CheckStoreProducts(testName);
+                useCase_addProduct!.Success_Normal_CheckStoreProducts();
             }
 
             public void Login()

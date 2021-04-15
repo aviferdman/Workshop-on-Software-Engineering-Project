@@ -77,7 +77,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TestCase]
         public void Success_Normal()
         {
-            testLogic!.Success_Normal("View shopping cart - success", useCase_addProduct.ShopId, ShopImage.ShopProducts);
+            testLogic!.Success_Normal(useCase_addProduct.ShopId, ShopImage.ShopProducts);
         }
 
         [TestCase]

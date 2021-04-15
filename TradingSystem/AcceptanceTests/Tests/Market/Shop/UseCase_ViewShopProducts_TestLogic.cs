@@ -16,14 +16,13 @@ namespace AcceptanceTests.Tests.Market.Shop
 
         }
 
-        public void Success_Normal(string testName, ShopId shopId, IEnumerable<ProductIdentifiable> expected)
+        public void Success_Normal(ShopId shopId, IEnumerable<ProductIdentifiable> expected)
         {
             IEnumerable<ProductIdentifiable>? resultProducts = Bridge.GetShopProducts(shopId);
             Assert.IsNotNull(resultProducts);
-            Assert.IsTrue(resultProducts.All(x => x.ProductId.IsValid()), $"{testName}: contains invalid product IDs");
+            Assert.IsTrue(resultProducts.All(x => x.ProductId.IsValid()), $"contains invalid product IDs");
             new Assert_SetEquals<ProductIdentifiable>
             (
-                testName,
                 expected,
                 ProductIdentifiable.DeepEquals
             ).AssertEquals(resultProducts);
