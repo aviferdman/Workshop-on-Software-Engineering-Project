@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.Histories;
+using TradingSystem.Business.Market.StoreStates;
 
 namespace TradingSystem.Business.Market
 {
@@ -13,7 +14,9 @@ namespace TradingSystem.Business.Market
     {
         private ConcurrentDictionary<String, Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
-        private ConcurrentDictionary<Guid, IStorePermission> personnel;
+        private Founder founder;
+        private ConcurrentDictionary<string, Manager> managers;
+        private ConcurrentDictionary<string, Owner> owners;
         private BankAccount _bank;
         private Guid _id;
         private string name;
@@ -32,11 +35,14 @@ namespace TradingSystem.Business.Market
         public string Name { get => name; set => name = value; }
         internal BankAccount Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
-        public ConcurrentDictionary<Guid, IStorePermission> Personnel { get => personnel; set => personnel = value; }
         public ICollection<IHistory> History { get => history; set => history = value; }
+        public ConcurrentDictionary<string, Manager> Managers { get => managers; set => managers = value; }
+        public ConcurrentDictionary<string, Owner> Owners { get => owners; set => owners = value; }
+        public Founder Founder { get => founder; set => founder = value; }
 
-        public Store(string name, BankAccount bank, Address address)
+        public Store(string name, BankAccount bank, Address address, Founder f)
         {
+            this.founder = f;
             this.name = name;
             this._products = new ConcurrentDictionary<string, Product>();
             this._transactionsHistory = new HashSet<TransactionStatus>();
@@ -46,7 +52,8 @@ namespace TradingSystem.Business.Market
             this._policy = new Policy();
             this._bank = bank;
             this._address = address;
-            this.personnel = new ConcurrentDictionary<Guid, IStorePermission>();
+            this.managers = new ConcurrentDictionary<string, Manager>();
+            this.owners = new ConcurrentDictionary<string, Owner>();
             this.History = new HashSet<IHistory>();
         }
 
@@ -318,7 +325,7 @@ namespace TradingSystem.Business.Market
         }
 
         //Use case 41 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/67
-        public ICollection<IHistory> GetStoreHistory(Guid userID)
+        public ICollection<IHistory> GetStoreHistory(string username)
         {
             bool isPermitted = CheckPermission(userID, Permission.GetShopHistory);
             if (isPermitted)

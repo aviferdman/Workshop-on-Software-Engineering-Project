@@ -13,7 +13,7 @@ namespace TradingSystem.Business.Market
     {
         public string AddGuest();
         public void RemoveGuest(String usrname);
-        public bool AddMember(String usrname, string guestusername, Guid id);
+        public string AddMember(String usrname, string password, string guestusername);
 
         bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
