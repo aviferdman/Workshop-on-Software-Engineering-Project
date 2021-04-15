@@ -8,9 +8,8 @@ using TradingSystem.Service;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
-    public class MarketBridgeAdapter : IMarketBridge
+    public class MarketBridgeAdapter : BridgeAdapterBase, IMarketBridge
     {
-        private readonly SystemContext systemContext;
         private readonly MarketStoreGeneralService marketStoreGeneralService;
         private readonly MarketProductsService marketProductsService;
 
@@ -20,8 +19,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             MarketStoreGeneralService marketStoreGeneralService,
             MarketProductsService marketProductsService
         )
+            : base(systemContext)
         {
-            this.systemContext = systemContext;
             this.marketStoreGeneralService = marketStoreGeneralService;
             this.marketProductsService = marketProductsService;
         }
@@ -46,7 +45,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             StoreData storeData = marketStoreGeneralService.CreateStore
             (
                 shopInfo.Name,
-                systemContext.TokenUsername,
+                Username,
                 shopInfo.BankAccount.AccountNumber,
                 shopInfo.BankAccount.Branch,
                 shopInfo.Address.State,
@@ -87,7 +86,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                     category = productInfo.Category,
                 },
                 shopId,
-                systemContext.TokenUsername
+                Username
             );
             bool success = result == "Product added";
             return success ? new ProductId(shopId, productInfo.Name) : (ProductId?)null;
@@ -98,7 +97,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             string result = marketProductsService.RemoveProduct
             (
                 productId.ProductName,
-                shopId.Value, systemContext.TokenUsername
+                shopId.Value,
+                Username
             );
             return result == "Product removed";
         }

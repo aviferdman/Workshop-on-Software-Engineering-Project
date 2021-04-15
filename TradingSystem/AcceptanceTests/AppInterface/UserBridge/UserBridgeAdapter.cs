@@ -8,15 +8,19 @@ using TradingSystem.Service;
 
 namespace AcceptanceTests.AppInterface.UserBridge
 {
-    public class UserBridgeAdapter : IUserBridge
+    public class UserBridgeAdapter : BridgeAdapterBase, IUserBridge
     {
-        private readonly SystemContext systemContext;
         private readonly UserService userService;
         private readonly MarketUserService marketUserService;
 
-        private UserBridgeAdapter(SystemContext systemContext, UserService userService, MarketUserService marketService)
+        private UserBridgeAdapter
+        (
+            SystemContext systemContext,
+            UserService userService,
+            MarketUserService marketService
+        )
+            : base(systemContext)
         {
-            this.systemContext = systemContext;
             this.userService = userService;
             this.marketUserService = marketService;
         }
@@ -25,14 +29,6 @@ namespace AcceptanceTests.AppInterface.UserBridge
         {
             return new UserBridgeAdapter(systemContext, UserService.Instance, MarketUserService.Instance);
         }
-
-        /// <summary>
-        /// Determines whether we can inteferface with the system,
-        /// either as a guest or as a member.
-        /// </summary>
-        public bool IsConnected => Username != null;
-
-        public string? Username { get => systemContext.TokenUsername; set => systemContext.TokenUsername = value; }
 
         public bool Connect()
         {
