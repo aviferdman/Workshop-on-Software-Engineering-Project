@@ -9,10 +9,10 @@ namespace TradingSystem.Business.Market
     public class MemberState : State
     {
 
-        private Guid _userId;
+        private string _userId;
         private ICollection<IHistory> _userHistory;
 
-        public MemberState(Guid userId, ICollection<IHistory> userHistory) : base()
+        public MemberState(string userId, ICollection<IHistory> userHistory) : base()
         {
             this._userId = userId;
             this._userHistory = userHistory;

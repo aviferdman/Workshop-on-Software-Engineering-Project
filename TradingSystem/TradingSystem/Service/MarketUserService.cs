@@ -33,5 +33,15 @@ namespace TradingSystem.Service
             UserHistory history = marketUsers.GetUserHistory(username);
             return new HistoryData(history);
         }
+
+        public string login(string usrname, string password, string guestusername)
+        {
+            return marketUsers.AddMember(usrname, password, guestusername);
+        }
+
+        public string logout(string usrname)
+        {
+            return marketUsers.logout(usrname);
+        }
     }
 }

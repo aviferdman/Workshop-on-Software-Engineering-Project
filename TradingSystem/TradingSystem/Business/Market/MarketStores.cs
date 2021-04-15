@@ -48,8 +48,7 @@ namespace TradingSystem.Business.Market
             User user = MarketUsers.Instance.GetUserByUserName(username);
             if (typeof(GuestState).IsInstanceOfType(user.State))
                 return null;
-            Store store = new Store(name, bank, address);
-            store.Personnel.TryAdd(user.Id, new Founder(user.Id));
+            Store store = new Store(name, bank, address, new IFounder(username));
             if (!_stores.TryAdd(store.Id, store))
                 return null;
             return store;

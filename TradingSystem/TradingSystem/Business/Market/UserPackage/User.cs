@@ -12,7 +12,6 @@ namespace TradingSystem.Business.Market
     {
         private State _state;
         private IShoppingCart _shoppingCart;
-        private Guid _id;
         private string username;
         private bool isLoggedIn;
         private ICollection<IHistory> userHistory;
@@ -20,7 +19,6 @@ namespace TradingSystem.Business.Market
         public User(string username)
         {
             this._shoppingCart = new ShoppingCart();
-            this._id = Guid.NewGuid();
             this._state = new GuestState();
             this.username = username;
             this.isLoggedIn = false;
@@ -30,12 +28,10 @@ namespace TradingSystem.Business.Market
         public User()
         {
             this._shoppingCart = new ShoppingCart();
-            this._id = Guid.NewGuid();
             this._state = new GuestState();
             this.isLoggedIn = false;
         }
 
-        public Guid Id { get => _id; set => _id = value; }
         internal State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }

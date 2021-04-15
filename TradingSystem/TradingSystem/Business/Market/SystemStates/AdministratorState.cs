@@ -8,11 +8,11 @@ namespace TradingSystem.Business.Market
 {
     public class AdministratorState : MemberState
     {
-        private Guid _userId;
+        private string _userId;
         private ICollection<IHistory> _userHistory;
-        public AdministratorState(Guid userId, ICollection<IHistory> userHistory) : base(userId, userHistory)
+        public AdministratorState(string username, ICollection<IHistory> userHistory) : base(username, userHistory)
         {
-            _userId = userId;
+            _userId = username;
             _userHistory = userHistory;
         }
 

@@ -1,46 +1,59 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
-namespace TradingSystem.Business.Market
+namespace TradingSystem.Business.Market.StoreStates
 {
-    public class Owner : StorePermission
+    public class Owner:Appointer
     {
-        public override IStorePermission AddAppointment(Guid user, AppointmentType appointment)
+        private string username;
+        private ConcurrentDictionary<string, Manager> managerAppointments;
+        private ConcurrentDictionary<string, Owner> ownerAppointments;
+        private Appointer appointer;
+        public Owner(string username, Appointer appointer)
         {
-            StorePermission prem;
-            if (appointment.Equals(AppointmentType.Manager))
-            {
-                prem = new Manager(user, this);
-            }
-            else
-            {
-                prem = new Owner(user, this);
-            }
-            appointments.TryAdd(user, prem);
+            this.username = username;
+            this.appointer = appointer;
+            managerAppointments = new ConcurrentDictionary<string, Manager>();
+            ownerAppointments = new ConcurrentDictionary<string, Owner>();
+        }
+
+        public Manager AddAppointmentManager(string username)
+        {
+            Manager prem = new Manager(username, this);
+            managerAppointments.TryAdd(username, prem);
             return prem;
         }
-        public Owner(Guid userId, StorePermission appoint) : base(userId)
+        public Owner AddAppointmentOwner(string username)
         {
-            base.appointer = appoint;
+            Owner prem = new Owner(username, this);
+            ownerAppointments.TryAdd(username, prem);
+            return prem;
         }
-        
-        public override void AddPermission(Guid user, Permission permission)
+        public bool canRemoveAppointment(string userToRemove)
         {
-            throw new UnauthorizedAccessException();
+            Manager m;
+            Owner o;
+            return managerAppointments.TryRemove(userToRemove, out m) || ownerAppointments.TryRemove(userToRemove, out o);
+        }
+
+        public void AddPermission(string username, Permission permission)
+        {
+            Manager m;
+            if (!managerAppointments.TryGetValue(username, out m))
+                throw new UnauthorizedAccessException();
+            m.AddPermission(permission);
         }
 
 
-        public override bool GetPermission(Permission permission)
+        public void RemovePermission(string username, Permission permission)
         {
-            if (Permission.CloseShop.Equals(permission))//only founder can close shop
-                return false;
-            return true;
-        }
-
-        public override void RemovePermission(Guid user, Permission permission)
-        {
-            throw new UnauthorizedAccessException();
+            Manager m;
+            if (!managerAppointments.TryGetValue(username, out m))
+                throw new UnauthorizedAccessException();
+            m.RemovePermission(permission);
         }
     }
 }

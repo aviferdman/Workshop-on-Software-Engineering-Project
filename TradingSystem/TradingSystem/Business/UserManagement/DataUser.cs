@@ -9,7 +9,6 @@ namespace TradingSystem.Business.UserManagement
     class DataUser
     {
         private string username;
-        private Guid id;
         private string password;
         private bool isLoggedin;
         private Address address;
@@ -17,7 +16,6 @@ namespace TradingSystem.Business.UserManagement
 
         public DataUser(string username, string password, Address address, string phone)
         {
-            id = Guid.NewGuid();
             this.username = username;
             this.password = password;
             this.address = address;
@@ -30,7 +28,6 @@ namespace TradingSystem.Business.UserManagement
         public Address Address { get => address; set => address = value; }
         public bool IsLoggedin { get => isLoggedin; set => isLoggedin = value; }
         public string Phone { get => phone; set => phone = value; }
-        public Guid Id { get => id; set => id = value; }
 
         public override bool Equals(object obj)
         {

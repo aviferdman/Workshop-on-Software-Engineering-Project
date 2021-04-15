@@ -42,7 +42,7 @@ namespace TradingSystem.Business.Market
         private User CreateDefaultAdmin()
         {
             User user = new User(DEFAULT_ADMIN_USERNAME);
-            user.ChangeState(new AdministratorState(user.Id, user.UserHistory));
+            user.ChangeState(new AdministratorState(DEFAULT_ADMIN_USERNAME, user.UserHistory));
             return user;
         }
 
@@ -75,7 +75,7 @@ namespace TradingSystem.Business.Market
             
         }
 
-        public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
+        public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(UpdateProductInShoppingBasket));
             User user = GetUserById(userId);
@@ -84,9 +84,9 @@ namespace TradingSystem.Business.Market
             return true;
         }
 
-        private User GetUserById(Guid userId)
+        private User GetUserById(string username)
         {
-            return activeUsers.Values.Where(u => u.Id.Equals(userId)).FirstOrDefault();
+            return activeUsers.Values.Where(u => u.Username.Equals(username)).FirstOrDefault();
         }
 
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
@@ -114,19 +114,23 @@ namespace TradingSystem.Business.Market
             activeUsers.TryRemove(usrname, out guest);
         }
 
-
-        ///after login - <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> 
-        public bool AddMember(String usrname, string guestusername, Guid id)
+        //use case 2 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
+        ///using login to check password - <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> 
+        public string AddMember(String usrname,string password, string guestusername)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddMember));
+            string loginmang = UserManagement.UserManagement.Instance.LogIn(usrname, password);
+            if (!loginmang.Equals("success"))
+            {
+                return loginmang;
+            }
             User u;
             User guest;
             IShoppingCart s;
             if (!activeUsers.TryRemove(guestusername, out u))
-                return false;
+                return "user not found in market";
             string GuidString;
-            u.State = new MemberState(u.Id, new HashSet<IHistory>());
-            u.Id = id;
+            u.State = new MemberState(u.Username, new HashSet<IHistory>());
             u.Username = usrname;
             u.IsLoggedIn = true;
             if (membersShoppingCarts.TryGetValue(usrname, out s))
@@ -148,17 +152,21 @@ namespace TradingSystem.Business.Market
                 }
                 
             };
-            return true;
+            return "success";
         }
-
-        ///after logout - <see cref="UserManagement.UserManagement.Logout(string)"/> 
+        //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
+        ///before logout checks  - <see cref="UserManagement.UserManagement.Logout(string)"/> 
         public string logout(string username)
         {
             User u;
+            bool loginmang = UserManagement.UserManagement.Instance.Logout(username);
+            if (!loginmang)
+            {
+                return null;
+            }
             if (!activeUsers.TryRemove(username, out u))
                 return null;
-            u.Id = Guid.NewGuid();
-            u.ChangeState(new MemberState(u.Id, new HashSet<IHistory>()));
+            u.ChangeState(new GuestState());
             u.ShoppingCart = new ShoppingCart();
             string GuidString;
             do
@@ -196,7 +204,7 @@ namespace TradingSystem.Business.Market
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetUserHistory));
             User user = GetUserByUserName(username);
-            Guid userId = user.Id;
+            string userId = user.Username;
             return user.GetUserHistory(userId);
         }
 
@@ -253,7 +261,7 @@ namespace TradingSystem.Business.Market
         }
 
        
-        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId)
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(string userId)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetShopingCartProducts));
             User user = GetUserById(userId);
