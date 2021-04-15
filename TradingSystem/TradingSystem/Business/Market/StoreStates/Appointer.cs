@@ -15,8 +15,9 @@ namespace TradingSystem.Business.Market.StoreStates
         //use locks for store premmissions and memberState premissions
         public Owner AddAppointmentOwner(MemberState m, Store s);
 
-        /// checks if this user can remove the appiontment of a user and if he does removes him from appointments list
-        /// please notice that when a user is removed all his appointments should be removed and this function d
+        /// checks if this user can remove the appointment of a user and if he does removes him from appointments list
+        /// please notice that when a user is removed all his appointments should be removed and this function doesn't do that so take care of it
+        /// if returns true need to remove appointment from userToRemove memberState's lists of premmissions, aand from store's lists of premmissions
         ///use locks for store premmissions and memberState premissions
         public bool canRemoveAppointment(string userToRemove);
 
