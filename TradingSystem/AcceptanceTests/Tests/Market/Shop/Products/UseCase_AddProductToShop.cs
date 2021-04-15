@@ -20,8 +20,22 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             new object[]
             {
                 SystemContext.Instance,
-                User_ShopOwner1,
-                Shop1,
+                new ShopImage
+                (
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo
+                        (
+                            name: "tomato",
+                            quantity: 4,
+                            price: 4,
+                            category: "fruits",
+                            weight: 0.7
+                        )),
+                    }
+                )
             },
         };
 
@@ -29,13 +43,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             new object[]
             {
-                new ProductInfo(
-                    name: "tomato",
-                    quantity: 4,
-                    price: 4,
-                    category: "fruits",
-                    weight: 0.7
-                ),
+                ((ShopImage)((object[])FixtureArgs[0])[1]).ShopProducts[0].ProductInfo
             },
         };
 
@@ -85,14 +93,14 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         private UseCase_OpenShop useCase_openShop;
         private Queue<ProductId> products;
 
-        public UseCase_AddProductToShop(SystemContext systemContext, UserInfo userInfo, ShopInfo shopInfo) :
-            base(systemContext, userInfo)
+        public UseCase_AddProductToShop(SystemContext systemContext, ShopImage shopImage) :
+            base(systemContext, shopImage.OwnerUser)
         {
-            ShopInfo = shopInfo;
-            products = new Queue<ProductId>(3);
+            ShopImage = shopImage;
+            products = new Queue<ProductId>(shopImage.ShopProducts.Length);
         }
 
-        public ShopInfo ShopInfo { get; }
+        public ShopImage ShopImage { get; }
         public ShopId ShopId { get; private set; }
 
         [SetUp]
@@ -101,7 +109,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             base.Setup();
             useCase_openShop = new UseCase_OpenShop(SystemContext, UserInfo);
             useCase_openShop.Setup();
-            ShopId = useCase_openShop.Success_Normal(ShopInfo);
+            ShopId = useCase_openShop.Success_Normal(ShopImage.ShopInfo);
         }
 
         [TearDown]
@@ -114,18 +122,53 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             useCase_openShop.Teardown();
         }
 
-        [TestCaseSource(nameof(TestProductInfo))]
-        public void Success_Normal_Test(ProductInfo productInfo)
+        [TestCase("Add product to shop - success")]
+        public void Success_Normal_CheckStoreProducts(string testName)
         {
-            _ = Success_Normal(productInfo);
+            Success_Normal_CheckStoreProducts(ShopImage.ShopProducts, ShopImage.ShopProducts, testName);
         }
-        public ProductId Success_Normal(ProductInfo productInfo)
+        public void Success_Normal_NoCheckStoreProducts()
+        {
+            Success_Normal_NoCheckStoreProducts(ShopImage.ShopProducts);
+        }
+
+        public void Success_Normal_NoCheckStoreProducts(IEnumerable<ProductIdentifiable> products)
+        {
+            foreach (ProductIdentifiable product in products)
+            {
+                product.ProductId = Success_Normal_NoCheckStoreProducts(product.ProductInfo);
+            }
+        }
+        public void Success_Normal_CheckStoreProducts
+        (
+            IEnumerable<ProductIdentifiable> products,
+            IEnumerable<ProductIdentifiable> expectedStoreProducts,
+            string testName
+        )
+        {
+            Success_Normal_NoCheckStoreProducts(products);
+            new UseCase_ViewShopProducts_TestLogic(SystemContext)
+                .Success_Normal(testName, ShopId, expectedStoreProducts);
+        }
+
+        public ProductId Success_Normal_NoCheckStoreProducts(ProductInfo productInfo)
         {
             ProductId? productId = Bridge.AddProductToShop(ShopId, productInfo);
             Assert.IsNotNull(productId);
-            // TODO: check the store products here
             products.Enqueue(productId!.Value);
             return productId.Value;
+        }
+        public ProductId Success_Normal_CheckStoreProducts
+        (
+            ProductInfo productInfo,
+            IEnumerable<ProductIdentifiable> expectedStoreProducts,
+            string testName
+        )
+        {
+            ProductId productId = Success_Normal_NoCheckStoreProducts(productInfo);
+            new UseCase_ViewShopProducts_TestLogic(SystemContext)
+                .Success_Normal(testName, ShopId, expectedStoreProducts);
+            return productId;
         }
 
         [TestCaseSource(nameof(TestProductInfo))]

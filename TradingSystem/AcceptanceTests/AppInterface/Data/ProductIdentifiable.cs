@@ -4,30 +4,16 @@ namespace AcceptanceTests.AppInterface.Data
 {
     public class ProductIdentifiable
     {
-        private ProductId productId;
-
         public ProductIdentifiable(ProductInfo productInfo)
             : this(productInfo, default) { }
         public ProductIdentifiable(ProductInfo productInfo, ProductId productId)
         {
             ProductInfo = productInfo;
-            this.productId = productId;
+            this.ProductId = productId;
         }
 
         public ProductInfo ProductInfo { get; }
-        public ProductId ProductId
-        {
-            get => productId;
-            set
-            {
-                if (productId.IsValid())
-                {
-                    throw new InvalidOperationException("Product id was already set.");
-                }
-
-                productId = value;
-            }
-        }
+        public ProductId ProductId { get; set; }
 
         public static bool DeepEquals(ProductIdentifiable p1, ProductIdentifiable p2)
         {

@@ -63,6 +63,7 @@ namespace AcceptanceTests.Tests.Market
         {
             new object[]
             {
+                "Search product - setup",
                 SystemContext.Instance,
                 User_Buyer,
                 DefaultMarketImageFactorry
@@ -75,13 +76,17 @@ namespace AcceptanceTests.Tests.Market
         public ShopImage[] MarketImage { get; private set; }
         private ShopTestState[] MarketState { get; set; }
 
+        public string TestName { get; }
+
         public UseCase_SearchProduct(
+            string testName,
             SystemContext systemContext,
             UserInfo buyerUser,
             Func<ShopImage[]> marketImageFactory
         ) : base(systemContext, buyerUser)
         {
             MarketImageFactory = marketImageFactory;
+            TestName = testName;
         }
 
         [SetUp]
@@ -89,13 +94,13 @@ namespace AcceptanceTests.Tests.Market
         {
             base.Setup();
 
-            PrepareMarket();
+            PrepareMarket(TestName);
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
             useCase_login_buyer.Setup();
             useCase_login_buyer.Success_Normal();
         }
 
-        private void PrepareMarket()
+        private void PrepareMarket(string testName)
         {
             MarketImage = MarketImageFactory();
             MarketState = MarketImage
@@ -106,7 +111,7 @@ namespace AcceptanceTests.Tests.Market
             {
                 prevShop?.Logout();
                 shop.Login();
-                shop.AddAllProducts();
+                shop.AddAllProducts(testName);
                 prevShop = shop;
             }
             prevShop?.Logout();
@@ -129,7 +134,8 @@ namespace AcceptanceTests.Tests.Market
             Assert.IsNotNull(results);
             Assert.IsNull(results!.TypoFixes, $"{testName}: expected no typo fixes");
             Assert.IsTrue(results!.IsValid(), $"{testName}: expect valid results (valid IDs)");
-            new Assert_SetEquals<ProductIdentifiable>(
+            new Assert_SetEquals<ProductIdentifiable>
+            (
                 testName,
                 expectedResults,
                 ProductIdentifiable.DeepEquals
@@ -139,7 +145,8 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Success_MultipleShops()
         {
-            TestSuccess(
+            TestSuccess
+            (
                 "Products search - success - multiple shops",
                 new ProductSearchCreteria("bag")
                 {
@@ -156,7 +163,8 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Success_OneProduct()
         {
-            TestSuccess(
+            TestSuccess
+            (
                 "Products search - success - one shop",
                 new ProductSearchCreteria("charger")
                 {
@@ -210,17 +218,14 @@ namespace AcceptanceTests.Tests.Market
             public SystemContext SystemContext { get; }
             public ShopImage ShopImage { get; }
 
-            public void AddAllProducts()
+            public void AddAllProducts(string testName)
             {
-                foreach (ProductIdentifiable product in ShopImage.ShopProducts)
-                {
-                    product.ProductId = useCase_addProduct!.Success_Normal(product.ProductInfo);
-                }
+                useCase_addProduct!.Success_Normal_CheckStoreProducts(testName);
             }
 
             public void Login()
             {
-                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage.OwnerUser, ShopImage.ShopInfo);
+                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
                 useCase_addProduct.Setup();
             }
 

@@ -24,54 +24,50 @@ namespace AcceptanceTests.Tests.Market.Shop
             new object[]
             {
                 SystemContext.Instance,
-                User_ShopOwner1,
-                Shop1,
-                new ProductIdentifiable[]
-                {
-                    new ProductIdentifiable(new ProductInfo(
-                        name: "suitcase",
-                        quantity: 30,
-                        price: 200,
-                        category: "suitcases",
-                        weight: 4
-                    )),
-                    new ProductIdentifiable(new ProductInfo(
-                        name: "hdmi cable",
-                        quantity: 321,
-                        price: 7,
-                        category: "computer cables",
-                        weight: 0.12
-                    )),
-                }
+                new ShopImage(
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "suitcase",
+                            quantity: 30,
+                            price: 200,
+                            category: "suitcases",
+                            weight: 4
+                        )),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "hdmi cable",
+                            quantity: 321,
+                            price: 7,
+                            category: "computer cables",
+                            weight: 0.12
+                        )),
+                    }
+                )
             },
         };
 
-        public UseCase_ViewShopProducts(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, ProductIdentifiable[] products) :
+        public UseCase_ViewShopProducts(SystemContext systemContext, ShopImage shopImage) :
             base(systemContext)
         {
-            ShopOwnerUser = shopOwnerUser;
-            ShopInfo = shopInfo;
-            Products = products;
+            ShopImage = shopImage;
         }
 
-        public UserInfo ShopOwnerUser { get; }
-        public ShopInfo ShopInfo { get; }
-        public ProductIdentifiable[] Products { get; }
-
         private UseCase_AddProductToShop useCase_addProduct;
+        private UseCase_ViewShopProducts_TestLogic testLogic;
+
+        public ShopImage ShopImage { get; }
 
         [SetUp]
         public void Setup()
         {
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopOwnerUser, ShopInfo);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
-
-            foreach (ProductIdentifiable product in Products)
-            {
-                product.ProductId = useCase_addProduct.Success_Normal(product.ProductInfo);
-            }
+            useCase_addProduct.Success_Normal_NoCheckStoreProducts();
 
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            testLogic = new UseCase_ViewShopProducts_TestLogic(SystemContext);
         }
 
         [TearDown]
@@ -83,14 +79,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TestCase]
         public void Success_Normal()
         {
-            IEnumerable<ProductIdentifiable>? resultProducts = Bridge.GetShopProducts(useCase_addProduct.ShopId);
-            Assert.IsNotNull(resultProducts);
-            Assert.IsTrue(resultProducts.All(x => x.ProductId.IsValid()), "View shopping cart - success - contains invalid product IDs");
-            new Assert_SetEquals<ProductIdentifiable>(
-                "View shopping cart - success",
-                Products,
-                ProductIdentifiable.DeepEquals
-            ).AssertEquals(resultProducts);
+            testLogic!.Success_Normal("View shopping cart - success", useCase_addProduct.ShopId, ShopImage.ShopProducts);
         }
 
         [TestCase]

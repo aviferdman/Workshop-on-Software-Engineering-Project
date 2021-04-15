@@ -74,6 +74,11 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool Login(UserInfo loginInfo)
         {
+            return Connect() && LoginCore(loginInfo);
+        }
+
+        private bool LoginCore(UserInfo loginInfo)
+        {
             bool success = userService.Login(loginInfo.Username, loginInfo.Password, Username) == "success";
             if (success)
             {

@@ -21,82 +21,86 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             new object[]
             {
                 SystemContext.Instance,
-                User_ShopOwner1,
-                Shop1,
-                new ProductEditInfo[]
-                {
-                    new ProductEditInfo(
-                        new ProductInfo(
+                new ShopImage
+                (
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo(
                             name: "WiiU",
                             quantity: 80,
                             price: 1000,
                             category: "gaming consoles",
                             weight: 5
-                        ),
-                        new ProductInfo(
-                            name: "WiiU",
-                            quantity: 90,
-                            price: 1100,
-                            category: "gaming consoles",
-                            weight: 5
-                        )
-                    ),
-                    new ProductEditInfo(
-                        new ProductInfo(
+                        )),
+                        new ProductIdentifiable(new ProductInfo(
                             name: "garbage can",
                             quantity: 100,
                             price: 20,
                             category: "garbage cans",
                             weight: 1
+                        )),
+                    }
+                ),
+                (Func<ShopImage, IEnumerable<ProductEditInfo>>)(
+                    shopImage =>
+                    new ProductEditInfo[]
+                    {
+                        new ProductEditInfo(
+                            shopImage.ShopProducts[0],
+                            new ProductInfo(
+                                name: "WiiU",
+                                quantity: 90,
+                                price: 1100,
+                                category: "gaming consoles",
+                                weight: 5
+                            )
                         ),
-                        new ProductInfo(
-                            name: "garbage can not haHAA",
-                            quantity: 80,
-                            price: 15,
-                            category: "garbage cans",
-                            weight: 1
-                        )
-                    ),
-                },
+                        new ProductEditInfo(
+                            shopImage.ShopProducts[1],
+                            new ProductInfo(
+                                name: "garbage can not haHAA",
+                                quantity: 80,
+                                price: 15,
+                                category: "garbage cans",
+                                weight: 1
+                            )
+                        ),
+                    }
+                ),
             },
         };
 
         private UseCase_AddProductToShop useCase_addProduct;
 
-        public UseCase_EditShopProductInShop(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, IEnumerable<ProductEditInfo> productInfos) :
-            base(systemContext, shopOwnerUser)
+        public UseCase_EditShopProductInShop
+        (
+            SystemContext systemContext,
+            ShopImage shopImage,
+            Func<ShopImage, IEnumerable<ProductEditInfo>> productsProvidersEdit
+        ) :
+            base(systemContext, shopImage.OwnerUser)
         {
-            if (productInfos is null)
-            {
-                throw new ArgumentNullException(nameof(productInfos));
-            }
-            if (!productInfos.Any())
-            {
-                throw new ArgumentException("Must contain least have 1 product", nameof(productInfos));
-            }
-
-            ShopInfo = shopInfo;
-            ProductEditInfos = productInfos;
-            AddedProductIds = new List<ProductId>();
+            ShopImage = shopImage;
+            ProductsProvidersEdit = productsProvidersEdit;
         }
 
         public ShopId ShopId => useCase_addProduct.ShopId;
 
-        public ShopInfo ShopInfo { get; }
-        public IEnumerable<ProductEditInfo> ProductEditInfos { get; }
-        private IList<ProductId> AddedProductIds { get; }
+        public IEnumerable<ProductEditInfo> ProductEditInfos { get; private set; }
+        public ShopImage ShopImage { get; }
+        public Func<ShopImage, IEnumerable<ProductEditInfo>> ProductsProvidersEdit { get; }
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo);
+
+            ProductEditInfos = ProductsProvidersEdit(ShopImage);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
-            foreach (ProductEditInfo productEditInfo in ProductEditInfos)
-            {
-                ProductId productId = useCase_addProduct.Success_Normal(productEditInfo.ProductInfoOriginal);
-                AddedProductIds.Add(productId);
-            }
+            useCase_addProduct.Success_Normal_CheckStoreProducts("edit product in shop - setup");
         }
 
         [TearDown]
@@ -106,29 +110,57 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         }
 
         [TestCase]
-        public void Success_Normal()
+        public void Success_CheckStoreProducts()
         {
-            IEnumerable<(ProductInfo ProductEditInfo, ProductId ProductId)> productInfoEdits = ProductEditInfos
-                .Select(x => x.ProductInfoEdit)
-                .Zip(AddedProductIds);
-            foreach ((ProductInfo ProductEditInfo, ProductId ProductId) item in productInfoEdits)
+            IEnumerable<ProductIdentifiable> expected = Success_NoCheckStoreProducts();
+            new UseCase_ViewShopProducts_TestLogic(SystemContext)
+                .Success_Normal("edit product in shop - success", ShopId, expected);
+        }
+
+        public IEnumerable<ProductIdentifiable> Success_NoCheckStoreProducts()
+        {
+            EditProducts();
+            return CalculateExpected();
+        }
+
+        private void EditProducts()
+        {
+            foreach (ProductEditInfo productEditInfo in ProductEditInfos)
             {
-                Assert.IsTrue(Bridge.EditProductInShop(ShopId, item.ProductId, item.ProductEditInfo));
+                Assert.IsTrue(Bridge.EditProductInShop(ShopId, productEditInfo.ProductOriginal.ProductId, productEditInfo.ProductInfoEdit));
             }
-            // TODO: check the store products here
+        }
+
+        private IEnumerable<ProductIdentifiable> CalculateExpected()
+        {
+            ISet<ProductIdentifiable> expected = new HashSet<ProductIdentifiable>(ShopImage.ShopProducts);
+            foreach (ProductEditInfo productEditInfo in ProductEditInfos)
+            {
+                expected.Remove(productEditInfo.ProductOriginal);
+                expected.Add(new ProductIdentifiable(productEditInfo.ProductInfoEdit, productEditInfo.ProductOriginal.ProductId));
+            }
+            return expected;
         }
 
         [TestCase]
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, AddedProductIds.First(), ProductEditInfos.First().ProductInfoEdit));
+            Assert.IsFalse(Bridge.EditProductInShop(
+                ShopId,
+                ShopImage.ShopProducts[0].ProductId,
+                ProductEditInfos.First().ProductInfoEdit
+            ));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, default, ProductEditInfos.First().ProductInfoEdit));
+            Assert.IsFalse(Bridge.EditProductInShop(
+                ShopId,
+                default,
+                ProductEditInfos.First().ProductInfoEdit
+            ));
         }
 
         [TestCase]
@@ -136,7 +168,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             Assert.IsFalse(Bridge.EditProductInShop(
                 ShopId,
-                AddedProductIds.First(),
+                ShopImage.ShopProducts[0].ProductId,
                 new ProductInfo(
                     name: "ineditcucumber",
                     quantity: 23,
@@ -152,7 +184,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             Assert.IsFalse(Bridge.EditProductInShop(
                 ShopId,
-                AddedProductIds.First(),
+                ShopImage.ShopProducts[0].ProductId,
                 new ProductInfo(
                     name: "",
                     quantity: 23,

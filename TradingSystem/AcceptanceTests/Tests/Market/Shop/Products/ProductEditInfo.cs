@@ -5,13 +5,13 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
 {
     public class ProductEditInfo
     {
-        public ProductEditInfo(ProductInfo productInfoOriginal, ProductInfo productInfoEdit)
+        public ProductEditInfo(ProductIdentifiable productOriginal, ProductInfo productInfoEdit)
         {
-            ProductInfoOriginal = productInfoOriginal;
+            ProductOriginal = productOriginal;
             ProductInfoEdit = productInfoEdit;
         }
 
-        public ProductInfo ProductInfoOriginal { get; }
+        public ProductIdentifiable ProductOriginal { get; }
         public ProductInfo ProductInfoEdit { get; }
     }
 }

@@ -20,6 +20,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             new object[]
             {
+                "View shopping cart - setup",
                 SystemContext.Instance,
                 User_Buyer,
                 UseCase_SearchProduct.DefaultMarketImageFactorry,
@@ -35,7 +36,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
         private readonly Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart;
 
-        public UseCase_ViewShoppingCart(
+        public UseCase_ViewShoppingCart
+        (
+            string testName,
             SystemContext systemContext,
             UserInfo userInfo,
             Func<ShopImage[]> marketImageFactory,
@@ -43,12 +46,15 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         )
             : base(systemContext, userInfo)
         {
+            TestName = testName;
             MarketImageFactory = marketImageFactory;
             this.chooseProductsForCart = chooseProductsForCart;
         }
 
         private UseCase_SearchProduct useCase_search;
         private UseCase_AddProductToCart_TestLogic addToCart_logic;
+
+        public string TestName { get; }
 
         public Func<ShopImage[]> MarketImageFactory { get; }
         public IEnumerable<ProductInCart> ChosenProducts { get; private set; }
@@ -60,7 +66,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             base.Setup();
 
             // We actually just want this for the setup
-            useCase_search = new UseCase_SearchProduct(SystemContext, UserInfo, MarketImageFactory);
+            useCase_search = new UseCase_SearchProduct(TestName, SystemContext, UserInfo, MarketImageFactory);
             useCase_search.Setup();
             ChosenProducts = chooseProductsForCart(MarketImage);
 
