@@ -29,7 +29,7 @@ namespace AcceptanceTests.AppInterface
         private static SystemContext New()
         {
             var systemContext = new SystemContext(
-                userBridge:   new UserBridgeProxy(),
+                userBridge: new UserBridgeProxy(),
                 marketBridge: new MarketBridgeProxy()
             );
             systemContext.userBridge.SystemContext = systemContext;

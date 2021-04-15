@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AcceptanceTests.AppInterface.Data
+﻿namespace AcceptanceTests.AppInterface.Data
 {
     public class ProductIdentifiable
     {
@@ -9,7 +7,7 @@ namespace AcceptanceTests.AppInterface.Data
         public ProductIdentifiable(ProductInfo productInfo, ProductId productId)
         {
             ProductInfo = productInfo;
-            this.ProductId = productId;
+            ProductId = productId;
         }
 
         public ProductInfo ProductInfo { get; }

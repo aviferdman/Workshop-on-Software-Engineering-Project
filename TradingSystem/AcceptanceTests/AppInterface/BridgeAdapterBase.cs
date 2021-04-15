@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AcceptanceTests.AppInterface
+﻿namespace AcceptanceTests.AppInterface
 {
     public abstract class BridgeAdapterBase
     {

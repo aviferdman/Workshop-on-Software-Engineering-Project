@@ -4,7 +4,7 @@ using System.Linq;
 
 using NUnit.Framework;
 
-namespace AcceptanceTests.AppInterface
+namespace AcceptanceTests
 {
     public delegate bool EqualityCompare<T>(T x1, T x2);
 
