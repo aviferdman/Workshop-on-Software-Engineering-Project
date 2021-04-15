@@ -40,6 +40,14 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                             category: "audio",
                             weight: 0.5
                         )),
+                        new ProductIdentifiable(new ProductInfo
+                        (
+                            name: "computer mouse",
+                            quantity: 120,
+                            price: 40,
+                            category: "computer peripherals",
+                            weight: 0.4
+                        )),
                     }
                 ),
                 (Func<ShopImage, IEnumerable<ProductForCart>>)(
@@ -108,6 +116,19 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             IEnumerable<ProductInCart> products = ProductForCart.ToProductInCart(ProductsAdd);
             testLogic.Success_Normal_CheckCartItems(products, products);
+        }
+
+        [TestCase]
+        public void Success_BasketExists()
+        {
+            Success_NoBasket();
+            IEnumerable<ProductInCart> productsBefore = ProductForCart.ToProductInCart(ProductsAdd);
+            IEnumerable<ProductInCart> productsAdd = new ProductInCart[]
+            {
+                new ProductInCart(ShopImage.ShopProducts[1].ProductId, 14)
+            };
+            IEnumerable<ProductInCart> products = productsBefore.Concat(productsAdd);
+            testLogic.Success_Normal_CheckCartItems(productsAdd, products);
         }
 
         [TestCase]

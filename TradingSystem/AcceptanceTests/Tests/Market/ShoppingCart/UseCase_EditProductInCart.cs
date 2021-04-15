@@ -38,6 +38,14 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                             category: "books",
                             weight: 18
                         )),
+                        new ProductIdentifiable(new ProductInfo
+                        (
+                            name: "numerical analysis",
+                            quantity: 21,
+                            price: 12,
+                            category: "books",
+                            weight: 19
+                        )),
                     }
                 ),
                 (Func<ShopImage, IEnumerable<ProductForCart>>)(
@@ -117,10 +125,42 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         [TestCase]
+        public void Failure_NoShoppingBasket()
+        {
+            new UseCase_RemoveProductFromCart_TestLogic
+            (
+                SystemContext,
+                new ProductIdentifiable[] { ShopImage.ShopProducts[0] },
+                new ProductForCart[] { new ProductForCart(ShopImage.ShopProducts[0], 10) }
+            ).Success_Normal_CheckCartItems();
+            Assert.IsFalse(Bridge.EditProductInUserCart(ShopImage.ShopProducts[1].ProductId, 3));
+            AssertCartDidntChange();
+        }
+
+        [TestCase]
+        public void Failure_NotInCart()
+        {
+            Assert.IsFalse(Bridge.EditProductInUserCart(ShopImage.ShopProducts[1].ProductId, 3));
+            AssertCartDidntChange();
+        }
+
+        [TestCase]
+        public void Failure_ProductDoesntExist()
+        {
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductId(useCase_addProductToCart.ShopId, "aaaa"), 3));
+            AssertCartDidntChange();
+        }
+
+        [TestCase]
         public void Failure_InvalidQuantity()
         {
             Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, -1));
             Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, 0));
+            AssertCartDidntChange();
+        }
+
+        private void AssertCartDidntChange()
+        {
             new Assert_SetEquals<ProductId, ProductInCart>
             (
                 ProductForCart.ToProductInCart(useCase_addProductToCart.ProductsAdd),

@@ -49,12 +49,11 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                     shopImage => new ProductForCart[]
                     {
                         new ProductForCart(shopImage.ShopProducts[0], 30),
-                        new ProductForCart(shopImage.ShopProducts[1], 5),
                     }),
                 (Func<ShopImage, IEnumerable<ProductIdentifiable>>)(
                     shopImage => new ProductIdentifiable[]
                     {
-                        shopImage.ShopProducts[1],
+                        shopImage.ShopProducts[0],
                     })
             },
         };
@@ -79,6 +78,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
 
         private UseCase_AddProductToCart useCase_addProductToCart;
+        private UseCase_RemoveProductFromCart_TestLogic testLogic;
 
         public override void Setup()
         {
@@ -93,6 +93,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             );
             useCase_addProductToCart.Setup();
             useCase_addProductToCart.Success_NoBasket();
+            testLogic = new UseCase_RemoveProductFromCart_TestLogic
+            (
+                SystemContext,
+                ProductsRemove,
+                useCase_addProductToCart.ProductsAdd
+            );
         }
 
         public override void Teardown()
@@ -103,33 +109,44 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
         public void Success_Normal_NoCheckCartItems()
         {
-            foreach (ProductIdentifiable product in ProductsRemove)
-            {
-                Assert.IsTrue(Bridge.RemoveProductFromUserCart(product.ProductId));
-            }
+            testLogic.Success_Normal_NoCheckCartItems();
         }
 
         [TestCase]
         public void Success_Normal_CheckCartItems()
         {
-            Success_Normal_NoCheckCartItems();
-            CheckCartItems();
+            testLogic.Success_Normal_CheckCartItems();
         }
 
-        private void CheckCartItems()
+        [TestCase]
+        public void Failure_NoShoppingBasket()
         {
-            new Assert_SetEquals<ProductInCart>(CalculateExpected())
-                .AssertEquals(Bridge.GetShoppingCartItems());
+            Success_Normal_CheckCartItems();
+            Assert.IsFalse(Bridge.RemoveProductFromUserCart(ShopImage.ShopProducts[1].ProductId));
+            AssertCartDidntChange();
         }
 
-        private IEnumerable<ProductInCart> CalculateExpected()
+        [TestCase]
+        public void Failure_NotInCart()
         {
-            IDictionary<ProductId, ProductForCart> expected = ProductForCart.ToDictionary(useCase_addProductToCart.ProductsAdd);
-            foreach (ProductIdentifiable productRemoved in ProductsRemove)
-            {
-                _ = expected.Remove(productRemoved.ProductId);
-            }
-            return ProductForCart.ToProductInCart(expected.Values);
+            Assert.IsFalse(Bridge.RemoveProductFromUserCart(ShopImage.ShopProducts[1].ProductId));
+            AssertCartDidntChange();
+        }
+
+        [TestCase]
+        public void Failure_ProductDoesntExist()
+        {
+            Assert.IsFalse(Bridge.RemoveProductFromUserCart(new ProductId(useCase_addProductToCart.ShopId, "aaaa")));
+            AssertCartDidntChange();
+        }
+
+        private void AssertCartDidntChange()
+        {
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
+                ProductForCart.ToProductInCart(useCase_addProductToCart.ProductsAdd),
+                x => x.ProductId
+            ).AssertEquals(Bridge.GetShoppingCartItems());
         }
     }
 }
