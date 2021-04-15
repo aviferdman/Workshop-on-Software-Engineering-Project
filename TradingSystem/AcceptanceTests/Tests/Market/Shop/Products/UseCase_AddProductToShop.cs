@@ -154,9 +154,6 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             productInfo.Name = name;
             Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]

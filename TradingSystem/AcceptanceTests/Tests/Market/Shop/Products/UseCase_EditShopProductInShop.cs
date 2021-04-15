@@ -134,7 +134,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsNull(Bridge.EditProductInShop(
+            Assert.IsFalse(Bridge.EditProductInShop(
                 ShopId,
                 AddedProductIds.First(),
                 new ProductInfo(
@@ -150,7 +150,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsNull(Bridge.EditProductInShop(
+            Assert.IsFalse(Bridge.EditProductInShop(
                 ShopId,
                 AddedProductIds.First(),
                 new ProductInfo(

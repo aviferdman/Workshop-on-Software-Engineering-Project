@@ -97,7 +97,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             string result = marketProductsService.RemoveProduct
             (
                 productId.ProductName,
-                shopId.Value,
+                shopId,
                 Username
             );
             return result == "Product removed";
@@ -105,7 +105,23 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails)
         {
-            throw new NotImplementedException();
+            string result = marketProductsService.EditProduct
+            (
+                productId.ProductName,
+                new ProductData(new Product
+                (
+                    name: newProductDetails.Name,
+                    quantity: newProductDetails.Quantity,
+                    weight: newProductDetails.Weight,
+                    price: newProductDetails.Price
+                ))
+                {
+                    category = newProductDetails.Category,
+                },
+                shopId,
+                Username
+            );
+            return result == "Product edited";
         }
 
         public IEnumerable<ProductInCart>? GetShoppingCartItems()
