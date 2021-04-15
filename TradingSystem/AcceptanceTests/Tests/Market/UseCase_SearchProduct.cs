@@ -234,6 +234,10 @@ namespace AcceptanceTests.Tests.Market
             {
                 if (!ShopImage.OwnerUser.Equals(SystemContext.LoggedInUser))
                 {
+                    if (SystemContext.LoggedInUser != null)
+                    {
+                        _ = SystemContext.UserBridge.LogOut();
+                    }
                     _ = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
                 }
                 useCase_addProduct?.Teardown();
