@@ -96,6 +96,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Failure_InvalidQuantity()
         {
             Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, -1));
+            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, 0));
             new Assert_SetEquals<ProductId, ProductInCart>(
                 "Edit product in cart - invalid quantity",
                 new ProductInCart[] { new ProductInCart(useCase_addProductToCart.ProductId, PrevQuantity) },
