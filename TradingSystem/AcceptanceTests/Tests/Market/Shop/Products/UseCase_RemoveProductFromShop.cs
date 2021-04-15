@@ -41,7 +41,13 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             base.Setup();
             useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo);
             useCase_addProduct.Setup();
-            product = useCase_addProduct.Success_Normal(new ProductInfo("cucumber", 4, 7));
+            product = useCase_addProduct.Success_Normal(new ProductInfo(
+                name: "cucumber",
+                quantity: 7,
+                price: 4,
+                category: "vegetable",
+                weight: 0.45
+            ));
         }
 
         [TearDown]

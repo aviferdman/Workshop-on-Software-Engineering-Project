@@ -26,12 +26,36 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
                 new ProductEditInfo[]
                 {
                     new ProductEditInfo(
-                        new ProductInfo("WiiU", 1000, 80),
-                        new ProductInfo("WiiU", 1100, 90)
+                        new ProductInfo(
+                            name: "WiiU",
+                            quantity: 80,
+                            price: 1000,
+                            category: "gaming consoles",
+                            weight: 5
+                        ),
+                        new ProductInfo(
+                            name: "WiiU",
+                            quantity: 90,
+                            price: 1100,
+                            category: "gaming consoles",
+                            weight: 5
+                        )
                     ),
                     new ProductEditInfo(
-                        new ProductInfo("garbage can", 20, 100),
-                        new ProductInfo("garbage can not haHAA", 15, 80)
+                        new ProductInfo(
+                            name: "garbage can",
+                            quantity: 100,
+                            price: 20,
+                            category: "garbage cans",
+                            weight: 1
+                        ),
+                        new ProductInfo(
+                            name: "garbage can not haHAA",
+                            quantity: 80,
+                            price: 15,
+                            category: "garbage cans",
+                            weight: 1
+                        )
                     ),
                 },
             },
@@ -110,13 +134,33 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsNull(Bridge.EditProductInShop(ShopId, AddedProductIds.First(), new ProductInfo("ineditcucumber", -7, 23)));
+            Assert.IsNull(Bridge.EditProductInShop(
+                ShopId,
+                AddedProductIds.First(),
+                new ProductInfo(
+                    name: "ineditcucumber",
+                    quantity: 23,
+                    price: -7,
+                    category: "cat1",
+                    weight: 2
+                )
+            ));
         }
 
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsNull(Bridge.EditProductInShop(ShopId, AddedProductIds.First(), new ProductInfo("", 14, 23)));
+            Assert.IsNull(Bridge.EditProductInShop(
+                ShopId,
+                AddedProductIds.First(),
+                new ProductInfo(
+                    name: "",
+                    quantity: 23,
+                    price: 14,
+                    category: "cat1",
+                    weight: 2
+                )
+            ));
         }
     }
 }

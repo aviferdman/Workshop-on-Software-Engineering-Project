@@ -28,8 +28,20 @@ namespace AcceptanceTests.Tests.Market.Shop
                 Shop1,
                 new ProductIdentifiable[]
                 {
-                    new ProductIdentifiable(new ProductInfo("suitcase", 200, 30)),
-                    new ProductIdentifiable(new ProductInfo("hdmi cable", 7, 321)),
+                    new ProductIdentifiable(new ProductInfo(
+                        name: "suitcase",
+                        quantity: 30,
+                        price: 200,
+                        category: "suitcases",
+                        weight: 4
+                    )),
+                    new ProductIdentifiable(new ProductInfo(
+                        name: "hdmi cable",
+                        quantity: 321,
+                        price: 7,
+                        category: "computer cables",
+                        weight: 0.12
+                    )),
                 }
             },
         };

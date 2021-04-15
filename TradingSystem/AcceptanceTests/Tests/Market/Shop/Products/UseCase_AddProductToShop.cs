@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
@@ -28,7 +29,56 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             new object[]
             {
-                new ProductInfo("cucumber", 4, 4),
+                new ProductInfo(
+                    name: "tomato",
+                    quantity: 4,
+                    price: 4,
+                    category: "fruits",
+                    weight: 0.7
+                ),
+            },
+        };
+
+        private static readonly object[] InvalidQuantitySource =
+        {
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                0,
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                -1,
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                -5,
+            },
+        };
+
+        private static readonly object[] InvalidNameSource =
+        {
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "",
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "         ",
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "     \t    ",
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "    \n \t",
             },
         };
 
@@ -78,33 +128,35 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             return productId.Value;
         }
 
-        [TestCase]
-        public void Failure_InsufficientPermissions()
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_InsufficientPermissions(ProductInfo productInfo)
         {
             LoginToBuyer();
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, 3)));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
         }
 
-        [TestCase]
-        public void Failure_InvalidPrice()
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_InvalidPrice(ProductInfo productInfo)
         {
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", -3, 3)));
+            productInfo.Price = -3;
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
         }
 
-        [TestCase]
-        public void Failure_InvalidQuantity()
+        [TestCaseSource(nameof(InvalidQuantitySource))]
+        public void Failure_InvalidQuantity(ProductInfo productInfo, int quantity)
         {
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, -1)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, -5)));
+            productInfo.Quantity = quantity;
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
         }
 
-        [TestCase]
-        public void Failure_InvalidName()
+        [TestCaseSource(nameof(InvalidNameSource))]
+        public void Failure_InvalidName(ProductInfo productInfo, string name)
         {
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("", 4, 3)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("         ", 4, 3)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("     \t    ", 4, 3)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("    \n \t", 4, 3)));
+            productInfo.Name = name;
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
         }
     }
 }

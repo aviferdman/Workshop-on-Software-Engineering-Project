@@ -27,7 +27,13 @@ namespace AcceptanceTests.Tests.Market
                     Shop1,
                     new ProductIdentifiable[]
                     {
-                        new ProductIdentifiable(new ProductInfo("traveling bag", 20, 7)),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "traveling bag",
+                            quantity: 7,
+                            price: 20,
+                            category: "bags",
+                            weight: 1
+                        )),
                     }
                 ),
                 new ShopImage(
@@ -35,8 +41,20 @@ namespace AcceptanceTests.Tests.Market
                     Shop2,
                     new ProductIdentifiable[]
                     {
-                        new ProductIdentifiable(new ProductInfo("school bag", 5, 12)),
-                        new ProductIdentifiable(new ProductInfo("android charger", 8, 20)),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "school bag",
+                            quantity: 12,
+                            price: 5,
+                            category: "bags",
+                            weight: 0.8
+                        )),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "android charger",
+                            quantity: 20,
+                            price: 8,
+                            category: "phone chargers",
+                            weight: 0.09
+                        )),
                     }
                 ),
             };

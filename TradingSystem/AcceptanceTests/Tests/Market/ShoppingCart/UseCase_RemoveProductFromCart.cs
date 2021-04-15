@@ -23,7 +23,13 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 User_Buyer,
                 User_ShopOwner1,
                 Shop1,
-                new ProductInfo("speakers", 30, 90),
+                new ProductInfo(
+                    name: "modern operating system",
+                    quantity: 90,
+                    price: 30,
+                    category: "books",
+                    weight: 15
+                ),
                 30
             },
         };
