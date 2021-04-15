@@ -24,9 +24,9 @@ namespace TradingSystem.Service
 
         public static MarketGeneralService Instance => instanceLazy.Value;
 
-        public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode = false)
+        public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode = false)
         {
-            marketStores.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
+            marketStores.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
         }
 
         public ICollection<HistoryData> GetAllHistory(string username)
