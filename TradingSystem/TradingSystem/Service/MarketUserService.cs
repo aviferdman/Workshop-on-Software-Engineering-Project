@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Service
@@ -28,10 +29,15 @@ namespace TradingSystem.Service
             marketUsers.RemoveGuest(username);
         }
 
-        public HistoryData GetUserHistory(string username)
+        public ICollection<HistoryData> GetUserHistory(string username)
         {
-            UserHistory history = marketUsers.GetUserHistory(username);
-            return new HistoryData(history);
+            ICollection<IHistory> history = marketUsers.GetUserHistory(username);
+            ICollection<HistoryData> ret = new HashSet<HistoryData>();
+            foreach (var h in history)
+            {
+                ret.Add(new HistoryData(h));
+            }
+            return ret;
         }
 
         public string login(string usrname, string password, string guestusername)
