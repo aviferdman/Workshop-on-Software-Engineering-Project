@@ -30,7 +30,7 @@ namespace TradingSystem.Business.Payment
             return Guid.NewGuid();
         }
 
-        public Guid CreatePayment(Guid clientId, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
+        public Guid CreatePayment(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
         {
             return Guid.NewGuid();
         }
