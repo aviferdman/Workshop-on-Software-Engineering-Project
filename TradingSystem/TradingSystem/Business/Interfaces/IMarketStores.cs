@@ -6,6 +6,7 @@ using System.Text;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {

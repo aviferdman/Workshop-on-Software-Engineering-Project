@@ -28,7 +28,7 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 40 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/66
-        public override ICollection<IHistory> GetUserHistory(string username)
+        public ICollection<IHistory> GetUserHistory(string username)
         {
             return _userHistory;
         }

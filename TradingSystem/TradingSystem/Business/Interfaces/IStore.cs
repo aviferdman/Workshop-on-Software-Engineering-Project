@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TradingSystem.Business.Interfaces;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
