@@ -43,11 +43,11 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
                         )),
                     }
                 ),
-                (Func<ShopImage, IEnumerable<ProductEditInfo>>)(
+                (Func<ShopImage, IEnumerable<ProductShopEditInfo>>)(
                     shopImage =>
-                    new ProductEditInfo[]
+                    new ProductShopEditInfo[]
                     {
-                        new ProductEditInfo(
+                        new ProductShopEditInfo(
                             shopImage.ShopProducts[0],
                             new ProductInfo(
                                 name: "WiiU",
@@ -57,7 +57,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
                                 weight: 5
                             )
                         ),
-                        new ProductEditInfo(
+                        new ProductShopEditInfo(
                             shopImage.ShopProducts[1],
                             new ProductInfo(
                                 name: "garbage can not haHAA",
@@ -78,7 +78,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         (
             SystemContext systemContext,
             ShopImage shopImage,
-            Func<ShopImage, IEnumerable<ProductEditInfo>> productsProvidersEdit
+            Func<ShopImage, IEnumerable<ProductShopEditInfo>> productsProvidersEdit
         ) :
             base(systemContext, shopImage.OwnerUser)
         {
@@ -88,9 +88,9 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
 
         public ShopId ShopId => useCase_addProduct.ShopId;
 
-        public IEnumerable<ProductEditInfo> ProductEditInfos { get; private set; }
+        public IEnumerable<ProductShopEditInfo> ProductEditInfos { get; private set; }
         public ShopImage ShopImage { get; }
-        public Func<ShopImage, IEnumerable<ProductEditInfo>> ProductsProvidersEdit { get; }
+        public Func<ShopImage, IEnumerable<ProductShopEditInfo>> ProductsProvidersEdit { get; }
 
         [SetUp]
         public override void Setup()
@@ -125,7 +125,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
 
         private void EditProducts()
         {
-            foreach (ProductEditInfo productEditInfo in ProductEditInfos)
+            foreach (ProductShopEditInfo productEditInfo in ProductEditInfos)
             {
                 Assert.IsTrue(Bridge.EditProductInShop(ShopId, productEditInfo.ProductOriginal.ProductId, productEditInfo.ProductInfoEdit));
             }
@@ -134,10 +134,10 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         private IEnumerable<ProductIdentifiable> CalculateExpected()
         {
             ISet<ProductIdentifiable> expected = new HashSet<ProductIdentifiable>(ShopImage.ShopProducts);
-            foreach (ProductEditInfo productEditInfo in ProductEditInfos)
+            foreach (ProductShopEditInfo productEditInfo in ProductEditInfos)
             {
-                expected.Remove(productEditInfo.ProductOriginal);
-                expected.Add(new ProductIdentifiable(productEditInfo.ProductInfoEdit, productEditInfo.ProductOriginal.ProductId));
+                _ = expected.Remove(productEditInfo.ProductOriginal);
+                _ = expected.Add(new ProductIdentifiable(productEditInfo.ProductInfoEdit, productEditInfo.ProductOriginal.ProductId));
             }
             return expected;
         }

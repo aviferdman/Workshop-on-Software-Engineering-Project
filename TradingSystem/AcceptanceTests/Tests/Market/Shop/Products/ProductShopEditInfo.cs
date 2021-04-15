@@ -3,9 +3,9 @@ using AcceptanceTests.AppInterface.Data;
 
 namespace AcceptanceTests.Tests.Market.Shop.Products
 {
-    public class ProductEditInfo
+    public struct ProductShopEditInfo
     {
-        public ProductEditInfo(ProductIdentifiable productOriginal, ProductInfo productInfoEdit)
+        public ProductShopEditInfo(ProductIdentifiable productOriginal, ProductInfo productInfoEdit)
         {
             ProductOriginal = productOriginal;
             ProductInfoEdit = productInfoEdit;

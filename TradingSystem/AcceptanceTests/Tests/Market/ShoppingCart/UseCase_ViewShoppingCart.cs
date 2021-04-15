@@ -67,10 +67,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
             // already setup earlier
             addToCart_logic = new UseCase_AddProductToCart_TestLogic(SystemContext);
-            foreach (ProductInCart product in ChosenProducts)
-            {
-                addToCart_logic.Success_Normal(product);
-            }
+            addToCart_logic.Success_Normal_CheckCartItems(ChosenProducts, ChosenProducts);
         }
 
         public override void Teardown()

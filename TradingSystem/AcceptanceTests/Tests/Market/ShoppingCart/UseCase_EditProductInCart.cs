@@ -1,4 +1,8 @@
 ﻿
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 
@@ -14,48 +18,57 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
     [TestFixtureSource(nameof(FixtureArgs))]
     public class UseCase_EditProductInCart : MarketMemberTestBase
     {
-        static object[] FixtureArgs =
+        static readonly object[] FixtureArgs =
         {
             new object[]
             {
                 SystemContext.Instance,
                 User_Buyer,
-                User_ShopOwner1,
-                Shop1,
-                new ProductInfo(
-                    name: "design of everyday things",
-                    quantity: 90,
-                    price: 30,
-                    category: "books",
-                    weight: 18
+                new ShopImage
+                (
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo
+                        (
+                            name: "design of everyday things",
+                            quantity: 90,
+                            price: 30,
+                            category: "books",
+                            weight: 18
+                        )),
+                    }
                 ),
-                10,
-                20,
+                (Func<ShopImage, IEnumerable<ProductForCart>>)(
+                    shopImage => new ProductForCart[]
+                    {
+                        new ProductForCart(shopImage.ShopProducts[0], 10),
+                    }),
+                (Func<ShopImage, IEnumerable<ProductCartEditInfo>>)(
+                    shopImage => new ProductCartEditInfo[]
+                    {
+                        new ProductCartEditInfo(shopImage.ShopProducts[0], 20),
+                    }),
             },
         };
 
         public UseCase_EditProductInCart(
             SystemContext systemContext,
             UserInfo buyerUser,
-            UserInfo shopOwnerUser,
-            ShopInfo shopInfo,
-            ProductInfo productInfo,
-            int addToCartQuantity,
-            int newQuantity
+            ShopImage shopImage,
+            Func<ShopImage, IEnumerable<ProductForCart>> productsProviderAdd,
+            Func<ShopImage, IEnumerable<ProductCartEditInfo>> productsProviderEdit
         ) : base(systemContext, buyerUser)
         {
-            ShopOwnerUser = shopOwnerUser;
-            ShopInfo = shopInfo;
-            ProductInfo = productInfo;
-            PrevQuantity = addToCartQuantity;
-            NewQuantity = newQuantity;
+            ShopImage = shopImage;
+            ProductsProviderAdd = productsProviderAdd;
+            ProductsEdit = productsProviderEdit(shopImage);
         }
 
-        public UserInfo ShopOwnerUser { get; }
-        public ShopInfo ShopInfo { get; }
-        public ProductInfo ProductInfo { get; }
-        public int PrevQuantity { get; }
-        public int NewQuantity { get; }
+        public ShopImage ShopImage { get; }
+        public Func<ShopImage, IEnumerable<ProductForCart>> ProductsProviderAdd { get; }
+        public IEnumerable<ProductCartEditInfo> ProductsEdit { get; }
 
         private UseCase_AddProductToCart useCase_addProductToCart;
 
@@ -63,16 +76,15 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             base.Setup();
 
-            useCase_addProductToCart = new UseCase_AddProductToCart(
+            useCase_addProductToCart = new UseCase_AddProductToCart
+            (
                 SystemContext,
                 UserInfo,
-                ShopOwnerUser,
-                ShopInfo,
-                ProductInfo,
-                PrevQuantity
+                ShopImage,
+                ProductsProviderAdd
             );
             useCase_addProductToCart.Setup();
-            useCase_addProductToCart.Success_Normal();
+            useCase_addProductToCart.Success_NoBasket();
         }
 
         public override void Teardown()
@@ -81,13 +93,25 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_addProductToCart.Teardown();
         }
 
-        [TestCase]
-        public void Success_Normal()
+        public IEnumerable<ProductInCart> Success_Normal_NoCheckCartItems()
         {
-            Assert.IsTrue(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, NewQuantity));
+            IDictionary<ProductId, ProductInCart> expected = ProductForCart.ToDictionary_InCart(useCase_addProductToCart.ProductsAdd);
+            foreach (ProductCartEditInfo productEdit in ProductsEdit)
+            {
+                ProductId productId = productEdit.ProductOriginal.ProductId;
+                Assert.IsTrue(Bridge.EditProductInUserCart(productId, productEdit.NewQuantity));
+                expected[productId] = new ProductInCart(productId, productEdit.NewQuantity);
+            }
+            return expected.Values;
+        }
+
+        [TestCase]
+        public void Success_Normal_CheckCartItems()
+        {
+            IEnumerable<ProductInCart> expected = Success_Normal_NoCheckCartItems();
             new Assert_SetEquals<ProductId, ProductInCart>
             (
-                new ProductInCart[] { new ProductInCart(useCase_addProductToCart.ProductId, NewQuantity) },
+                expected,
                 x => x.ProductId
             ).AssertEquals(Bridge.GetShoppingCartItems());
         }
@@ -95,11 +119,11 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_InvalidQuantity()
         {
-            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, -1));
-            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductId, 0));
+            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, -1));
+            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, 0));
             new Assert_SetEquals<ProductId, ProductInCart>
             (
-                new ProductInCart[] { new ProductInCart(useCase_addProductToCart.ProductId, PrevQuantity) },
+                ProductForCart.ToProductInCart(useCase_addProductToCart.ProductsAdd),
                 x => x.ProductId
             ).AssertEquals(Bridge.GetShoppingCartItems());
         }
