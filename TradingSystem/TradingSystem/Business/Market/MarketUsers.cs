@@ -38,6 +38,7 @@ namespace TradingSystem.Business.Market
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
             User defaultAdmin = CreateDefaultAdmin();
+            memberStates = new ConcurrentDictionary<string, MemberState>();
             adminUsers.TryAdd(defaultAdmin.Username, defaultAdmin);
         }
 

@@ -12,7 +12,7 @@ namespace TradingSystemTests.IntegrationTests
     [TestClass]
     public class UserMangementIntegrationTest
     {
-        private string signup()
+        private String signup()
         {
             UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733");
             return MarketUsers.Instance.AddGuest();
@@ -20,95 +20,98 @@ namespace TradingSystemTests.IntegrationTests
 
         private bool delete(string username)
         {
+            MemberState m;
             MarketUsers.Instance.logout(username);
             MarketUsers.Instance.RemoveGuest(username);
+            MarketUsers.Instance.MemberStates.TryRemove(username, out m);
             return UserManagement.Instance.DeleteUser("inbi2001");
         }
         private bool delete2(string username)
         {
+            MemberState m;
             MarketUsers.Instance.RemoveGuest(username);
+            MarketUsers.Instance.MemberStates.TryRemove(username, out m);
             return UserManagement.Instance.DeleteUser("inbi2001");
         }
 
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddMember(string, string, string)"/>
         [TestMethod]
         [TestCategory("uc2")]
         public void TestIntegLoginSuccess()
         {
             string user=signup();
-            
-            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456", "lala"));
+            Assert.AreEqual("success", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
             delete(user);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddMember(string, string, string)"/>
         /// already logged in
         [TestMethod]
         [TestCategory("uc2")]
         public void TestIntegLoginFailed1()
         {
             string user = signup();
-            UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
-            Assert.AreEqual("user is already logged in", UserManagement.Instance.LogIn("inbi2001", "123456", "lala"));
+            MarketUsers.Instance.AddMember("inbi2001", "123456", user);
+            Assert.AreEqual("user is already logged in", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
             delete(user);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddMember(string, string, string)"/>
         /// password doesn't match username
         [TestMethod]
         [TestCategory("uc2")]
         public void TestIntegLoginFailed2()
         {
             string user = signup();
-            Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
+            Assert.AreEqual("the password doesn't match username: " + "inbi2001", MarketUsers.Instance.AddMember("inbi2001", "12345d6", user));
             delete(user);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.LogIn(string, string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddMember(string, string, string)"/>
         /// username doesn't exist
         [TestMethod]
         [TestCategory("uc2")]
         public void TestIntegLoginFailed3()
         {
-            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
+            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", MarketUsers.Instance.AddMember("inbi2001", "12345d6","lilk"));
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.logout(string)"/>
         [TestMethod]
         [TestCategory("uc3")]
         public void TestIntegLogoutSuccess()
         {
             string user = signup();
-            UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
-            Assert.AreNotEqual(null, UserManagement.Instance.Logout("inbi2001"));
+            MarketUsers.Instance.AddMember("inbi2001", "123456", user);
+            Assert.AreNotEqual(null, MarketUsers.Instance.logout("inbi2001"));
             delete(user);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.logout(string)"/>
         /// not logged in
         [TestMethod]
         [TestCategory("uc3")]
         public void TestIntegLogoutFail1()
         {
             string user = signup();
-            Assert.AreEqual(null, UserManagement.Instance.Logout("inbi2001"));
+            Assert.AreEqual(null, MarketUsers.Instance.logout("inbi2001"));
             delete2(user);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.UserManagement.UserManagement.Logout(string)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.logout(string)"/>
         /// user doesn't exist
         [TestMethod]
         [TestCategory("uc3")]
         public void TestIntegLogoutFail2()
         {
-            Assert.AreEqual(null, UserManagement.Instance.Logout("inbi200151"));
+            Assert.AreEqual(null, MarketUsers.Instance.logout("inbi200151"));
 
         }
 
