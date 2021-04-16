@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using TradingSystem.Business.Market;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Service
 {

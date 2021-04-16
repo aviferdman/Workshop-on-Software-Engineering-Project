@@ -11,6 +11,7 @@ namespace TradingSystemTests.IntegrationTests
     public class MarketIntegrationTests
     {
         private MarketUsers m = MarketUsers.Instance;
+        private MarketStores marketStores = MarketStores.Instance;
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
@@ -23,7 +24,7 @@ namespace TradingSystemTests.IntegrationTests
             Product p = new Product("lala", 8,50, 500);
             Store s = new Store("lalali", null, null);
             s.Products.TryAdd("lala", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id,p.Name, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -59,7 +60,7 @@ namespace TradingSystemTests.IntegrationTests
             Product p = new Product("lala2", 8, 50, 500);
             Store s = new Store("lalali2", null, null);
             s.Products.TryAdd("lala2", p);
-            m.Stores.TryAdd(s.GetId(), s);
+            marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, p.Name, 500000));
         }
 

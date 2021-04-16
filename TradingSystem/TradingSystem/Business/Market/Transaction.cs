@@ -29,12 +29,12 @@ namespace TradingSystem.Business.Market
             this.DeliveryAdapter = new DeliveryImpl();
         }
 
-        internal void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
+        internal void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
         {
             if (debugMode)
             {
-                this._deliveryAdapter = deliveryAdapter.Object;
-                this._paymentAdapter = paymentAdapter.Object;
+                this._deliveryAdapter.SetDeliverySystem(deliverySystem.Object);
+                this._paymentAdapter.SetPaymentSystem(paymentSystem.Object);
             }
             else
             {
@@ -43,15 +43,15 @@ namespace TradingSystem.Business.Market
             }
         }
 
-        public TransactionStatus ActivateTransaction(Guid clientId, string recieverPhone, double weight, Address source, Address destination, BankAccount clientBankAccountId, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
+        public TransactionStatus ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
         {
             TransactionStatus transactionStatus;
             DeliveryStatus deliveryStatus;
             PaymentStatus paymentStatus;
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
-            DeliveryDetails deliveryDetails = new DeliveryDetails(clientId, storeId, recieverPhone, weight, source, destination);
-            PaymentDetails paymentDetails = new PaymentDetails(clientId, clientBankAccountId, storeId, recieverBankAccountId, paymentSum);
-            ProductsStatus productsDetails = new ProductsStatus(clientId, storeId, product_quantity);
+            DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, recieverPhone, weight, source, destination);
+            PaymentDetails paymentDetails = new PaymentDetails(username, method, storeId, recieverBankAccountId, paymentSum);
+            ProductsStatus productsDetails = new ProductsStatus(username, storeId, product_quantity);
             paymentStatus = PaymentAdapter.CreatePayment(paymentDetails);
             //check if possible to deliver
             if (paymentStatus.Status)

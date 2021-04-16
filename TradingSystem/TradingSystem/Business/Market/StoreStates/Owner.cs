@@ -1,46 +1,64 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
-namespace TradingSystem.Business.Market
+namespace TradingSystem.Business.Market.StoreStates
 {
-    public class Owner : StorePermission
+    public class Owner:Appointer
     {
-        public override IStorePermission AddAppointment(Guid user, AppointmentType appointment)
+        private string username;
+        private MemberState m;
+        private Store s;
+        private ConcurrentDictionary<string, Manager> managerAppointments;
+        private ConcurrentDictionary<string, Owner> ownerAppointments;
+        private Appointer appointer;
+        private Owner(MemberState m, Store s, Appointer appointer)
         {
-            StorePermission prem;
-            if (appointment.Equals(AppointmentType.Manager))
-            {
-                prem = new Manager(user, this);
-            }
-            else
-            {
-                prem = new Owner(user, this);
-            }
-            appointments.TryAdd(user, prem);
+            this.username = m.UserId;
+            this.m = m;
+            this.s = s;
+            this.appointer = appointer;
+            managerAppointments = new ConcurrentDictionary<string, Manager>();
+            ownerAppointments = new ConcurrentDictionary<string, Owner>();
+        }
+
+        public static Owner makeOwner(MemberState m, Store s, Appointer appointer)
+        {
+            if (m.isStaff(s) || s.isStaff(m.UserId))
+                throw new InvalidOperationException();
+            Owner o = new Owner(m, s, appointer);
+            m.OwnerPrems.TryAdd(s, o);
+            s.Owners.TryAdd(m.UserId, o);
+            return o;
+        }
+
+        public Manager AddAppointmentManager(MemberState m, Store s)
+        {
+            Manager prem = Manager.makeManager(m, s, this);
+            managerAppointments.TryAdd(username, prem);
             return prem;
         }
-        public Owner(Guid userId, StorePermission appoint) : base(userId)
+        public Owner AddAppointmentOwner(MemberState m, Store s)
         {
-            base.appointer = appoint;
+            Owner prem = makeOwner(m,s, this);
+            ownerAppointments.TryAdd(username, prem);
+            return prem;
         }
-        
-        public override void AddPermission(Guid user, Permission permission)
+        public bool canRemoveAppointment(string userToRemove)
         {
-            throw new UnauthorizedAccessException();
-        }
-
-
-        public override bool GetPermission(Permission permission)
-        {
-            if (Permission.CloseShop.Equals(permission))//only founder can close shop
-                return false;
-            return true;
+            Manager m;
+            Owner o;
+            return managerAppointments.TryRemove(userToRemove, out m) || ownerAppointments.TryRemove(userToRemove, out o);
         }
 
-        public override void RemovePermission(Guid user, Permission permission)
+        public void DefinePermissions(string username, List<Permission> permissions)
         {
-            throw new UnauthorizedAccessException();
+            Manager m;
+            if (!managerAppointments.TryGetValue(username, out m))
+                throw new UnauthorizedAccessException();
+            m.Store_permission = permissions;
         }
     }
 }

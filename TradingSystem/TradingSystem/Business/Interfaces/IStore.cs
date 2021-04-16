@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using TradingSystem.Business.Interfaces;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
     public interface IStore : IComparable
     {
         public Guid GetId();
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, Guid clientId, string clientPhone, Address clientAddress, BankAccount clientBankAccount, double paymentSum);
+        public bool isStaff(string username);
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum);
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity);
 
@@ -20,13 +23,13 @@ namespace TradingSystem.Business.Market
 
         public void RemoveRule(IRule rule);
 
-        public String AddProduct(Product product, Guid userID);
+        public String AddProduct(Product product, string userID);
 
-        public String RemoveProduct(String productName, Guid userID);
+        public String RemoveProduct(String productName, string userID);
 
-        public String EditProduct(String productName, Product editedProduct, Guid userID);
+        public String EditProduct(String productName, Product editedProduct, string userID);
 
-        public String AssignMember(Guid assigneeID, User assigner, AppointmentType type);
+        public String AssignMember(string assigneeID, User assigner, string type);
 
         public void UpdateProduct(Product product);
 
@@ -36,8 +39,8 @@ namespace TradingSystem.Business.Market
 
         public void RemoveDiscount(Guid discountId);
 
-        public StoreHistory GetStoreHistory(Guid userID);
+        public ICollection<IHistory> GetStoreHistory(string username);
 
-        public String DefineManagerPermissions(Guid managerID, Guid assignerID, List<Permission> permissions);
+        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissions);
     }
 }

@@ -14,6 +14,8 @@ namespace TradingSystemTests.IntegrationTests
     [TestClass]
     public class PurchaseTests
     {
+        private readonly string ErrorPaymentId = "";
+        private readonly string ErrorPackageId = "";
         private static readonly int QUANTITY1 = 100;
         private static readonly double WEIGHT1 = 100;
         private static readonly double PRICE1 = 100;
@@ -101,11 +103,10 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public void CheckUnAvailablePaymentTransaction()
         {
-            PaymentStatus paymentStatus = new PaymentStatus(Guid.NewGuid(), testUser.Id, testStore.Id, false);
-            Mock<PaymentAdapter> paymentAdapter = new Mock<PaymentAdapter>();
-            paymentAdapter.Setup(p => p.CreatePayment(It.IsAny<PaymentDetails>())).Returns(paymentStatus);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
             Transaction transaction = Transaction.Instance;
-            transaction.PaymentAdapter = paymentAdapter.Object;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.IsNull(transactionStatus.DeliveryStatus);
@@ -116,11 +117,13 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public void CheckUnAvailableDeliveryTransaction()
         {
-            DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid(), testUser.Id, testStore.Id, false);
-            Mock<DeliveryAdapter> deliveryAdapter = new Mock<DeliveryAdapter>();
-            deliveryAdapter.Setup(d => d.CreateDelivery(It.IsAny<DeliveryDetails>())).Returns(deliveryStatus);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Guid.NewGuid());
+            Mock<ExternalDeliverySystem> deliverySystem = new Mock<ExternalDeliverySystem>();
+            deliverySystem.Setup(p => p.CreateDelivery(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid());
             Transaction transaction = Transaction.Instance;
-            transaction.DeliveryAdapter = deliveryAdapter.Object;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            transaction.DeliveryAdapter.SetDeliverySystem(deliverySystem.Object);
             TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, false);

@@ -7,7 +7,9 @@ using System.Text;
 using System.Threading;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
@@ -34,9 +36,9 @@ namespace TradingSystem.Business.Market
             historyManager = HistoryManager.Instance;
         }
 
-        public void ActivateDebugMode(Mock<DeliveryAdapter> deliveryAdapter, Mock<PaymentAdapter> paymentAdapter, bool debugMode)
+        public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
         {
-            _transaction.ActivateDebugMode(deliveryAdapter, paymentAdapter, debugMode);
+            _transaction.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
         }
 
         //USER FUNCTIONALITY
@@ -44,11 +46,12 @@ namespace TradingSystem.Business.Market
         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
         public Store CreateStore(string name, string username, BankAccount bank, Address address)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
             User user = MarketUsers.Instance.GetUserByUserName(username);
-            if (typeof(GuestState).IsInstanceOfType(user.State))
+            if (user == null || typeof(GuestState).IsInstanceOfType(user.State))
                 return null;
             Store store = new Store(name, bank, address);
-            store.Personnel.TryAdd(user.Id, new Founder(user.Id));
+            store.Founder = Founder.makeFounder((MemberState)user.State, store);
             if (!_stores.TryAdd(store.Id, store))
                 return null;
             return store;
@@ -57,6 +60,7 @@ namespace TradingSystem.Business.Market
         //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
         public ICollection<Store> GetStoresByName(string name)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoresByName));
             LinkedList<Store> stores = new LinkedList<Store>();
             foreach(Store s in _stores.Values)
             {
@@ -70,19 +74,12 @@ namespace TradingSystem.Business.Market
 
 
         //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
-        public StoreHistory GetStoreHistory(string username, Guid storeId)
+        public ICollection<IHistory> GetStoreHistory(string username, Guid storeId)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoreHistory));
             User user = MarketUsers.Instance.GetUserByUserName(username);
             IStore store = GetStoreById(storeId);
-            return store.GetStoreHistory(user.Id);
-        }
-
-        //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
-        public double ApplyDiscounts(string username, Guid storeId)
-        {
-            IStore store = GetStoreById(storeId);
-            User user = MarketUsers.Instance.GetUserByUserName(username);
-            return store.ApplyDiscounts(user.ShoppingCart.GetShoppingBasket(store));
+            return store.GetStoreHistory(username);
         }
 
 
@@ -93,85 +90,87 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
+        public void findStoreProduct(out Store found, out Product p, Guid pid, string pname)
+        {
+            p = null;
+            found = null;
+            foreach (Store s in _stores.Values)
+            {
+                if (s.Products.TryGetValue(pname, out p))
+                {
+                    if (p.Id.Equals(pid))
+                    {
+                        found = s;
+                        break;
+                    }
+                }
+
+            }
+        }
+
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(ProductData productData, Guid storeID, String username)
         {
             Product product = new Product(productData);
-            User user = MarketUsers.Instance.GetUserByUserName(username);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.AddProduct(product, user.Id);
+            return store.AddProduct(product, username);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(String productName, Guid storeID, String username)
         {
-            User user = MarketUsers.Instance.GetUserByUserName(username);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.RemoveProduct(productName, user.Id);
+            return store.RemoveProduct(productName, username);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(String productName, ProductData details, Guid storeID, String username)
         {
             Product editedProduct = new Product(details);
-            User user = MarketUsers.Instance.GetUserByUserName(username);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.EditProduct(productName, editedProduct, user.Id);
+            return store.EditProduct(productName, editedProduct, username);
         }
 
 
         //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
         public String makeOwner(String assigneeName, Guid storeID, String assignerName)
         {
-            return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Owner);
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(makeOwner));
+            return AssignMember(assigneeName, storeID, assignerName, "owner");
         }
 
         //functional requirement 4.5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/55
         public String makeManager(String assigneeName, Guid storeID, String assignerName)
         {
-            return AssignMember(assigneeName, storeID, assignerName, AppointmentType.Manager);
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(makeManager));
+            return AssignMember(assigneeName, storeID, assignerName, "manager");
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
         public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
-            Guid managerID;
-            try
-            {
-                managerID = UserManagement.UserManagement.Instance.getIdByUsername(managerName);
-            }catch { return "Manager doesn't exist"; }
-            Guid assignerID;
-            try
-            {
-                assignerID = UserManagement.UserManagement.Instance.getIdByUsername(assignerName);
-            }
-            catch { return "Manager doesn't exist"; }
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.DefineManagerPermissions(managerID, assignerID, permissions);
+            return store.DefineManagerPermissions(managerName, assignerName, permissions);
         }
 
-        public String AssignMember(String assigneeName, Guid storeID, String assignerName, AppointmentType type)
+        public String AssignMember(String assigneeName, Guid storeID, String assignerName, string type)
         {
-            Guid assigneeID;
-            try
-            {
-                assigneeID = UserManagement.UserManagement.Instance.getIdByUsername(assigneeName);
-            }
-            catch { return "Assignee is not a member"; }
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(AssignMember));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.AssignMember(assigneeID, assigner, type);
+            return store.AssignMember(assigneeName, assigner, type);
         }
 
        

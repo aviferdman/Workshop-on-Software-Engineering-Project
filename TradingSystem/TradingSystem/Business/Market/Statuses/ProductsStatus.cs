@@ -5,13 +5,13 @@ namespace TradingSystem.Business.Market
 {
     public class ProductsStatus
     {
-        private Guid clientId;
+        private string _username;
         private Guid storeId;
         private ProductHistoryData productHistories;
 
-        public ProductsStatus(Guid clientId, Guid storeId, Dictionary<Product, int> product_quantity)
+        public ProductsStatus(string username, Guid storeId, Dictionary<Product, int> product_quantity)
         {
-            this.ClientId = clientId;
+            this.Username = username;
             this.StoreId = storeId;
             ProductHistories = new ProductHistoryData();
             foreach (var p_q in product_quantity)
@@ -20,8 +20,8 @@ namespace TradingSystem.Business.Market
             }
         }
 
-        public Guid ClientId { get => clientId; set => clientId = value; }
         public Guid StoreId { get => storeId; set => storeId = value; }
         public ProductHistoryData ProductHistories { get => productHistories; set => productHistories = value; }
+        public string Username { get => _username; set => _username = value; }
     }
 }

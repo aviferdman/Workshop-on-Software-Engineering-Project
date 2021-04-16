@@ -7,6 +7,7 @@ namespace TradingSystem.Business.Delivery
 {
     public interface DeliveryAdapter
     {
+        public void SetDeliverySystem(ExternalDeliverySystem externalDeliverySystem);
         public DeliveryStatus CreateDelivery(DeliveryDetails deliveryDetails);
         public DeliveryStatus CancelDelivery(DeliveryStatus deliveryStatus);
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Service
@@ -36,10 +36,15 @@ namespace TradingSystem.Service
             return new StoreData(store);
         }
 
-        public HistoryData GetStoreHistory(string username, Guid storeId)
+        public ICollection<HistoryData> GetStoreHistory(string username, Guid storeId)
         {
-            StoreHistory history = marketStores.GetStoreHistory(username, storeId);
-            return new HistoryData(history);
+            ICollection<IHistory> history = marketStores.GetStoreHistory(username, storeId);
+            ICollection<HistoryData> ret = new HashSet<HistoryData>(); 
+            foreach (var h in history)
+            {
+                ret.Add(new HistoryData(h));
+            }
+            return ret;
         }
 
         public ICollection<StoreData> FindStoresByName(string name)

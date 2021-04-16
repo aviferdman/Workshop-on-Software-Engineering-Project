@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Delivery
 {
-    public class DeliverySystem
+    public class DeliverySystem : ExternalDeliverySystem
     {
         private static readonly Lazy<DeliverySystem>
         _lazy =
@@ -18,7 +18,7 @@ namespace TradingSystem.Business.Delivery
         {
         }
 
-        public Guid CreateDelivery(Guid recieverId, string recieverPhone, double weight, string source, string destination)
+        public Guid CreateDelivery(string username, string recieverPhone, double weight, string source, string destination)
         {
             return generatePackageId();
         }

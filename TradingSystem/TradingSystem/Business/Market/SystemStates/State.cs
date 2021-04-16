@@ -14,9 +14,9 @@ namespace TradingSystem.Business.Market
         {
         }
 
-        public abstract UserHistory GetUserHistory(Guid userId);
+        public abstract ICollection<IHistory> GetUserHistory(string username);
 
-        public abstract StoreHistory GetStoreHistory(Store store);
+        public abstract ICollection<IHistory> GetStoreHistory(Store store);
 
         public abstract ICollection<IHistory> GetAllHistory();
 

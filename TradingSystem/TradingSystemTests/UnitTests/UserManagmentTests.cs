@@ -9,6 +9,7 @@ namespace TradingSystemTests
     [TestClass]
     public class UserManagmentTests
     {
+        /*
         [ClassInitialize]
         public static void setMarket(TestContext testContext)
         {
@@ -133,5 +134,6 @@ namespace TradingSystemTests
         public static void removeMockMarket() {
             UserManagement.Instance.Marketo = MarketUsers.Instance;
         }
+        */
     }
 }

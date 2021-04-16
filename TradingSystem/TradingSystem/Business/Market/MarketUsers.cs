@@ -18,6 +18,7 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<string, User> activeUsers;
         private ConcurrentDictionary<string, User> adminUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
+        private ConcurrentDictionary<string, MemberState> memberStates;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketUsers>
@@ -28,6 +29,7 @@ namespace TradingSystem.Business.Market
         public static MarketUsers Instance { get { return _lazy.Value; } }
 
         public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
+        public ConcurrentDictionary<string, MemberState> MemberStates { get => memberStates; set => memberStates = value; }
 
         private MarketUsers()
         {
@@ -42,7 +44,7 @@ namespace TradingSystem.Business.Market
         private User CreateDefaultAdmin()
         {
             User user = new User(DEFAULT_ADMIN_USERNAME);
-            user.ChangeState(new AdministratorState(user.Id, user.UserHistory));
+            user.ChangeState(new AdministratorState(DEFAULT_ADMIN_USERNAME, user.UserHistory));
             return user;
         }
 
@@ -50,6 +52,7 @@ namespace TradingSystem.Business.Market
 
         public bool AddSystemAdmin(User admin)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddSystemAdmin));
             User user = GetAdminByUserName(admin.Username);
             // not possible two admins with the same username
             if (user != null)
@@ -62,6 +65,7 @@ namespace TradingSystem.Business.Market
 
         public bool RemoveAdmin(User admin)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(RemoveAdmin));
             User removed;
             // at least one admin for the market
             if (adminUsers.Count < 2)
@@ -73,22 +77,24 @@ namespace TradingSystem.Business.Market
             
         }
 
-        public bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity)
+        public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(UpdateProductInShoppingBasket));
             User user = GetUserById(userId);
             IStore store = MarketStores.Instance.GetStoreById(storeId);
             user.UpdateProductInShoppingBasket(store, product, quantity);
             return true;
         }
 
-        private User GetUserById(Guid userId)
+        private User GetUserById(string username)
         {
-            return activeUsers.Values.Where(u => u.Id.Equals(userId)).FirstOrDefault();
+            return activeUsers.Values.Where(u => u.Username.Equals(username)).FirstOrDefault();
         }
 
         //functional requirement 2.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/10
         public string AddGuest()
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddGuest));
             User u = new User();
             string GuidString;
             do
@@ -105,22 +111,35 @@ namespace TradingSystem.Business.Market
         //functional requirement 2.2: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/13
         public void RemoveGuest(String usrname)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(RemoveGuest));
             User guest = null;
             activeUsers.TryRemove(usrname, out guest);
         }
 
-
-        ///after login - <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> 
-        public bool AddMember(String usrname, string guestusername, Guid id)
+        //use case 2 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
+        ///using login to check password - <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> 
+        public string AddMember(String usrname,string password, string guestusername)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddMember));
+            string loginmang = UserManagement.UserManagement.Instance.LogIn(usrname, password);
+            if (!loginmang.Equals("success"))
+            {
+                return loginmang;
+            }
             User u;
             User guest;
             IShoppingCart s;
             if (!activeUsers.TryRemove(guestusername, out u))
-                return false;
+                return "user not found in market";
             string GuidString;
-            u.State = new MemberState(u.Id, new UserHistory());
-            u.Id = id;
+            MemberState m;
+            if(!memberStates.TryGetValue(usrname, out m))
+            {
+                m = new MemberState(u.Username, new HashSet<IHistory>());
+                memberStates.TryAdd(usrname, m);
+            }
+                
+            u.State = m;
             u.Username = usrname;
             u.IsLoggedIn = true;
             if (membersShoppingCarts.TryGetValue(usrname, out s))
@@ -142,17 +161,21 @@ namespace TradingSystem.Business.Market
                 }
                 
             };
-            return true;
+            return "success";
         }
-
-        ///after logout - <see cref="UserManagement.UserManagement.Logout(string)"/> 
+        //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
+        ///before logout checks  - <see cref="UserManagement.UserManagement.Logout(string)"/> 
         public string logout(string username)
         {
             User u;
+            bool loginmang = UserManagement.UserManagement.Instance.Logout(username);
+            if (!loginmang)
+            {
+                return null;
+            }
             if (!activeUsers.TryRemove(username, out u))
                 return null;
-            u.Id = Guid.NewGuid();
-            u.ChangeState(new MemberState(u.Id, new UserHistory()));
+            u.ChangeState(new GuestState());
             u.ShoppingCart = new ShoppingCart();
             string GuidString;
             do
@@ -172,6 +195,7 @@ namespace TradingSystem.Business.Market
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(PurchaseShoppingCart));
             User user = GetUserByUserName(username);
             return user.PurchaseShoppingCart(bank, phone, address);
         }
@@ -179,16 +203,18 @@ namespace TradingSystem.Business.Market
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
         public ICollection<IHistory> GetAllHistory(string username)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetAdminByUserName));
             User user = GetUserByUserName(username);
             return user.State.GetAllHistory();
         }
 
         //use case 10 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/70
-        public UserHistory GetUserHistory(string username)
+        public ICollection<IHistory> GetUserHistory(string username)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetUserHistory));
             User user = GetUserByUserName(username);
-            Guid userId = user.Id;
-            return user.GetUserHistory(userId);
+            string userId = user.Username;
+            return user.GetUserHistory(username);
         }
 
 
@@ -222,18 +248,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p=null;
             Store found=null;
-            /*foreach (Store s in _stores.Values)
-            {
-                if(s.Products.TryGetValue(pname,out p))
-                {
-                    if (p.Id.Equals(pid))
-                    {
-                        found = s;
-                        break;
-                    }
-                }
-                    
-            }*/
+            MarketStores.Instance.findStoreProduct(out found, out p, pid, pname);
             if (found == null||p==null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
@@ -244,8 +259,9 @@ namespace TradingSystem.Business.Market
         }
 
        
-        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId)
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(string userId)
         {
+            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetShopingCartProducts));
             User user = GetUserById(userId);
             return user.GetShopingCartProducts();
         }
@@ -265,18 +281,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            /*foreach (Store s in _stores.Values)
-            {
-                if (s.Products.TryGetValue(pname, out p))
-                {
-                    if (p.Id.Equals(pid))
-                    {
-                        found = s;
-                        break;
-                    }
-                }
-
-            }*/
+            MarketStores.Instance.findStoreProduct(out found,out p, pid, pname);
             if (found == null || p == null)
                 return "product doesn't exist";
             IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
@@ -292,18 +297,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            /*foreach (Store s in _stores.Values)
-            {
-                if (s.Products.TryGetValue(pname, out p))
-                {
-                    if (p.Id.Equals(pid))
-                    {
-                        found = s;
-                        break;
-                    }
-                }
-
-            }*/
+            MarketStores.Instance.findStoreProduct(out found, out p, pid, pname);
             if (found == null || p == null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)

@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Payment;
 
-namespace TradingSystem.Business.Delivery
+namespace TradingSystem.Business.Payment
 {
-    public class PaymentSystem
+    public class PaymentSystem : ExternalPaymentSystem
     {
         private static readonly Lazy<PaymentSystem>
         _lazy =
@@ -29,7 +30,7 @@ namespace TradingSystem.Business.Delivery
             return Guid.NewGuid();
         }
 
-        public Guid CreatePayment(Guid clientId, int accountNumber1, int branch1, int accountNumber2, int branch2, double paymentSum)
+        public Guid CreatePayment(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
         {
             return Guid.NewGuid();
         }

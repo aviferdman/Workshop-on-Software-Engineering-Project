@@ -13,14 +13,14 @@ namespace TradingSystem.Business.Market
     {
         public string AddGuest();
         public void RemoveGuest(String usrname);
-        public bool AddMember(String usrname, string guestusername, Guid id);
+        public string AddMember(String usrname, string password, string guestusername);
 
-        bool UpdateProductInShoppingBasket(Guid userId, Guid storeId, Product product, int quantity);
+        bool UpdateProductInShoppingBasket(string username, Guid storeId, Product product, int quantity);
         public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
         public ICollection<IHistory> GetAllHistory(string username);
-        public UserHistory GetUserHistory(string username);
+        public ICollection<IHistory> GetUserHistory(string username);
         public string logout(string username);
-        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(Guid userId);
+        public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(string username);
 
     }
 }
