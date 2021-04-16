@@ -153,14 +153,14 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissionsToRemove, List<Permission> permissionsToAdd)
+        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.DefineManagerPermissions(managerName, assignerName, permissionsToRemove, permissionsToAdd);
+            return store.DefineManagerPermissions(managerName, assignerName, permissions);
         }
 
         public String AssignMember(String assigneeName, Guid storeID, String assignerName, string type)

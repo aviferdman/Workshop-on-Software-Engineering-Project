@@ -54,20 +54,12 @@ namespace TradingSystem.Business.Market.StoreStates
             return managerAppointments.TryRemove(userToRemove, out m)|| ownerAppointments.TryRemove(userToRemove, out o);
         }
 
-        public void AddPermission(string username, Permission permission)
+        public void DefinePermissions(string username, List<Permission> permissions)
         {
             Manager m;
             if (!managerAppointments.TryGetValue(username, out m))
                 throw new UnauthorizedAccessException();
-            m.AddPermission(permission);
-        }
-        
-        public void RemovePermission(string username, Permission permission)
-        {
-            Manager m;
-            if (!managerAppointments.TryGetValue(username, out m))
-                throw new UnauthorizedAccessException();
-            m.RemovePermission(permission);
+            m.Store_permission = permissions;
         }
     }
 }

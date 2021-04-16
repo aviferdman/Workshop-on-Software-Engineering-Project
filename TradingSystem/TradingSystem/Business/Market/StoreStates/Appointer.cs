@@ -21,11 +21,8 @@ namespace TradingSystem.Business.Market.StoreStates
         ///use locks for store premmissions and memberState premissions
         public bool canRemoveAppointment(string userToRemove);
 
-        //add new premission to manger with matching username if manger has not been appointer by this appointer an UnauthorizedAccessException will be thrown
-        public void AddPermission(string username, Permission permission);
-
-        //removes premission from manger with matching username if manger has not been appointer by this appointer an UnauthorizedAccessException will be thrown
-        public void RemovePermission(string username, Permission permission);
+        //define premissions to manger with matching username if manger has not been appointer by this appointer an UnauthorizedAccessException will be thrown
+        public void DefinePermissions(string username, List<Permission> permissions);
         
     }
 }
