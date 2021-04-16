@@ -9,16 +9,7 @@ namespace TradingSystemTests
     [TestClass]
     public class UserManagmentTests
     {
-        /*
-        [ClassInitialize]
-        public static void setMarket(TestContext testContext)
-        {
-            Mock<IMarket> market = new Mock<IMarket>();
-            market.Setup(m => m.AddMember(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>())).Returns(true);
-            market.Setup(m => m.logout(It.IsAny<string>())).Returns("lla");
-            UserManagement.Instance.Marketo = market.Object;
-        }
-
+        
         private string signup()
         {
            return UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala","lala","la"), "0501234733");
@@ -55,7 +46,7 @@ namespace TradingSystemTests
         public void TestLoginSuccess()
         {
             signup();
-            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456","lala"));
+            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456"));
             delete();
 
         }
@@ -67,8 +58,8 @@ namespace TradingSystemTests
         public void TestLoginFailed1()
         {
             signup();
-            UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
-            Assert.AreEqual("user is already logged in", UserManagement.Instance.LogIn("inbi2001", "123456", "lala"));
+            UserManagement.Instance.LogIn("inbi2001", "123456");
+            Assert.AreEqual("user is already logged in", UserManagement.Instance.LogIn("inbi2001", "123456"));
             delete();
 
         }
@@ -80,7 +71,7 @@ namespace TradingSystemTests
         public void TestLoginFailed2()
         {
             signup();
-            Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
+            Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
             delete();
 
         }
@@ -91,7 +82,7 @@ namespace TradingSystemTests
         [TestCategory("uc2")]
         public void TestLoginFailed3()
         {
-            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6", "lala"));
+            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
             delete();
 
         }
@@ -102,7 +93,7 @@ namespace TradingSystemTests
         public void TestLogoutSuccess()
         {
             signup();
-            UserManagement.Instance.LogIn("inbi2001", "123456", "lala");
+            UserManagement.Instance.LogIn("inbi2001", "123456");
             Assert.AreNotEqual(null, UserManagement.Instance.Logout("inbi2001"));
             delete();
 
@@ -115,7 +106,7 @@ namespace TradingSystemTests
         public void TestLogoutFail1()
         {
             signup();
-            Assert.AreEqual(null, UserManagement.Instance.Logout("inbi2001"));
+            Assert.AreEqual(false, UserManagement.Instance.Logout("inbi2001"));
             delete();
 
         }
@@ -126,7 +117,7 @@ namespace TradingSystemTests
         [TestCategory("uc3")]
         public void TestLogoutFail2()
         {
-            Assert.AreEqual(null, UserManagement.Instance.Logout("inbi200151"));
+            Assert.AreEqual(false, UserManagement.Instance.Logout("inbi200151"));
 
         }
 
@@ -134,6 +125,5 @@ namespace TradingSystemTests
         public static void removeMockMarket() {
             UserManagement.Instance.Marketo = MarketUsers.Instance;
         }
-        */
     }
 }
