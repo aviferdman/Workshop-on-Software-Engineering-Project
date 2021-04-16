@@ -77,7 +77,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private bool LoginCore(UserInfo loginInfo)
         {
-            bool success = userService.Login(loginInfo.Username, loginInfo.Password, Username) == "success";
+            bool success = marketUserService.login(loginInfo.Username, loginInfo.Password, Username) == "success";
             if (success)
             {
                 Username = loginInfo.Username;
@@ -100,7 +100,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private string LogoutCore()
         {
-            return userService.Logout(Username);
+            return marketUserService.logout(Username);
         }
 
         private bool IdentifyAsGuestCore()
