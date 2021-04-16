@@ -39,7 +39,10 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             if (m.isStaff(s) || s.isStaff(m.UserId))
                 throw new InvalidOperationException();
-            return new Manager(m, s, appointer);
+            Manager man = new Manager(m, s, appointer);
+            m.ManagerPrems.TryAdd(s, man);
+            s.Managers.TryAdd(m.UserId, man);
+            return man;
         }
 
         public bool GetPermission(Permission permission)

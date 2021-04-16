@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using TradingSystem.Business.Market;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Service
 {
@@ -29,9 +30,9 @@ namespace TradingSystem.Service
             return marketStores.makeManager(assignee, storeID, assigner);
         }
 
-        public string DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Business.Market.StoreStates.Manager.Permission> permissions)
+        public string DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissionsToRemove, List<Permission> permissionsToAdd)
         {
-            return marketStores.DefineManagerPermissions(manager, storeID, assigner, permissions);
+            return marketStores.DefineManagerPermissions(manager, storeID, assigner, permissionsToRemove, permissionsToAdd);
         }
     }
 }
