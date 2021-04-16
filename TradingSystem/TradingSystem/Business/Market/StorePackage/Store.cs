@@ -43,9 +43,8 @@ namespace TradingSystem.Business.Market
         public Founder Founder { get => founder; set => founder = value; }
         public object Prem_lock { get => prem_lock; set => prem_lock = value; }
 
-        public Store(string name, BankAccount bank, Address address, Founder f)
+        public Store(string name, BankAccount bank, Address address)
         {
-            this.founder = f;
             this.name = name;
             this._products = new ConcurrentDictionary<string, Product>();
             this._transactionsHistory = new HashSet<TransactionStatus>();
@@ -98,27 +97,7 @@ namespace TradingSystem.Business.Market
             UpdateQuantities(product_quantity, false);
         }
 
-        public bool AddPerssonel(Guid username, Guid subjectUsername, AppointmentType permission)
-        {
-            IStorePermission user;
-            if (!personnel.TryGetValue(username, out user))
-            {
-                return false;
-            }
-            return personnel.TryAdd(subjectUsername,user.AddAppointment(subjectUsername, permission));
-        }
-        public bool RemovePerssonel(Guid username, Guid subjectUsername)
-        {
-            IStorePermission user;
-            IStorePermission userToRem;
-            if (!personnel.TryGetValue(username, out user))
-            {
-                return false;
-            }
-            if (!user.canRemoveAppointment(subjectUsername))
-                return false;
-            return personnel.TryRemove(subjectUsername, out userToRem);
-        }
+        
         public double CalcPaySum(IShoppingBasket shoppingBasket)
         {
             double discount = ApplyDiscounts(shoppingBasket);
@@ -158,14 +137,16 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String AddProduct(Product product, Guid userID)
+        public String AddProduct(Product product, string userID)
         {
-            IStorePermission permission;
-            Personnel.TryGetValue(userID, out permission);
-            if (permission == null)
-                return "Invalid user";
-            if (!permission.GetPermission(Permission.AddProduct))
-                return "No permission";
+            if (!founder.Username.Equals(userID) || owners.ContainsKey(userID))
+            {
+                Manager m;
+                if(!managers.TryGetValue(userID, out m))
+                    return "Invalid user";
+                else if(m.GetPermission(Permission.AddProduct))
+                    return "No permission";
+            }
             if (!validProduct(product))
                 return "Invalid product";
             if (_products.ContainsKey(product.Name))
@@ -175,28 +156,32 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String RemoveProduct(String productName, Guid userID)
+        public String RemoveProduct(String productName, string userID)
         {
-            IStorePermission permission;
-            Personnel.TryGetValue(userID, out permission);
-            if (permission == null)
-                return "Invalid user";
-            if (!permission.GetPermission(Permission.RemoveProduct))
-                return "No Permission";
+            if (!founder.Username.Equals(userID) || owners.ContainsKey(userID))
+            {
+                Manager m;
+                if (!managers.TryGetValue(userID, out m))
+                    return "Invalid user";
+                else if (m.GetPermission(Permission.AddProduct))
+                    return "No permission";
+            }
             Product useless;
             _products.TryRemove(productName, out useless);
             return "Product removed";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(String productName, Product editedProduct, Guid userID)
+        public String EditProduct(String productName, Product editedProduct, string userID)
         {
-            IStorePermission permission;
-            Personnel.TryGetValue(userID, out permission);
-            if (permission == null)
-                return "Invalid user"; 
-            if (!permission.GetPermission(Permission.EditProduct))
-                return "No Permission";
+            if (!founder.Username.Equals(userID) || owners.ContainsKey(userID))
+            {
+                Manager m;
+                if (!managers.TryGetValue(userID, out m))
+                    return "Invalid user";
+                else if (m.GetPermission(Permission.AddProduct))
+                    return "No permission";
+            }
             if (!validProduct(editedProduct))
                 return "Invalid edit";
             
@@ -210,37 +195,86 @@ namespace TradingSystem.Business.Market
             return "Product edited";
         }
 
-        public String AssignMember(Guid assigneeID, User assigner, AppointmentType type)
+        public String AssignMember(string assigneeID, User assigner, string type)
         {
-            IStorePermission assignee;
-            IStorePermission assignerPermission;
-            if (personnel.TryGetValue(assigneeID, out assignee))
-                return "this member is already assigned as a store owner or manager";
-            if (!personnel.TryGetValue(assigner.Id, out assignerPermission))
+            Owner assignerOwner;
+            Appointer a;
+            MemberState assignee;
+            string ret;
+            if (managers.ContainsKey(assigner.Username))
                 return "Invalid assigner";
-            try
+            else if (founder.Username.Equals(assigner.Username))
+                a = founder;
+            else if (owners.TryGetValue(assigner.Username, out assignerOwner))
+                a = assignerOwner;
+            else
+                return "Invalid assigner";
+            if (!MarketUsers.Instance.MemberStates.TryGetValue(assigneeID, out assignee))
+                return "the assignee isn't a member";
+            lock (assignee.Prem_lock)
             {
-                assignee = assignerPermission.AddAppointment(assigneeID, type);
+                try
+                {
+                    if (type.Equals("owner"))
+                    {
+                        a.AddAppointmentOwner(assignee, this);
+                    }
+                    else
+                    {
+                        a.AddAppointmentManager(assignee, this);
+                    }
+                    ret = "Success";
+                }
+                catch { ret="this member is already assigned as a store owner or manager"; }
             }
-            catch { return "Invalid assigner"; }
+            
 
-            personnel.TryAdd(assigneeID, assignee);
-
-            return "Success";
+            return ret;
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(Guid managerID, Guid assignerID, List<Permission> permissions)
+        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissionsToRemove, List<Permission> permissionsToAdd)
         {
-            IStorePermission manager;
-            IStorePermission assignerPermission;
-            if (!personnel.TryGetValue(managerID, out manager))
+            Manager manager;
+            if (!managers.TryGetValue(managerID, out manager))
                 return "Manager doesn't exist";
-            if (!personnel.TryGetValue(assignerID, out assignerPermission))
+            Owner assignerOwner;
+            Appointer a;
+            MemberState assignee;
+            string ret;
+            if (managers.ContainsKey(assignerID))
                 return "Invalid assigner";
-            if (!((StorePermission)manager).Appointer.UserId.Equals(assignerID))
-                return "The manager must be appointed by the user";
-            ((StorePermission)manager).Store_permission = permissions;
+            else if (founder.Username.Equals(assignerID))
+                a = founder;
+            else if (owners.TryGetValue(assignerID, out assignerOwner))
+                a = assignerOwner;
+            else
+                return "Invalid assigner";
+            foreach(Permission p in permissionsToAdd)
+            {
+                try
+                {
+                    a.AddPermission(managerID, p);
+                }
+                catch
+                {
+                    return "Invalid assigner";
+                }
+                
+            }
+            foreach (Permission p in permissionsToRemove)
+            {
+                try
+                {
+                    a.RemovePermission(managerID, p);
+                }
+                catch
+                {
+                    return "Invalid assigner";
+                }
+
+            }
+
             return "Success";
         }
 
