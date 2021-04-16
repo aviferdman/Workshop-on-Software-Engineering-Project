@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
@@ -170,10 +171,29 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_NotLoggedIn(ProductInfo productInfo)
+        {
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+        }
+
+        [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_InsufficientPermissions(ProductInfo productInfo)
         {
             LoginToBuyer();
             Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+        }
+
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_ShopDoesntExist(ProductInfo productInfo)
+        {
+            Assert.IsNull(Bridge.AddProductToShop(Guid.NewGuid(), productInfo));
+        }
+
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_InvalidShopId(ProductInfo productInfo)
+        {
+            Assert.IsNull(Bridge.AddProductToShop(default, productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
@@ -195,18 +215,6 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             productInfo.Name = name;
             Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
-        }
-
-        [TestCaseSource(nameof(TestProductInfo))]
-        public void Failure_ShopDoesntExist(ProductInfo productInfo)
-        {
-            Assert.IsNull(Bridge.AddProductToShop(Guid.NewGuid(), productInfo));
-        }
-
-        [TestCaseSource(nameof(TestProductInfo))]
-        public void Failure_InvalidShopId(ProductInfo productInfo)
-        {
-            Assert.IsNull(Bridge.AddProductToShop(default, productInfo));
         }
     }
 }

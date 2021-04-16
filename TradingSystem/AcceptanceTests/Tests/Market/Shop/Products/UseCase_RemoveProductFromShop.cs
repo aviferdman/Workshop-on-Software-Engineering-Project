@@ -5,6 +5,7 @@ using System.Linq;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
@@ -106,17 +107,66 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             return expected;
         }
 
-        [TestCase]
+        public void Failure_NotLoggedIn()
+        {
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            ProductId productId = productsToRemove.First().ProductId;
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, productId));
+        }
+
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, productsToRemove.First().ProductId));
+            ProductId productId = productsToRemove.First().ProductId;
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, productId));
+        }
+
+        public void Failure_ShopDoesntExist()
+        {
+            ProductId productId = productsToRemove.First().ProductId;
+            Assert.IsFalse(Bridge.RemoveProductFromShop(Guid.NewGuid(), productId));
+        }
+
+        public void Failure_InvalidShopId()
+        {
+            ProductId productId = productsToRemove.First().ProductId;
+            Assert.IsFalse(Bridge.RemoveProductFromShop(default, productId));
+        }
+
+        [TestCase]
+        public void Failure_InvalidProductId()
+        {
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, default));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, default));
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, new ProductId(productId.ShopId, "notexist")));
+        }
+
+        [TestCase]
+        public void Failure_ProductNotInShop()
+        {
+            var product2 = new ProductIdentifiable(new ProductInfo
+            (
+                name: "tv remote control",
+                quantity: 300,
+                price: 7,
+                category: "tv peripherals",
+                weight: 0.8
+            ));
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            useCase_addProduct = new UseCase_AddProductToShop
+            (
+                SystemContext,
+                new ShopImage(UserInfo, Shop2, new ProductIdentifiable[] { product2 })
+            );
+            useCase_addProduct.Setup();
+            useCase_addProduct.Success_Normal_CheckStoreProducts();
+
+            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, product2.ProductId));
         }
     }
 }

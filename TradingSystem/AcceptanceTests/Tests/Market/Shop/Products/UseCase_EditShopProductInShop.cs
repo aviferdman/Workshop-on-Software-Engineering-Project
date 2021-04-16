@@ -4,6 +4,7 @@ using System.Linq;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
@@ -142,34 +143,85 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             return expected;
         }
 
-        [TestCase]
+        public void Failure_NotLoggedIn()
+        {
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, productId, productInfo));
+        }
+
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsFalse(Bridge.EditProductInShop(
-                ShopId,
-                ShopImage.ShopProducts[0].ProductId,
-                ProductEditInfos.First().ProductInfoEdit
-            ));
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, productId, productInfo));
+        }
+
+        public void Failure_ShopDoesntExist()
+        {
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(Bridge.EditProductInShop(Guid.NewGuid(), productId, productInfo));
+        }
+
+        public void Failure_InvalidShopId()
+        {
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(Bridge.EditProductInShop(default, productId, productInfo));
+        }
+
+        [TestCase]
+        public void Failure_InvalidProductId()
+        {
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, default, productInfo));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.EditProductInShop(
-                ShopId,
-                default,
-                ProductEditInfos.First().ProductInfoEdit
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, new ProductId(productId.ShopId, "notexist"), productInfo));
+        }
+
+        [TestCase]
+        public void Failure_ProductNotInShop()
+        {
+            var product2 = new ProductIdentifiable(new ProductInfo
+            (
+                name: "air conditioner remote control",
+                quantity: 800,
+                price: 6,
+                category: "air conditioning",
+                weight: 0.6
             ));
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            useCase_addProduct = new UseCase_AddProductToShop
+            (
+                SystemContext,
+                new ShopImage(UserInfo, Shop2, new ProductIdentifiable[] { product2 })
+            );
+            useCase_addProduct.Setup();
+            useCase_addProduct.Success_Normal_CheckStoreProducts();
+
+            ProductInfo productInfo = product2.ProductInfo;
+            productInfo.Price = 5;
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, product2.ProductId, productInfo));
         }
 
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsFalse(Bridge.EditProductInShop(
+            Assert.IsFalse(Bridge.EditProductInShop
+            (
                 ShopId,
                 ShopImage.ShopProducts[0].ProductId,
-                new ProductInfo(
+                new ProductInfo
+                (
                     name: "ineditcucumber",
                     quantity: 23,
                     price: -7,
@@ -182,10 +234,12 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsFalse(Bridge.EditProductInShop(
+            Assert.IsFalse(Bridge.EditProductInShop
+            (
                 ShopId,
                 ShopImage.ShopProducts[0].ProductId,
-                new ProductInfo(
+                new ProductInfo
+                (
                     name: "",
                     quantity: 23,
                     price: 14,
