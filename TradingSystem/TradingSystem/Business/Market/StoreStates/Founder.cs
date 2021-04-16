@@ -43,7 +43,6 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             Owner prem = Owner.makeOwner(m,s , this);
             ownerAppointments.TryAdd(username, prem);
-            m.OwnerPrems.TryAdd(s, prem);
             return prem;
         }
 

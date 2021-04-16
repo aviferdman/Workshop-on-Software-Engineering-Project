@@ -158,8 +158,6 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
-            Guid managerID;
-            Guid assignerID;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
             return store.DefineManagerPermissions(managerName, assignerName, permissionsToRemove, permissionsToAdd);

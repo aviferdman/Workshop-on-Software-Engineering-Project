@@ -49,7 +49,7 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             return store_permission.Contains(permission);
         }
-        //don't!!!  user this method it is called from the appointer after checking he is the appointer
+        //don't!!!  use this method it is called from the appointer after checking he is the appointer
         public  void AddPermission(Permission permission)
         {
             if (Permission.CloseShop.Equals(permission)) //only founder can close shop
@@ -61,7 +61,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
         }
 
-        //don't!!!  user this method it is called from the appointer after checking he is the appointer
+        //don't!!!  use this method it is called from the appointer after checking he is the appointer
         public void RemovePermission (Permission permission)
         {
             if (!store_permission.Contains(permission))

@@ -139,7 +139,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(Product product, string userID)
         {
-            if (!founder.Username.Equals(userID) || owners.ContainsKey(userID))
+            if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
             {
                 Manager m;
                 if(!managers.TryGetValue(userID, out m))
@@ -158,7 +158,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(String productName, string userID)
         {
-            if (!founder.Username.Equals(userID) || owners.ContainsKey(userID))
+            if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
             {
                 Manager m;
                 if (!managers.TryGetValue(userID, out m))
@@ -174,7 +174,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(String productName, Product editedProduct, string userID)
         {
-            if (!founder.Username.Equals(userID) || owners.ContainsKey(userID))
+            if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
             {
                 Manager m;
                 if (!managers.TryGetValue(userID, out m))
@@ -184,7 +184,6 @@ namespace TradingSystem.Business.Market
             }
             if (!validProduct(editedProduct))
                 return "Invalid edit";
-            
             Product oldProduct;
             _products.TryGetValue(productName, out oldProduct);
             if (oldProduct == null)
@@ -213,19 +212,22 @@ namespace TradingSystem.Business.Market
                 return "the assignee isn't a member";
             lock (assignee.Prem_lock)
             {
-                try
+                lock (prem_lock)
                 {
-                    if (type.Equals("owner"))
+                    try
                     {
-                        a.AddAppointmentOwner(assignee, this);
+                        if (type.Equals("owner"))
+                        {
+                            a.AddAppointmentOwner(assignee, this);
+                        }
+                        else
+                        {
+                            a.AddAppointmentManager(assignee, this);
+                        }
+                        ret = "Success";
                     }
-                    else
-                    {
-                        a.AddAppointmentManager(assignee, this);
-                    }
-                    ret = "Success";
+                    catch { ret = "this member is already assigned as a store owner or manager"; }
                 }
-                catch { ret="this member is already assigned as a store owner or manager"; }
             }
             
 
