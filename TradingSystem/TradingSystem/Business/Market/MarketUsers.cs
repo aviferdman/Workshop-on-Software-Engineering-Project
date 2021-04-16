@@ -248,18 +248,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p=null;
             Store found=null;
-            /*foreach (Store s in _stores.Values)
-            {
-                if(s.Products.TryGetValue(pname,out p))
-                {
-                    if (p.Id.Equals(pid))
-                    {
-                        found = s;
-                        break;
-                    }
-                }
-                    
-            }*/
+            MarketStores.Instance.findStoreProduct(out found, out p, pid, pname);
             if (found == null||p==null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
@@ -292,18 +281,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            /*foreach (Store s in _stores.Values)
-            {
-                if (s.Products.TryGetValue(pname, out p))
-                {
-                    if (p.Id.Equals(pid))
-                    {
-                        found = s;
-                        break;
-                    }
-                }
-
-            }*/
+            MarketStores.Instance.findStoreProduct(out found,out p, pid, pname);
             if (found == null || p == null)
                 return "product doesn't exist";
             IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
@@ -319,18 +297,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            /*foreach (Store s in _stores.Values)
-            {
-                if (s.Products.TryGetValue(pname, out p))
-                {
-                    if (p.Id.Equals(pid))
-                    {
-                        found = s;
-                        break;
-                    }
-                }
-
-            }*/
+            MarketStores.Instance.findStoreProduct(out found, out p, pid, pname);
             if (found == null || p == null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)

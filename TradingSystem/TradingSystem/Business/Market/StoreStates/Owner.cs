@@ -28,7 +28,10 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             if (m.isStaff(s) || s.isStaff(m.UserId))
                 throw new InvalidOperationException();
-            return new Owner(m, s, appointer);
+            Owner o = new Owner(m, s, appointer);
+            m.OwnerPrems.TryAdd(s, o);
+            s.Owners.TryAdd(m.UserId, o);
+            return o;
         }
 
         public Manager AddAppointmentManager(MemberState m, Store s)

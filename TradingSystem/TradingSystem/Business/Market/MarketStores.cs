@@ -90,6 +90,24 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
+        public void findStoreProduct(out Store found, out Product p, Guid pid, string pname)
+        {
+            p = null;
+            found = null;
+            foreach (Store s in _stores.Values)
+            {
+                if (s.Products.TryGetValue(pname, out p))
+                {
+                    if (p.Id.Equals(pid))
+                    {
+                        found = s;
+                        break;
+                    }
+                }
+
+            }
+        }
+
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(ProductData productData, Guid storeID, String username)
         {
@@ -140,8 +158,6 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
-            Guid managerID;
-            Guid assignerID;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
             return store.DefineManagerPermissions(managerName, assignerName, permissionsToRemove, permissionsToAdd);

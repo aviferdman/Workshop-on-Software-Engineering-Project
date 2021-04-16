@@ -39,14 +39,17 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             if (m.isStaff(s) || s.isStaff(m.UserId))
                 throw new InvalidOperationException();
-            return new Manager(m, s, appointer);
+            Manager man = new Manager(m, s, appointer);
+            m.ManagerPrems.TryAdd(s, man);
+            s.Managers.TryAdd(m.UserId, man);
+            return man;
         }
 
         public bool GetPermission(Permission permission)
         {
             return store_permission.Contains(permission);
         }
-        //don't!!!  user this method it is called from the appointer after checking he is the appointer
+        //don't!!!  use this method it is called from the appointer after checking he is the appointer
         public  void AddPermission(Permission permission)
         {
             if (Permission.CloseShop.Equals(permission)) //only founder can close shop
@@ -58,7 +61,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
         }
 
-        //don't!!!  user this method it is called from the appointer after checking he is the appointer
+        //don't!!!  use this method it is called from the appointer after checking he is the appointer
         public void RemovePermission (Permission permission)
         {
             if (!store_permission.Contains(permission))
