@@ -13,6 +13,7 @@ namespace TradingSystem.Business.Market.StoreStates
         private ICollection<Permission> store_permission;
 
         public string Username { get => username; set => username = value; }
+        public ICollection<Permission> Store_permission { get => store_permission; set => store_permission = value; }
 
         public enum Permission
         {
@@ -48,27 +49,6 @@ namespace TradingSystem.Business.Market.StoreStates
         public bool GetPermission(Permission permission)
         {
             return store_permission.Contains(permission);
-        }
-        //don't!!!  use this method it is called from the appointer after checking he is the appointer
-        public  void AddPermission(Permission permission)
-        {
-            if (Permission.CloseShop.Equals(permission)) //only founder can close shop
-                throw new UnauthorizedAccessException();
-            if (!store_permission.Contains(permission))
-            {
-                store_permission.Add(permission);
-            }
-
-        }
-
-        //don't!!!  use this method it is called from the appointer after checking he is the appointer
-        public void RemovePermission (Permission permission)
-        {
-            if (!store_permission.Contains(permission))
-            {
-                store_permission.Add(permission);
-            }
-
         }
     }
 }

@@ -232,15 +232,13 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissionsToRemove, List<Permission> permissionsToAdd)
+        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> newPermissions)
         {
             Manager manager;
             if (!managers.TryGetValue(managerID, out manager))
                 return "Manager doesn't exist";
             Owner assignerOwner;
             Appointer a;
-            MemberState assignee;
-            string ret;
             if (managers.ContainsKey(assignerID))
                 return "Invalid assigner";
             else if (founder.Username.Equals(assignerID))
@@ -249,34 +247,23 @@ namespace TradingSystem.Business.Market
                 a = assignerOwner;
             else
                 return "Invalid assigner";
-            foreach(Permission p in permissionsToAdd)
+            try
             {
-                try
-                {
-                    a.AddPermission(managerID, p);
-                }
-                catch
-                {
-                    return "Invalid assigner";
-                }
-                
+                a.DefinePermissions(managerID, newPermissions);
             }
-            foreach (Permission p in permissionsToRemove)
-            {
-                try
-                {
-                    a.RemovePermission(managerID, p);
-                }
-                catch
-                {
-                    return "Invalid assigner";
-                }
-
-            }
+            catch {return "Invalid assigner";}
 
             return "Success";
         }
 
+        private bool validProduct(Product product)
+        {
+            if (product.Name == null || product.Name.Equals("") || product.Price < 0)
+            {
+                return false;
+            }
+            return true;
+        }
 
         public void UpdateProduct(Product product)
         {
@@ -288,15 +275,6 @@ namespace TradingSystem.Business.Market
 
             _products.TryAdd(product.Name, product); //add the new product
 
-        }
-
-        private bool validProduct(Product product)
-        {
-            if (product.Name == null || product.Name.Equals("") || product.Price < 0)
-            {
-                return false;
-            }
-            return true;
         }
 
         public void RemoveProduct(Product product)
