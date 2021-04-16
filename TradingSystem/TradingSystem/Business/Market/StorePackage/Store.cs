@@ -149,9 +149,8 @@ namespace TradingSystem.Business.Market
             }
             if (!validProduct(product))
                 return "Invalid product";
-            if (_products.ContainsKey(product.Name))
+            if (!_products.TryAdd(product.Name, product))
                 return "Product exists";
-            _products.TryAdd(product.Name, product);
             return "Product added";
         }
 
@@ -186,11 +185,9 @@ namespace TradingSystem.Business.Market
                 return "Invalid edit";
             
             Product oldProduct;
-            _products.TryGetValue(productName, out oldProduct);
-            if (oldProduct == null)
+            if (!_products.TryRemove(productName, out oldProduct))
                 return "Product not in the store";
             editedProduct.Id = oldProduct.Id;
-            _products.TryRemove(productName, out oldProduct);
             _products.TryAdd(editedProduct.Name, editedProduct);
             return "Product edited";
         }
