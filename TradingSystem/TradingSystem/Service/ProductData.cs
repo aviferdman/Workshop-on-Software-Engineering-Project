@@ -11,8 +11,18 @@ namespace TradingSystem.Business.Market
         public int _quantity;
         public double _weight;
         public double _price;
-        public string category;
+        public String category;
         public int rating;
+
+        public ProductData(String name, int quantity, double weight, double price, String category)
+        {
+            this._name = name;
+            this._quantity = quantity;
+            this._weight = weight;
+            this._price = price;
+            this.category = category;
+            rating = -1;
+        }
 
         public ProductData(Product p)
         {

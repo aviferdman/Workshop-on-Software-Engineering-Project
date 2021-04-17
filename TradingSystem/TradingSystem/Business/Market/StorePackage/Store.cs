@@ -215,11 +215,11 @@ namespace TradingSystem.Business.Market
                     {
                         if (type.Equals("owner"))
                         {
-                            a.AddAppointmentOwner(assignee, this);
+                            owners.TryAdd(assigneeID, a.AddAppointmentOwner(assignee, this));
                         }
                         else
                         {
-                            a.AddAppointmentManager(assignee, this);
+                            managers.TryAdd(assigneeID, a.AddAppointmentManager(assignee, this));
                         }
                         ret = "Success";
                     }

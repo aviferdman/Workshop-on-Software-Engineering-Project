@@ -4,167 +4,147 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
-
+using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Business.UserManagement;
 
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
     public class AddRemoveEditProductTests
     {
+        MarketStores market = MarketStores.Instance;
+        MarketUsers marketUsers = MarketUsers.Instance;
+        UserManagement userManagement = UserManagement.Instance;
         Store store;
-        MarketUsers market;
+        Founder founder;
+        Manager manager;
+        ProductData product1;
 
-        [TestInitialize]
-        public void TestInitialize()
+        public AddRemoveEditProductTests()
         {
+            String guestName = marketUsers.AddGuest();
+            userManagement.SignUp("founder", "123", null, null);
+            marketUsers.AddMember("founder", "123", guestName);
+            guestName = marketUsers.AddGuest();
+            userManagement.SignUp("manager", "123", null, null);
+            marketUsers.AddMember("manager", "123", guestName);
             Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount( 1, 1);
-            store = new Store("1", bankAccount, address);
-            market = MarketUsers.Instance;
+            BankAccount bankAccount = new BankAccount(1000, 1000);
+            store = market.CreateStore("testStore", "founder", bankAccount, address);
+            market.makeManager("manager", store.Id, "founder");
+            product1 = new ProductData("1", 10, 10, 10, "c");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
+        [TestCategory("uc23")]
         public void CheckValidAddProduct()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, founderID), "Product added");
+            Result<Product> result = market.AddProduct(product1, store.Id, "founder");
+            Assert.IsFalse(result.IsErr);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
+        [TestCategory("uc23")]
         public void CheckAddProductUnauthorizedUser()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            Guid user = Guid.NewGuid();
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, user), "Invalid user");
+            Result<Product> result = market.AddProduct(product1, store.Id, "no one");
+            Assert.IsTrue(result.IsErr);
+            Assert.AreEqual(result.Mess, "Invalid user");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
+        [TestCategory("uc23")]
         public void CheckAddProductInvalidPrice()
         {
-            Product product1 = new Product("1", 10, 10, -10);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, founderID), "Invalid product");
+            ProductData product2 = new ProductData("1", 10, 10, -10, "category");
+            Result<Product> result = market.AddProduct(product2, store.Id, "founder");
+            Assert.IsTrue(result.IsErr);
+            Assert.AreEqual(result.Mess, "Invalid product");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
+        [TestCategory("uc23")]
         public void CheckAddProductInvalidName()
         {
-            Product product1 = new Product("", 10, 10, 10);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            Assert.AreEqual(store.AddProduct(product1, founderID), "Invalid product");
+            ProductData product2 = new ProductData("", 10, 10, 10, "category");
+            Result<Product> result = market.AddProduct(product2, store.Id, "founder");
+            Assert.IsTrue(result.IsErr);
+            Assert.AreEqual(result.Mess, "Invalid product");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
+        [TestCategory("uc24")]
         public void CheckValidRemoveProduct()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.RemoveProduct("1", founderID), "Product removed");
+            Product p = new Product(product1);
+            store.Products.TryAdd(p.Id, p);
+            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "founder"), "Product removed");
+            Assert.IsFalse(store.Products.TryRemove(p.Id, out _));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
+        [TestCategory("uc24")]
         public void CheckRemoveProductInvalidUser()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Guid userID = Guid.NewGuid();
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            store.Personnel = personnel;
-            store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.RemoveProduct("1", userID), "Invalid user");
+            Product p = new Product(product1);
+            store.Products.TryAdd(p.Id, p);
+            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "no one"), "Invalid user");
+            Assert.IsTrue(store.Products.TryRemove(p.Id, out _));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
+        [TestCategory("uc24")]
         public void CheckRemoveProductInvalidPermission()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Guid founderID = Guid.NewGuid();
-            Guid managerID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            Manager manager = new Manager(managerID, founder);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            personnel.TryAdd(managerID, manager);
-            store.Personnel = personnel;
-            store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.RemoveProduct("1", managerID), "No Permission");
+            Product p = new Product(product1);
+            store.Products.TryAdd(p.Id, p);
+            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "manager"), "No Permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
+        [TestCategory("uc25")]
         public void CheckValidEditProduct()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Product product2 = new Product("1", 10, 10, 20);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.EditProduct("1", product2, founderID), "Product edited");
-        }
-
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
-        public void CheckEditUnavailablwProduct()
-        {
-            Product product1 = new Product("1", 10, 10, 10);
-            Product product2 = new Product("1", 10, 10, 20);
-            Guid founderID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            store.Personnel = personnel;
-            store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.EditProduct("2", product2, founderID), "Product not in the store");
+            Product p1 = new Product(product1);
+            ProductData p2 = new ProductData("1", 10, 10, 20, "category");
+            store.Products.TryAdd(p1.Id, p1);
+            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product edited");
+            Assert.IsTrue(store.Products.TryRemove(p1.Id, out Product p));
+            Assert.AreEqual(p.Price, 20);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
+        [TestCategory("uc25")]
+        public void CheckEditUnavailablwProduct()
+        {
+            Product p1 = new Product(product1);
+            ProductData p2 = new ProductData("1", 10, 10, 20, "category");
+            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product not in the store");
+            Assert.IsFalse(store.Products.ContainsKey(p1.Id));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
+        [TestMethod]
+        [TestCategory("uc25")]
         public void CheckEditNoPermission()
         {
-            Product product1 = new Product("1", 10, 10, 10);
-            Product product2 = new Product("1", 10, 10, 20);
-            Guid founderID = Guid.NewGuid();
-            Guid managerID = Guid.NewGuid();
-            Founder founder = new Founder(founderID);
-            Manager manager = new Manager(managerID, founder);
-            ConcurrentDictionary<Guid, IStorePermission> personnel = new ConcurrentDictionary<Guid, IStorePermission>();
-            personnel.TryAdd(founderID, founder);
-            personnel.TryAdd(managerID, manager);
-            store.Personnel = personnel;
-            store.Products.TryAdd("1", product1);
-            Assert.AreEqual(store.EditProduct("1", product2, managerID), "No Permission");
+            Product p1 = new Product(product1);
+            ProductData p2 = new ProductData("1", 10, 10, 20, "category");
+            store.Products.TryAdd(p1.Id, p1);
+            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "manager"), "No Permission");
+            Assert.IsTrue(store.Products.TryRemove(p1.Id, out Product p));
+            Assert.AreEqual(p.Price, 10);
         }
 
         [TestCleanup]
