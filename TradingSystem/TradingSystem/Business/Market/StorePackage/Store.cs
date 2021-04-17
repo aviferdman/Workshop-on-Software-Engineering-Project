@@ -65,7 +65,7 @@ namespace TradingSystem.Business.Market
         }
         public bool isStaff(string username)
         {
-            return founder.Username.Equals(username) || managers.ContainsKey(username) || owners.ContainsKey(username);
+            return founder!=null||founder.Username.Equals(username) || managers.ContainsKey(username) || owners.ContainsKey(username);
         }
         public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
         {
