@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market.StoreStates
 {
-    public class Manager 
+    public class Manager : IManager
     {
         private Appointer appointer;
         private MemberState m;
