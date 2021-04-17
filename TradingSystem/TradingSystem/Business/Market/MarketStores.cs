@@ -90,19 +90,16 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
-        public void findStoreProduct(out Store found, out Product p, Guid pid, string pname)
+        public void findStoreProduct(out Store found, out Product p, Guid pid)
         {
             p = null;
             found = null;
             foreach (Store s in _stores.Values)
             {
-                if (s.Products.TryGetValue(pname, out p))
+                if (s.Products.TryGetValue(pid, out p))
                 {
-                    if (p.Id.Equals(pid))
-                    {
                         found = s;
                         break;
-                    }
                 }
 
             }

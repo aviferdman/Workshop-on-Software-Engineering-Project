@@ -39,7 +39,7 @@ namespace TradingSystem.Service
             return dataCart;
         }
 
-        public Result<Dictionary<Guid, Dictionary<ProductData, int>>> EditShoppingCart(string username, Dictionary<Guid, string> products_removed, Dictionary<Guid, KeyValuePair<string, int>> products_added, Dictionary<Guid, KeyValuePair<string, int>> products_quan)
+        public Result<Dictionary<Guid, Dictionary<ProductData, int>>> EditShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
             Result<IShoppingCart> res = marketUsers.editShoppingCart(username, products_removed, products_added, products_quan);
             if (res.IsErr)

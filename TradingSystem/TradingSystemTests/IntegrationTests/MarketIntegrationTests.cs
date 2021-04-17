@@ -23,9 +23,9 @@ namespace TradingSystemTests.IntegrationTests
             u.ShoppingCart = cart;
             Product p = new Product("lala", 8,50, 500);
             Store s = new Store("lalali", null, null);
-            s.Products.TryAdd("lala", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id,p.Name, 5));
+            Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
@@ -37,7 +37,7 @@ namespace TradingSystemTests.IntegrationTests
             ShoppingCart cart = new ShoppingCart();
             u.ShoppingCart = cart;
             Product p = new Product("llll", 8, 50, 500);
-            Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, p.Name, 5));
+            Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -45,7 +45,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc5")]
         public void AddProductFail2()
         {
-            Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(),"lala", 5));
+            Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(), 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -59,9 +59,9 @@ namespace TradingSystemTests.IntegrationTests
             u.ShoppingCart = cart;
             Product p = new Product("lala2", 8, 50, 500);
             Store s = new Store("lalali2", null, null);
-            s.Products.TryAdd("lala2", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, p.Name, 500000));
+            Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, 500000));
         }
 
 
