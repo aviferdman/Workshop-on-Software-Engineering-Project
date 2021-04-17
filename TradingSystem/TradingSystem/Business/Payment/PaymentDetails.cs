@@ -15,7 +15,7 @@ namespace TradingSystem.Business.Payment
 
         public PaymentDetails(string username, PaymentMethod method, Guid storeId, BankAccount recieverBankAccountId, double paymentSum)
         {
-            this._username = username;
+            this.Username = username;
             this.Method = method;
             this.StoreId = storeId;
             this.RecieverBankAccountId = recieverBankAccountId;
@@ -26,5 +26,6 @@ namespace TradingSystem.Business.Payment
         public double PaymentSum { get => _paymentSum; set => _paymentSum = value; }
         public Guid StoreId { get => _storeId; set => _storeId = value; }
         public PaymentMethod Method { get => _method; set => _method = value; }
+        public string Username { get => _username; set => _username = value; }
     }
 }
