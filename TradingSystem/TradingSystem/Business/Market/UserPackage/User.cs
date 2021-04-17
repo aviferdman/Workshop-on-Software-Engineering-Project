@@ -57,7 +57,9 @@ namespace TradingSystem.Business.Market
             BuyStatus buyStatus = ShoppingCart.Purchase(username, method, phone, address, paySum);
             foreach (var p in buyStatus.PurchaseStatuses)
             {
-                userHistory.Add(new TransactionHistory(p));
+                var h = new TransactionHistory(p);
+                userHistory.Add(h);
+                HistoryManager.Instance.AddUserHistory(h);
             }
             return buyStatus.Status;
         }

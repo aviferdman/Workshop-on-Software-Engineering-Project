@@ -49,7 +49,7 @@ namespace TradingSystemTests.MarketTests
         {
             ShoppingCart shoppingCart = new ShoppingCart(); 
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clienId = Guid.NewGuid();
+            string clienId = "usertest";
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1");
@@ -62,7 +62,7 @@ namespace TradingSystemTests.MarketTests
             PurchaseStatus purchaseStatus = new PurchaseStatus(false, null, storeId);
 
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
             shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
@@ -76,7 +76,7 @@ namespace TradingSystemTests.MarketTests
         {
             ShoppingCart shoppingCart = new ShoppingCart();
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clientId = Guid.NewGuid();
+            string clientId = "usertest";
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1");
@@ -94,7 +94,7 @@ namespace TradingSystemTests.MarketTests
             PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
 
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
 
             shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
             Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum).Status);
@@ -107,7 +107,7 @@ namespace TradingSystemTests.MarketTests
         {
             ShoppingCart shoppingCart = new ShoppingCart();
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clientId = Guid.NewGuid();
+            string clientId = "usertest";
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1");
@@ -124,7 +124,7 @@ namespace TradingSystemTests.MarketTests
             TransactionStatus transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket1.Object, true);
             PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
 
             shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
             Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum).Status);

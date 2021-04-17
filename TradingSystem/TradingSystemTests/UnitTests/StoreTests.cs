@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StoreStates;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -13,12 +14,14 @@ namespace TradingSystemTests.MarketTests
     {
         //START OF UNIT TESTS
 
+        private readonly string clienId = "usertest";
+
         /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
         [TestMethod]
         public void CheckLegalPurchase()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clienId = Guid.NewGuid();
+            
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -42,7 +45,6 @@ namespace TradingSystemTests.MarketTests
         public void CheckNotEnoghtProductQuantityPurchase()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clienId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -61,7 +63,7 @@ namespace TradingSystemTests.MarketTests
 
         }
 
-
+        
         /// test for function :<see cref="TradingSystem.Business.Market.Store.ApplyDiscounts(IShoppingBasket))"/>
         [TestMethod]
         public void ApplyDiscountsNoDiscounts()
@@ -76,6 +78,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(0,store.ApplyDiscounts(shoppingBasket));
         }
 
+        
         /// test for function :<see cref="TradingSystem.Business.Market.Store.ApplyDiscounts(IShoppingBasket))"/>
         [TestMethod]
         public void ApplyTwoRelevantDiscounts()
@@ -96,6 +99,27 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
         }
 
+        public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
+        {
+            int count = 0;
+            foreach (KeyValuePair<Product, int> p_q in product_quantity)
+            {
+                count += p_q.Value;
+            }
+            return count > 10;
+        }
+
+        public bool MoreThan20Products(Dictionary<Product, int> product_quantity)
+        {
+            int count = 0;
+            foreach (KeyValuePair<Product, int> p_q in product_quantity)
+            {
+                count += p_q.Value;
+            }
+            return count > 20;
+        }
+
+        
         /// test for function :<see cref="TradingSystem.Business.Market.Store.ApplyDiscounts(IShoppingBasket))"/>
         [TestMethod]
         public void ApplyOneRelevantDiscount()
@@ -115,9 +139,7 @@ namespace TradingSystemTests.MarketTests
             store.AddDiscount(discount2);
             Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
         }
-
-
-
+        /*
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         public void CheckMakeOwnerAlreadyAssigned()
@@ -125,7 +147,7 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
-            Mock<IOwner> iowner = new Mock<IOwner>();
+            Mock<Owner> iowner = new Mock<IOwner>();
             Mock<IFounder> ifounder = new Mock<IFounder>();
             ifounder.Setup(f => f.AddAppointment(It.IsAny<Guid>(), It.IsAny<AppointmentType>())).Returns(iowner.Object);
             IFounder assigner = ifounder.Object;
@@ -140,6 +162,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(store.AssignMember(assigneeID, user, AppointmentType.Owner), "this member is already assigned as a store owner or manager");
         }
 
+        /*
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         public void CheckMakeOwnerInvalidAssigner()
@@ -286,25 +309,6 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(store.DefineManagerPermissions(managerID, assignerID, permissions), "Manager doesn't exist");
         }
 
-        public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
-        {
-            int count = 0;
-            foreach(KeyValuePair<Product, int> p_q in product_quantity)
-            {
-                count += p_q.Value;
-            }
-            return count > 10;
-        }
-
-        public bool MoreThan20Products(Dictionary<Product, int> product_quantity)
-        {
-            int count = 0;
-            foreach (KeyValuePair<Product, int> p_q in product_quantity)
-            {
-                count += p_q.Value;
-            }
-            return count > 20;
-        }
 
 
         [TestCleanup]
@@ -314,5 +318,6 @@ namespace TradingSystemTests.MarketTests
         }
 
         //END OF UNIT TESTS
+        */
     }
 }

@@ -82,7 +82,9 @@ namespace TradingSystem.Business.Market
                 UpdateQuantities(product_quantity);
             }
             transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
-            history.Add(new TransactionHistory(transactionStatus));
+            var h = new TransactionHistory(transactionStatus);
+            history.Add(h);
+            HistoryManager.Instance.AddUserHistory(h);
             //transaction failed
             if (!transactionStatus.Status)
             {
