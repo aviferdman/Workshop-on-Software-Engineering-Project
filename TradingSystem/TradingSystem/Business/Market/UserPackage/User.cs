@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Market
             this.isLoggedIn = false;
         }
 
-        internal State State { get => _state; set => _state = value; }
+        public State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }

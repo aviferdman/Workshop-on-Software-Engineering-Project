@@ -36,6 +36,7 @@ namespace TradingSystemTests
         {
             signup();
             Assert.AreNotEqual("success", signup());
+            Assert.IsTrue(UserManagement.Instance.DataUsers.ContainsKey("inbi2001"));
             delete();
 
         }
@@ -46,7 +47,10 @@ namespace TradingSystemTests
         public void TestLoginSuccess()
         {
             signup();
+            DataUser d;
             Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456"));
+            UserManagement.Instance.DataUsers.TryGetValue("inbi2001", out d);
+            Assert.IsTrue(d.IsLoggedin);
             delete();
 
         }
@@ -72,6 +76,9 @@ namespace TradingSystemTests
         {
             signup();
             Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
+            DataUser d;
+            UserManagement.Instance.DataUsers.TryGetValue("inbi2001", out d);
+            Assert.IsFalse(d.IsLoggedin);
             delete();
 
         }
@@ -95,6 +102,9 @@ namespace TradingSystemTests
             signup();
             UserManagement.Instance.LogIn("inbi2001", "123456");
             Assert.AreNotEqual(null, UserManagement.Instance.Logout("inbi2001"));
+            DataUser d;
+            UserManagement.Instance.DataUsers.TryGetValue("inbi2001", out d);
+            Assert.IsFalse(d.IsLoggedin);
             delete();
 
         }
@@ -106,7 +116,7 @@ namespace TradingSystemTests
         public void TestLogoutFail1()
         {
             signup();
-            Assert.AreEqual(false, UserManagement.Instance.Logout("inbi2001"));
+            Assert.IsFalse(UserManagement.Instance.Logout("inbi2001"));
             delete();
 
         }
@@ -117,13 +127,9 @@ namespace TradingSystemTests
         [TestCategory("uc3")]
         public void TestLogoutFail2()
         {
-            Assert.AreEqual(false, UserManagement.Instance.Logout("inbi200151"));
+            Assert.IsFalse(UserManagement.Instance.Logout("inbi200151"));
 
         }
 
-        [ClassCleanup]
-        public static void removeMockMarket() {
-            UserManagement.Instance.Marketo = MarketUsers.Instance;
-        }
     }
 }
