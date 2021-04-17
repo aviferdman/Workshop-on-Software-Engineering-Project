@@ -90,19 +90,16 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
-        public void findStoreProduct(out Store found, out Product p, Guid pid, string pname)
+        public void findStoreProduct(out Store found, out Product p, Guid pid)
         {
             p = null;
             found = null;
             foreach (Store s in _stores.Values)
             {
-                if (s.Products.TryGetValue(pname, out p))
+                if (s.Products.TryGetValue(pid, out p))
                 {
-                    if (p.Id.Equals(pid))
-                    {
                         found = s;
                         break;
-                    }
                 }
 
             }
@@ -119,22 +116,22 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String RemoveProduct(String productName, Guid storeID, String username)
+        public String RemoveProduct(Guid productID, Guid storeID, String username)
         {
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.RemoveProduct(productName, username);
+            return store.RemoveProduct(productID, username);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(String productName, ProductData details, Guid storeID, String username)
+        public String EditProduct(Guid productID, ProductData details, Guid storeID, String username)
         {
             Product editedProduct = new Product(details);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.EditProduct(productName, editedProduct, username);
+            return store.EditProduct(productID, editedProduct, username);
         }
 
 

@@ -13,10 +13,10 @@ namespace TradingSystem.Business.Market
 {
     public class Store : IStore
     {
-        private ConcurrentDictionary<String, Product> _products;
+        private ConcurrentDictionary<Guid, Product> _products;
         private ICollection<TransactionStatus> _transactionsHistory;
         private Founder founder;
-        private ConcurrentDictionary<string, Manager> managers;
+        private ConcurrentDictionary<string, IManager> managers;
         private ConcurrentDictionary<string, Owner> owners;
         private BankAccount _bank;
         private Guid _id;
@@ -24,12 +24,11 @@ namespace TradingSystem.Business.Market
         private ICollection<Discount> _discounts;
         private Policy _policy;
         private Address _address;
-        private static Transaction _transaction = Transaction.Instance;
         private ICollection<IHistory> history;
         private object _lock;
         private object prem_lock;
 
-        public ConcurrentDictionary<String, Product> Products { get => _products; set => _products = value; }
+        public ConcurrentDictionary<Guid, Product> Products { get => _products; set => _products = value; }
         internal Policy Policy { get => _policy; set => _policy = value; }
         internal Address Address { get => _address; set => _address = value; }
         internal ICollection<TransactionStatus> TransactionsHistory { get => _transactionsHistory; set => _transactionsHistory = value; }
@@ -38,7 +37,7 @@ namespace TradingSystem.Business.Market
         internal BankAccount Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public ICollection<IHistory> History { get => history; set => history = value; }
-        public ConcurrentDictionary<string, Manager> Managers { get => managers; set => managers = value; }
+        public ConcurrentDictionary<string, IManager> Managers { get => managers; set => managers = value; }
         public ConcurrentDictionary<string, Owner> Owners { get => owners; set => owners = value; }
         public Founder Founder { get => founder; set => founder = value; }
         public object Prem_lock { get => prem_lock; set => prem_lock = value; }
@@ -46,7 +45,7 @@ namespace TradingSystem.Business.Market
         public Store(string name, BankAccount bank, Address address)
         {
             this.name = name;
-            this._products = new ConcurrentDictionary<string, Product>();
+            this._products = new ConcurrentDictionary<Guid, Product>();
             this._transactionsHistory = new HashSet<TransactionStatus>();
             this._lock = new object();
             this.prem_lock = new object();
@@ -55,7 +54,7 @@ namespace TradingSystem.Business.Market
             this._policy = new Policy();
             this._bank = bank;
             this._address = address;
-            this.managers = new ConcurrentDictionary<string, Manager>();
+            this.managers = new ConcurrentDictionary<string, IManager>();
             this.owners = new ConcurrentDictionary<string, Owner>();
             this.History = new HashSet<IHistory>();
         }
@@ -82,7 +81,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = _transaction.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
+            transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
             history.Add(new TransactionHistory(transactionStatus));
             //transaction failed
             if (!transactionStatus.Status)
@@ -141,53 +140,53 @@ namespace TradingSystem.Business.Market
         {
             if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
             {
-                Manager m;
+                IManager m;
                 if(!managers.TryGetValue(userID, out m))
                     return "Invalid user";
-                else if(m.GetPermission(Permission.AddProduct))
+                else if(!m.GetPermission(Permission.AddProduct))
                     return "No permission";
             }
             if (!validProduct(product))
                 return "Invalid product";
-            if (!_products.TryAdd(product.Name, product))
+            if (!_products.TryAdd(product.Id, product))
                 return "Product exists";
             return "Product added";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String RemoveProduct(String productName, string userID)
+        public String RemoveProduct(Guid productID, string userID)
         {
             if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
             {
-                Manager m;
+                IManager m;
                 if (!managers.TryGetValue(userID, out m))
                     return "Invalid user";
-                else if (m.GetPermission(Permission.AddProduct))
+                else if (!m.GetPermission(Permission.AddProduct))
                     return "No permission";
             }
             Product useless;
-            _products.TryRemove(productName, out useless);
+            _products.TryRemove(productID, out useless);
             return "Product removed";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(String productName, Product editedProduct, string userID)
+        public String EditProduct(Guid productID, Product editedProduct, string userID)
         {
             if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
             {
-                Manager m;
+                IManager m;
                 if (!managers.TryGetValue(userID, out m))
                     return "Invalid user";
-                else if (m.GetPermission(Permission.AddProduct))
+                else if (!m.GetPermission(Permission.AddProduct))
                     return "No permission";
             }
             if (!validProduct(editedProduct))
                 return "Invalid edit";
             Product oldProduct;
-            if (!_products.TryRemove(productName, out oldProduct))
+            if (!_products.TryRemove(productID, out oldProduct))
                 return "Product not in the store";
-            editedProduct.Id = oldProduct.Id;
-            _products.TryAdd(editedProduct.Name, editedProduct);
+            editedProduct.Id = productID;
+            _products.TryAdd(productID, editedProduct);
             return "Product edited";
         }
 
@@ -234,7 +233,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
         public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> newPermissions)
         {
-            Manager manager;
+            IManager manager;
             if (!managers.TryGetValue(managerID, out manager))
                 return "Manager doesn't exist";
             Owner assignerOwner;
@@ -270,10 +269,10 @@ namespace TradingSystem.Business.Market
             Product p = GetProductById(product.Id);
             if (p!=null){    //remove old product if exists
                 Product useless;
-                _products.TryRemove(product.Name, out useless);
+                _products.TryRemove(product.Id, out useless);
             }
 
-            _products.TryAdd(product.Name, product); //add the new product
+            _products.TryAdd(product.Id, product); //add the new product
 
         }
 
@@ -283,7 +282,7 @@ namespace TradingSystem.Business.Market
             if (p != null)
             {    //remove old product if exists
                 Product useless;
-                _products.TryRemove(product.Name, out useless);
+                _products.TryRemove(product.Id, out useless);
             }
         }
 
@@ -355,7 +354,7 @@ namespace TradingSystem.Business.Market
 
         private bool CheckPermission(string username, Permission permission)
         {
-            Manager manager;
+            IManager manager;
             managers.TryGetValue(username, out manager);
             Owner owner;
             owners.TryGetValue(username, out owner);
