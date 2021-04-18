@@ -24,7 +24,6 @@ namespace TradingSystem.Business.Market
         private ICollection<Discount> _discounts;
         private Policy _policy;
         private Address _address;
-        private static Transaction _transaction = Transaction.Instance;
         private ICollection<IHistory> history;
         private object _lock;
         private object prem_lock;
@@ -66,7 +65,7 @@ namespace TradingSystem.Business.Market
         }
         public bool isStaff(string username)
         {
-            return founder.Username.Equals(username) || managers.ContainsKey(username) || owners.ContainsKey(username);
+            return (founder!=null&&founder.Username.Equals(username)) || managers.ContainsKey(username) || owners.ContainsKey(username);
         }
         public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
         {
@@ -82,8 +81,10 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = _transaction.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
-            history.Add(new TransactionHistory(transactionStatus));
+            transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
+            var h = new TransactionHistory(transactionStatus);
+            history.Add(h);
+            HistoryManager.Instance.AddUserHistory(h);
             //transaction failed
             if (!transactionStatus.Status)
             {
@@ -270,10 +271,10 @@ namespace TradingSystem.Business.Market
             Product p = GetProductById(product.Id);
             if (p!=null){    //remove old product if exists
                 Product useless;
-                _products.TryRemove(product.Name, out useless);
+                _products.TryRemove(product.Id, out useless);
             }
 
-            _products.TryAdd(product.Name, product); //add the new product
+            _products.TryAdd(product.Id, product); //add the new product
 
         }
 
@@ -283,7 +284,7 @@ namespace TradingSystem.Business.Market
             if (p != null)
             {    //remove old product if exists
                 Product useless;
-                _products.TryRemove(product.Name, out useless);
+                _products.TryRemove(product.Id, out useless);
             }
         }
 

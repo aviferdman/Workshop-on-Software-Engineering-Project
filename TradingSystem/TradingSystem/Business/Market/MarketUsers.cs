@@ -38,6 +38,7 @@ namespace TradingSystem.Business.Market
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
             User defaultAdmin = CreateDefaultAdmin();
+            memberStates = new ConcurrentDictionary<string, MemberState>();
             adminUsers.TryAdd(defaultAdmin.Username, defaultAdmin);
         }
 
@@ -241,14 +242,14 @@ namespace TradingSystem.Business.Market
 
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53
-        public string AddProductToCart(string username, Guid pid, string pname, int quantity)
+        public string AddProductToCart(string username, Guid pid, int quantity)
         {
             User u;
             if (!activeUsers.TryGetValue(username, out u))
                 return "user doesn't exist";
             Product p=null;
             Store found=null;
-            MarketStores.Instance.findStoreProduct(out found, out p, pid, pname);
+            MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null||p==null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
@@ -274,14 +275,14 @@ namespace TradingSystem.Business.Market
             return u.ShoppingCart;
         }
         //use case 8: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/68
-        public string RemoveProductFromCart(string username, Guid pid, string pname)
+        public string RemoveProductFromCart(string username, Guid pid)
         {
             User u;
             if (!activeUsers.TryGetValue(username, out u))
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            MarketStores.Instance.findStoreProduct(out found,out p, pid, pname);
+            MarketStores.Instance.findStoreProduct(out found,out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
             IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
@@ -290,14 +291,14 @@ namespace TradingSystem.Business.Market
             return "product isn't in basket";
         }
         //use case 9: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/69
-        public string ChangeProductQuanInCart(string username, Guid pid, string pname, int quantity)
+        public string ChangeProductQuanInCart(string username, Guid pid, int quantity)
         {
             User u;
             if (!activeUsers.TryGetValue(username, out u))
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            MarketStores.Instance.findStoreProduct(out found, out p, pid, pname);
+            MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
@@ -309,27 +310,27 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/59
-        public Result<IShoppingCart> editShoppingCart(string username, Dictionary<Guid,string> products_removed, Dictionary<Guid, KeyValuePair<string,int>> products_added, Dictionary<Guid, KeyValuePair<string, int>> products_quan)
+        public Result<IShoppingCart> editShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid,  int> products_quan)
         {
             User u = GetUserByUserName(username);
             string ans;
             if (u == null)
                 return new Result<IShoppingCart>(null, true, "user doesn't exist");
-            foreach (KeyValuePair<Guid, KeyValuePair<string, int>> p in products_added)
+            foreach (KeyValuePair<Guid,  int> p in products_added)
             {
-                ans = AddProductToCart(username, p.Key, p.Value.Key, p.Value.Value);
+                ans = AddProductToCart(username, p.Key, p.Value);
                 if (!ans.Equals("product added to shopping basket"))
                     return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
             }
-            foreach (KeyValuePair<Guid, string> p in products_removed)
+            foreach (Guid p in products_removed)
             {
-                ans = RemoveProductFromCart(username, p.Key, p.Value);
+                ans = RemoveProductFromCart(username, p);
                 if (!ans.Equals("product removed from shopping basket"))
                     return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
             }
-            foreach (KeyValuePair<Guid, KeyValuePair<string, int>> p in products_quan)
+            foreach (KeyValuePair<Guid, int> p in products_quan)
             {
-                ans = ChangeProductQuanInCart(username, p.Key, p.Value.Key, p.Value.Value);
+                ans = ChangeProductQuanInCart(username, p.Key, p.Value);
                 if (!ans.Equals("product updated"))
                     return new Result<IShoppingCart>(u.ShoppingCart, true,  ans);
             }

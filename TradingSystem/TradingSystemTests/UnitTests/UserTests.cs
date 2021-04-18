@@ -14,23 +14,17 @@ namespace TradingSystemTests.MarketTests
         private static readonly double WEIGHT1 = 100;
         private static readonly double PRICE1 = 100;
         private static readonly int QUANTITY2 = 200;
-        private static readonly double WEIGHT2 = 200;
-        private static readonly double PRICE2 = 200;
         private User testUser;
         private Store testStore;
-        private BankAccount testUserBankAccount;
         private BankAccount testStoreBankAccount;
-        private Address testUserAddress;
         private Address testStoreAddress;
         private Product product;
 
         public UserTests()
         {
             product = new Product(QUANTITY1, WEIGHT1, PRICE1);
-            testUserAddress = new Address("1", "1", "1", "1");
             testStoreAddress = new Address("2", "2", "2", "2");
-            testUserBankAccount = new BankAccount(1, 1);
-            testUserBankAccount = new BankAccount(2, 2);
+            testStoreBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
         }

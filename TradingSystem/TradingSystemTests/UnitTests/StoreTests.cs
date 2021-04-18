@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StoreStates;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -13,12 +14,14 @@ namespace TradingSystemTests.MarketTests
     {
         //START OF UNIT TESTS
 
+        private readonly string clienId = "usertest";
+
         /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
         [TestMethod]
         public void CheckLegalPurchase()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clienId = Guid.NewGuid();
+            
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -42,7 +45,6 @@ namespace TradingSystemTests.MarketTests
         public void CheckNotEnoghtProductQuantityPurchase()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            Guid clienId = Guid.NewGuid();
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -61,7 +63,7 @@ namespace TradingSystemTests.MarketTests
 
         }
 
-
+        
         /// test for function :<see cref="TradingSystem.Business.Market.Store.ApplyDiscounts(IShoppingBasket))"/>
         [TestMethod]
         public void ApplyDiscountsNoDiscounts()
@@ -76,6 +78,7 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(0,store.ApplyDiscounts(shoppingBasket));
         }
 
+        
         /// test for function :<see cref="TradingSystem.Business.Market.Store.ApplyDiscounts(IShoppingBasket))"/>
         [TestMethod]
         public void ApplyTwoRelevantDiscounts()
@@ -96,6 +99,27 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
         }
 
+        public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
+        {
+            int count = 0;
+            foreach (KeyValuePair<Product, int> p_q in product_quantity)
+            {
+                count += p_q.Value;
+            }
+            return count > 10;
+        }
+
+        public bool MoreThan20Products(Dictionary<Product, int> product_quantity)
+        {
+            int count = 0;
+            foreach (KeyValuePair<Product, int> p_q in product_quantity)
+            {
+                count += p_q.Value;
+            }
+            return count > 20;
+        }
+
+        
         /// test for function :<see cref="TradingSystem.Business.Market.Store.ApplyDiscounts(IShoppingBasket))"/>
         [TestMethod]
         public void ApplyOneRelevantDiscount()
