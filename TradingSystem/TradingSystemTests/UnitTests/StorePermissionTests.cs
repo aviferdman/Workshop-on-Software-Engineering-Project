@@ -10,7 +10,7 @@ namespace TradingSystemTests.MarketTests
     [TestClass]
     public class StorePermissionTests
     {
-
+        /*
         /// test for function :<see cref="TradingSystem.Business.Market.StorePermission.AddAppointment(Guid, AppointmentType)"/>
         /// 
         [TestMethod]
@@ -144,6 +144,6 @@ namespace TradingSystemTests.MarketTests
         {
             Transaction.Instance.DeleteAllTests();
         }
-
+        */
     }
 }

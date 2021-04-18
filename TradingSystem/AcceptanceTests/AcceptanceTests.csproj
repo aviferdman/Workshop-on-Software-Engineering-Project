@@ -15,11 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tests\Market\Shop\UserPermissionsManagement\" />
-    <Folder Include="Tests\Market\Shop\PurchaseManagement\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
   </ItemGroup>
   

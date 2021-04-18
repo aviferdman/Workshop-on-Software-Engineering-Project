@@ -107,7 +107,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             Product p = new Product(product1);
             store.Products.TryAdd(p.Id, p);
-            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "manager"), "No Permission");
+            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "manager"), "No permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(string, Product, Guid)"/>
@@ -142,7 +142,7 @@ namespace TradingSystemTests.IntegrationTests
             Product p1 = new Product(product1);
             ProductData p2 = new ProductData("1", 10, 10, 20, "category");
             store.Products.TryAdd(p1.Id, p1);
-            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "manager"), "No Permission");
+            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "manager"), "No permission");
             Assert.IsTrue(store.Products.TryRemove(p1.Id, out Product p));
             Assert.AreEqual(p.Price, 10);
         }

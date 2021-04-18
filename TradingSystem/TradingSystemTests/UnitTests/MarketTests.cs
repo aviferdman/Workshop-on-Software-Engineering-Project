@@ -24,7 +24,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala", 8,50, 500);
+            Product p = new Product("lala", 8,50, 500, "category");
             Store s = new Store("lalali", null, null);
             s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
@@ -42,7 +42,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("llll", 8, 50, 500);
+            Product p = new Product("llll", 8, 50, 500, "category");
             Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
         }
 
@@ -66,7 +66,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala2", 8, 50, 500);
+            Product p = new Product("lala2", 8, 50, 500, "category");
             Store s = new Store("lalali2", null, null);
             s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
@@ -85,7 +85,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(true);
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala3", 8, 50, 500);
+            Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
@@ -103,7 +103,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(true);
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala3", 8, 50, 500);
+            Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             marketStores.Stores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id));
@@ -129,7 +129,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(false);
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala3", 8, 50, 500);
+            Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
@@ -148,7 +148,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.UpdateProduct(It.IsAny<Product>(), It.IsAny<int>()));
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala8", 8, 50, 500);
+            Product p = new Product("lala8", 8, 50, 500, "category");
             Store s = new Store("lalali80", null, null);
             s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
@@ -166,7 +166,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("llll8", 8, 50, 500);
+            Product p = new Product("llll8", 8, 50, 500, "category");
             Assert.AreEqual("product doesn't exist", m.ChangeProductQuanInCart(username, p.Id, 5));
         }
 
@@ -190,7 +190,7 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala70", 8, 50, 500);
+            Product p = new Product("lala70", 8, 50, 500, "category");
             Store s = new Store("lalali70", null, null);
             s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
