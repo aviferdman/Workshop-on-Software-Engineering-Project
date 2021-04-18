@@ -42,5 +42,7 @@ namespace TradingSystem.Business.Market
         public ICollection<IHistory> GetStoreHistory(string username);
 
         public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissions);
+
+        public String RemoveManager(String managerName, User assigner);
     }
 }

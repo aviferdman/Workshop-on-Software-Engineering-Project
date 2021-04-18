@@ -16,6 +16,7 @@ namespace TradingSystem.Business.Market.StoreStates
         private ConcurrentDictionary<string, Owner> ownerAppointments;
 
         public string Username { get => username; set => username = value; }
+        public ConcurrentDictionary<string, Manager> ManagerAppointments { get => managerAppointments; set => managerAppointments = value; }
 
         private Founder(MemberState m, Store s)
         {

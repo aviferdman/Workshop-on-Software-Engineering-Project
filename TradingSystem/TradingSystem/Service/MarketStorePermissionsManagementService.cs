@@ -34,5 +34,10 @@ namespace TradingSystem.Service
         {
             return marketStores.DefineManagerPermissions(manager, storeID, assigner, permissions);
         }
+
+        public String RemoveManager(String managerName, Guid storeID, String assignerName)
+        {
+            return marketStores.RemoveManager(managerName, storeID, assignerName);
+        }
     }
 }
