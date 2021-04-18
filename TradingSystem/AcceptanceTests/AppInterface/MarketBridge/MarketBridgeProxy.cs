@@ -100,12 +100,12 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.RemoveProductFromUserCart(productId);
         }
 
-        public bool EditProductInUserCart(ProductId productId, int quantity)
+        public bool EditProductInUserCart(ProductInCart product)
         {
-            return RealBridge != null && RealBridge.EditProductInUserCart(productId, quantity);
+            return RealBridge != null && RealBridge.EditProductInUserCart(product);
         }
 
-        public bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit)
+        public bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit)
         {
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
         }

@@ -39,7 +39,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         bool AddProductToUserCart(ProductInCart product);
         bool RemoveProductFromUserCart(ProductId productId);
-        bool EditProductInUserCart(ProductId productId, int quantity);
-        bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit);
+        bool EditProductInUserCart(ProductInCart product);
+        bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit);
     }
 }

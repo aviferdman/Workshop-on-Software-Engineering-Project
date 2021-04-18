@@ -189,7 +189,7 @@ namespace AcceptanceTests.Tests.Market
             Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
         }
 
-        [TestCase]
+        // Not a test case for now
         public void Failure_Typo()
         {
             ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("abg"));

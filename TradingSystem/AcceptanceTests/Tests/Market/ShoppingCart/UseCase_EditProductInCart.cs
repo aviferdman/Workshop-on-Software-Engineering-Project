@@ -107,8 +107,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             foreach (ProductCartEditInfo productEdit in ProductsEdit)
             {
                 ProductId productId = productEdit.ProductOriginal.ProductId;
-                Assert.IsTrue(Bridge.EditProductInUserCart(productId, productEdit.NewQuantity));
-                expected[productId] = new ProductInCart(productId, productEdit.NewQuantity);
+                var productEditBare = new ProductInCart(productId, productEdit.NewQuantity);
+                Assert.IsTrue(Bridge.EditProductInUserCart(productEditBare));
+                expected[productId] = productEditBare;
             }
             return expected.Values;
         }
@@ -133,29 +134,29 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 new ProductIdentifiable[] { ShopImage.ShopProducts[0] },
                 new ProductForCart[] { new ProductForCart(ShopImage.ShopProducts[0], 10) }
             ).Success_Normal_CheckCartItems();
-            Assert.IsFalse(Bridge.EditProductInUserCart(ShopImage.ShopProducts[1].ProductId, 3));
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductInCart(ShopImage.ShopProducts[1].ProductId, 3)));
             AssertCartDidntChange();
         }
 
         [TestCase]
         public void Failure_NotInCart()
         {
-            Assert.IsFalse(Bridge.EditProductInUserCart(ShopImage.ShopProducts[1].ProductId, 3));
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductInCart(ShopImage.ShopProducts[1].ProductId, 3)));
             AssertCartDidntChange();
         }
 
         [TestCase]
         public void Failure_ProductDoesntExist()
         {
-            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductId(Guid.NewGuid()), 3));
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductInCart(new ProductId(Guid.NewGuid()), 3)));
             AssertCartDidntChange();
         }
 
         [TestCase]
         public void Failure_InvalidQuantity()
         {
-            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, -1));
-            Assert.IsFalse(Bridge.EditProductInUserCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, 0));
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductInCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, -1)));
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductInCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, 0)));
             AssertCartDidntChange();
         }
 

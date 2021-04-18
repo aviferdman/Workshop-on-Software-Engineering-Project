@@ -1,4 +1,8 @@
-﻿namespace AcceptanceTests.AppInterface.Data
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace AcceptanceTests.AppInterface.Data
 {
     public struct ProductInCart
     {
@@ -9,6 +13,11 @@
         {
             ProductId = productId;
             Quantity = quantity;
+        }
+
+        public static Dictionary<Guid, int> ToDictionary(IEnumerable<ProductInCart> productsInCart)
+        {
+            return productsInCart.ToDictionary(x => x.ProductId.Value, x => x.Quantity);
         }
 
         public override bool Equals(object? obj)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using AcceptanceTests.AppInterface.Data;
 
@@ -12,17 +13,20 @@ namespace AcceptanceTests.AppInterface.MarketBridge
     {
         private readonly MarketStoreGeneralService marketStoreGeneralService;
         private readonly MarketProductsService marketProductsService;
+        private readonly MarketShoppingCartService marketShoppingCartService;
 
         private MarketBridgeAdapter
         (
             SystemContext systemContext,
             MarketStoreGeneralService marketStoreGeneralService,
-            MarketProductsService marketProductsService
+            MarketProductsService marketProductsService,
+            MarketShoppingCartService marketShoppingCartService
         )
             : base(systemContext)
         {
             this.marketStoreGeneralService = marketStoreGeneralService;
             this.marketProductsService = marketProductsService;
+            this.marketShoppingCartService = marketShoppingCartService;
         }
 
         public static MarketBridgeAdapter New(SystemContext systemContext)
@@ -31,7 +35,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             (
                 systemContext,
                 MarketStoreGeneralService.Instance,
-                MarketProductsService.Instance
+                MarketProductsService.Instance,
+                MarketShoppingCartService.Instance
             );
         }
 
@@ -116,27 +121,55 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public IEnumerable<ProductInCart>? GetShoppingCartItems()
         {
-            throw new NotImplementedException();
+            IDictionary<Guid, Dictionary<ProductData, int>> shoppingCartData = marketShoppingCartService.ViewShoppingCart(Username);
+            return shoppingCartData
+                .SelectMany
+                (
+                    shoppingBasket => shoppingBasket.Value
+                    .Select(prodcutInCart => new ProductInCart(prodcutInCart.Key.pid, prodcutInCart.Value))
+                );
         }
 
         public bool AddProductToUserCart(ProductInCart product)
         {
-            throw new NotImplementedException();
+            return EditUserCart
+            (
+                new ProductInCart[] { product },
+                Enumerable.Empty<ProductId>(),
+                Enumerable.Empty<ProductInCart>()
+            );
         }
 
         public bool RemoveProductFromUserCart(ProductId productId)
         {
-            throw new NotImplementedException();
+            return EditUserCart
+            (
+                Enumerable.Empty<ProductInCart>(),
+                new ProductId[] { productId },
+                Enumerable.Empty<ProductInCart>()
+            );
         }
 
-        public bool EditProductInUserCart(ProductId productId, int quantity)
+        public bool EditProductInUserCart(ProductInCart product)
         {
-            throw new NotImplementedException();
+            return EditUserCart
+            (
+                Enumerable.Empty<ProductInCart>(),
+                Enumerable.Empty<ProductId>(),
+                new ProductInCart[] { product }
+            );
         }
 
-        public bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit)
+        public bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit)
         {
-            throw new NotImplementedException();
+            Result<Dictionary<Guid, Dictionary<ProductData, int>>>? result = marketShoppingCartService.EditShoppingCart
+            (
+                Username,
+                productsRemove.Select(x => x.Value).ToList(),
+                ProductInCart.ToDictionary(productsAdd),
+                ProductInCart.ToDictionary(productsEdit)
+            );
+            return result != null && !result.IsErr;
         }
     }
 }
