@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface.Data;
@@ -65,7 +66,14 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public ShopInfo? GetShopDetails(ShopId shopId)
         {
-            return RealBridge?.GetShopDetails(shopId);
+            try
+            {
+                return RealBridge?.GetShopDetails(shopId);
+            }
+            catch (NotImplementedException)
+            {
+                return null;
+            }
         }
 
         public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)

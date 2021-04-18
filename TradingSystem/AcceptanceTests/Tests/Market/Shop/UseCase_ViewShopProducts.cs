@@ -71,6 +71,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TearDown]
         public void Teardown()
         {
+            _ = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
             useCase_addProduct?.Teardown();
         }
 

@@ -61,6 +61,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public ShopImage ShopImage { get; }
         public ShopId ShopId => useCase_addProduct.ShopId;
         public IEnumerable<ProductForCart> ProductsAdd { get; }
+        private List<ProductId> ProductsTeardown { get; set; }
 
         public UseCase_AddProductToCart
         (
@@ -93,15 +94,16 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_login_buyer.Setup();
             useCase_login_buyer.Success_Normal();
 
+            ProductsTeardown = new List<ProductId>(ProductsAdd.Select(x => x.ProductIdentifiable.ProductId));
             testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext);
         }
 
         [TearDown]
         public override void Teardown()
         {
-            foreach (ProductForCart product in ProductsAdd)
+            foreach (ProductId productId in ProductsTeardown)
             {
-                _ = Bridge.RemoveProductFromUserCart(product.ProductIdentifiable.ProductId);
+                _ = Bridge.RemoveProductFromUserCart(productId);
             }
             useCase_login_buyer?.Teardown();
             bool loggedInToShopOwner = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
@@ -129,6 +131,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             };
             IEnumerable<ProductInCart> products = productsBefore.Concat(productsAdd);
             testLogic.Success_Normal_CheckCartItems(productsAdd, products);
+            ProductsTeardown.AddRange(productsAdd.Select(x => x.ProductId));
         }
 
         [TestCase]
