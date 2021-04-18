@@ -26,8 +26,8 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             double paySum = 1;
-            Product product1 = new Product("1", 10, 10, 10);
-            Product product2 = new Product("2", 20, 20, 20);
+            Product product1 = new Product("1", 10, 10, 10, "category");
+            Product product2 = new Product("2", 20, 20, 20, "category");
             product_quantity.Add(product1, 1);
             product_quantity.Add(product2, 2);
             ShoppingBasket shoppingBasket = new ShoppingBasket();
@@ -49,8 +49,8 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             double paySum = 1;
-            Product product1 = new Product("1", 10, 10, 10);
-            Product product2 = new Product("2", 20, 20, 20);
+            Product product1 = new Product("1", 10, 10, 10, "category");
+            Product product2 = new Product("2", 20, 20, 20, "category");
             product_quantity.Add(product1, 11);
             product_quantity.Add(product2, 22);
             Store store = new Store("testStore", bankAccount, address);
@@ -69,7 +69,7 @@ namespace TradingSystemTests.MarketTests
         public void ApplyDiscountsNoDiscounts()
         {
             IShoppingBasket shoppingBasket = new ShoppingBasket();
-            Product product1 = new Product("1", 10, 10, 10);
+            Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 5);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -84,7 +84,7 @@ namespace TradingSystemTests.MarketTests
         public void ApplyTwoRelevantDiscounts()
         {
             IShoppingBasket shoppingBasket = new ShoppingBasket();
-            Product product1 = new Product("1", 10, 10, 10);
+            Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 30);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -125,7 +125,7 @@ namespace TradingSystemTests.MarketTests
         public void ApplyOneRelevantDiscount()
         {
             IShoppingBasket shoppingBasket = new ShoppingBasket();
-            Product product1 = new Product("1", 10, 10, 10);
+            Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 19);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -140,26 +140,6 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
         }
 
-
-        public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
-        {
-            int count = 0;
-            foreach(KeyValuePair<Product, int> p_q in product_quantity)
-            {
-                count += p_q.Value;
-            }
-            return count > 10;
-        }
-
-        public bool MoreThan20Products(Dictionary<Product, int> product_quantity)
-        {
-            int count = 0;
-            foreach (KeyValuePair<Product, int> p_q in product_quantity)
-            {
-                count += p_q.Value;
-            }
-            return count > 20;
-        }
 
 
         [TestCleanup]
