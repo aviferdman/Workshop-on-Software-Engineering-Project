@@ -266,6 +266,37 @@ namespace TradingSystem.Business.Market
             return true;
         }
 
+        //functional requirement 4.7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/57
+        public String RemoveManager(String managerName, User assigner)
+        {
+            Appointer a;
+            Owner owner;
+            String ret;
+            if (!managers.TryGetValue(managerName, out IManager manager))
+            {
+                return "Manager doesn't exist";
+            }
+            if (founder.Username.Equals(assigner.Username))
+                a = founder;
+            else if (owners.TryGetValue(assigner.Username, out owner))
+                a = owner;
+            else return "Invalid Assigner";
+            if(!a.canRemoveAppointment(managerName))
+                return "Invalid Assigner";
+            lock (prem_lock)
+            {
+                if (!manager.removePermission(this))
+                    ret = "Manager doesn't exist";
+                else
+                {
+                    managers.TryRemove(managerName, out _);
+                    ret = "success";
+                }
+            }
+
+            return ret;
+        }
+
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);

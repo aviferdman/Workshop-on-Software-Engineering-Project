@@ -22,5 +22,6 @@ namespace TradingSystem.Business.Market
         public String makeOwner(String assigneeName, Guid storeID, String assignerName);
         public String makeManager(String assignee, Guid storeID, String assigner);
         public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions);
+        public String RemoveManager(String managerName, Guid storeID, String assignerName);
     }
 }

@@ -15,6 +15,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public string Username { get => username; set => username = value; }
         public ICollection<Permission> Store_permission { get => store_permission; set => store_permission = value; }
+        public MemberState M { get => m; set => m = value; }
 
         public enum Permission
         {
@@ -50,6 +51,16 @@ namespace TradingSystem.Business.Market.StoreStates
         public bool GetPermission(Permission permission)
         {
             return store_permission.Contains(permission);
+        }
+
+        public bool removePermission(Store store)
+        {
+            bool ret;
+            lock (m.Prem_lock)
+            {
+                ret = m.ManagerPrems.TryRemove(store, out _);
+            }
+            return ret;
         }
     }
 }
