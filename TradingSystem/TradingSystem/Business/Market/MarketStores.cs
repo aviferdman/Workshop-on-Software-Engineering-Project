@@ -173,6 +173,11 @@ namespace TradingSystem.Business.Market
             return store.AssignMember(assigneeName, assigner, type);
         }
 
+        public String removeManager(String managerName, Guid storeID, String user)
+        {
+            .
+        }
+
        
         public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
