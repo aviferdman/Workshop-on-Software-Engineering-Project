@@ -19,20 +19,20 @@ namespace TradingSystem.Service
         public static MarketProductsService Instance => instanceLazy.Value;
 
         //"Product added"
-        public string AddProduct(ProductData product, Guid storeID, string username)
+        public Result<Product> AddProduct(ProductData product, Guid storeID, string username)
         {
             return marketStores.AddProduct(product, storeID, username);
         }
 
         //"Product removed"
-        public string RemoveProduct(string productName, Guid storeID, string username)
+        public string RemoveProduct(Guid productID, Guid storeID, string username)
         {
-            return marketStores.RemoveProduct(productName, storeID, username);
+            return marketStores.RemoveProduct(productID, storeID, username);
         }
         //"Product edited"
-        public string EditProduct(string productName, ProductData details, Guid storeID, string username)
+        public string EditProduct(Guid productID, ProductData details, Guid storeID, string username)
         {
-            return marketStores.EditProduct(productName, details, storeID, username);
+            return marketStores.EditProduct(productID, details, storeID, username);
         }
 
         public ICollection<ProductData> FindProductsByStores(string name)

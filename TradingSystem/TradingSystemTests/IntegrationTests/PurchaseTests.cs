@@ -14,14 +14,9 @@ namespace TradingSystemTests.IntegrationTests
     [TestClass]
     public class PurchaseTests
     {
-        private readonly string ErrorPaymentId = "";
-        private readonly string ErrorPackageId = "";
         private static readonly int QUANTITY1 = 100;
         private static readonly double WEIGHT1 = 100;
         private static readonly double PRICE1 = 100;
-        private static readonly int QUANTITY2 = 200;
-        private static readonly double WEIGHT2 = 200;
-        private static readonly double PRICE2 = 200;
         private User testUser;
         private Store testStore;
         private BankAccount testUserBankAccount;
@@ -88,43 +83,43 @@ namespace TradingSystemTests.IntegrationTests
         }
 
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(Guid, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, PaymentMethod, Guid, BankAccount, double, IShoppingBasket)"/>
         [TestMethod]
         public void CheckLegalTransaction()
         {
             Transaction transaction = Transaction.Instance;
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, true);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, true);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(Guid, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
         [TestMethod]
         public void CheckUnAvailablePaymentTransaction()
         {
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.IsNull(transactionStatus.DeliveryStatus);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, false);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(Guid, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
         [TestMethod]
         public void CheckUnAvailableDeliveryTransaction()
         {
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Guid.NewGuid());
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Guid.NewGuid());
             Mock<ExternalDeliverySystem> deliverySystem = new Mock<ExternalDeliverySystem>();
-            deliverySystem.Setup(p => p.CreateDelivery(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid());
+            deliverySystem.Setup(p => p.CreateDelivery(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid());
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             transaction.DeliveryAdapter.SetDeliverySystem(deliverySystem.Object);
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Id, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, false);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);

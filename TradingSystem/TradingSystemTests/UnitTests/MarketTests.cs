@@ -24,11 +24,11 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala", 8,50, 500);
+            Product p = new Product("lala", 8,50, 500, "category");
             Store s = new Store("lalali", null, null);
-            s.Products.TryAdd("lala", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id,p.Name, 5));
+            Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
@@ -42,8 +42,8 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("llll", 8, 50, 500);
-            Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, p.Name, 5));
+            Product p = new Product("llll", 8, 50, 500, "category");
+            Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -51,7 +51,7 @@ namespace TradingSystemTests.MarketTests
         [TestCategory("uc5")]
         public void AddProductInCartFail2()
         {
-            Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(),"lala", 5));
+            Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(), 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -66,11 +66,11 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala2", 8, 50, 500);
+            Product p = new Product("lala2", 8, 50, 500, "category");
             Store s = new Store("lalali2", null, null);
-            s.Products.TryAdd("lala2", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, p.Name, 500000));
+            Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, 500000));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
@@ -85,11 +85,11 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(true);
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala3", 8, 50, 500);
+            Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
-            s.Products.TryAdd("lala3", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product removed from shopping basket",m.RemoveProductFromCart(username, p.Id, p.Name));
+            Assert.AreEqual("product removed from shopping basket",m.RemoveProductFromCart(username, p.Id));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
@@ -103,11 +103,10 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(true);
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala3", 8, 50, 500);
+            Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
-            s.Products.TryAdd("lala3", p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id, "lala"));
+            Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
@@ -115,7 +114,7 @@ namespace TradingSystemTests.MarketTests
         [TestCategory("uc8")]
         public void removeProductInCartFail2()
         {
-            Assert.AreEqual("user doesn't exist", m.RemoveProductFromCart("11111", Guid.NewGuid(), "lala"));
+            Assert.AreEqual("user doesn't exist", m.RemoveProductFromCart("11111", Guid.NewGuid()));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
@@ -130,11 +129,11 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(false);
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala3", 8, 50, 500);
+            Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
-            s.Products.TryAdd("lala3", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product isn't in basket", m.RemoveProductFromCart(username, p.Id, p.Name));
+            Assert.AreEqual("product isn't in basket", m.RemoveProductFromCart(username, p.Id));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
@@ -149,11 +148,11 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.UpdateProduct(It.IsAny<Product>(), It.IsAny<int>()));
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala8", 8, 50, 500);
+            Product p = new Product("lala8", 8, 50, 500, "category");
             Store s = new Store("lalali80", null, null);
-            s.Products.TryAdd("lala8", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product updated", m.ChangeProductQuanInCart(username, p.Id, p.Name, 5));
+            Assert.AreEqual("product updated", m.ChangeProductQuanInCart(username, p.Id, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
@@ -167,8 +166,8 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("llll8", 8, 50, 500);
-            Assert.AreEqual("product doesn't exist", m.ChangeProductQuanInCart(username, p.Id, p.Name, 5));
+            Product p = new Product("llll8", 8, 50, 500, "category");
+            Assert.AreEqual("product doesn't exist", m.ChangeProductQuanInCart(username, p.Id, 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
@@ -176,7 +175,7 @@ namespace TradingSystemTests.MarketTests
         [TestCategory("uc9")]
         public void updateProductInCartFail2()
         {
-            Assert.AreEqual("user doesn't exist", m.ChangeProductQuanInCart("lala", Guid.NewGuid(), "lala", 5));
+            Assert.AreEqual("user doesn't exist", m.ChangeProductQuanInCart("lala", Guid.NewGuid(), 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
@@ -191,11 +190,11 @@ namespace TradingSystemTests.MarketTests
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
             u.ShoppingCart = cart.Object;
-            Product p = new Product("lala70", 8, 50, 500);
+            Product p = new Product("lala70", 8, 50, 500, "category");
             Store s = new Store("lalali70", null, null);
-            s.Products.TryAdd("lala70", p);
+            s.Products.TryAdd(p.Id, p);
             marketStores.Stores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product's quantity is insufficient", m.ChangeProductQuanInCart(username, p.Id, p.Name, 500000));
+            Assert.AreEqual("product's quantity is insufficient", m.ChangeProductQuanInCart(username, p.Id, 500000));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.viewShoppingCart(string)"/>

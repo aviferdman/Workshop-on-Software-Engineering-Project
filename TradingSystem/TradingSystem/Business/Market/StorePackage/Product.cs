@@ -11,17 +11,17 @@ namespace TradingSystem.Business.Market
         private int _quantity;
         private double _weight;
         private double _price;
-        private string category;
+        private String category;
         private int rating;
 
-        public Product(String name, int quantity, double weight, double price)
+        public Product(String name, int quantity, double weight, double price, String category)
         {
             this._name = name;
             this._quantity = quantity;
             this._weight = weight;
             this._price = price;
             this._id = Guid.NewGuid();
-            category = null;
+            this.category = category;
             rating = -1;
         }
 
@@ -42,6 +42,8 @@ namespace TradingSystem.Business.Market
             this._quantity = data._quantity;
             this._weight = data._weight;
             this._price = data._price;
+            this.category = data.category;
+            this.rating = data.rating;
             this._id = Guid.NewGuid();
         }
 

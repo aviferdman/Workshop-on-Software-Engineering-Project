@@ -25,9 +25,9 @@ namespace TradingSystem.Business.Market
 
         public String AddProduct(Product product, string userID);
 
-        public String RemoveProduct(String productName, string userID);
+        public String RemoveProduct(Guid productID, string userID);
 
-        public String EditProduct(String productName, Product editedProduct, string userID);
+        public String EditProduct(Guid productID, Product editedProduct, string userID);
 
         public String AssignMember(string assigneeID, User assigner, string type);
 
@@ -41,6 +41,6 @@ namespace TradingSystem.Business.Market
 
         public ICollection<IHistory> GetStoreHistory(string username);
 
-        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissionsToRemove, List<Permission> permissionsToAdd);
+        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissions);
     }
 }

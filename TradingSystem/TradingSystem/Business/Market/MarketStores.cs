@@ -90,51 +90,51 @@ namespace TradingSystem.Business.Market
             return  s;
         }
 
-        public void findStoreProduct(out Store found, out Product p, Guid pid, string pname)
+        public void findStoreProduct(out Store found, out Product p, Guid pid)
         {
             p = null;
             found = null;
             foreach (Store s in _stores.Values)
             {
-                if (s.Products.TryGetValue(pname, out p))
+                if (s.Products.TryGetValue(pid, out p))
                 {
-                    if (p.Id.Equals(pid))
-                    {
                         found = s;
                         break;
-                    }
                 }
 
             }
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String AddProduct(ProductData productData, Guid storeID, String username)
+        public Result<Product> AddProduct(ProductData productData, Guid storeID, String username)
         {
             Product product = new Product(productData);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.AddProduct(product, username);
+                return new Result<Product>(product, true, "Store doesn't exist");
+            String res = store.AddProduct(product, username);
+            if (res.Equals("Product added"))
+                return new Result<Product>(product, false, res);
+            return new Result<Product>(product, true, res);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String RemoveProduct(String productName, Guid storeID, String username)
+        public String RemoveProduct(Guid productID, Guid storeID, String username)
         {
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.RemoveProduct(productName, username);
+            return store.RemoveProduct(productID, username);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(String productName, ProductData details, Guid storeID, String username)
+        public String EditProduct(Guid productID, ProductData details, Guid storeID, String username)
         {
             Product editedProduct = new Product(details);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.EditProduct(productName, editedProduct, username);
+            return store.EditProduct(productID, editedProduct, username);
         }
 
 
@@ -153,14 +153,14 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissionsToRemove, List<Permission> permissionsToAdd)
+        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
                 return "Store doesn't exist";
-            return store.DefineManagerPermissions(managerName, assignerName, permissionsToRemove, permissionsToAdd);
+            return store.DefineManagerPermissions(managerName, assignerName, permissions);
         }
 
         public String AssignMember(String assigneeName, Guid storeID, String assignerName, string type)
@@ -173,12 +173,7 @@ namespace TradingSystem.Business.Market
             return store.AssignMember(assigneeName, assigner, type);
         }
 
-        public String removeManager(String managerName, Guid storeID, String user)
-        {
-            .
-        }
-
-       
+        //use case 4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/52
         public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
             List<Product> products = new List<Product>();
