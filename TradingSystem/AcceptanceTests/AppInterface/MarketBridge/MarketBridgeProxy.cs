@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface.Data;
 
@@ -6,12 +7,12 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public class MarketBridgeProxy : ProxyBase<IMarketBridge>, IMarketBridge
     {
-        private readonly Dictionary<string, ShopRefs> shops;
+        private readonly ConcurrentDictionary<string, ShopRefs> shops;
 
         public MarketBridgeProxy() : this(null) { }
         public MarketBridgeProxy(IMarketBridge? realBridge) : base(realBridge)
         {
-            shops = new Dictionary<string, ShopRefs>();
+            shops = new ConcurrentDictionary<string, ShopRefs>();
         }
 
         public override IMarketBridge Bridge => this;
@@ -33,30 +34,32 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 return null;
             }
 
-            ShopRefs? shop;
-            bool exists;
-            lock (shops)
+            ShopRefs? shopRef;
+            ShopId? shopId;
+            try
             {
-                exists = shops.TryGetValue(shopInfo.Name, out shop);
-            }
-            if (exists)
-            {
-                if (!shop!.Owner.Equals(SystemContext!.LoggedInUser))
-                {
-                    throw new ShopOwnerMismatchException(shopInfo);
-                }
+                shopRef = shops.GetOrAdd
+                (
+                    shopInfo.Name,
+                    shopName =>
+                    {
+                        ShopId? shopId = RealBridge.OpenShop(shopInfo);
+                        if (shopId == null)
+                        {
+                            throw new OperationFailedException();
+                        }
 
-                return shop.Id;
+                        return new ShopRefs(shopId.Value, SystemContext!.LoggedInUser!);
+                    }
+                );
+
+                shopId = shopRef.Id;
+            }
+            catch (OperationFailedException)
+            {
+                shopId = null;
             }
 
-            ShopId? shopId = RealBridge.OpenShop(shopInfo);
-            if (shop != null)
-            {
-                lock (shops)
-                {
-                    shops.Add(shopInfo.Name, shop);
-                }
-            }
             return shopId;
         }
 
