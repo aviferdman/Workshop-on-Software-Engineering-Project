@@ -136,7 +136,7 @@ namespace TradingSystem.Business.Market
             MemberState m;
             if(!memberStates.TryGetValue(usrname, out m))
             {
-                m = new MemberState(u.Username, new HashSet<IHistory>());
+                m = new MemberState(usrname, new HashSet<IHistory>());
                 memberStates.TryAdd(usrname, m);
             }
                 

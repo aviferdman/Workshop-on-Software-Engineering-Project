@@ -14,7 +14,7 @@ namespace TradingSystem.Business.Market
         {
             this.ret = ret;
             this.isErr = isErr;
-            this.mess = mess;
+            this.mess = err;
         }
 
         public T Ret { get => ret; set => ret = value; }
