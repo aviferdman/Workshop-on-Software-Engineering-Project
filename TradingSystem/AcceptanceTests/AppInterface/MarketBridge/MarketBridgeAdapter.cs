@@ -58,7 +58,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 shopInfo.Address.Street,
                 shopInfo.Address.ApartmentNum
             );
-            return storeData == null ? (ShopId?)null : new ShopId(storeData.Id);
+            return storeData == null ? (ShopId?)null : new ShopId(storeData.Id, shopInfo.Name);
         }
 
         public ShopId? AssureOpenShop(ShopInfo shopInfo)
@@ -68,12 +68,36 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public ShopInfo? GetShopDetails(ShopId shopId)
         {
-            throw new NotImplementedException();
+            //ICollection<StoreData>? shopDetails = marketStoreGeneralService.FindStoresByName(shopId.ShopName);
+            //if (shopDetails == null || shopDetails.Count == 0)
+            //{
+            //    return null;
+            //}
+            //if (shopDetails.Count > 1)
+            //{
+            //    throw new SharedDataMismatchException("There are multiple shops with the same name");
+            //}
+
+            //StoreData storeData = shopDetails.FirstOrDefault();
+            //return new ShopInfo();
+            throw new NotImplementedException("The service layer currently doesn't return any information about the shop.");
         }
 
         public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
         {
-            throw new NotImplementedException();
+            ICollection<ProductData>? products = marketProductsService.FindProductsByStores(shopId.ShopName);
+            return products?.Select(product => new ProductIdentifiable
+            (
+                new ProductInfo
+                (
+                    name: product._name,
+                    quantity: product._quantity,
+                    price: product._price,
+                    category: product.category,
+                    weight: product._weight
+                ),
+                product.pid
+            ));
         }
 
         public ProductId? AddProductToShop(ShopId shopId, ProductInfo productInfo)

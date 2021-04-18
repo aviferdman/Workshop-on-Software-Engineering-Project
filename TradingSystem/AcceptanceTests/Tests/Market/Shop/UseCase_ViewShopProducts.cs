@@ -83,7 +83,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TestCase]
         public void Failure_ShopDoesNotExist()
         {
-            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(Guid.NewGuid());
+            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(new ShopId(Guid.NewGuid(), "notexists"));
             Assert.IsNull(returnedShopInfo);
         }
     }

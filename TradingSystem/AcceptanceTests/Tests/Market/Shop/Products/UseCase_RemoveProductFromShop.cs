@@ -124,7 +124,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public void Failure_ShopDoesntExist()
         {
             ProductId productId = productsToRemove.First().ProductId;
-            Assert.IsFalse(Bridge.RemoveProductFromShop(Guid.NewGuid(), productId));
+            Assert.IsFalse(Bridge.RemoveProductFromShop(new ShopId(Guid.NewGuid(), "notexists"), productId));
         }
 
         public void Failure_InvalidShopId()

@@ -94,7 +94,7 @@ namespace AcceptanceTests
             else
             {
                 int actual_count = actual.Count();
-                Assert.IsTrue(expected.Count == actual_count, $"expected {expected.Count} results but got {actual_count}");
+                Assert.IsTrue(expected.Count == actual_count, $"sets aren't equal, items count is different. expected {expected.Count} items but got {actual_count}");
             }
         }
 

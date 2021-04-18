@@ -187,7 +187,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_ShopDoesntExist(ProductInfo productInfo)
         {
-            Assert.IsNull(Bridge.AddProductToShop(Guid.NewGuid(), productInfo));
+            Assert.IsNull(Bridge.AddProductToShop(new ShopId(Guid.NewGuid(), "notexists"), productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
