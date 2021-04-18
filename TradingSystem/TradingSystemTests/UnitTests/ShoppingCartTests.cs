@@ -47,7 +47,7 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void CheckPurchaseWithLegalPurchaseStatus()
         {
-            ShoppingCart shoppingCart = new ShoppingCart(); 
+            ShoppingCart shoppingCart = new ShoppingCart();
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             string clienId = "usertest";
             Guid storeId = Guid.NewGuid();
@@ -59,7 +59,7 @@ namespace TradingSystemTests.MarketTests
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(product1, 1);
             product_quantity.Add(product2, 2);
-            PurchaseStatus purchaseStatus = new PurchaseStatus(false, null, storeId);
+            PurchaseStatus purchaseStatus = new PurchaseStatus(false, new TransactionStatus(null, null, null, true), storeId);
 
             Mock<IStore> store1 = new Mock<IStore>();
             store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);

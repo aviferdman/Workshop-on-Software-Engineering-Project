@@ -72,7 +72,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
             );
             return result == "success";
         }
-
+        
         public bool Login(UserInfo loginInfo)
         {
             bool success = userService.Login(loginInfo.Username, loginInfo.Password, username) == "success";
@@ -100,6 +100,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
         {
             return userService.Logout(username);
         }
+        
 
         private bool IdentifyAsGuestCore()
         {

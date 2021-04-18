@@ -137,6 +137,25 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(product.Quantity, originalQuantity + 10);
         }
 
+
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void LastProductTwoCustomersSynchro()
+        {
+            bool val1 = false;
+            bool val2 = false;
+            Product oneProduct = new Product(1, 100, 100);
+            User secondTestUser = new User("second test user");
+            testStore.UpdateProduct(oneProduct);
+            testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
+            secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
+            val1 = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            val2 = secondTestUser.PurchaseShoppingCart(new BankAccount(2, 2), "0533333333", new Address("2", "2", "2", "2")) ;
+            Assert.IsTrue(val1 || val2);
+            Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
+
+        }
+
         private bool CheckTotalWeightMoreThan400(Dictionary<Product, int> product_quantity)
         {
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
