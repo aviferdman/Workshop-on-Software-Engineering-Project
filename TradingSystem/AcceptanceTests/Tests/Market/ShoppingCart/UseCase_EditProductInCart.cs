@@ -147,7 +147,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_ProductDoesntExist()
         {
-            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductId(useCase_addProductToCart.ShopId, "aaaa"), 3));
+            Assert.IsFalse(Bridge.EditProductInUserCart(new ProductId(Guid.NewGuid()), 3));
             AssertCartDidntChange();
         }
 

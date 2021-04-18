@@ -185,7 +185,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, new ProductId(productId.ShopId, "notexist"), productInfo));
+            Assert.IsFalse(Bridge.EditProductInShop(ShopId, new ProductId(Guid.NewGuid()), productInfo));
         }
 
         [TestCase]

@@ -73,33 +73,25 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public ProductId? AddProductToShop(ShopId shopId, ProductInfo productInfo)
         {
-            string result = marketProductsService.AddProduct
+            Result<Product> result = marketProductsService.AddProduct
             (
-                new ProductData(new Product
+                new ProductData
                 (
                     name: productInfo.Name,
                     quantity: productInfo.Quantity,
                     weight: productInfo.Weight,
-                    price: productInfo.Price
-                ))
-                {
-                    category = productInfo.Category,
-                },
+                    price: productInfo.Price,
+                    category: productInfo.Category
+                ),
                 shopId,
                 Username
             );
-            bool success = result == "Product added";
-            return success ? new ProductId(shopId, productInfo.Name) : (ProductId?)null;
+            return result.IsErr ? (ProductId?)null : new ProductId(result.Ret.Id);
         }
 
         public bool RemoveProductFromShop(ShopId shopId, ProductId productId)
         {
-            string result = marketProductsService.RemoveProduct
-            (
-                productId.ProductName,
-                shopId,
-                Username
-            );
+            string result = marketProductsService.RemoveProduct(productId, shopId, Username);
             return result == "Product removed";
         }
 
@@ -107,17 +99,15 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         {
             string result = marketProductsService.EditProduct
             (
-                productId.ProductName,
-                new ProductData(new Product
+                productId,
+                new ProductData
                 (
                     name: newProductDetails.Name,
                     quantity: newProductDetails.Quantity,
                     weight: newProductDetails.Weight,
-                    price: newProductDetails.Price
-                ))
-                {
-                    category = newProductDetails.Category,
-                },
+                    price: newProductDetails.Price,
+                    category: newProductDetails.Category
+                ),
                 shopId,
                 Username
             );

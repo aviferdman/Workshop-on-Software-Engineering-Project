@@ -135,7 +135,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Failure_ProductDoesntExist()
         {
             ProductForCart product = ProductsAdd.First();
-            Assert.IsFalse(Bridge.AddProductToUserCart(new ProductInCart(new ProductId(ShopId, "aaaa"), product.CartQuantity)));
+            Assert.IsFalse(Bridge.AddProductToUserCart(new ProductInCart(new ProductId(Guid.NewGuid()), product.CartQuantity)));
             new Assert_SetEquals<ProductId, ProductInCart>
             (
                 Enumerable.Empty<ProductInCart>(),

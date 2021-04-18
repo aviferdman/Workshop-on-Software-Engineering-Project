@@ -136,7 +136,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_ProductDoesntExist()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromUserCart(new ProductId(useCase_addProductToCart.ShopId, "aaaa")));
+            Assert.IsFalse(Bridge.RemoveProductFromUserCart(new ProductId(Guid.NewGuid())));
             AssertCartDidntChange();
         }
 
