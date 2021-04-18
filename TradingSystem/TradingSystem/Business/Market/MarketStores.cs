@@ -173,7 +173,18 @@ namespace TradingSystem.Business.Market
             return store.AssignMember(assigneeName, assigner, type);
         }
 
-       
+        //functional requirement 4.7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/57
+        public String RemoveManager(String managerName, Guid storeID, String assignerName)
+        {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(RemoveManager));
+            User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
+            if (!_stores.TryGetValue(storeID, out IStore store))
+                return "Store doesn't exist";
+            return store.RemoveManager(managerName, assigner);
+        }
+
+
+
         public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
             List<Product> products = new List<Product>();

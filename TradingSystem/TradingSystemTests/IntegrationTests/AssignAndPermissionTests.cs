@@ -38,7 +38,7 @@ namespace TradingSystemTests.IntegrationTests
             market.makeManager("manager", store.Id, "founder");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
         public void CheckValidMakeOwner()
@@ -47,7 +47,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(store.Owners.ContainsKey("owner"));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
         public void CheckMakeOwnerAlreadyAssigned()
@@ -56,7 +56,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(market.makeOwner("owner", store.Id, "founder"), "this member is already assigned as a store owner or manager");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
         public void CheckMakeOwnerInvalidAssigner()
@@ -66,7 +66,16 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(store.Owners.ContainsKey("owner"));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
+        [TestMethod]
+        [TestCategory("uc34")]
+        public void CheckMakeOwnerNotMember()
+        {
+            Assert.AreEqual(market.makeOwner("no one", store.Id, "manager"), "the assignee isn't a member");
+            Assert.IsFalse(store.Owners.ContainsKey("owner"));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc33")]
         public void CheckValidMakeManager()
@@ -75,7 +84,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(store.Managers.ContainsKey("manager"));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc33")]
         public void CheckMakeManagerAlreadyAssigned()
@@ -84,7 +93,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(market.makeManager("manager", store.Id, "founder"), "this member is already assigned as a store owner or manager");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc33")]
         public void CheckMakeManagerInvalidAssigner()
@@ -94,7 +103,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(store.Managers.ContainsKey("manager"));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
         [TestMethod]
         [TestCategory("uc34")]
         public void CheckValidDefinePermissions()
@@ -107,7 +116,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(manager.GetPermission(Permission.AddProduct));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
         [TestMethod]
         [TestCategory("uc34")]
         public void CheckDefinePermissionsInvalidAssigner()
@@ -121,7 +130,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(manager.GetPermission(Permission.AddProduct));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
         [TestMethod]
         [TestCategory("uc34")]
         public void CheckDefinePermissionsNoManager()
