@@ -173,6 +173,96 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(u.ShoppingCart.GetShoppingBasket(s).GetProductQuantity(p), 4);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.findProducts(string, int, int, int, string)"/>
+        /// no price range or rating
+        /// category: vegan
+        /// keyword: soy milk
+        [TestMethod]
+        [TestCategory("uc4")]
+        public void findProductsuccess()
+        {
+            Product p = new Product("soy milk", 8, 50, 500, "vegan");
+            Store s = new Store("vegan store", null, null);
+            s.Products.TryAdd(p.Id, p);
+            marketStores.Stores.TryAdd(s.GetId(), s);
+            Product p2 = new Product("soy milk diff", 8, 50, 500, "vegan");
+            Store s2 = new Store("vegan store 2", null, null);
+            s2.Products.TryAdd(p2.Id, p2);
+            marketStores.Stores.TryAdd(s2.GetId(), s2);
+            ICollection<Product> ret= marketStores.findProducts("soy milk", -1, -1, -1, "vegan");
+            Assert.IsTrue(ret.Contains(p) && ret.Contains(p2) && ret.Count == 2);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.findProducts(string, int, int, int, string)"/>
+        /// no price range or rating no category
+        /// keyword: tofu
+        [TestMethod]
+        [TestCategory("uc4")]
+        public void findProductsuccess2()
+        {
+            Product p = new Product("tofu", 8, 50, 500, "vegan");
+            Store s = new Store("vegan store3", null, null);
+            s.Products.TryAdd(p.Id, p);
+            marketStores.Stores.TryAdd(s.GetId(), s);
+            Product p2 = new Product("hummus tofu", 8, 50, 500, "vegan");
+            Store s2 = new Store("vegan store 4", null, null);
+            s2.Products.TryAdd(p2.Id, p2);
+            marketStores.Stores.TryAdd(s2.GetId(), s2);
+            ICollection<Product> ret = marketStores.findProducts("tofu", -1, -1, -1, null);
+            Assert.IsTrue(ret.Contains(p) && ret.Contains(p2) && ret.Count == 2);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.findProducts(string, int, int, int, string)"/>
+        /// price range: 4-20
+        /// or rating no category
+        /// keyword: watermelon
+        [TestMethod]
+        [TestCategory("uc4")]
+        public void findProductsuccess3()
+        {
+            Product p = new Product("watermelon exp", 8, 50, 500.0, "vegatables");
+            Store s = new Store("vegan store5", null, null);
+            s.Products.TryAdd(p.Id, p);
+            marketStores.Stores.TryAdd(s.GetId(), s);
+            Product p2 = new Product("watermelon cheep", 8, 50, 5.0, "vegatables");
+            Store s2 = new Store("vegan store 6", null, null);
+            s2.Products.TryAdd(p2.Id, p2);
+            marketStores.Stores.TryAdd(s2.GetId(), s2);
+            ICollection<Product> ret = marketStores.findProducts("watermelon", 4, 20, -1, null);
+            Assert.IsTrue(ret.Contains(p2)&& ret.Count==1);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.findProducts(string, int, int, int, string)"/>
+        /// rating: 5
+        /// price range no category
+        /// keyword: cucumber
+        [TestMethod]
+        [TestCategory("uc4")]
+        public void findProductsuccess4()
+        {
+            Product p = new Product("cucumber high rating", 8, 50, 500.0, "vegatables");
+            p.Rating = 5;
+            Store s = new Store("vegan store7", null, null);
+            s.Products.TryAdd(p.Id, p);
+            marketStores.Stores.TryAdd(s.GetId(), s);
+            Product p2 = new Product("cucumber low rating", 8, 50, 5.0, "vegatables");
+            p2.Rating = 2;
+            Store s2 = new Store("vegan store 8", null, null);
+            s2.Products.TryAdd(p2.Id, p2);
+            marketStores.Stores.TryAdd(s2.GetId(), s2);
+            ICollection<Product> ret = marketStores.findProducts("cucumber", -1, -1, 5, null);
+            Assert.IsTrue(ret.Contains(p) && ret.Count == 1);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.findProducts(string, int, int, int, string)"/>
+        [TestMethod]
+        [TestCategory("uc4")]
+        public void findProductNoProductFound()
+        {
+            ICollection<Product> ret = marketStores.findProducts("nothing to see", -1, -1, 5, null);
+            Assert.IsTrue( ret.Count==0);
+        }
+
 
 
     }

@@ -140,7 +140,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(Product product, string userID)
         {
-            if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
+            if (!founder.Username.Equals(userID) && !owners.ContainsKey(userID))
             {
                 IManager m;
                 if(!managers.TryGetValue(userID, out m))
@@ -158,12 +158,12 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(Guid productID, string userID)
         {
-            if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
+            if (!founder.Username.Equals(userID) && !owners.ContainsKey(userID))
             {
                 IManager m;
                 if (!managers.TryGetValue(userID, out m))
                     return "Invalid user";
-                else if (!m.GetPermission(Permission.AddProduct))
+                else if (!m.GetPermission(Permission.RemoveProduct))
                     return "No permission";
             }
             Product useless;
@@ -174,12 +174,12 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(Guid productID, Product editedProduct, string userID)
         {
-            if (!founder.Username.Equals(userID) || !owners.ContainsKey(userID))
+            if (!founder.Username.Equals(userID) && !owners.ContainsKey(userID))
             {
                 IManager m;
                 if (!managers.TryGetValue(userID, out m))
                     return "Invalid user";
-                else if (!m.GetPermission(Permission.AddProduct))
+                else if (!m.GetPermission(Permission.EditProduct))
                     return "No permission";
             }
             if (!validProduct(editedProduct))
@@ -216,11 +216,11 @@ namespace TradingSystem.Business.Market
                     {
                         if (type.Equals("owner"))
                         {
-                            owners.TryAdd(assigneeID, a.AddAppointmentOwner(assignee, this));
+                            a.AddAppointmentOwner(assignee, this);
                         }
                         else
                         {
-                            managers.TryAdd(assigneeID, a.AddAppointmentManager(assignee, this));
+                            a.AddAppointmentManager(assignee, this);
                         }
                         ret = "Success";
                     }
@@ -373,13 +373,13 @@ namespace TradingSystem.Business.Market
             List<Product> products = new List<Product>();
             foreach(Product p in _products.Values)
             {
-                if(p.Name.Contains(keyword)|| p.Category.Contains(keyword))
+                if((p.Name!=null&&p.Name.Contains(keyword))||(p.Category!=null&& category!=null&& p.Category.Contains(keyword)))
                 {
                     if (category != null&& !category.Equals(p.Category))
                         continue;
-                    if (price_range_low != -1 && price_range_low < p.Price)
+                    if (price_range_low != -1 && price_range_low > p.Price)
                         continue;
-                    if (price_range_high != -1 && price_range_high > p.Price)
+                    if (price_range_high != -1 && price_range_high < p.Price)
                         continue;
                     if (rating != -1 && rating != p.Rating)
                         continue;
