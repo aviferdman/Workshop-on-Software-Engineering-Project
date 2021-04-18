@@ -10,7 +10,6 @@ namespace TradingSystem.Business.UserManagement
     public class UserManagement
     {
         private ConcurrentDictionary<string, DataUser> dataUsers;
-        private IMarketUsers marketo; 
         private static readonly Lazy<UserManagement>
         lazy =
         new Lazy<UserManagement>
@@ -18,12 +17,11 @@ namespace TradingSystem.Business.UserManagement
 
         public static UserManagement Instance { get { return lazy.Value; } }
 
-        public IMarketUsers Marketo { get => marketo; set => marketo = value; }
+        public ConcurrentDictionary<string, DataUser> DataUsers { get => dataUsers; set => dataUsers = value; }
 
         private UserManagement()
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
-            marketo = Market.MarketUsers.Instance;
         }
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
         /// 
@@ -65,7 +63,6 @@ namespace TradingSystem.Business.UserManagement
         public bool DeleteUser(string username)
         {
             DataUser u=null;
-            marketo.RemoveGuest(username);
             return dataUsers.TryRemove(username, out u);
         }
 

@@ -25,9 +25,8 @@ namespace TradingSystem.Business.Delivery
 
         public DeliveryStatus CancelDelivery(DeliveryStatus deliveryStatus)
         {
-            //Guid packageId = _deliverySystem.CancelDelivery(deliveryStatus.PackageId);
-            //return new DeliveryStatus(packageId, deliveryStatus.Username, deliveryStatus.StoreId, !packageId.Equals(ErrorPackageId));
-            return null;
+            Guid packageId = _deliverySystem.CancelDelivery(deliveryStatus.PackageId);
+            return new DeliveryStatus(packageId, deliveryStatus.Username, deliveryStatus.StoreId, !packageId.Equals(ErrorPackageId));
         }
 
         //use case 42 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/73

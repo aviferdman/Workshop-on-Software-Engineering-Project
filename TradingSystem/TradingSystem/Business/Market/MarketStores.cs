@@ -106,13 +106,16 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String AddProduct(ProductData productData, Guid storeID, String username)
+        public Result<Product> AddProduct(ProductData productData, Guid storeID, String username)
         {
             Product product = new Product(productData);
             IStore store;
             if (!_stores.TryGetValue(storeID, out store))
-                return "Store doesn't exist";
-            return store.AddProduct(product, username);
+                return new Result<Product>(product, true, "Store doesn't exist");
+            String res = store.AddProduct(product, username);
+            if (res.Equals("Product added"))
+                return new Result<Product>(product, false, res);
+            return new Result<Product>(product, true, res);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17

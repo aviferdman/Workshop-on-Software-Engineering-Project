@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Market
             this.isLoggedIn = false;
         }
 
-        internal State State { get => _state; set => _state = value; }
+        public State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
@@ -57,7 +57,9 @@ namespace TradingSystem.Business.Market
             BuyStatus buyStatus = ShoppingCart.Purchase(username, method, phone, address, paySum);
             foreach (var p in buyStatus.PurchaseStatuses)
             {
-                userHistory.Add(new TransactionHistory(p));
+                var h = new TransactionHistory(p);
+                userHistory.Add(h);
+                HistoryManager.Instance.AddUserHistory(h);
             }
             return buyStatus.Status;
         }

@@ -19,7 +19,7 @@ namespace TradingSystem.Service
         public static MarketProductsService Instance => instanceLazy.Value;
 
         //"Product added"
-        public string AddProduct(ProductData product, Guid storeID, string username)
+        public Result<Product> AddProduct(ProductData product, Guid storeID, string username)
         {
             return marketStores.AddProduct(product, storeID, username);
         }

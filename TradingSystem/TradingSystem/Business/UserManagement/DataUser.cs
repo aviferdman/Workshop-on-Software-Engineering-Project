@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TradingSystem.Business.UserManagement
 {
-    class DataUser
+    public class DataUser
     {
         private string username;
         private string password;

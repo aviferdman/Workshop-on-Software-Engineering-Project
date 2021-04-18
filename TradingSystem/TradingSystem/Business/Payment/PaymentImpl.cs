@@ -33,9 +33,8 @@ namespace TradingSystem.Business.Delivery
         //use case 19 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/74
         public PaymentStatus CreatePayment(PaymentDetails paymentDetails)
         {
-            //Guid paymentId = _paymentSystem.CreatePayment(paymentDetails.Username, paymentDetails.Method.GeneratePaymentDetails(), paymentDetails.RecieverBankAccountId.AccountNumber, paymentDetails.RecieverBankAccountId.Branch, paymentDetails.PaymentSum);
-            //return new PaymentStatus(paymentId, paymentDetails.Username, paymentDetails.StoreId, !paymentId.Equals(ErrorPaymentId));
-            return null;
+            Guid paymentId = _paymentSystem.CreatePayment(paymentDetails.Username, paymentDetails.Method.GeneratePaymentDetails(), paymentDetails.RecieverBankAccountId.AccountNumber, paymentDetails.RecieverBankAccountId.Branch, paymentDetails.PaymentSum);
+            return new PaymentStatus(paymentId, paymentDetails.Username, paymentDetails.StoreId, !paymentId.Equals(ErrorPaymentId));
         }
 
         public void SetPaymentSystem(ExternalPaymentSystem externalPaymentSystem)

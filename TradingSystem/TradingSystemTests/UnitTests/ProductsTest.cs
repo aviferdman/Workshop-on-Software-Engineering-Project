@@ -23,7 +23,7 @@ namespace TradingSystemTests.UnitTests
 
         public ProductsTest()
         {
-            product1 = new Product("1", 10, 10, 10);
+            product1 = new Product("1", 10, 10, 10, "category");
             address = new Address("1", "1", "1", "1");
             bankAccount = new BankAccount(1000, 1000);
             store = new Store("testStore", bankAccount, address);
@@ -39,7 +39,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc23")]
         public void CheckValidAddProduct()
         {
             Assert.AreEqual(store.AddProduct(product1, "founder"), "Product added");
@@ -48,27 +48,27 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc23")]
         public void CheckAddProductInvalidName()
         {
-            Product product2 = new Product("", 10, 10, 10);
+            Product product2 = new Product("", 10, 10, 10, "category");
             Assert.AreEqual(store.AddProduct(product2, "founder"), "Invalid product");
             Assert.IsFalse(store.Products.ContainsKey(product2.Id));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc23")]
         public void CheckAddProductInvalidPrice()
         {
-            Product product2 = new Product("2", 10, 10, -10);
+            Product product2 = new Product("2", 10, 10, -10, "category");
             Assert.AreEqual(store.AddProduct(product2, "founder"), "Invalid product");
             Assert.IsFalse(store.Products.ContainsKey(product2.Id));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc23")]
         public void CheckAddProductNoPermission()
         {
             Assert.AreEqual(store.AddProduct(product1, "manager"), "No permission");
@@ -77,7 +77,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AddProduct(Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc23")]
         public void CheckAddProductInvalidUser()
         {
             Assert.AreEqual(store.AddProduct(product1, "no one"), "Invalid user");
@@ -86,7 +86,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc24")]
         public void CheckValidRemoveProduct()
         {
             store.Products.TryAdd(product1.Id, product1);
@@ -96,7 +96,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc24")]
         public void CheckRemoveProductInvalidUser()
         {;
             store.Products.TryAdd(product1.Id, product1);
@@ -106,7 +106,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.RemoveProduct(Product)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc24")]
         public void CheckRemoveProductInvalidPermission()
         {
             store.Products.TryAdd(product1.Id, product1);
@@ -116,10 +116,10 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc25")]
         public void CheckValidEditProduct()
         {
-            Product product2 = new Product("1", 10, 10, 20);
+            Product product2 = new Product("1", 10, 10, 20, "category");
             store.Products.TryAdd(product1.Id, product1);
             Assert.AreEqual(store.EditProduct(product1.Id, product2, "founder"), "Product edited");
             Product p;
@@ -129,7 +129,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc25")]
         public void CheckEditUnavailablwProduct()
         {
             Assert.AreEqual(store.EditProduct(product1.Id, product1, "founder"), "Product not in the store");
@@ -138,10 +138,10 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.EditProduct(string, Product, Guid)"/>
         [TestMethod]
-        [TestCategory("uc34")]
+        [TestCategory("uc25")]
         public void CheckEditNoPermission()
         {
-            Product product2 = new Product("1", 10, 10, 20);
+            Product product2 = new Product("1", 10, 10, 20, "category");
             store.Products.TryAdd(product1.Id, product1);
             Assert.AreEqual(store.EditProduct(product1.Id, product2, "manager"), "No Permission");
             Product p;

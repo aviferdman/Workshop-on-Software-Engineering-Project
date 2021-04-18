@@ -65,7 +65,7 @@ namespace TradingSystem.Business.Market
         }
         public bool isStaff(string username)
         {
-            return founder.Username.Equals(username) || managers.ContainsKey(username) || owners.ContainsKey(username);
+            return (founder!=null&&founder.Username.Equals(username)) || managers.ContainsKey(username) || owners.ContainsKey(username);
         }
         public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
         {
@@ -82,7 +82,9 @@ namespace TradingSystem.Business.Market
                 UpdateQuantities(product_quantity);
             }
             transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
-            history.Add(new TransactionHistory(transactionStatus));
+            var h = new TransactionHistory(transactionStatus);
+            history.Add(h);
+            HistoryManager.Instance.AddUserHistory(h);
             //transaction failed
             if (!transactionStatus.Status)
             {
@@ -214,11 +216,11 @@ namespace TradingSystem.Business.Market
                     {
                         if (type.Equals("owner"))
                         {
-                            a.AddAppointmentOwner(assignee, this);
+                            owners.TryAdd(assigneeID, a.AddAppointmentOwner(assignee, this));
                         }
                         else
                         {
-                            a.AddAppointmentManager(assignee, this);
+                            managers.TryAdd(assigneeID, a.AddAppointmentManager(assignee, this));
                         }
                         ret = "Success";
                     }

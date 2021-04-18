@@ -41,8 +41,11 @@ namespace TradingSystemTests.IntegrationTests
         public void TestIntegLoginSuccess()
         {
             string user=signup();
+            User u;
             Assert.AreEqual("success", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
-            delete(user);
+            Assert.IsTrue(MarketUsers.Instance.ActiveUsers.TryGetValue("inbi2001", out u));
+            Assert.IsInstanceOfType(u.State, typeof(MemberState));
+            delete("inbi2001");
 
         }
 
@@ -55,7 +58,7 @@ namespace TradingSystemTests.IntegrationTests
             string user = signup();
             MarketUsers.Instance.AddMember("inbi2001", "123456", user);
             Assert.AreEqual("user is already logged in", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
-            delete(user);
+            delete("inbi2001");
 
         }
 
@@ -67,7 +70,8 @@ namespace TradingSystemTests.IntegrationTests
         {
             string user = signup();
             Assert.AreEqual("the password doesn't match username: " + "inbi2001", MarketUsers.Instance.AddMember("inbi2001", "12345d6", user));
-            delete(user);
+            Assert.IsFalse(MarketUsers.Instance.ActiveUsers.ContainsKey("inbi2001"));
+            delete("inbi2001");
 
         }
 
@@ -89,6 +93,7 @@ namespace TradingSystemTests.IntegrationTests
             string user = signup();
             MarketUsers.Instance.AddMember("inbi2001", "123456", user);
             Assert.AreNotEqual(null, MarketUsers.Instance.logout("inbi2001"));
+            Assert.IsFalse(MarketUsers.Instance.ActiveUsers.ContainsKey("inbi2001"));
             delete(user);
 
         }
@@ -112,7 +117,6 @@ namespace TradingSystemTests.IntegrationTests
         public void TestIntegLogoutFail2()
         {
             Assert.AreEqual(null, MarketUsers.Instance.logout("inbi200151"));
-
         }
 
     }
