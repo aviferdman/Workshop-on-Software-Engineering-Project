@@ -35,7 +35,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
         private readonly Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart;
 
-        public UseCase_ViewShoppingCart(
+        public UseCase_ViewShoppingCart
+        (
             SystemContext systemContext,
             UserInfo userInfo,
             Func<ShopImage[]> marketImageFactory,
@@ -66,10 +67,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
             // already setup earlier
             addToCart_logic = new UseCase_AddProductToCart_TestLogic(SystemContext);
-            foreach (ProductInCart product in ChosenProducts)
-            {
-                addToCart_logic.Success_Normal(product);
-            }
+            addToCart_logic.Success_Normal_CheckCartItems(ChosenProducts, ChosenProducts);
         }
 
         public override void Teardown()
@@ -80,7 +78,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             {
                 foreach (ProductInCart product in ChosenProducts)
                 {
-                    _ = Bridge.RemoveProductFromUserCart(product.ProductId);
+                    _ = MarketBridge.RemoveProductFromUserCart(product.ProductId);
                 }
             }
             useCase_search.Teardown();
@@ -89,9 +87,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Success_Normal()
         {
-            IEnumerable<ProductInCart>? cartItems = Bridge.GetShoppingCartItems();
-            new Assert_SetEquals<ProductId, ProductInCart>(
-                "View shopping cart - success",
+            IEnumerable<ProductInCart>? cartItems = MarketBridge.GetShoppingCartItems();
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
                 ChosenProducts,
                 x => x.ProductId
             ).AssertEquals(cartItems);

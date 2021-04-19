@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
@@ -23,67 +22,69 @@ namespace AcceptanceTests.Tests.Market.Shop
             new object[]
             {
                 SystemContext.Instance,
-                User_ShopOwner1,
-                new ShopInfo(SHOP_NAME),
-                new ProductIdentifiable[]
-                {
-                    new ProductIdentifiable(new ProductInfo("suitcase", 200, 30)),
-                    new ProductIdentifiable(new ProductInfo("hdmi cable", 7, 321)),
-                }
+                new ShopImage(
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "suitcase",
+                            quantity: 30,
+                            price: 200,
+                            category: "suitcases",
+                            weight: 4
+                        )),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "hdmi cable",
+                            quantity: 321,
+                            price: 7,
+                            category: "computer cables",
+                            weight: 0.12
+                        )),
+                    }
+                )
             },
         };
 
-        public UseCase_ViewShopProducts(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, ProductIdentifiable[] products) :
+        public UseCase_ViewShopProducts(SystemContext systemContext, ShopImage shopImage) :
             base(systemContext)
         {
-            ShopOwnerUser = shopOwnerUser;
-            ShopInfo = shopInfo;
-            Products = products;
+            ShopImage = shopImage;
         }
 
-        public UserInfo ShopOwnerUser { get; }
-        public ShopInfo ShopInfo { get; }
-        public ProductIdentifiable[] Products { get; }
-
         private UseCase_AddProductToShop useCase_addProduct;
+        private UseCase_ViewShopProducts_TestLogic testLogic;
+
+        public ShopImage ShopImage { get; }
 
         [SetUp]
         public void Setup()
         {
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopOwnerUser, ShopInfo.Name);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
-
-            foreach (ProductIdentifiable product in Products)
-            {
-                product.ProductId = useCase_addProduct.Success_Normal(product.ProductInfo);
-            }
+            useCase_addProduct.Success_Normal_NoCheckStoreProducts();
 
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            testLogic = new UseCase_ViewShopProducts_TestLogic(SystemContext);
         }
 
         [TearDown]
         public void Teardown()
         {
+            _ = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
             useCase_addProduct?.Teardown();
         }
 
         [TestCase]
         public void Success_Normal()
         {
-            IEnumerable<ProductIdentifiable>? resultProducts = Bridge.GetShopProducts(useCase_addProduct.ShopId);
-            Assert.IsNotNull(resultProducts);
-            Assert.IsTrue(resultProducts.All(x => x.ProductId.IsValid()), "View shopping cart - success - contains invalid product IDs");
-            new Assert_SetEquals<ProductIdentifiable>(
-                "View shopping cart - success",
-                Products,
-                ProductIdentifiable.DeepEquals
-            ).AssertEquals(resultProducts);
+            testLogic!.Success_Normal(useCase_addProduct.ShopId, ShopImage.ShopProducts);
         }
 
         [TestCase]
         public void Failure_ShopDoesNotExist()
         {
-            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(int.MaxValue - 1);
+            ShopInfo? returnedShopInfo = MarketBridge.GetShopDetails(new ShopId(Guid.NewGuid(), "notexists"));
             Assert.IsNull(returnedShopInfo);
         }
     }

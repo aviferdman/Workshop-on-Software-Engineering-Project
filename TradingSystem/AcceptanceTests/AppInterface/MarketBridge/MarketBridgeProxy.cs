@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface.Data;
 
@@ -6,14 +8,25 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public class MarketBridgeProxy : ProxyBase<IMarketBridge>, IMarketBridge
     {
-        private readonly Dictionary<string, ShopRefs> shops;
+        private readonly ConcurrentDictionary<string, ShopRefs> shops;
 
+        public MarketBridgeProxy() : this(null) { }
         public MarketBridgeProxy(IMarketBridge? realBridge) : base(realBridge)
         {
-            shops = new Dictionary<string, ShopRefs>();
+            shops = new ConcurrentDictionary<string, ShopRefs>();
         }
 
         public override IMarketBridge Bridge => this;
+
+        public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
+        {
+            return RealBridge?.SearchProducts(creteria);
+        }
+
+        public ShopId? OpenShop(ShopInfo shopInfo)
+        {
+            return RealBridge?.OpenShop(shopInfo);
+        }
 
         public ShopId? AssureOpenShop(ShopInfo shopInfo)
         {
@@ -22,31 +35,50 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 return null;
             }
 
-            ShopRefs? shop;
-            bool exists;
-            lock (shops)
+            ShopRefs? shopRef;
+            ShopId? shopId;
+            try
             {
-                exists = shops.TryGetValue(shopInfo.Name, out shop);
-            }
-            if (exists)
-            {
-                if (!shop!.Owner.Equals(SystemContext!.LoggedInUser))
-                {
-                    throw new ShopOwnerMismatchException(shopInfo);
-                }
+                shopRef = shops.GetOrAdd
+                (
+                    shopInfo.Name,
+                    shopName =>
+                    {
+                        ShopId? shopId = RealBridge.OpenShop(shopInfo);
+                        if (shopId == null)
+                        {
+                            throw new OperationFailedException();
+                        }
 
-                return shop.Id;
+                        return new ShopRefs(shopId.Value, SystemContext!.LoggedInUser!);
+                    }
+                );
+
+                shopId = shopRef.Id;
+            }
+            catch (OperationFailedException)
+            {
+                shopId = null;
             }
 
-            ShopId? shopId = RealBridge.AssureOpenShop(shopInfo);
-            if (shop != null)
-            {
-                lock (shops)
-                {
-                    shops.Add(shopInfo.Name, shop);
-                }
-            }
             return shopId;
+        }
+
+        public ShopInfo? GetShopDetails(ShopId shopId)
+        {
+            try
+            {
+                return RealBridge?.GetShopDetails(shopId);
+            }
+            catch (NotImplementedException)
+            {
+                return null;
+            }
+        }
+
+        public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
+        {
+            return RealBridge?.GetShopProducts(shopId);
         }
 
         public ProductId? AddProductToShop(ShopId shop, ProductInfo productInfo)
@@ -59,9 +91,14 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.RemoveProductFromShop(shop, product);
         }
 
-        public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
+        public bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails)
         {
-            return RealBridge?.SearchProducts(creteria);
+            return RealBridge != null && RealBridge.EditProductInShop(shopId, productId, newProductDetails);
+        }
+
+        public IEnumerable<ProductInCart>? GetShoppingCartItems()
+        {
+            return RealBridge?.GetShoppingCartItems();
         }
 
         public bool AddProductToUserCart(ProductInCart product)
@@ -74,39 +111,14 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.RemoveProductFromUserCart(productId);
         }
 
-        public IEnumerable<ProductInCart>? GetShoppingCartItems()
+        public bool EditProductInUserCart(ProductInCart product)
         {
-            return RealBridge?.GetShoppingCartItems();
+            return RealBridge != null && RealBridge.EditProductInUserCart(product);
         }
 
-        public ShopInfo? GetShopDetails(ShopId shopId)
-        {
-            return RealBridge?.GetShopDetails(shopId);
-        }
-
-        public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
-        {
-            return RealBridge?.GetShopProducts(shopId);
-        }
-
-        public bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails)
-        {
-            return RealBridge != null && RealBridge.EditProductInShop(shopId, productId, newProductDetails);
-        }
-
-        public bool EditProductInUserCart(ProductId productId, int quantity)
-        {
-            return RealBridge != null && RealBridge.EditProductInUserCart(productId, quantity);
-        }
-
-        public bool EditUserCart(ISet<ProductInCart> productsAdd, ISet<ProductId> productsRemove, ISet<ProductInCart> productsEdit)
+        public bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit)
         {
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
-        }
-
-        public ShopId? OpenShop(ShopInfo shopInfo)
-        {
-            return RealBridge?.OpenShop(shopInfo);
         }
     }
 }

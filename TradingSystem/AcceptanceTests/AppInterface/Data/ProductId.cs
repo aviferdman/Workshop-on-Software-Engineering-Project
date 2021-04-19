@@ -1,17 +1,19 @@
-﻿namespace AcceptanceTests.AppInterface.Data
+﻿using System;
+
+namespace AcceptanceTests.AppInterface.Data
 {
     public struct ProductId
     {
-        public ProductId(int id)
+        public ProductId(Guid value)
         {
-            Value = id;
+            Value = value;
         }
 
-        public int Value { get; }
+        public Guid Value { get; }
 
         public bool IsValid()
         {
-            return Value > 0;
+            return !Guid.Empty.Equals(Value);
         }
 
         public override bool Equals(object? obj) => obj is ProductId other && Equals(other);
@@ -22,11 +24,20 @@
             return $"Product Id {Value}";
         }
 
-        public static implicit operator ProductId(int id)
+        public static bool operator ==(ProductId x1, ProductId x2)
+        {
+            return x1.Equals(x2);
+        }
+        public static bool operator !=(ProductId x1, ProductId x2)
+        {
+            return !(x1 == x2);
+        }
+
+        public static implicit operator ProductId(Guid id)
         {
             return new ProductId(id);
         }
-        public static implicit operator int(ProductId productId)
+        public static implicit operator Guid(ProductId productId)
         {
             return productId.Value;
         }

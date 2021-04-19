@@ -39,8 +39,13 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public Func<ShopImage[]> MarketImageFactory { get; }
         public Func<ShopImage[], IEnumerable<ProductInCart>> ChooseProductsForCart { get; }
 
-        public UseCase_EditShoppingCart(SystemContext systemContext, UserInfo userInfo, Func<ShopImage[]> marketImageFactory, Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart) :
-            base(systemContext, userInfo)
+        public UseCase_EditShoppingCart
+        (
+            SystemContext systemContext,
+            UserInfo userInfo,
+            Func<ShopImage[]> marketImageFactory,
+            Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart
+        ) : base(systemContext, userInfo)
         {
             MarketImageFactory = marketImageFactory;
             ChooseProductsForCart = chooseProductsForCart;
@@ -51,7 +56,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             base.Setup();
 
             // We actually just want this for the setup
-            useCase_viewShoppingCart = new UseCase_ViewShoppingCart(
+            useCase_viewShoppingCart = new UseCase_ViewShoppingCart
+            (
                 SystemContext,
                 UserInfo,
                 MarketImageFactory,
@@ -69,7 +75,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Success_AllChanged()
         {
-            Assert.IsTrue(Bridge.EditUserCart(
+            Assert.IsTrue(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
@@ -81,17 +87,17 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_NotMutuallyDisjoint()
         {
-            Assert.IsFalse(Bridge.EditUserCart(
+            Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[1].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
-            Assert.IsFalse(Bridge.EditUserCart(
+            Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[0].ShopProducts[0].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
-            Assert.IsFalse(Bridge.EditUserCart(
+            Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 5) }

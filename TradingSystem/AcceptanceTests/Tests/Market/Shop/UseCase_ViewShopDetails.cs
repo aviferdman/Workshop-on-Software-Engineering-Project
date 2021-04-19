@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.Tests.User;
@@ -20,7 +22,7 @@ namespace AcceptanceTests.Tests.Market.Shop
             {
                 SystemContext.Instance,
                 User_ShopOwner1,
-                new ShopInfo(SHOP_NAME),
+                Shop1,
             },
         };
 
@@ -55,7 +57,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TestCase]
         public void Success_Normal()
         {
-            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(shopId);
+            ShopInfo? returnedShopInfo = MarketBridge.GetShopDetails(shopId);
             Assert.IsNotNull(returnedShopInfo);
             Assert.AreEqual(ShopInfo.Name, returnedShopInfo!.Name);
         }
@@ -63,7 +65,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         [TestCase]
         public void Failure_ShopDoesNotExist()
         {
-            ShopInfo? returnedShopInfo = Bridge.GetShopDetails(int.MaxValue - 1);
+            ShopInfo? returnedShopInfo = MarketBridge.GetShopDetails(new ShopId(Guid.NewGuid(), "notexists"));
             Assert.IsNull(returnedShopInfo);
         }
     }

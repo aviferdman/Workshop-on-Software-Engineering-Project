@@ -13,7 +13,7 @@ namespace AcceptanceTests.Tests.User
 
         public void Success_Normal()
         {
-            Assert.AreEqual(true, Bridge.LogOut());
+            Assert.AreEqual(true, Bridge.Logout());
         }
     }
 }

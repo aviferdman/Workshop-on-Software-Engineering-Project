@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 using AcceptanceTests.AppInterface.Data;
 
@@ -8,28 +6,27 @@ using TradingSystem.Service;
 
 namespace AcceptanceTests.AppInterface.UserBridge
 {
-    public class UserBridgeAdapter : IUserBridge
+    public class UserBridgeAdapter : BridgeAdapterBase, IUserBridge
     {
-        private string? username;
         private readonly UserService userService;
         private readonly MarketUserService marketUserService;
 
-        private UserBridgeAdapter(UserService userService, MarketUserService marketService)
+        private UserBridgeAdapter
+        (
+            SystemContext systemContext,
+            UserService userService,
+            MarketUserService marketService
+        )
+            : base(systemContext)
         {
             this.userService = userService;
             this.marketUserService = marketService;
         }
 
-        public static UserBridgeAdapter New()
+        public static UserBridgeAdapter New(SystemContext systemContext)
         {
-            return new UserBridgeAdapter(UserService.Instance, MarketUserService.Instance);
+            return new UserBridgeAdapter(systemContext, UserService.Instance, MarketUserService.Instance);
         }
-
-        /// <summary>
-        /// Determines whether we can inteferface with the system,
-        /// either as a guest or as a member.
-        /// </summary>
-        public bool IsConnected => username != null;
 
         public bool Connect()
         {
@@ -49,13 +46,13 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private void DisconnectCore()
         {
-            marketUserService.RemoveGuest(username);
-            username = null;
+            marketUserService.RemoveGuest(Username);
+            Username = null;
         }
 
         public bool AssureSignUp(UserInfo signupInfo)
         {
-            throw new InvalidOperationException("Should not call this method, use SignUp method instead.");
+            throw new InvalidOperationException($"Should not call this method, use {nameof(SignUp)} method instead.");
         }
 
         public bool SignUp(UserInfo signupInfo)
@@ -75,16 +72,26 @@ namespace AcceptanceTests.AppInterface.UserBridge
         
         public bool Login(UserInfo loginInfo)
         {
-            bool success = userService.Login(loginInfo.Username, loginInfo.Password, username) == "success";
+            return Connect() && LoginCore(loginInfo);
+        }
+
+        private bool LoginCore(UserInfo loginInfo)
+        {
+            bool success = marketUserService.login(loginInfo.Username, loginInfo.Password, Username) == "success";
             if (success)
             {
-                username = loginInfo.Username;
+                Username = loginInfo.Username;
             }
 
             return success;
         }
 
-        public bool LogOut()
+        public bool AssureLogin(UserInfo loginInfo)
+        {
+            throw new InvalidOperationException($"Should not call this method, use {nameof(Login)} method instead.");
+        }
+
+        public bool Logout()
         {
             string guestUsername = LogoutCore();
             if (!IsUsernameValid(guestUsername))
@@ -92,25 +99,25 @@ namespace AcceptanceTests.AppInterface.UserBridge
                 return false;
             }
 
-            username = guestUsername;
+            Username = guestUsername;
             return true;
         }
 
         private string LogoutCore()
         {
-            return userService.Logout(username);
+            return marketUserService.logout(Username);
         }
         
 
         private bool IdentifyAsGuestCore()
         {
-            username = marketUserService.AddGuest();
+            Username = marketUserService.AddGuest();
             return IsUsernameValid();
         }
 
         private bool IsUsernameValid()
         {
-            return IsUsernameValid(username);
+            return IsUsernameValid(Username);
         }
         private static bool IsUsernameValid(string? username)
         {

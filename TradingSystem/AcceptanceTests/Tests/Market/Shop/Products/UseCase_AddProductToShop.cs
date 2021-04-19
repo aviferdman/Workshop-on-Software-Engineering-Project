@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
@@ -19,8 +21,22 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             new object[]
             {
                 SystemContext.Instance,
-                User_ShopOwner1,
-                SHOP_NAME,
+                new ShopImage
+                (
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo
+                        (
+                            name: "tomato",
+                            quantity: 4,
+                            price: 4,
+                            category: "fruits",
+                            weight: 0.7
+                        )),
+                    }
+                )
             },
         };
 
@@ -28,21 +44,64 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             new object[]
             {
-                new ProductInfo("cucumber", 4, 4),
+                ((ShopImage)((object[])FixtureArgs[0])[1]).ShopProducts[0].ProductInfo
+            },
+        };
+
+        private static readonly object[] InvalidQuantitySource =
+        {
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                0,
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                -1,
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                -5,
+            },
+        };
+
+        private static readonly object[] InvalidNameSource =
+        {
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "",
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "         ",
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "     \t    ",
+            },
+            new object[]
+            {
+                ((object[])TestProductInfo[0])[0],
+                "    \n \t",
             },
         };
 
         private UseCase_OpenShop useCase_openShop;
-        private Queue<ProductId> products;
+        private readonly List<ProductId> teardownProducts;
 
-        public UseCase_AddProductToShop(SystemContext systemContext, UserInfo userInfo, string shopName) :
-            base(systemContext, userInfo)
+        public UseCase_AddProductToShop(SystemContext systemContext, ShopImage shopImage) :
+            base(systemContext, shopImage.OwnerUser)
         {
-            ShopName = shopName;
-            products = new Queue<ProductId>(3);
+            ShopImage = shopImage;
+            teardownProducts = new List<ProductId>(shopImage.ShopProducts.Length);
         }
 
-        public string ShopName { get; }
+        public ShopImage ShopImage { get; }
         public ShopId ShopId { get; private set; }
 
         [SetUp]
@@ -51,67 +110,121 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             base.Setup();
             useCase_openShop = new UseCase_OpenShop(SystemContext, UserInfo);
             useCase_openShop.Setup();
-            ShopId = useCase_openShop.Success_Normal(new ShopInfo(ShopName));
+            ShopId = useCase_openShop.Success_Normal(ShopImage.ShopInfo);
         }
 
         [TearDown]
         public override void Teardown()
         {
-            while (products.Count > 0)
+            _ = UserBridge.AssureLogin(ShopImage.OwnerUser);
+            foreach (ProductId productId in teardownProducts)
             {
-                _ = Bridge.RemoveProductFromShop(ShopId, products.Dequeue());
+                _ = MarketBridge.RemoveProductFromShop(ShopId, productId);
             }
             useCase_openShop.Teardown();
         }
 
-        [TestCaseSource(nameof(TestProductInfo))]
-        public void Success_Normal_Test(ProductInfo productInfo)
+        [TestCase]
+        public void Success_Normal_CheckStoreProducts()
         {
-            _ = Success_Normal(productInfo);
+            Success_Normal_CheckStoreProducts(ShopImage.ShopProducts, ShopImage.ShopProducts);
         }
-        public ProductId Success_Normal(ProductInfo productInfo)
+        public void Success_Normal_NoCheckStoreProducts()
         {
-            ProductId? product = Bridge.AddProductToShop(ShopId, productInfo);
-            Assert.IsNotNull(product);
-            Assert.Greater(product!.Value, 0);
-            products.Enqueue(product.Value);
-            return product.Value;
+            Success_Normal_NoCheckStoreProducts(ShopImage.ShopProducts);
         }
 
-        [TestCase]
-        public void Failure_InsufficientPermissions()
+        public void Success_Normal_NoCheckStoreProducts(IEnumerable<ProductIdentifiable> products)
+        {
+            foreach (ProductIdentifiable product in products)
+            {
+                product.ProductId = Success_Normal_NoCheckStoreProducts(product.ProductInfo);
+            }
+        }
+        public void Success_Normal_CheckStoreProducts
+        (
+            IEnumerable<ProductIdentifiable> products,
+            IEnumerable<ProductIdentifiable> expectedStoreProducts
+        )
+        {
+            Success_Normal_NoCheckStoreProducts(products);
+            new UseCase_ViewShopProducts_TestLogic(SystemContext)
+                .Success_Normal(ShopId, expectedStoreProducts);
+        }
+
+        public ProductId Success_Normal_NoCheckStoreProducts(ProductInfo productInfo)
+        {
+            ProductId? productId = AddProductTeardown(productInfo);
+            Assert.IsNotNull(productId);
+            return productId!.Value;
+        }
+        public ProductId Success_Normal_CheckStoreProducts
+        (
+            ProductInfo productInfo,
+            IEnumerable<ProductIdentifiable> expectedStoreProducts
+        )
+        {
+            ProductId productId = Success_Normal_NoCheckStoreProducts(productInfo);
+            new UseCase_ViewShopProducts_TestLogic(SystemContext)
+                .Success_Normal(ShopId, expectedStoreProducts);
+            return productId;
+        }
+
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_NotLoggedIn(ProductInfo productInfo)
+        {
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            Assert.IsNull(AddProductTeardown(productInfo));
+        }
+
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_InsufficientPermissions(ProductInfo productInfo)
         {
             LoginToBuyer();
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, 3)));
+            Assert.IsNull(AddProductTeardown(productInfo));
         }
 
-        [TestCase]
-        public void Failure_InvalidPrice()
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_ShopDoesntExist(ProductInfo productInfo)
         {
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", -3, 3)));
-        }
-
-        [TestCase]
-        public void Failure_InvalidQuantity()
-        {
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, -1)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("cucumber", 4, -5)));
-        }
-
-        [TestCase]
-        public void Failure_InvalidName()
-        {
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("", 4, 3)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("         ", 4, 3)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("     \t    ", 4, 3)));
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, new ProductInfo("    \n \t", 4, 3)));
+            Assert.IsNull(MarketBridge.AddProductToShop(new ShopId(Guid.NewGuid(), "notexists"), productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_InvalidShopId(ProductInfo productInfo)
         {
-            Assert.IsNull(Bridge.AddProductToShop(-1, productInfo));
-            Assert.IsNull(Bridge.AddProductToShop(-6, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(default, productInfo));
+        }
+
+        [TestCaseSource(nameof(TestProductInfo))]
+        public void Failure_InvalidPrice(ProductInfo productInfo)
+        {
+            productInfo.Price = -3;
+            Assert.IsNull(AddProductTeardown(productInfo));
+        }
+
+        [TestCaseSource(nameof(InvalidQuantitySource))]
+        public void Failure_InvalidQuantity(ProductInfo productInfo, int quantity)
+        {
+            productInfo.Quantity = quantity;
+            Assert.IsNull(AddProductTeardown(productInfo));
+        }
+
+        [TestCaseSource(nameof(InvalidNameSource))]
+        public void Failure_InvalidName(ProductInfo productInfo, string name)
+        {
+            productInfo.Name = name;
+            Assert.IsNull(AddProductTeardown(productInfo));
+        }
+
+        private ProductId? AddProductTeardown(ProductInfo productInfo)
+        {
+            ProductId? productId = MarketBridge.AddProductToShop(ShopId, productInfo);
+            if (productId != null)
+            {
+                teardownProducts.Add(productId.Value);
+            }
+            return productId;
         }
     }
 }

@@ -1,33 +1,35 @@
-﻿using System;
+﻿using TradingSystem.Business.Market;
 
 namespace AcceptanceTests.AppInterface.Data
 {
     public class ProductIdentifiable
     {
-        private ProductId productId;
-
         public ProductIdentifiable(ProductInfo productInfo)
-            : this(productInfo, -1) { }
+            : this(productInfo, default) { }
         public ProductIdentifiable(ProductInfo productInfo, ProductId productId)
         {
             ProductInfo = productInfo;
-            this.productId = productId;
+            ProductId = productId;
+        }
+
+        public static ProductIdentifiable FromProductData(ProductData productData)
+        {
+            return new ProductIdentifiable
+            (
+                new ProductInfo
+                (
+                    name: productData._name,
+                    quantity: productData._quantity,
+                    price: productData._price,
+                    category: productData.category,
+                    weight: productData._weight
+                ),
+                productData.pid
+            );
         }
 
         public ProductInfo ProductInfo { get; }
-        public ProductId ProductId
-        {
-            get => productId;
-            set
-            {
-                if (productId.IsValid())
-                {
-                    throw new InvalidOperationException("Product id was already set.");
-                }
-
-                productId = value;
-            }
-        }
+        public ProductId ProductId { get; set; }
 
         public static bool DeepEquals(ProductIdentifiable p1, ProductIdentifiable p2)
         {
@@ -38,7 +40,7 @@ namespace AcceptanceTests.AppInterface.Data
         {
             return obj is ProductIdentifiable other && Equals(other);
         }
-        public bool Equals(ProductIdentifiable? other)
+        public bool Equals(ProductIdentifiable other)
         {
             return other != null && ProductId == other.ProductId;
         }
@@ -50,7 +52,7 @@ namespace AcceptanceTests.AppInterface.Data
 
         public override string ToString()
         {
-            return $"Product identifiable {{ {ProductId}, '{ProductInfo.Name}' }}";
+            return $"Product identifiable {{{ProductId}, '{ProductInfo.Name}'}}";
         }
     }
 }

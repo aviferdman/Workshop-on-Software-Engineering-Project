@@ -9,6 +9,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
         // The key lookup is by username. We also want to know the password that the user registered with.
         private readonly IDictionary<UserInfo, UserInfo> registeredUsers;
 
+        public UserBridgeProxy() : this(null) { }
         public UserBridgeProxy(IUserBridge? realBridge) : base(realBridge)
         {
             registeredUsers = new Dictionary<UserInfo, UserInfo>();
@@ -71,14 +72,32 @@ namespace AcceptanceTests.AppInterface.UserBridge
             return success;
         }
 
-        public bool LogOut()
+        public bool AssureLogin(UserInfo loginInfo)
+        {
+            UserInfo? loggedInUser = SystemContext!.LoggedInUser;
+            if (loggedInUser != null)
+            {
+                if (loggedInUser.Equals(loginInfo))
+                {
+                    return true;
+                }
+                if (!Logout())
+                {
+                    return false;
+                }
+            }
+
+            return Login(loginInfo);
+        }
+
+        public bool Logout()
         {
             if (RealBridge == null)
             {
                 return false;
             }
 
-            bool success = RealBridge.LogOut();
+            bool success = RealBridge.Logout();
             if (success)
             {
                 SystemContext!.LoggedInUser = null;

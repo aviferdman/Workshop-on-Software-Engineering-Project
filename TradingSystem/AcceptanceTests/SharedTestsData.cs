@@ -63,7 +63,30 @@ namespace AcceptanceTests
             }
         );
 
-        public const string SHOP_NAME = "my shop 1";
-        public const string SHOP_NAME_2 = "another shop";
+        public static readonly ShopInfo Shop1 = new ShopInfo
+        (
+            name: "my shop 1",
+            bankAccount: new BankAccount(branch: 2, accountNumber: 8),
+            address: new Address
+            {
+                State = "U.S.",
+                City = "Los Santos",
+                Street = "The Hood",
+                ApartmentNum = "8",
+            }
+        );
+
+        public static readonly ShopInfo Shop2 = new ShopInfo
+        (
+            name: "another shop",
+            bankAccount: new BankAccount(branch: 1, accountNumber: 2),
+            address: new Address
+            {
+                State = "Israel",
+                City = "Ramat-Gan",
+                Street = "HaYarden",
+                ApartmentNum = "67",
+            }
+        );
     }
 }
