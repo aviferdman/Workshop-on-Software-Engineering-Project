@@ -11,11 +11,6 @@ namespace TradingSystem.Business.Market
         private ShoppingCart shoppingCart;
         private IStore store;
 
-        public ShoppingBasket()
-        {
-            this._product_quantity = new Dictionary<Product, int>();
-        }
-
         public ShoppingBasket(ShoppingCart shoppingCart, IStore store)
         {
             this.ShoppingCart = shoppingCart;

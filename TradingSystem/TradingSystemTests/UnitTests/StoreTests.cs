@@ -13,8 +13,19 @@ namespace TradingSystemTests.MarketTests
     public class StoreTests
     {
         //START OF UNIT TESTS
-
+        
         private readonly string clienId = "usertest";
+
+        private ShoppingCart shoppingCart;
+        private IStore store;
+        private ShoppingBasket shoppingBasket;
+
+        public StoreTests()
+        {
+            this.shoppingCart = new ShoppingCart();
+            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
+        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
         [TestMethod]
@@ -30,7 +41,6 @@ namespace TradingSystemTests.MarketTests
             Product product2 = new Product("2", 20, 20, 20, "category");
             product_quantity.Add(product1, 1);
             product_quantity.Add(product2, 2);
-            ShoppingBasket shoppingBasket = new ShoppingBasket();
             shoppingBasket.Product_quantity = product_quantity;
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
@@ -56,7 +66,6 @@ namespace TradingSystemTests.MarketTests
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
-            ShoppingBasket shoppingBasket = new ShoppingBasket();
             shoppingBasket.Product_quantity = product_quantity;
             PurchaseStatus purchaseStatus = store.Purchase(shoppingBasket, clienId, clientPhone, address, bankAccount, paySum);
             Assert.AreEqual(false, purchaseStatus.PreConditions);
@@ -68,7 +77,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void ApplyDiscountsNoDiscounts()
         {
-            IShoppingBasket shoppingBasket = new ShoppingBasket();
             Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 5);
             Address address = new Address("1", "1", "1", "1");
@@ -83,7 +91,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void ApplyTwoRelevantDiscounts()
         {
-            IShoppingBasket shoppingBasket = new ShoppingBasket();
             Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 30);
             Address address = new Address("1", "1", "1", "1");
@@ -124,7 +131,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void ApplyOneRelevantDiscount()
         {
-            IShoppingBasket shoppingBasket = new ShoppingBasket();
             Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 19);
             Address address = new Address("1", "1", "1", "1");
@@ -141,13 +147,16 @@ namespace TradingSystemTests.MarketTests
         }
 
 
-
+        
         [TestCleanup]
         public void DeleteAll()
         {
+            this.shoppingCart = new ShoppingCart();
+            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
             Transaction.Instance.DeleteAllTests();
         }
-
+        
         //END OF UNIT TESTS
     }
 }
