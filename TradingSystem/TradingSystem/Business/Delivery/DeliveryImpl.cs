@@ -36,9 +36,10 @@ namespace TradingSystem.Business.Delivery
             return new DeliveryStatus(packageId, deliveryDetails.Username, deliveryDetails.StoreId, !packageId.Equals(ErrorPackageId));
         }
 
-        public void SetDeliverySystem(ExternalDeliverySystem externalDeliverySystem)
+        public bool SetDeliverySystem(ExternalDeliverySystem externalDeliverySystem)
         {
             this._deliverySystem = externalDeliverySystem;
+            return true;
         }
     }
 }

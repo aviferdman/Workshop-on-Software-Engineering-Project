@@ -296,6 +296,12 @@ namespace TradingSystem.Business.Market
             return new Result<IShoppingCart>(u.ShoppingCart, false, null);
         }
 
-
+        public void CleanMarketUsers()
+        {
+            activeUsers = new ConcurrentDictionary<string, User>();
+            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
+            historyManager = HistoryManager.Instance;
+            memberStates = new ConcurrentDictionary<string, MemberState>();
+        }
     }
 }
