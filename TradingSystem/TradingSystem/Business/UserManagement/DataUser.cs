@@ -13,6 +13,7 @@ namespace TradingSystem.Business.UserManagement
         private bool isLoggedin;
         private Address address;
         private string phone;
+        private bool isAdmin;
 
         public DataUser(string username, string password, Address address, string phone)
         {
@@ -28,6 +29,7 @@ namespace TradingSystem.Business.UserManagement
         public Address Address { get => address; set => address = value; }
         public bool IsLoggedin { get => isLoggedin; set => isLoggedin = value; }
         public string Phone { get => phone; set => phone = value; }
+        public bool IsAdmin { get => isAdmin; set => isAdmin = value; }
 
         public override bool Equals(object obj)
         {
