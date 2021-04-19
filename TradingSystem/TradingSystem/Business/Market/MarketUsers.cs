@@ -172,7 +172,7 @@ namespace TradingSystem.Business.Market
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
         public ICollection<IHistory> GetAllHistory(string username)
         {
-            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetAdminByUserName));
+            
             User user = GetUserByUserName(username);
             return user.State.GetAllHistory();
         }
@@ -198,15 +198,6 @@ namespace TradingSystem.Business.Market
             return u;
         }
 
-        public User GetAdminByUserName(string username)
-        {
-            User u = null;
-            if (!adminUsers.TryGetValue(username, out u))
-            {
-                return null;
-            }
-            return u;
-        }
 
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53
