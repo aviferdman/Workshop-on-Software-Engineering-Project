@@ -50,8 +50,8 @@ namespace TradingSystemTests.IntegrationTests
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(discount);
-            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
             Assert.AreEqual(PRICE1 * 5 - discount.DiscountValue, testUser.ShoppingCart.CalcPaySum());
+            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -64,6 +64,22 @@ namespace TradingSystemTests.IntegrationTests
             bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
             Assert.AreEqual(successPurchase, true);
             Assert.AreEqual(originQuantity - 5, product.Quantity);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void CheckIllegalPurcahseStoreQuantityRemains()
+        {
+            int originQuantity = product.Quantity;
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.AreEqual(successPurchase, false);
+            Assert.AreEqual(originQuantity, product.Quantity);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -140,6 +156,31 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(product.Quantity, originalQuantity + 10);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void SucceessPurchaseBasketBecomesEmpty()
+        {
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
+            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsTrue(testUser.ShoppingCart.IsEmpty());
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void FailedPurchaseBasketRemainsTheSame()
+        {
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
+            Assert.IsFalse(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
+        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
@@ -159,7 +200,7 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
-        private bool CheckTotalWeightMoreThan400(Dictionary<Product, int> product_quantity)
+            private bool CheckTotalWeightMoreThan400(Dictionary<Product, int> product_quantity)
         {
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
             return weight > 400;

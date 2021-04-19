@@ -82,13 +82,17 @@ namespace TradingSystem.Business.Market
                 UpdateQuantities(product_quantity);
             }
             transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
-            var h = new TransactionHistory(transactionStatus);
-            history.Add(h);
-            HistoryManager.Instance.AddUserHistory(h);
             //transaction failed
             if (!transactionStatus.Status)
             {
                 CancelTransaction(product_quantity);
+            }
+            //add to history
+            else
+            {
+                var h = new TransactionHistory(transactionStatus);
+                history.Add(h);
+                HistoryManager.Instance.AddUserHistory(h);
             }
             return new PurchaseStatus(true, transactionStatus, _id);
         }
