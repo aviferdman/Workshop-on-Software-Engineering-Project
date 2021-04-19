@@ -31,5 +31,10 @@ namespace AcceptanceTests.AppInterface.Data
         public override bool Equals(object? obj) => obj is UserInfo other && Equals(other);
         public bool Equals([AllowNull] UserInfo other) => other != null && other.Username == Username;
         public override int GetHashCode() => Username.GetHashCode();
+
+        public override string ToString()
+        {
+            return Username;
+        }
     }
 }

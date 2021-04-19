@@ -1,10 +1,6 @@
 ﻿using Moq;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
-using TradingSystem.Business.Market;
 using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market

@@ -8,6 +8,7 @@ using System.Threading;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
+using TradingSystem.Business.UserManagement;
 
 namespace TradingSystem.Business.Market
 {
@@ -16,7 +17,6 @@ namespace TradingSystem.Business.Market
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
         private ConcurrentDictionary<string, User> activeUsers;
-        private ConcurrentDictionary<string, User> adminUsers;
         private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
         private ConcurrentDictionary<string, MemberState> memberStates;
         private HistoryManager historyManager;
@@ -34,49 +34,12 @@ namespace TradingSystem.Business.Market
         private MarketUsers()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            adminUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
-            User defaultAdmin = CreateDefaultAdmin();
             memberStates = new ConcurrentDictionary<string, MemberState>();
-            adminUsers.TryAdd(defaultAdmin.Username, defaultAdmin);
-        }
-
-        private User CreateDefaultAdmin()
-        {
-            User user = new User(DEFAULT_ADMIN_USERNAME);
-            user.ChangeState(new AdministratorState(DEFAULT_ADMIN_USERNAME, user.UserHistory));
-            return user;
         }
 
         
-
-        public bool AddSystemAdmin(User admin)
-        {
-            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddSystemAdmin));
-            User user = GetAdminByUserName(admin.Username);
-            // not possible two admins with the same username
-            if (user != null)
-            {
-                return false;
-            }
-
-            return adminUsers.TryAdd(admin.Username, admin);
-        }
-
-        public bool RemoveAdmin(User admin)
-        {
-            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(RemoveAdmin));
-            User removed;
-            // at least one admin for the market
-            if (adminUsers.Count < 2)
-            {
-                return false;
-            }
-
-            return adminUsers.TryRemove(admin.Username, out removed);
-            
-        }
 
         public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
         {
@@ -136,7 +99,12 @@ namespace TradingSystem.Business.Market
             MemberState m;
             if(!memberStates.TryGetValue(usrname, out m))
             {
-                m = new MemberState(usrname, new HashSet<IHistory>());
+                DataUser du;
+                UserManagement.UserManagement.Instance.DataUsers.TryGetValue(usrname, out du);
+                if (du.IsAdmin)
+                    m = new AdministratorState(usrname, new HashSet<IHistory>());
+                else
+                    m = new MemberState(usrname, new HashSet<IHistory>());
                 memberStates.TryAdd(usrname, m);
             }
                 
@@ -204,7 +172,7 @@ namespace TradingSystem.Business.Market
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
         public ICollection<IHistory> GetAllHistory(string username)
         {
-            Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetAdminByUserName));
+            
             User user = GetUserByUserName(username);
             return user.State.GetAllHistory();
         }
@@ -230,15 +198,6 @@ namespace TradingSystem.Business.Market
             return u;
         }
 
-        public User GetAdminByUserName(string username)
-        {
-            User u = null;
-            if (!adminUsers.TryGetValue(username, out u))
-            {
-                return null;
-            }
-            return u;
-        }
 
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53

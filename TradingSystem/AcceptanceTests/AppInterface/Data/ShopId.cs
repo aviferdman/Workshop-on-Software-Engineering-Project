@@ -1,13 +1,17 @@
-﻿namespace AcceptanceTests.AppInterface.Data
+﻿using System;
+
+namespace AcceptanceTests.AppInterface.Data
 {
     public struct ShopId
     {
-        public ShopId(int id)
+        public ShopId(Guid id, string shopName)
         {
             Value = id;
+            ShopName = shopName;
         }
 
-        public int Value { get; }
+        public Guid Value { get; }
+        public string ShopName { get; }
 
         public override bool Equals(object? obj) => obj is ShopId other && Equals(other);
         public bool Equals(ShopId other) => other.Value == Value;
@@ -17,11 +21,20 @@
             return $"Shop Id {Value}";
         }
 
-        public static implicit operator ShopId(int id)
+        public static bool operator ==(ShopId x1, ShopId x2)
         {
-            return new ShopId(id);
+            return x1.Equals(x2);
         }
-        public static implicit operator int(ShopId shopId)
+        public static bool operator !=(ShopId x1, ShopId x2)
+        {
+            return !(x1 == x2);
+        }
+
+        //public static implicit operator ShopId(Guid id)
+        //{
+        //    return new ShopId(id);
+        //}
+        public static implicit operator Guid(ShopId shopId)
         {
             return shopId.Value;
         }

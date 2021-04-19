@@ -21,8 +21,8 @@ namespace TradingSystem.Business.Market
             this.Status = status;
             this._id = Guid.NewGuid();
             this.ProductHistories = new ProductHistoryData();
-            var tmpDict = shoppingBasket.GetDictionaryProductQuantity();
-            foreach(var p_q in tmpDict)
+            var tmpDict = shoppingBasket?.GetDictionaryProductQuantity() ?? new Dictionary<Product, int>();
+            foreach (var p_q in tmpDict)
             {
                 ProductHistories.Add(p_q.Key, p_q.Value);
             }

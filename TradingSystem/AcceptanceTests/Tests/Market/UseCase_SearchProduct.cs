@@ -24,19 +24,37 @@ namespace AcceptanceTests.Tests.Market
             {
                 new ShopImage(
                     User_ShopOwner1,
-                    new ShopInfo(SHOP_NAME),
+                    Shop1,
                     new ProductIdentifiable[]
                     {
-                        new ProductIdentifiable(new ProductInfo("traveling bag", 20, 7)),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "traveling bag",
+                            quantity: 7,
+                            price: 20,
+                            category: "bags",
+                            weight: 1
+                        )),
                     }
                 ),
                 new ShopImage(
                     User_ShopOwner1,
-                    new ShopInfo(SHOP_NAME),
+                    Shop2,
                     new ProductIdentifiable[]
                     {
-                        new ProductIdentifiable(new ProductInfo("school bag", 5, 12)),
-                        new ProductIdentifiable(new ProductInfo("android charger", 8, 20)),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "school bag",
+                            quantity: 12,
+                            price: 5,
+                            category: "bags",
+                            weight: 0.8
+                        )),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "android charger",
+                            quantity: 20,
+                            price: 8,
+                            category: "phone chargers",
+                            weight: 0.09
+                        )),
                     }
                 ),
             };
@@ -57,7 +75,8 @@ namespace AcceptanceTests.Tests.Market
         public ShopImage[] MarketImage { get; private set; }
         private ShopTestState[] MarketState { get; set; }
 
-        public UseCase_SearchProduct(
+        public UseCase_SearchProduct
+        (
             SystemContext systemContext,
             UserInfo buyerUser,
             Func<ShopImage[]> marketImageFactory
@@ -105,14 +124,14 @@ namespace AcceptanceTests.Tests.Market
             }
         }
 
-        private void TestSuccess(string testName, ProductSearchCreteria searchCreteria, IEnumerable<ProductIdentifiable> expectedResults)
+        private void TestSuccess(ProductSearchCreteria searchCreteria, IEnumerable<ProductIdentifiable> expectedResults)
         {
-            ProductSearchResults? results = Bridge.SearchProducts(searchCreteria);
+            ProductSearchResults? results = MarketBridge.SearchProducts(searchCreteria);
             Assert.IsNotNull(results);
-            Assert.IsNull(results!.TypoFixes, $"{testName}: expected no typo fixes");
-            Assert.IsTrue(results!.IsValid(), $"{testName}: expect valid results (valid IDs)");
-            new Assert_SetEquals<ProductIdentifiable>(
-                testName,
+            Assert.IsNull(results!.TypoFixes, $"expected no typo fixes");
+            Assert.IsTrue(results!.IsValid(), $"expect valid results (valid IDs)");
+            new Assert_SetEquals<ProductIdentifiable>
+            (
                 expectedResults,
                 ProductIdentifiable.DeepEquals
             ).AssertEquals(results);
@@ -121,8 +140,8 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Success_MultipleShops()
         {
-            TestSuccess(
-                "Products search - success - multiple shops",
+            TestSuccess
+            (
                 new ProductSearchCreteria("bag")
                 {
                     PriceRange_Low = 0.5m
@@ -138,8 +157,8 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Success_OneProduct()
         {
-            TestSuccess(
-                "Products search - success - one shop",
+            TestSuccess
+            (
                 new ProductSearchCreteria("charger")
                 {
                     PriceRange_High = 21
@@ -154,7 +173,7 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Failure_MatchingKeywordsButNotFilter()
         {
-            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            ProductSearchResults? results = MarketBridge.SearchProducts(new ProductSearchCreteria("charger")
             {
                 PriceRange_High = 1
             });
@@ -165,15 +184,15 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Failure_NotMatchingKeywords()
         {
-            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
+            ProductSearchResults? results = MarketBridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
             Assert.NotNull(results, "Products search - null results");
             Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
         }
 
-        [TestCase]
+        // Not a test case for now
         public void Failure_Typo()
         {
-            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("abg"));
+            ProductSearchResults? results = MarketBridge.SearchProducts(new ProductSearchCreteria("abg"));
             Assert.NotNull(results, "Products search - null results");
             Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
             Assert.AreEqual(results!.TypoFixes, "bag", "Product search - typo - expected fix");
@@ -194,15 +213,12 @@ namespace AcceptanceTests.Tests.Market
 
             public void AddAllProducts()
             {
-                foreach (ProductIdentifiable product in ShopImage.ShopProducts)
-                {
-                    product.ProductId = useCase_addProduct!.Success_Normal(product.ProductInfo);
-                }
+                useCase_addProduct!.Success_Normal_CheckStoreProducts();
             }
 
             public void Login()
             {
-                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage.OwnerUser, ShopImage.ShopInfo.Name);
+                useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
                 useCase_addProduct.Setup();
             }
 
@@ -214,10 +230,7 @@ namespace AcceptanceTests.Tests.Market
 
             public void Teardown()
             {
-                if (!ShopImage.OwnerUser.Equals(SystemContext.LoggedInUser))
-                {
-                    _ = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
-                }
+                _ = SystemContext.UserBridge.AssureLogin(ShopImage.OwnerUser);
                 useCase_addProduct?.Teardown();
             }
         }

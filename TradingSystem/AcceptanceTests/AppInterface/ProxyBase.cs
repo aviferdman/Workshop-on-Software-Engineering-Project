@@ -2,6 +2,7 @@
 {
     public abstract class ProxyBase<TBridge> where TBridge : class
     {
+        public ProxyBase() { }
         public ProxyBase(TBridge? realBridge)
         {
             RealBridge = realBridge;
@@ -11,7 +12,7 @@
         /// <summary>
         /// The actual bridge which conntects to the system
         /// </summary>
-        protected TBridge? RealBridge { get; }
+        public TBridge? RealBridge { get; internal set; }
         public SystemContext? SystemContext { get; internal set; }
 
         /// <summary>

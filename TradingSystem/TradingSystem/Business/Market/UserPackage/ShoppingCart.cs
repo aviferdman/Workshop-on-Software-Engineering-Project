@@ -65,11 +65,13 @@ namespace TradingSystem.Business.Market
 
         public BuyStatus Purchase(string username, PaymentMethod method, string clientPhone, Address clientAddress, double paySum)
         {
+            bool allStatusesOk = true;
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
             foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
             {
                 PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value, username, clientPhone, clientAddress, method, paySum);
                 purchases.Add(purchaseStatus);
+                allStatusesOk = allStatusesOk && purchaseStatus.TransactionStatus != null && purchaseStatus.TransactionStatus.Status;
             }
             //If failed to make all the trasactions, need to cancel deliveries and payments
             IEnumerable<PurchaseStatus> failedPayments = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.PaymentStatus != null && pur.TransactionStatus.PaymentStatus.Status == false);
@@ -78,7 +80,7 @@ namespace TradingSystem.Business.Market
             CancelPurchase(failedDeliveries, cancelDeliveries: true);
             //means no transactions failed
             bool allSuceeded = !failedDeliveries.Any() && !failedPayments.Any();
-            return new BuyStatus(allSuceeded, purchases);
+            return new BuyStatus(allSuceeded && allStatusesOk, purchases);
         }
 
         private void CancelPurchase(IEnumerable<PurchaseStatus> purchases, bool cancelDeliveries = false, bool cancelPayments = false)

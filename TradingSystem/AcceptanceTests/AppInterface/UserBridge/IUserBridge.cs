@@ -32,6 +32,15 @@ namespace AcceptanceTests.AppInterface.UserBridge
         bool SignUp(UserInfo signupInfo);
 
         bool Login(UserInfo loginInfo);
-        bool LogOut();
+
+        /// <summary>
+        /// Logins into the specified user using the password.
+        /// If necessary logs out of the currently logged-in user.
+        /// </summary>
+        /// <param name="loginInfo">The info to login with</param>
+        /// <returns>Whether logging-in was successful</returns>
+        bool AssureLogin(UserInfo loginInfo);
+
+        bool Logout();
     }
 }

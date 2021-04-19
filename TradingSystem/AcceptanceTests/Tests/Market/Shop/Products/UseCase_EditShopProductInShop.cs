@@ -4,6 +4,7 @@ using System.Linq;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
@@ -21,58 +22,86 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             new object[]
             {
                 SystemContext.Instance,
-                User_ShopOwner1,
-                new ShopInfo(SHOP_NAME),
-                new ProductEditInfo[]
-                {
-                    new ProductEditInfo(
-                        new ProductInfo("WiiU", 1000, 80),
-                        new ProductInfo("WiiU", 1100, 90)
-                    ),
-                    new ProductEditInfo(
-                        new ProductInfo("garbage can", 20, 100),
-                        new ProductInfo("garbage can not haHAA", 15, 80)
-                    ),
-                },
+                new ShopImage
+                (
+                    User_ShopOwner1,
+                    Shop1,
+                    new ProductIdentifiable[]
+                    {
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "WiiU",
+                            quantity: 80,
+                            price: 1000,
+                            category: "gaming consoles",
+                            weight: 5
+                        )),
+                        new ProductIdentifiable(new ProductInfo(
+                            name: "garbage can",
+                            quantity: 100,
+                            price: 20,
+                            category: "garbage cans",
+                            weight: 1
+                        )),
+                    }
+                ),
+                (Func<ShopImage, IEnumerable<ProductShopEditInfo>>)(
+                    shopImage =>
+                    new ProductShopEditInfo[]
+                    {
+                        new ProductShopEditInfo(
+                            shopImage.ShopProducts[0],
+                            new ProductInfo(
+                                name: "WiiU",
+                                quantity: 90,
+                                price: 1100,
+                                category: "gaming consoles",
+                                weight: 5
+                            )
+                        ),
+                        new ProductShopEditInfo(
+                            shopImage.ShopProducts[1],
+                            new ProductInfo(
+                                name: "garbage can not haHAA",
+                                quantity: 80,
+                                price: 15,
+                                category: "garbage cans",
+                                weight: 1
+                            )
+                        ),
+                    }
+                ),
             },
         };
 
         private UseCase_AddProductToShop useCase_addProduct;
 
-        public UseCase_EditShopProductInShop(SystemContext systemContext, UserInfo shopOwnerUser, ShopInfo shopInfo, IEnumerable<ProductEditInfo> productInfos) :
-            base(systemContext, shopOwnerUser)
+        public UseCase_EditShopProductInShop
+        (
+            SystemContext systemContext,
+            ShopImage shopImage,
+            Func<ShopImage, IEnumerable<ProductShopEditInfo>> productsProvidersEdit
+        ) :
+            base(systemContext, shopImage.OwnerUser)
         {
-            if (productInfos is null)
-            {
-                throw new ArgumentNullException(nameof(productInfos));
-            }
-            if (!productInfos.Any())
-            {
-                throw new ArgumentException("Must contain least have 1 product", nameof(productInfos));
-            }
-
-            ShopInfo = shopInfo;
-            ProductEditInfos = productInfos;
-            AddedProductIds = new List<ProductId>();
+            ShopImage = shopImage;
+            ProductsProvidersEdit = productsProvidersEdit;
         }
 
         public ShopId ShopId => useCase_addProduct.ShopId;
 
-        public ShopInfo ShopInfo { get; }
-        public IEnumerable<ProductEditInfo> ProductEditInfos { get; }
-        private IList<ProductId> AddedProductIds { get; }
+        public IEnumerable<ProductShopEditInfo> ProductEditInfos { get; private set; }
+        public ShopImage ShopImage { get; }
+        public Func<ShopImage, IEnumerable<ProductShopEditInfo>> ProductsProvidersEdit { get; }
 
         [SetUp]
         public override void Setup()
         {
             base.Setup();
-            useCase_addProduct = new UseCase_AddProductToShop(SystemContext.Instance, UserInfo, ShopInfo.Name);
+
+            ProductEditInfos = ProductsProvidersEdit(ShopImage);
+            useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
-            foreach (ProductEditInfo productEditInfo in ProductEditInfos)
-            {
-                ProductId productId = useCase_addProduct.Success_Normal(productEditInfo.ProductInfoOriginal);
-                AddedProductIds.Add(productId);
-            }
+            useCase_addProduct.Success_Normal_CheckStoreProducts();
         }
 
         [TearDown]
@@ -82,40 +111,142 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         }
 
         [TestCase]
-        public void Success_Normal()
+        public void Success_CheckStoreProducts()
         {
-            IEnumerable<(ProductInfo ProductEditInfo, ProductId ProductId)> productInfoEdits = ProductEditInfos
-                .Select(x => x.ProductInfoEdit)
-                .Zip(AddedProductIds);
-            foreach ((ProductInfo ProductEditInfo, ProductId ProductId) item in productInfoEdits)
+            IEnumerable<ProductIdentifiable> expected = Success_NoCheckStoreProducts();
+            new UseCase_ViewShopProducts_TestLogic(SystemContext)
+                .Success_Normal(ShopId, expected);
+        }
+
+        public IEnumerable<ProductIdentifiable> Success_NoCheckStoreProducts()
+        {
+            EditProducts();
+            return CalculateExpected();
+        }
+
+        private void EditProducts()
+        {
+            foreach (ProductShopEditInfo productEditInfo in ProductEditInfos)
             {
-                Assert.IsTrue(Bridge.EditProductInShop(ShopId, item.ProductId, item.ProductEditInfo));
+                Assert.IsTrue(MarketBridge.EditProductInShop(ShopId, productEditInfo.ProductOriginal.ProductId, productEditInfo.ProductInfoEdit));
             }
         }
 
-        [TestCase]
+        private IEnumerable<ProductIdentifiable> CalculateExpected()
+        {
+            ISet<ProductIdentifiable> expected = new HashSet<ProductIdentifiable>(ShopImage.ShopProducts);
+            foreach (ProductShopEditInfo productEditInfo in ProductEditInfos)
+            {
+                _ = expected.Remove(productEditInfo.ProductOriginal);
+                _ = expected.Add(new ProductIdentifiable(productEditInfo.ProductInfoEdit, productEditInfo.ProductOriginal.ProductId));
+            }
+            return expected;
+        }
+
+        public void Failure_NotLoggedIn()
+        {
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, productId, productInfo));
+        }
+
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, AddedProductIds.First(), ProductEditInfos.First().ProductInfoEdit));
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, productId, productInfo));
+        }
+
+        public void Failure_ShopDoesntExist()
+        {
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(MarketBridge.EditProductInShop(new ShopId(Guid.NewGuid(), "notexists"), productId, productInfo));
+        }
+
+        public void Failure_InvalidShopId()
+        {
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(MarketBridge.EditProductInShop(default, productId, productInfo));
+        }
+
+        [TestCase]
+        public void Failure_InvalidProductId()
+        {
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, default, productInfo));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, new ProductId(int.MaxValue - 1), ProductEditInfos.First().ProductInfoEdit));
+            ProductId productId = ShopImage.ShopProducts[0].ProductId;
+            ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, new ProductId(Guid.NewGuid()), productInfo));
+        }
+
+        [TestCase]
+        public void Failure_ProductNotInShop()
+        {
+            var product2 = new ProductIdentifiable(new ProductInfo
+            (
+                name: "air conditioner remote control",
+                quantity: 800,
+                price: 6,
+                category: "air conditioning",
+                weight: 0.6
+            ));
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
+            useCase_addProduct = new UseCase_AddProductToShop
+            (
+                SystemContext,
+                new ShopImage(UserInfo, Shop2, new ProductIdentifiable[] { product2 })
+            );
+            useCase_addProduct.Setup();
+            useCase_addProduct.Success_Normal_CheckStoreProducts();
+
+            ProductInfo productInfo = product2.ProductInfo;
+            productInfo.Price = 5;
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, product2.ProductId, productInfo));
         }
 
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsNull(Bridge.EditProductInShop(ShopId, AddedProductIds.First(), new ProductInfo("ineditcucumber", -7, 23)));
+            Assert.IsFalse(MarketBridge.EditProductInShop
+            (
+                ShopId,
+                ShopImage.ShopProducts[0].ProductId,
+                new ProductInfo
+                (
+                    name: "ineditcucumber",
+                    quantity: 23,
+                    price: -7,
+                    category: "cat1",
+                    weight: 2
+                )
+            ));
         }
 
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsNull(Bridge.EditProductInShop(ShopId, AddedProductIds.First(), new ProductInfo("", 14, 23)));
+            Assert.IsFalse(MarketBridge.EditProductInShop
+            (
+                ShopId,
+                ShopImage.ShopProducts[0].ProductId,
+                new ProductInfo
+                (
+                    name: "",
+                    quantity: 23,
+                    price: 14,
+                    category: "cat1",
+                    weight: 2
+                )
+            ));
         }
     }
 }

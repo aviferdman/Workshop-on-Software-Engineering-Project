@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 
@@ -12,9 +14,22 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             base(systemContext)
         { }
 
-        public void Success_Normal(ProductInCart product)
+        public void Success_Normal_NoCheckCartItems(IEnumerable<ProductInCart> productsAdd)
         {
-            Assert.IsTrue(Bridge.AddProductToUserCart(product));
+            foreach (ProductInCart product in productsAdd)
+            {
+                Assert.IsTrue(MarketBridge.AddProductToUserCart(product));
+            }
+        }
+
+        public void Success_Normal_CheckCartItems(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductInCart> expected)
+        {
+            Success_Normal_NoCheckCartItems(productsAdd);
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
+                expected,
+                x => x.ProductId
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
     }
 }

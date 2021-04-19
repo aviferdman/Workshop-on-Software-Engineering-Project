@@ -28,19 +28,22 @@ namespace AcceptanceTests.AppInterface
 
         private static SystemContext New()
         {
-            var system = new SystemContext(
-                userBridge:   new UserBridgeProxy(UserBridgeAdapter.New()),
-                marketBridge: new MarketBridgeProxy(null)
+            var systemContext = new SystemContext(
+                userBridge: new UserBridgeProxy(),
+                marketBridge: new MarketBridgeProxy()
             );
-            system.userBridge.SystemContext = system;
-            system.marketBridge.SystemContext = system;
-            return system;
+            systemContext.userBridge.SystemContext = systemContext;
+            systemContext.userBridge.RealBridge = UserBridgeAdapter.New(systemContext);
+            systemContext.marketBridge.SystemContext = systemContext;
+            systemContext.marketBridge.RealBridge = MarketBridgeAdapter.New(systemContext);
+            return systemContext;
         }
 
         public static SystemContext Instance { get; } = New();
 
         public IUserBridge UserBridge => userBridge.Bridge;
         public IMarketBridge MarketBridge => marketBridge.Bridge;
+        internal string? TokenUsername { get; set; }
         public UserInfo? LoggedInUser { get; internal set; }
     }
 }
