@@ -46,6 +46,7 @@ namespace TradingSystemTests.IntegrationTests
             marketGeneralService.ActivateDebugMode(new Mock<ExternalDeliverySystem>(), new Mock<ExternalPaymentSystem>(), true);
             Assert.AreEqual(1, logger.Errors.Count);
             Assert.AreEqual("Error: Transaction ActivateDebugMode", logger.Errors[0]);
+
         }
 
         [TestCleanup]
