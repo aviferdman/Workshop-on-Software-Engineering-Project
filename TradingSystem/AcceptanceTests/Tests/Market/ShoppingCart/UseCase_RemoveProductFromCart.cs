@@ -122,21 +122,25 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Failure_NoShoppingBasket()
         {
             Success_Normal_CheckCartItems();
-            Assert.IsFalse(Bridge.RemoveProductFromUserCart(ShopImage.ShopProducts[1].ProductId));
-            AssertCartDidntChange();
+            Assert.IsFalse(MarketBridge.RemoveProductFromUserCart(ShopImage.ShopProducts[1].ProductId));
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
+                Enumerable.Empty<ProductInCart>(),
+                x => x.ProductId
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
 
         [TestCase]
         public void Failure_NotInCart()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromUserCart(ShopImage.ShopProducts[1].ProductId));
+            Assert.IsFalse(MarketBridge.RemoveProductFromUserCart(ShopImage.ShopProducts[1].ProductId));
             AssertCartDidntChange();
         }
 
         [TestCase]
         public void Failure_ProductDoesntExist()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromUserCart(new ProductId(Guid.NewGuid())));
+            Assert.IsFalse(MarketBridge.RemoveProductFromUserCart(new ProductId(Guid.NewGuid())));
             AssertCartDidntChange();
         }
 
@@ -146,7 +150,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             (
                 ProductForCart.ToProductInCart(useCase_addProductToCart.ProductsAdd),
                 x => x.ProductId
-            ).AssertEquals(Bridge.GetShoppingCartItems());
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
     }
 }

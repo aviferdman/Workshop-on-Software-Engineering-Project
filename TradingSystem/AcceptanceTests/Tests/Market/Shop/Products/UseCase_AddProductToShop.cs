@@ -118,7 +118,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             while (products.Count > 0)
             {
-                _ = Bridge.RemoveProductFromShop(ShopId, products.Dequeue());
+                _ = MarketBridge.RemoveProductFromShop(ShopId, products.Dequeue());
             }
             useCase_openShop.Teardown();
         }
@@ -153,7 +153,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
 
         public ProductId Success_Normal_NoCheckStoreProducts(ProductInfo productInfo)
         {
-            ProductId? productId = Bridge.AddProductToShop(ShopId, productInfo);
+            ProductId? productId = MarketBridge.AddProductToShop(ShopId, productInfo);
             Assert.IsNotNull(productId);
             products.Enqueue(productId!.Value);
             return productId.Value;
@@ -174,47 +174,47 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public void Failure_NotLoggedIn(ProductInfo productInfo)
         {
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(ShopId, productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_InsufficientPermissions(ProductInfo productInfo)
         {
             LoginToBuyer();
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(ShopId, productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_ShopDoesntExist(ProductInfo productInfo)
         {
-            Assert.IsNull(Bridge.AddProductToShop(new ShopId(Guid.NewGuid(), "notexists"), productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(new ShopId(Guid.NewGuid(), "notexists"), productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_InvalidShopId(ProductInfo productInfo)
         {
-            Assert.IsNull(Bridge.AddProductToShop(default, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(default, productInfo));
         }
 
         [TestCaseSource(nameof(TestProductInfo))]
         public void Failure_InvalidPrice(ProductInfo productInfo)
         {
             productInfo.Price = -3;
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(ShopId, productInfo));
         }
 
         [TestCaseSource(nameof(InvalidQuantitySource))]
         public void Failure_InvalidQuantity(ProductInfo productInfo, int quantity)
         {
             productInfo.Quantity = quantity;
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(ShopId, productInfo));
         }
 
         [TestCaseSource(nameof(InvalidNameSource))]
         public void Failure_InvalidName(ProductInfo productInfo, string name)
         {
             productInfo.Name = name;
-            Assert.IsNull(Bridge.AddProductToShop(ShopId, productInfo));
+            Assert.IsNull(MarketBridge.AddProductToShop(ShopId, productInfo));
         }
     }
 }

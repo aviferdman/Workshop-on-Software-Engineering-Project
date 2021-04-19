@@ -85,6 +85,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             base.Setup();
 
+            ProductsTeardown = new List<ProductId>();
+
             useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
             useCase_addProduct.Success_Normal_CheckStoreProducts();
@@ -94,16 +96,17 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_login_buyer.Setup();
             useCase_login_buyer.Success_Normal();
 
-            ProductsTeardown = new List<ProductId>(ProductsAdd.Select(x => x.ProductIdentifiable.ProductId));
+            ProductsTeardown.AddRange(ProductsAdd.Select(x => x.ProductIdentifiable.ProductId));
             testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext);
         }
 
         [TearDown]
         public override void Teardown()
         {
+            SystemContext.UserBridge.AssureLogin(UserInfo);
             foreach (ProductId productId in ProductsTeardown)
             {
-                _ = Bridge.RemoveProductFromUserCart(productId);
+                _ = MarketBridge.RemoveProductFromUserCart(productId);
             }
             useCase_login_buyer?.Teardown();
             bool loggedInToShopOwner = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
@@ -138,12 +141,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Failure_ProductDoesntExist()
         {
             ProductForCart product = ProductsAdd.First();
-            Assert.IsFalse(Bridge.AddProductToUserCart(new ProductInCart(new ProductId(Guid.NewGuid()), product.CartQuantity)));
+            Assert.IsFalse(MarketBridge.AddProductToUserCart(new ProductInCart(new ProductId(Guid.NewGuid()), product.CartQuantity)));
             new Assert_SetEquals<ProductId, ProductInCart>
             (
                 Enumerable.Empty<ProductInCart>(),
                 x => x.ProductId
-            ).AssertEquals(Bridge.GetShoppingCartItems());
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
 
         [TestCase]
@@ -151,12 +154,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             Success_NoBasket();
             ProductForCart product = ProductsAdd.First();
-            Assert.IsFalse(Bridge.AddProductToUserCart(new ProductInCart(product.ProductIdentifiable.ProductId, product.CartQuantity + 1)));
+            Assert.IsFalse(MarketBridge.AddProductToUserCart(new ProductInCart(product.ProductIdentifiable.ProductId, product.CartQuantity + 1)));
             new Assert_SetEquals<ProductId, ProductInCart>
             (
                 new ProductInCart[] { new ProductInCart(product.ProductIdentifiable.ProductId, product.CartQuantity) },
                 x => x.ProductId
-            ).AssertEquals(Bridge.GetShoppingCartItems());
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
     }
 }

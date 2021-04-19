@@ -18,7 +18,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             foreach (ProductInCart product in productsAdd)
             {
-                Assert.IsTrue(Bridge.AddProductToUserCart(product));
+                Assert.IsTrue(MarketBridge.AddProductToUserCart(product));
             }
         }
 
@@ -29,7 +29,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             (
                 expected,
                 x => x.ProductId
-            ).AssertEquals(Bridge.GetShoppingCartItems());
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
     }
 }

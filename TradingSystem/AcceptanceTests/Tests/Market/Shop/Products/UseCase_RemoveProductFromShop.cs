@@ -96,7 +96,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             foreach (ProductIdentifiable product in productsToRemove)
             {
-                Assert.IsTrue(Bridge.RemoveProductFromShop(ShopId, product.ProductId));
+                Assert.IsTrue(MarketBridge.RemoveProductFromShop(ShopId, product.ProductId));
             }
         }
 
@@ -111,39 +111,39 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             ProductId productId = productsToRemove.First().ProductId;
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, productId));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(ShopId, productId));
         }
 
         public void Failure_InsufficientPermissions()
         {
             LoginToBuyer();
             ProductId productId = productsToRemove.First().ProductId;
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, productId));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(ShopId, productId));
         }
 
         public void Failure_ShopDoesntExist()
         {
             ProductId productId = productsToRemove.First().ProductId;
-            Assert.IsFalse(Bridge.RemoveProductFromShop(new ShopId(Guid.NewGuid(), "notexists"), productId));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(new ShopId(Guid.NewGuid(), "notexists"), productId));
         }
 
         public void Failure_InvalidShopId()
         {
             ProductId productId = productsToRemove.First().ProductId;
-            Assert.IsFalse(Bridge.RemoveProductFromShop(default, productId));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(default, productId));
         }
 
         [TestCase]
         public void Failure_InvalidProductId()
         {
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, default));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(ShopId, default));
         }
 
         [TestCase]
         public void Failure_ProductDoesNotExist()
         {
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, new ProductId(Guid.NewGuid())));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(ShopId, new ProductId(Guid.NewGuid())));
         }
 
         [TestCase]
@@ -166,7 +166,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             useCase_addProduct.Setup();
             useCase_addProduct.Success_Normal_CheckStoreProducts();
 
-            Assert.IsFalse(Bridge.RemoveProductFromShop(ShopId, product2.ProductId));
+            Assert.IsFalse(MarketBridge.RemoveProductFromShop(ShopId, product2.ProductId));
         }
     }
 }

@@ -75,7 +75,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Success_AllChanged()
         {
-            Assert.IsTrue(Bridge.EditUserCart(
+            Assert.IsTrue(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
@@ -87,17 +87,17 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_NotMutuallyDisjoint()
         {
-            Assert.IsFalse(Bridge.EditUserCart(
+            Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[1].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
-            Assert.IsFalse(Bridge.EditUserCart(
+            Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[0].ShopProducts[0].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
             ));
-            Assert.IsFalse(Bridge.EditUserCart(
+            Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 5) }

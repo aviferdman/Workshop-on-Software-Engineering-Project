@@ -57,7 +57,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         }
         public ShopId Success_Normal(ShopInfo shopInfo)
         {
-            ShopId? shop = Bridge.AssureOpenShop(shopInfo);
+            ShopId? shop = MarketBridge.AssureOpenShop(shopInfo);
             Assert.IsNotNull(shop);
             // TODO: check the owner and the founder
             return shop!.Value;
@@ -67,7 +67,7 @@ namespace AcceptanceTests.Tests.Market.Shop
         public void Failure_NotLoggedIn()
         {
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
-            Assert.IsNull(Bridge.OpenShop(new ShopInfo(
+            Assert.IsNull(MarketBridge.OpenShop(new ShopInfo(
                 name: "non existing shop",
                 bankAccount: new BankAccount(branch: 3, accountNumber: 2),
                 new Address

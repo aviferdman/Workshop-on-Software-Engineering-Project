@@ -128,7 +128,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             foreach (ProductShopEditInfo productEditInfo in ProductEditInfos)
             {
-                Assert.IsTrue(Bridge.EditProductInShop(ShopId, productEditInfo.ProductOriginal.ProductId, productEditInfo.ProductInfoEdit));
+                Assert.IsTrue(MarketBridge.EditProductInShop(ShopId, productEditInfo.ProductOriginal.ProductId, productEditInfo.ProductInfoEdit));
             }
         }
 
@@ -148,7 +148,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, productId, productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, productId, productInfo));
         }
 
         public void Failure_InsufficientPermissions()
@@ -156,28 +156,28 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
             LoginToBuyer();
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, productId, productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, productId, productInfo));
         }
 
         public void Failure_ShopDoesntExist()
         {
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(new ShopId(Guid.NewGuid(), "notexists"), productId, productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(new ShopId(Guid.NewGuid(), "notexists"), productId, productInfo));
         }
 
         public void Failure_InvalidShopId()
         {
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(default, productId, productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(default, productId, productInfo));
         }
 
         [TestCase]
         public void Failure_InvalidProductId()
         {
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, default, productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, default, productInfo));
         }
 
         [TestCase]
@@ -185,7 +185,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         {
             ProductId productId = ShopImage.ShopProducts[0].ProductId;
             ProductInfo productInfo = ProductEditInfos.First().ProductInfoEdit;
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, new ProductId(Guid.NewGuid()), productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, new ProductId(Guid.NewGuid()), productInfo));
         }
 
         [TestCase]
@@ -210,13 +210,13 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
 
             ProductInfo productInfo = product2.ProductInfo;
             productInfo.Price = 5;
-            Assert.IsFalse(Bridge.EditProductInShop(ShopId, product2.ProductId, productInfo));
+            Assert.IsFalse(MarketBridge.EditProductInShop(ShopId, product2.ProductId, productInfo));
         }
 
         [TestCase]
         public void Failure_InvalidPrice()
         {
-            Assert.IsFalse(Bridge.EditProductInShop
+            Assert.IsFalse(MarketBridge.EditProductInShop
             (
                 ShopId,
                 ShopImage.ShopProducts[0].ProductId,
@@ -234,7 +234,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TestCase]
         public void Failure_InvalidName()
         {
-            Assert.IsFalse(Bridge.EditProductInShop
+            Assert.IsFalse(MarketBridge.EditProductInShop
             (
                 ShopId,
                 ShopImage.ShopProducts[0].ProductId,

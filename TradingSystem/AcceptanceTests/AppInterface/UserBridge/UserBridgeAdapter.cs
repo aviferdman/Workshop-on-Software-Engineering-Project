@@ -86,7 +86,12 @@ namespace AcceptanceTests.AppInterface.UserBridge
             return success;
         }
 
-        public bool LogOut()
+        public bool AssureLogin(UserInfo loginInfo)
+        {
+            throw new InvalidOperationException($"Should not call this method, use {nameof(Login)} method instead.");
+        }
+
+        public bool Logout()
         {
             string guestUsername = LogoutCore();
             if (!IsUsernameValid(guestUsername))

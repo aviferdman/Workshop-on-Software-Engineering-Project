@@ -39,7 +39,7 @@ namespace AcceptanceTests.Tests.User
 
         public override void Teardown()
         {
-            _ = Bridge.LogOut();
+            _ = Bridge.Logout();
             test_signUp.Teardown();
             base.Teardown();
         }

@@ -126,7 +126,7 @@ namespace AcceptanceTests.Tests.Market
 
         private void TestSuccess(ProductSearchCreteria searchCreteria, IEnumerable<ProductIdentifiable> expectedResults)
         {
-            ProductSearchResults? results = Bridge.SearchProducts(searchCreteria);
+            ProductSearchResults? results = MarketBridge.SearchProducts(searchCreteria);
             Assert.IsNotNull(results);
             Assert.IsNull(results!.TypoFixes, $"expected no typo fixes");
             Assert.IsTrue(results!.IsValid(), $"expect valid results (valid IDs)");
@@ -173,7 +173,7 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Failure_MatchingKeywordsButNotFilter()
         {
-            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("charger")
+            ProductSearchResults? results = MarketBridge.SearchProducts(new ProductSearchCreteria("charger")
             {
                 PriceRange_High = 1
             });
@@ -184,7 +184,7 @@ namespace AcceptanceTests.Tests.Market
         [TestCase]
         public void Failure_NotMatchingKeywords()
         {
-            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
+            ProductSearchResults? results = MarketBridge.SearchProducts(new ProductSearchCreteria("suabjkbeio"));
             Assert.NotNull(results, "Products search - null results");
             Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
         }
@@ -192,7 +192,7 @@ namespace AcceptanceTests.Tests.Market
         // Not a test case for now
         public void Failure_Typo()
         {
-            ProductSearchResults? results = Bridge.SearchProducts(new ProductSearchCreteria("abg"));
+            ProductSearchResults? results = MarketBridge.SearchProducts(new ProductSearchCreteria("abg"));
             Assert.NotNull(results, "Products search - null results");
             Assert.IsEmpty(results, "Products search - not matching keywords - expected no results");
             Assert.AreEqual(results!.TypoFixes, "bag", "Product search - typo - expected fix");
@@ -230,14 +230,7 @@ namespace AcceptanceTests.Tests.Market
 
             public void Teardown()
             {
-                if (!ShopImage.OwnerUser.Equals(SystemContext.LoggedInUser))
-                {
-                    if (SystemContext.LoggedInUser != null)
-                    {
-                        _ = SystemContext.UserBridge.LogOut();
-                    }
-                    _ = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
-                }
+                _ = SystemContext.UserBridge.AssureLogin(ShopImage.OwnerUser);
                 useCase_addProduct?.Teardown();
             }
         }

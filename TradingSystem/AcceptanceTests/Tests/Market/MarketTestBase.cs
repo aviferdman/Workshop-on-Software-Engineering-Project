@@ -1,6 +1,7 @@
 ﻿using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
+using AcceptanceTests.AppInterface.UserBridge;
 
 namespace AcceptanceTests.Tests.Market
 {
@@ -20,6 +21,7 @@ namespace AcceptanceTests.Tests.Market
             SystemContext = systemContext;
         }
 
-        protected IMarketBridge Bridge => SystemContext.MarketBridge;
+        protected IMarketBridge MarketBridge => SystemContext.MarketBridge;
+        protected IUserBridge UserBridge => SystemContext.UserBridge;
     }
 }

@@ -78,7 +78,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             {
                 foreach (ProductInCart product in ChosenProducts)
                 {
-                    _ = Bridge.RemoveProductFromUserCart(product.ProductId);
+                    _ = MarketBridge.RemoveProductFromUserCart(product.ProductId);
                 }
             }
             useCase_search.Teardown();
@@ -87,7 +87,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Success_Normal()
         {
-            IEnumerable<ProductInCart>? cartItems = Bridge.GetShoppingCartItems();
+            IEnumerable<ProductInCart>? cartItems = MarketBridge.GetShoppingCartItems();
             new Assert_SetEquals<ProductId, ProductInCart>
             (
                 ChosenProducts,
