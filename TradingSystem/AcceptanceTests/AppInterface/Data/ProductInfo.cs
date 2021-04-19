@@ -1,4 +1,6 @@
-﻿namespace AcceptanceTests.AppInterface.Data
+﻿using TradingSystem.Business.Market;
+
+namespace AcceptanceTests.AppInterface.Data
 {
     public struct ProductInfo
     {
@@ -9,6 +11,18 @@
             Category = category;
             Weight = weight;
             Quantity = quantity;
+        }
+
+        public static ProductData ToProductData(ProductInfo productInfo)
+        {
+            return new ProductData
+            (
+                name: productInfo.Name,
+                quantity: productInfo.Quantity,
+                weight: productInfo.Weight,
+                price: productInfo.Price,
+                category: productInfo.Category
+            );
         }
 
         public string Name { get; set; }

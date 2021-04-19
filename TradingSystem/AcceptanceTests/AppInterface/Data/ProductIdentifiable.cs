@@ -1,4 +1,6 @@
-﻿namespace AcceptanceTests.AppInterface.Data
+﻿using TradingSystem.Business.Market;
+
+namespace AcceptanceTests.AppInterface.Data
 {
     public class ProductIdentifiable
     {
@@ -8,6 +10,22 @@
         {
             ProductInfo = productInfo;
             ProductId = productId;
+        }
+
+        public static ProductIdentifiable FromProductData(ProductData productData)
+        {
+            return new ProductIdentifiable
+            (
+                new ProductInfo
+                (
+                    name: productData._name,
+                    quantity: productData._quantity,
+                    price: productData._price,
+                    category: productData.category,
+                    weight: productData._weight
+                ),
+                productData.pid
+            );
         }
 
         public ProductInfo ProductInfo { get; }

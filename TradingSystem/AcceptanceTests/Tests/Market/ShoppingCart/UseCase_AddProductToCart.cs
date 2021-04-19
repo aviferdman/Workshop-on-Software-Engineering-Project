@@ -103,7 +103,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TearDown]
         public override void Teardown()
         {
-            SystemContext.UserBridge.AssureLogin(UserInfo);
+            _ = UserBridge.AssureLogin(UserInfo);
             foreach (ProductId productId in ProductsTeardown)
             {
                 _ = MarketBridge.RemoveProductFromUserCart(productId);

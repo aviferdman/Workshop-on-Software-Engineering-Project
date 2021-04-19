@@ -6,14 +6,14 @@ namespace AcceptanceTests.AppInterface.Data
 {
     public class ProductSearchResults : IEnumerable<ProductIdentifiable>
     {
-        public ProductSearchResults(IEnumerable<ProductIdentifiable> results, string typoFixes)
+        public ProductSearchResults(IEnumerable<ProductIdentifiable> results, string? typoFixes)
         {
             Results = results;
             TypoFixes = typoFixes;
         }
 
         public IEnumerable<ProductIdentifiable> Results { get; }
-        public string TypoFixes { get; }
+        public string? TypoFixes { get; }
 
         public bool IsValid()
         {

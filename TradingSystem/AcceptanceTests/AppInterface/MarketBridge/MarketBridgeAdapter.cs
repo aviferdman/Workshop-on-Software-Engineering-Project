@@ -42,7 +42,16 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public ProductSearchResults? SearchProducts(ProductSearchCreteria creteria)
         {
-            throw new NotImplementedException();
+            ICollection<ProductData>? results = marketProductsService.FindProducts
+            (
+                creteria.Keywords,
+                (int)Math.Floor(creteria.PriceRange_Low),
+                (int)Math.Ceiling(creteria.PriceRange_High),
+                (int)creteria.ProductRating,
+                creteria.Category
+            );
+
+            return new ProductSearchResults(results.Select(ProductIdentifiable.FromProductData), null);
         }
 
         public ShopId? OpenShop(ShopInfo shopInfo)
@@ -86,32 +95,14 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
         {
             ICollection<ProductData>? products = marketProductsService.FindProductsByStores(shopId.ShopName);
-            return products?.Select(product => new ProductIdentifiable
-            (
-                new ProductInfo
-                (
-                    name: product._name,
-                    quantity: product._quantity,
-                    price: product._price,
-                    category: product.category,
-                    weight: product._weight
-                ),
-                product.pid
-            ));
+            return products?.Select(ProductIdentifiable.FromProductData);
         }
 
         public ProductId? AddProductToShop(ShopId shopId, ProductInfo productInfo)
         {
             Result<Product> result = marketProductsService.AddProduct
             (
-                new ProductData
-                (
-                    name: productInfo.Name,
-                    quantity: productInfo.Quantity,
-                    weight: productInfo.Weight,
-                    price: productInfo.Price,
-                    category: productInfo.Category
-                ),
+                ProductInfo.ToProductData(productInfo),
                 shopId,
                 Username
             );
@@ -129,14 +120,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             string result = marketProductsService.EditProduct
             (
                 productId,
-                new ProductData
-                (
-                    name: newProductDetails.Name,
-                    quantity: newProductDetails.Quantity,
-                    weight: newProductDetails.Weight,
-                    price: newProductDetails.Price,
-                    category: newProductDetails.Category
-                ),
+                ProductInfo.ToProductData(newProductDetails),
                 shopId,
                 Username
             );
