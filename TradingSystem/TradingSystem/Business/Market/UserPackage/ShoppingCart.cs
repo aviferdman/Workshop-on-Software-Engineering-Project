@@ -8,57 +8,36 @@ namespace TradingSystem.Business.Market
 {
     public class ShoppingCart :IShoppingCart
     {
-        private SortedDictionary<IStore, IShoppingBasket> _store_shoppingBasket;
+        private SortedSet<IShoppingBasket> shoppingBaskets;
 
-        public SortedDictionary<IStore, IShoppingBasket> Store_shoppingBasket { get => _store_shoppingBasket; set => _store_shoppingBasket = value; }
+        public SortedSet<IShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
 
         public ShoppingCart()
         {
-            this.Store_shoppingBasket = new SortedDictionary<IStore, IShoppingBasket>();
+            this.shoppingBaskets = new SortedSet<IShoppingBasket>();
         }
 
         public bool IsEmpty()
         {
-            var notEmptyBaskets = Store_shoppingBasket.Values.Where(shoppingBasket => !shoppingBasket.IsEmpty());
+            var notEmptyBaskets = shoppingBaskets.Where(shoppingBasket => !shoppingBasket.IsEmpty());
             return !notEmptyBaskets.Any();
         }
         public IShoppingBasket GetShoppingBasket(IStore store)
         {
             //create if not exists
-            if (!Store_shoppingBasket.ContainsKey(store))
+            if (!shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
             {
-                Store_shoppingBasket.Add(store, new ShoppingBasket());
+                shoppingBaskets.Add(new ShoppingBasket(this, store));
             }
-            return Store_shoppingBasket[store];
-        }
-
-        public void AddShoppingBasket(IStore store, IShoppingBasket shoppingBasket)
-        {
-            Store_shoppingBasket.Add(store, shoppingBasket);
-        }
-
-        public void RemoveShoppingBasket(IStore store)
-        {
-            Store_shoppingBasket.Remove(store);
-        }
-
-        public void UpdateShoppingBasket(IStore store, IShoppingBasket shoppingBasket)
-        {
-            //create if not exists
-            if (!Store_shoppingBasket.Keys.Contains(store))
-            {
-                Store_shoppingBasket.Add(store, shoppingBasket);
-            }
-            Store_shoppingBasket[store] = shoppingBasket;
-
+            return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
         }
 
         public bool CheckPolicy()
         {
             bool isLegal = true;
-            foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
+            foreach (IShoppingBasket basket in shoppingBaskets)
             {
-                isLegal = isLegal && s_sb.Key.CheckPolicy(s_sb.Value);
+                isLegal = isLegal && basket.GetStore().CheckPolicy(basket);
             }
             return isLegal;
         }
@@ -67,9 +46,9 @@ namespace TradingSystem.Business.Market
         {
             bool allStatusesOk = true;
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
-            foreach (KeyValuePair<IStore, IShoppingBasket> s_sb in Store_shoppingBasket)
+            foreach (IShoppingBasket basket in shoppingBaskets)
             {
-                PurchaseStatus purchaseStatus = s_sb.Key.Purchase(s_sb.Value, username, clientPhone, clientAddress, method, paySum);
+                PurchaseStatus purchaseStatus = basket.GetStore().Purchase(basket, username, clientPhone, clientAddress, method, paySum);
                 purchases.Add(purchaseStatus);
                 allStatusesOk = allStatusesOk && purchaseStatus.TransactionStatus != null && purchaseStatus.TransactionStatus.Status;
             }
@@ -94,17 +73,17 @@ namespace TradingSystem.Business.Market
 
         public double CalcPaySum()
         {
-            return Store_shoppingBasket.Aggregate(0.0, (total, next) => total + next.Key.CalcPaySum(next.Value));
+            return shoppingBaskets.Aggregate(0.0, (total, next) => total + next.GetStore().CalcPaySum(next));
         }
 
         public IDictionary<Guid, IDictionary<Guid , int >> GetShopingCartProducts()
         {
             IDictionary<Guid, IDictionary<Guid, int>> ret = new Dictionary<Guid, IDictionary<Guid, int>>();
-            foreach (IStore store in _store_shoppingBasket.Keys)
+            foreach (IShoppingBasket basket in shoppingBaskets)
             {
-                IDictionary<Product, int> dict = _store_shoppingBasket[store].GetDictionaryProductQuantity();
+                IDictionary<Product, int> dict = basket.GetDictionaryProductQuantity();
                 IDictionary<Guid, int> dictToAdd = FilterDictionary(dict);
-                ret.Add(store.GetId(), dictToAdd);
+                ret.Add(basket.GetStore().GetId(), dictToAdd);
             }
 
             return ret;

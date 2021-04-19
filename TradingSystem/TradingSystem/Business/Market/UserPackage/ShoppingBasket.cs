@@ -8,13 +8,24 @@ namespace TradingSystem.Business.Market
     public class ShoppingBasket : IShoppingBasket
     {
         Dictionary<Product, int> _product_quantity;
+        private ShoppingCart shoppingCart;
+        private IStore store;
 
         public ShoppingBasket()
         {
             this._product_quantity = new Dictionary<Product, int>();
         }
 
+        public ShoppingBasket(ShoppingCart shoppingCart, IStore store)
+        {
+            this.ShoppingCart = shoppingCart;
+            this.Store = store;
+            this._product_quantity = new Dictionary<Product, int>();
+        }
+
         public Dictionary<Product, int> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
+        public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
+        public IStore Store { get => store; set => store = value; }
 
         public bool IsEmpty()
         {
@@ -74,6 +85,11 @@ namespace TradingSystem.Business.Market
         public int CompareTo(object obj)
         {
             return obj.GetHashCode() - GetHashCode();
+        }
+
+        public IStore GetStore()
+        {
+            return store;
         }
     }
 }

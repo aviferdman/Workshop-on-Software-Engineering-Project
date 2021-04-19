@@ -21,5 +21,7 @@ namespace TradingSystem.Business.Market
 
         public string addProduct(Product p, int q);
 
+        public IStore GetStore();
+
     }
 }

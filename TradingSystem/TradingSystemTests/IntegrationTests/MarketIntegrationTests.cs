@@ -40,7 +40,7 @@ namespace TradingSystemTests.IntegrationTests
             u.ShoppingCart = cart;
             Product p = new Product("llll", 8, 50, 500,"category");
             Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
-            foreach(IShoppingBasket b in cart.Store_shoppingBasket.Values)
+            foreach(IShoppingBasket b in cart.ShoppingBaskets)
             {
                 Assert.IsFalse(b.GetProducts().Contains(p));
             }
