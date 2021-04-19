@@ -23,12 +23,12 @@ namespace TradingSystemTests.MarketTests
             store1.Setup(s => s.CheckPolicy(It.IsAny<IShoppingBasket>())).Returns(true);
             ShoppingCart shoppingCart = new ShoppingCart();
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
-            Mock<IShoppingBasket> shoppingBasket2 = new Mock<IShoppingBasket>();
-            shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
+            shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
+            shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
             Assert.AreEqual(true, shoppingCart.CheckPolicy());
 
         }
-
+        
         /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.CheckPolicy())"/>
         [TestMethod]
         public void CheckStoresReturnFalse()
@@ -37,12 +37,13 @@ namespace TradingSystemTests.MarketTests
             store1.Setup(s => s.CheckPolicy(It.IsAny<IShoppingBasket>())).Returns(false);
             ShoppingCart shoppingCart = new ShoppingCart();
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
-            Mock<IShoppingBasket> shoppingBasket2 = new Mock<IShoppingBasket>();
-            shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
+            shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
+            shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
             Assert.AreEqual(false, shoppingCart.CheckPolicy());
 
         }
 
+        
         /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, BankAccount, string, Address, double))"/>
         [TestMethod]
         public void CheckPurchaseWithLegalPurchaseStatus()
@@ -65,11 +66,13 @@ namespace TradingSystemTests.MarketTests
             store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
-            shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
+            shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
+            shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
             Assert.AreEqual(true, shoppingCart.Purchase(clienId, bankAccount, clientPhone, clientAddress, paySum).Status);
 
         }
 
+        
         /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, BankAccount, string, Address, double))"/>
         [TestMethod]
         public void CheckPurchaseDeliveryFailed()
@@ -95,8 +98,8 @@ namespace TradingSystemTests.MarketTests
 
             Mock<IStore> store1 = new Mock<IStore>();
             store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
-
-            shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
+            shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
+            shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
             Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum).Status);
 
         }
@@ -125,13 +128,12 @@ namespace TradingSystemTests.MarketTests
             PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
             Mock<IStore> store1 = new Mock<IStore>();
             store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>(), It.IsAny<double>())).Returns(purchaseStatus);
-
-            shoppingCart.Store_shoppingBasket.Add(store1.Object, shoppingBasket1.Object);
+            shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
+            shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
             Assert.AreEqual(false, shoppingCart.Purchase(clientId, bankAccount, clientPhone, clientAddress, paySum).Status);
 
         }
         
-
 
         [TestCleanup]
         public void DeleteAll()
