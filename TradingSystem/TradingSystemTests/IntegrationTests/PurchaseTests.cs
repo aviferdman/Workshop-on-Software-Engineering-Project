@@ -18,12 +18,14 @@ namespace TradingSystemTests.IntegrationTests
         private static readonly double WEIGHT1 = 100;
         private static readonly double PRICE1 = 100;
         private User testUser;
-        private Store testStore;
+        private IStore testStore;
         private BankAccount testUserBankAccount;
         private BankAccount testStoreBankAccount;
         private Address testUserAddress;
         private Address testStoreAddress;
         private Product product;
+        private ShoppingCart shoppingCart;
+        private ShoppingBasket shoppingBasket;
 
         public PurchaseTests()
         {
@@ -34,6 +36,8 @@ namespace TradingSystemTests.IntegrationTests
             testStoreBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            this.shoppingCart = new ShoppingCart();
+            this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -46,8 +50,8 @@ namespace TradingSystemTests.IntegrationTests
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(discount);
-            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
             Assert.AreEqual(PRICE1 * 5 - discount.DiscountValue, testUser.ShoppingCart.CalcPaySum());
+            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -60,6 +64,22 @@ namespace TradingSystemTests.IntegrationTests
             bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
             Assert.AreEqual(successPurchase, true);
             Assert.AreEqual(originQuantity - 5, product.Quantity);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void CheckIllegalPurcahseStoreQuantityRemains()
+        {
+            int originQuantity = product.Quantity;
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.AreEqual(successPurchase, false);
+            Assert.AreEqual(originQuantity, product.Quantity);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -82,13 +102,12 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
         }
 
-
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, PaymentMethod, Guid, BankAccount, double, IShoppingBasket)"/>
         [TestMethod]
         public void CheckLegalTransaction()
         {
             Transaction transaction = Transaction.Instance;
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, true);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, true);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
@@ -102,7 +121,7 @@ namespace TradingSystemTests.IntegrationTests
             paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.IsNull(transactionStatus.DeliveryStatus);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, false);
@@ -119,7 +138,7 @@ namespace TradingSystemTests.IntegrationTests
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             transaction.DeliveryAdapter.SetDeliverySystem(deliverySystem.Object);
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.Id, testStoreBankAccount, 1, new ShoppingBasket());
+            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, false);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
@@ -137,6 +156,31 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(product.Quantity, originalQuantity + 10);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void SucceessPurchaseBasketBecomesEmpty()
+        {
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
+            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsTrue(testUser.ShoppingCart.IsEmpty());
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void FailedPurchaseBasketRemainsTheSame()
+        {
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
+            Assert.IsFalse(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
+        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
@@ -156,7 +200,7 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
-        private bool CheckTotalWeightMoreThan400(Dictionary<Product, int> product_quantity)
+            private bool CheckTotalWeightMoreThan400(Dictionary<Product, int> product_quantity)
         {
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
             return weight > 400;
@@ -167,10 +211,13 @@ namespace TradingSystemTests.IntegrationTests
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
             return weight <= 400;
         }
-
+        
         [TestCleanup]
         public void DeleteAll()
         {
+            testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            this.shoppingCart = new ShoppingCart();
+            this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
             Transaction.Instance.DeleteAllTests();
         }
     }

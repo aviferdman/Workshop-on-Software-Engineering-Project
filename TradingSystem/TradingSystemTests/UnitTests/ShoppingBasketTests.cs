@@ -9,6 +9,16 @@ namespace TradingSystemTests.MarketTests
     [TestClass]
     public class ShoppingBasketTests
     {
+        private ShoppingCart shoppingCart;
+        private IStore store;
+        private ShoppingBasket shoppingBasket;
+
+        public ShoppingBasketTests()
+        {
+            this.shoppingCart = new ShoppingCart();
+            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
+        }
 
         //START UNIT TESTING
 
@@ -16,7 +26,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void GetStoreHistoryWithoutPermission()
         {
-            ShoppingBasket shoppingBasket = new ShoppingBasket();
             Product p1 = new Product(100, 100, 100);
             Product p2 = new Product(200, 200, 200);
             Product p3 = new Product(300, 300, 300);
@@ -30,7 +39,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void IsEmptyWithoutAnyProducts()
         {
-            ShoppingBasket shoppingBasket = new ShoppingBasket();
             Assert.AreEqual(true, shoppingBasket.IsEmpty());
         }
 
@@ -38,7 +46,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void IsEmptyWithProductsWithZeroQuantity()
         {
-            ShoppingBasket shoppingBasket = new ShoppingBasket();
             Product p1 = new Product(100, 100, 100);
             Product p2 = new Product(200, 200, 200);
             Product p3 = new Product(300, 300, 300);
@@ -52,7 +59,6 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void IsEmptyWithProductsWithPositiveQuantity()
         {
-            ShoppingBasket shoppingBasket = new ShoppingBasket();
             Product p1 = new Product(100, 100, 100);
             Product p2 = new Product(200, 200, 200);
             Product p3 = new Product(300, 300, 300);
@@ -66,6 +72,9 @@ namespace TradingSystemTests.MarketTests
         [TestCleanup]
         public void DeleteAll()
         {
+            this.shoppingCart = new ShoppingCart();
+            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
             Transaction.Instance.DeleteAllTests();
         }
 

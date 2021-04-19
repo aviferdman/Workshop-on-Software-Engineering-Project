@@ -55,11 +55,18 @@ namespace TradingSystem.Business.Market
             if (ShoppingCart.IsEmpty() || !ShoppingCart.CheckPolicy()) return false;
             double paySum = ShoppingCart.CalcPaySum();
             BuyStatus buyStatus = ShoppingCart.Purchase(username, method, phone, address, paySum);
-            foreach (var p in buyStatus.PurchaseStatuses)
+
+            //add information to history
+            //empty the shopping cart after a successful purchase
+            if (buyStatus.Status)
             {
-                var h = new TransactionHistory(p);
-                userHistory.Add(h);
-                HistoryManager.Instance.AddUserHistory(h);
+                foreach (var p in buyStatus.PurchaseStatuses)
+                {
+                    var h = new TransactionHistory(p);
+                    userHistory.Add(h);
+                    HistoryManager.Instance.AddUserHistory(h);
+                }
+                this.ShoppingCart = new ShoppingCart();
             }
             return buyStatus.Status;
         }
