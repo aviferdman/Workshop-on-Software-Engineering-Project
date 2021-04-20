@@ -36,7 +36,7 @@ namespace TradingSystemTests.IntegrationTests
             testStoreBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
-            this.shoppingCart = new ShoppingCart();
+            this.shoppingCart = new ShoppingCart(testUser);
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
         }
 
@@ -216,7 +216,7 @@ namespace TradingSystemTests.IntegrationTests
         public void DeleteAll()
         {
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
-            this.shoppingCart = new ShoppingCart();
+            this.shoppingCart = new ShoppingCart(testUser);
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
             Transaction.Instance.DeleteAllTests();
         }

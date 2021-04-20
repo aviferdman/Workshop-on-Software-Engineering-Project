@@ -9,11 +9,13 @@ namespace TradingSystem.Business.Market
     {
         public IShoppingBasket GetShoppingBasket(IStore store);
         public bool CheckPolicy();
-        public BuyStatus Purchase(string username, PaymentMethod method, string clientPhone, Address clientAddress, double paySum);
+        public BuyStatus Purchase(PaymentMethod method, string clientPhone, Address clientAddress);
         public double CalcPaySum();
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts();
 
         public bool IsEmpty();
+
+        public User GetUser();
     }
 }
