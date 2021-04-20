@@ -23,5 +23,7 @@ namespace TradingSystem.Business.Market
 
         public IStore GetStore();
 
+        public IShoppingCart GetShoppingCart();
+
     }
 }

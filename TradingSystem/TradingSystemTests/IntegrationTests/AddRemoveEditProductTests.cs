@@ -18,8 +18,6 @@ namespace TradingSystemTests.IntegrationTests
         MarketUsers marketUsers = MarketUsers.Instance;
         UserManagement userManagement = UserManagement.Instance;
         Store store;
-        Founder founder;
-        Manager manager;
         ProductData product1;
 
         public AddRemoveEditProductTests()

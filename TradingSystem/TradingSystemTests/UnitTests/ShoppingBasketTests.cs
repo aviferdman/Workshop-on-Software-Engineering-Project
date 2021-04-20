@@ -12,10 +12,12 @@ namespace TradingSystemTests.MarketTests
         private ShoppingCart shoppingCart;
         private IStore store;
         private ShoppingBasket shoppingBasket;
+        private User testUser;
 
         public ShoppingBasketTests()
         {
-            this.shoppingCart = new ShoppingCart();
+            this.testUser = new User("testuser");
+            this.shoppingCart = new ShoppingCart(testUser);
             this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
         }
@@ -72,7 +74,8 @@ namespace TradingSystemTests.MarketTests
         [TestCleanup]
         public void DeleteAll()
         {
-            this.shoppingCart = new ShoppingCart();
+            this.testUser = new User("testuser");
+            this.shoppingCart = new ShoppingCart(testUser);
             this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
             Transaction.Instance.DeleteAllTests();

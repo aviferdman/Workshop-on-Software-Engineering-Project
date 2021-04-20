@@ -10,11 +10,14 @@ namespace TradingSystem.Business.Market
     {
         private SortedSet<IShoppingBasket> shoppingBaskets;
 
+        private User _user;
+
         public SortedSet<IShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
 
-        public ShoppingCart()
+        public ShoppingCart(User user)
         {
             this.shoppingBaskets = new SortedSet<IShoppingBasket>();
+            _user = user;
         }
 
         public bool IsEmpty()
@@ -42,13 +45,15 @@ namespace TradingSystem.Business.Market
             return isLegal;
         }
 
-        public BuyStatus Purchase(string username, PaymentMethod method, string clientPhone, Address clientAddress, double paySum)
+        public BuyStatus Purchase(PaymentMethod method, string clientPhone, Address clientAddress)
         {
+            //chcek is not empty
+            if (IsEmpty()) return new BuyStatus(false, null);
             bool allStatusesOk = true;
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
             foreach (IShoppingBasket basket in shoppingBaskets)
             {
-                PurchaseStatus purchaseStatus = basket.GetStore().Purchase(basket, username, clientPhone, clientAddress, method, paySum);
+                PurchaseStatus purchaseStatus = basket.GetStore().Purchase(basket, clientPhone, clientAddress, method);
                 purchases.Add(purchaseStatus);
                 allStatusesOk = allStatusesOk && purchaseStatus.TransactionStatus != null && purchaseStatus.TransactionStatus.Status;
             }
@@ -97,6 +102,11 @@ namespace TradingSystem.Business.Market
                 ret.Add(p.Id, dict[p]);
             }
             return ret;
+        }
+
+        public User GetUser()
+        {
+            return _user;
         }
     }
 }

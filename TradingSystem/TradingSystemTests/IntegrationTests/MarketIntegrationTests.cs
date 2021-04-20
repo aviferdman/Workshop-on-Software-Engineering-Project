@@ -12,6 +12,7 @@ namespace TradingSystemTests.IntegrationTests
     {
         private MarketUsers m = MarketUsers.Instance;
         private MarketStores marketStores = MarketStores.Instance;
+
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
@@ -19,7 +20,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username=m.AddGuest();
             User u = m.GetUserByUserName(username);
-            ShoppingCart cart = new ShoppingCart();
+            ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
             Product p = new Product("lala", 8,50, 500, "category");
             Store s = new Store("lalali", null, null);
@@ -36,7 +37,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            ShoppingCart cart = new ShoppingCart();
+            ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
             Product p = new Product("llll", 8, 50, 500,"category");
             Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
@@ -61,7 +62,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username); 
-            ShoppingCart cart = new ShoppingCart();
+            ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
             Product p = new Product("lala2", 8, 50, 500, "category");
             Store s = new Store("lalali2", null, null);
@@ -262,8 +263,6 @@ namespace TradingSystemTests.IntegrationTests
             ICollection<Product> ret = marketStores.findProducts("nothing to see", -1, -1, 5, null);
             Assert.IsTrue( ret.Count==0);
         }
-
-
 
     }
 }

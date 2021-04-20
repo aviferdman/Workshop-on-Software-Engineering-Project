@@ -86,5 +86,10 @@ namespace TradingSystem.Business.Market
         {
             return store;
         }
+
+        public IShoppingCart GetShoppingCart()
+        {
+            return this.ShoppingCart;
+        }
     }
 }

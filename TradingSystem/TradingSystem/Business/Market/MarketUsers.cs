@@ -145,7 +145,7 @@ namespace TradingSystem.Business.Market
             if (!activeUsers.TryRemove(username, out u))
                 return null;
             u.ChangeState(new GuestState());
-            u.ShoppingCart = new ShoppingCart();
+            u.ShoppingCart = new ShoppingCart(u);
             string GuidString;
             do
             {

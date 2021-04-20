@@ -18,7 +18,7 @@ namespace TradingSystem.Business.Market
 
         public User(string username)
         {
-            this._shoppingCart = new ShoppingCart();
+            this._shoppingCart = new ShoppingCart(this);
             this._state = new GuestState();
             this.username = username;
             this.isLoggedIn = false;
@@ -27,7 +27,7 @@ namespace TradingSystem.Business.Market
 
         public User()
         {
-            this._shoppingCart = new ShoppingCart();
+            this._shoppingCart = new ShoppingCart(this);
             this._state = new GuestState();
             this.isLoggedIn = false;
         }
@@ -51,11 +51,8 @@ namespace TradingSystem.Business.Market
 
         public bool PurchaseShoppingCart(PaymentMethod method, string phone, Address address)
         {
-            //chcek is not empty and legal policy
-            if (ShoppingCart.IsEmpty() || !ShoppingCart.CheckPolicy()) return false;
-            double paySum = ShoppingCart.CalcPaySum();
-            BuyStatus buyStatus = ShoppingCart.Purchase(username, method, phone, address, paySum);
-
+            
+            BuyStatus buyStatus = ShoppingCart.Purchase(method, phone, address);
             //add information to history
             //empty the shopping cart after a successful purchase
             if (buyStatus.Status)
@@ -66,7 +63,7 @@ namespace TradingSystem.Business.Market
                     userHistory.Add(h);
                     HistoryManager.Instance.AddUserHistory(h);
                 }
-                this.ShoppingCart = new ShoppingCart();
+                this.ShoppingCart = new ShoppingCart(this);
             }
             return buyStatus.Status;
         }
