@@ -72,6 +72,7 @@ namespace TradingSystem.Business.Market
 
         public bool CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
         {
+            Logger.Instance.MonitorActivity(nameof(Transaction) + " " + nameof(CancelTransaction));
             PaymentStatus paymentStatus = null;
             DeliveryStatus deliveryStatus = null;
             if (cancelPayments)
