@@ -21,6 +21,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             logger = Logger.Instance;
             marketUsers = MarketUsers.Instance;
+            logger.CleanLogs();
         }
 
         /// test for function :<see cref="TradingSystem.Business.Logger.MonitorActivity(string)"/>
@@ -49,13 +50,12 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
+
         [TestCleanup]
         public void DeleteAll()
         {
             Transaction.Instance.DeleteAllTests();
             logger.CleanLogs();
         }
-
-
     }
 }

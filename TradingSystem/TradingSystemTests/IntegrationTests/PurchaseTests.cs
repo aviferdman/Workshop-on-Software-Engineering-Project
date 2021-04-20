@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Payment;
@@ -80,6 +81,24 @@ namespace TradingSystemTests.IntegrationTests
             bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
             Assert.AreEqual(successPurchase, false);
             Assert.AreEqual(originQuantity, product.Quantity);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
+        [TestMethod]
+        public void CheckIllegalPurcahseUserRefund()
+        {
+            Logger.Instance.CleanLogs();
+            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            Assert.AreEqual(0, Logger.Instance.Activities.Count);
+            bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.AreEqual(successPurchase, false);
+            bool existsRefund = Logger.Instance.Activities.Where(activity => activity.Contains("CancelTransaction")).Any();
+            Assert.IsTrue(existsRefund);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
