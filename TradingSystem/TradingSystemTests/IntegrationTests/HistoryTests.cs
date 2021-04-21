@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Payment;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -28,6 +29,31 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
             ICollection<IHistory> userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(1, userHistory.Count);
+
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(string)"/>
+        [TestMethod]
+        public void GetUserEmptyHistoryPurcahseFailed()
+        {
+            BankAccount bankAccount = new BankAccount(1000, 1000);
+            Address address = new Address("1", "1", "1", "1");
+            Product product = new Product(100, 100, 100);
+            User user = new User("testUser");
+            Store store = new Store("storeTest", bankAccount, address);
+            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            user.ChangeState(memberState);
+            store.UpdateProduct(product);
+            user.UpdateProductInShoppingBasket(store, product, 5);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            ICollection<IHistory> userHistory = user.GetUserHistory(user.Username);
+            Assert.AreEqual(0, userHistory.Count);
+            Assert.IsFalse(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            userHistory = user.GetUserHistory(user.Username);
+            Assert.AreEqual(0, userHistory.Count);
 
         }
 
@@ -60,7 +86,6 @@ namespace TradingSystemTests.IntegrationTests
             user.ChangeState(memberState);
             MarketUsers market = MarketUsers.Instance;
             MarketStores marketStores = MarketStores.Instance;
-            //market.DeleteAllTests();
             market.ActiveUsers.TryAdd(user.Username, user);
             Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
             store.UpdateProduct(product);
@@ -72,6 +97,35 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Store)"/>
+        [TestMethod]
+        public void GetStoreEmptyHistoryPurchaseFailed()
+        {
+            BankAccount bankAccount = new BankAccount(1000, 1000);
+            Address address = new Address("1", "1", "1", "1");
+            Product product = new Product(100, 100, 100);
+            User user = new User("testUser");
+            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            user.ChangeState(memberState);
+            MarketUsers market = MarketUsers.Instance;
+            MarketStores marketStores = MarketStores.Instance;
+            market.ActiveUsers.TryAdd(user.Username, user);
+            Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
+            store.UpdateProduct(product);
+            user.UpdateProductInShoppingBasket(store, product, 5);
+            Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
+            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            Transaction transaction = Transaction.Instance;
+            transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
+            ICollection<IHistory> storeHistory = store.GetStoreHistory(user.Username);
+            Assert.IsNotNull(storeHistory);
+            Assert.AreEqual(0, storeHistory.Count);
+            Assert.IsFalse(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            storeHistory = store.GetStoreHistory(user.Username);
+            Assert.IsNotNull(storeHistory);
+            Assert.AreEqual(0, storeHistory.Count);
+
+        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Store)"/>
         [TestMethod]

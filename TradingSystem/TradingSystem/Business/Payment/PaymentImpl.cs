@@ -37,9 +37,10 @@ namespace TradingSystem.Business.Delivery
             return new PaymentStatus(paymentId, paymentDetails.Username, paymentDetails.StoreId, !paymentId.Equals(ErrorPaymentId));
         }
 
-        public void SetPaymentSystem(ExternalPaymentSystem externalPaymentSystem)
+        public bool SetPaymentSystem(ExternalPaymentSystem externalPaymentSystem)
         {
             this._paymentSystem = externalPaymentSystem;
+            return true;
         }
     }
 }

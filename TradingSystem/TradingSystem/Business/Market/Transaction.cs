@@ -25,18 +25,26 @@ namespace TradingSystem.Business.Market
             this.DeliveryAdapter = new DeliveryImpl();
         }
 
-        internal void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
+        internal bool ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
         {
+            bool connectExternalSystems = true;
             if (debugMode)
             {
-                this._deliveryAdapter.SetDeliverySystem(deliverySystem.Object);
-                this._paymentAdapter.SetPaymentSystem(paymentSystem.Object);
+                connectExternalSystems = connectExternalSystems && this._deliveryAdapter.SetDeliverySystem(deliverySystem.Object);
+                connectExternalSystems = connectExternalSystems && this._paymentAdapter.SetPaymentSystem(paymentSystem.Object);
             }
             else
             {
                 this._deliveryAdapter = new DeliveryImpl();
                 this._paymentAdapter = new PaymentImpl();
+                connectExternalSystems = connectExternalSystems && this._deliveryAdapter.SetDeliverySystem(DeliverySystem.Instance);
+                connectExternalSystems = connectExternalSystems && this._paymentAdapter.SetPaymentSystem(PaymentSystem.Instance);
             }
+            if (!connectExternalSystems)
+            {
+                Logger.Instance.MonitorError("Error: " + nameof(Transaction) + " " + nameof(ActivateDebugMode));
+            }
+            return connectExternalSystems;
         }
 
         public TransactionStatus ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
@@ -64,6 +72,7 @@ namespace TradingSystem.Business.Market
 
         public bool CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
         {
+            Logger.Instance.MonitorActivity(nameof(Transaction) + " " + nameof(CancelTransaction));
             PaymentStatus paymentStatus = null;
             DeliveryStatus deliveryStatus = null;
             if (cancelPayments)
