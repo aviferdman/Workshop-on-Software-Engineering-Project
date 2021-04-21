@@ -16,6 +16,8 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<Store,Founder> founderPrems;
         private ConcurrentDictionary<Store, Owner> ownerPrems;
         private ConcurrentDictionary<Store, Manager> managerPrems;
+        private ConcurrentDictionary<string, Manager> managerAppointments;
+        private ConcurrentDictionary<string, Owner> ownerAppointments;
         private object prem_lock;
         public MemberState(string userId, ICollection<IHistory> userHistory) : base()
         {
@@ -25,6 +27,8 @@ namespace TradingSystem.Business.Market
             founderPrems = new ConcurrentDictionary<Store, Founder>();
             ownerPrems = new ConcurrentDictionary<Store, Owner>();
             managerPrems = new ConcurrentDictionary<Store, Manager>();
+            managerAppointments = new ConcurrentDictionary<string, Manager>();
+            ownerAppointments = new ConcurrentDictionary<string, Owner>();
         }
 
         public string UserId { get => _userId; set => _userId = value; }
@@ -32,6 +36,8 @@ namespace TradingSystem.Business.Market
         public ConcurrentDictionary<Store, Owner> OwnerPrems { get => ownerPrems; set => ownerPrems = value; }
         public ConcurrentDictionary<Store, Manager> ManagerPrems { get => managerPrems; set => managerPrems = value; }
         public object Prem_lock { get => prem_lock; set => prem_lock = value; }
+        public ConcurrentDictionary<string, Manager> ManagerAppointments { get => managerAppointments; set => managerAppointments = value; }
+        public ConcurrentDictionary<string, Owner> OwnerAppointments { get => ownerAppointments; set => ownerAppointments = value; }
 
         public override ICollection<IHistory> GetAllHistory()
         {

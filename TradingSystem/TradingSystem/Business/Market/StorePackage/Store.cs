@@ -63,6 +63,18 @@ namespace TradingSystem.Business.Market
         {
             return _id;
         }
+        public bool hasPremssion(string username, Permission p)
+        {
+            if (!founder.Username.Equals(username) && !owners.ContainsKey(username))
+            {
+                IManager m;
+                if (!managers.TryGetValue(username, out m))
+                    return false;
+                else if (!m.GetPermission(p))
+                    return false;
+            }
+            return true;
+        }
         public bool isStaff(string username)
         {
             return (founder!=null&&founder.Username.Equals(username)) || managers.ContainsKey(username) || owners.ContainsKey(username);
@@ -140,14 +152,8 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(Product product, string userID)
         {
-            if (!founder.Username.Equals(userID) && !owners.ContainsKey(userID))
-            {
-                IManager m;
-                if(!managers.TryGetValue(userID, out m))
-                    return "Invalid user";
-                else if(!m.GetPermission(Permission.AddProduct))
-                    return "No permission";
-            }
+            if (!hasPremssion(userID, Permission.AddProduct))
+                return "No permission";
             if (!validProduct(product))
                 return "Invalid product";
             if (!_products.TryAdd(product.Id, product))
@@ -227,8 +233,6 @@ namespace TradingSystem.Business.Market
                     catch { ret = "this member is already assigned as a store owner or manager"; }
                 }
             }
-            
-
             return ret;
         }
 
