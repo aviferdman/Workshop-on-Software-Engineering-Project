@@ -27,14 +27,14 @@ namespace TradingSystem.Service
             }
 
             var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
-            foreach (KeyValuePair<IStore, IShoppingBasket> entry in cart.Store_shoppingBasket)
+            foreach (IShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
-                foreach (KeyValuePair<Product, int> p in ((ShoppingBasket)entry.Value).Product_quantity)
+                foreach (KeyValuePair<Product, int> p in basket.GetDictionaryProductQuantity())
                 {
                     products.Add(new ProductData(p.Key), p.Value);
                 }
-                dataCart.Add(((Store)entry.Key).Id, products);
+                dataCart.Add(basket.GetStore().GetId(), products);
             }
             return dataCart;
         }
@@ -54,14 +54,14 @@ namespace TradingSystem.Service
             }
 
             var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
-            foreach (KeyValuePair<IStore, IShoppingBasket> entry in cart.Store_shoppingBasket)
+            foreach (IShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
-                foreach (KeyValuePair<Product, int> p in ((ShoppingBasket)entry.Value).Product_quantity)
+                foreach (KeyValuePair<Product, int> p in basket.GetDictionaryProductQuantity())
                 {
                     products.Add(new ProductData(p.Key), p.Value);
                 }
-                dataCart.Add(((Store)entry.Key).Id, products);
+                dataCart.Add(basket.GetStore().GetId(), products);
             }
             return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(dataCart, false, null);
         }

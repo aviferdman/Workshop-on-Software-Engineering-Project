@@ -145,7 +145,7 @@ namespace TradingSystem.Business.Market
             if (!activeUsers.TryRemove(username, out u))
                 return null;
             u.ChangeState(new GuestState());
-            u.ShoppingCart = new ShoppingCart();
+            u.ShoppingCart = new ShoppingCart(u);
             string GuidString;
             do
             {
@@ -296,6 +296,12 @@ namespace TradingSystem.Business.Market
             return new Result<IShoppingCart>(u.ShoppingCart, false, null);
         }
 
-
+        public void CleanMarketUsers()
+        {
+            activeUsers = new ConcurrentDictionary<string, User>();
+            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
+            historyManager = HistoryManager.Instance;
+            memberStates = new ConcurrentDictionary<string, MemberState>();
+        }
     }
 }

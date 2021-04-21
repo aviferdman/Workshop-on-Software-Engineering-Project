@@ -9,7 +9,7 @@ namespace TradingSystem.Business.Market
     {
         public Guid GetId();
         public bool isStaff(string username);
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum);
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method);
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity);
 

@@ -67,28 +67,35 @@ namespace TradingSystem.Business.Market
         {
             return (founder!=null&&founder.Username.Equals(username)) || managers.ContainsKey(username) || owners.ContainsKey(username);
         }
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string username, string clientPhone, Address clientAddress, PaymentMethod method, double paymentSum)
+        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
             Dictionary<Product, int> product_quantity = shoppingBasket.GetDictionaryProductQuantity();
+            string username = shoppingBasket.GetShoppingCart().GetUser().Username;
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double paySum = CalcPaySum(shoppingBasket);
             lock (_lock)
             {
+                if (!CheckPolicy(shoppingBasket)) return new PurchaseStatus(false, null, _id);
                 enoughtQuantity = EnoughQuantity(product_quantity);
                 //pre-conditions not legal
                 if (!enoughtQuantity) return new PurchaseStatus(false, null, _id);
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paymentSum, shoppingBasket);
-            var h = new TransactionHistory(transactionStatus);
-            history.Add(h);
-            HistoryManager.Instance.AddUserHistory(h);
+            transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paySum, shoppingBasket);
             //transaction failed
             if (!transactionStatus.Status)
             {
                 CancelTransaction(product_quantity);
+            }
+            //add to history
+            else
+            {
+                var h = new TransactionHistory(transactionStatus);
+                history.Add(h);
+                HistoryManager.Instance.AddUserHistory(h);
             }
             return new PurchaseStatus(true, transactionStatus, _id);
         }
