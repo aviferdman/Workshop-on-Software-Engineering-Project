@@ -18,6 +18,7 @@ namespace TradingSystem.Business.Market
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
         private ConcurrentDictionary<Guid,IStore> _stores;
+        private ConcurrentDictionary<string, Category> categories;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketStores>
@@ -183,15 +184,40 @@ namespace TradingSystem.Business.Market
             return store.RemoveManager(managerName, assigner);
         }
 
+        public void addToCategory(Product p, string category)
+        {
+            Category cat;
+            if (categories.TryGetValue(category, out cat))
+            {
+                cat.addProduct(p);
+            }
+            else
+            {
+                cat = new Category(category);
+                cat.addProduct(p);
+                if (!categories.TryAdd(category, cat))
+                    addToCategory( p,  category);
+            }
+        }
+
 
 
         //use case 4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/52
         public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
             List<Product> products = new List<Product>();
-            foreach (Store s in _stores.Values)
+            Category cat;
+            if(category != null)
             {
-                products.AddRange(s.findProducts(keyword, price_range_low, price_range_high, rating, category));
+                if (categories.TryGetValue(category, out cat)){
+                    return cat.getAllProducts(keyword, price_range_low, price_range_high, rating);
+                }
+                else
+                    return products;
+            }
+            foreach (Category c in categories.Values)
+            {
+                products.AddRange(c.getAllProducts(keyword, price_range_low, price_range_high, rating));
             }
             return products;
         }
