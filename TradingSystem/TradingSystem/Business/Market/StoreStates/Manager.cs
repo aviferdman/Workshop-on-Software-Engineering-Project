@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Market.StoreStates
 {
     public class Manager : IManager
     {
-        private Appointer appointer;
+        private MemberState appointer;
         private MemberState m;
         private Store s;
         private string username;
@@ -29,7 +29,7 @@ namespace TradingSystem.Business.Market.StoreStates
             CloseShop
         }
 
-        private Manager(MemberState m, Store s, Appointer appointer) 
+        private Manager(MemberState m, Store s, MemberState appointer) 
         {
             this.username = m.UserId;
             this.m = m;
@@ -42,7 +42,7 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             if (m.isStaff(s) || s.isStaff(m.UserId))
                 throw new InvalidOperationException();
-            Manager man = new Manager(m, s, appointer);
+            Manager man = new Manager(m, s, appointer.getM());
             m.ManagerPrems.TryAdd(s, man);
             s.Managers.TryAdd(m.UserId, man);
             return man;

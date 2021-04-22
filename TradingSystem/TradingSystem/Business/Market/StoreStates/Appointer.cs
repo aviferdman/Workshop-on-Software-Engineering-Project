@@ -10,6 +10,7 @@ namespace TradingSystem.Business.Market.StoreStates
         //appoint a new manager with memberStaste m to Store s adds to lists in store and memberState
         //use locks for store premmissions and memberState premissions
         public Manager AddAppointmentManager(MemberState m, Store s);
+        public MemberState getM();
 
         //appoint a new owner with memberStaste m to Store s adds to lists in store and memberState
         //use locks for store premmissions and memberState premissions

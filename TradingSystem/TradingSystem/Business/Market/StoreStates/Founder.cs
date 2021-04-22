@@ -12,19 +12,16 @@ namespace TradingSystem.Business.Market.StoreStates
         private string username;
         private MemberState m;
         private Store s;
-        private ConcurrentDictionary<string, Manager> managerAppointments;
-        private ConcurrentDictionary<string, Owner> ownerAppointments;
+        
 
         public string Username { get => username; set => username = value; }
-        public ConcurrentDictionary<string, Manager> ManagerAppointments { get => managerAppointments; set => managerAppointments = value; }
+        public MemberState getM() { return m; }
 
         private Founder(MemberState m, Store s)
         {
             this.username = m.UserId;
             this.m = m;
             this.s = s;
-            managerAppointments = new ConcurrentDictionary<string, Manager>();
-            ownerAppointments = new ConcurrentDictionary<string, Owner>();
         }
 
         public static Founder makeFounder(MemberState m, Store s)
@@ -37,30 +34,30 @@ namespace TradingSystem.Business.Market.StoreStates
         public Manager AddAppointmentManager(MemberState m, Store s)
         {
             Manager prem = Manager.makeManager(m,s,this);
-            managerAppointments.TryAdd(username, prem);
+            m.ManagerAppointments.TryAdd(username, prem);
             return prem;
         }
         public Owner AddAppointmentOwner(MemberState m, Store s)
         {
             Owner prem = Owner.makeOwner(m,s , this);
-            ownerAppointments.TryAdd(username, prem);
+            m.OwnerAppointments.TryAdd(username, prem);
             return prem;
         }
 
         
         public bool canRemoveAppointment(string userToRemove)
         {
-            Manager m;
+            Manager man;
             Owner o;
-            return managerAppointments.TryRemove(userToRemove, out m)|| ownerAppointments.TryRemove(userToRemove, out o);
+            return m.ManagerAppointments.TryRemove(userToRemove, out man) || m.OwnerAppointments.TryRemove(userToRemove, out o);
         }
 
         public void DefinePermissions(string username, List<Permission> permissions)
         {
-            Manager m;
-            if (!managerAppointments.TryGetValue(username, out m))
+            Manager man;
+            if (!m.ManagerAppointments.TryGetValue(username, out man))
                 throw new UnauthorizedAccessException();
-            m.Store_permission = permissions;
+            man.Store_permission = permissions;
         }
     }
 }
