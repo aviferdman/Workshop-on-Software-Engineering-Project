@@ -39,5 +39,10 @@ namespace TradingSystem.Service
         {
             return marketStores.RemoveManager(managerName, storeID, assignerName);
         }
+
+        public String getInfo(Guid storeID, String user)
+        {
+            return marketStores.getInfo(storeID, user);
+        }
     }
 }
