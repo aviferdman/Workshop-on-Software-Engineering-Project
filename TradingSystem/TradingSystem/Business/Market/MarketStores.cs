@@ -234,13 +234,20 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.9 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/60
-        public String getInfo(Guid storeID, String user)
+        public String getInfo(Guid storeID, String username)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfo));
-            User theUser = MarketUsers.Instance.GetUserByUserName(user);
             if (!_stores.TryGetValue(storeID, out IStore store))
                 return "Store doesn't exist";
-            return store.getInfo(theUser);
+            return store.getInfo(username);
+        }
+
+        public String getInfoSpecific(Guid storeID, String workerName, String username)
+        {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfoSpecific));
+            if (!_stores.TryGetValue(storeID, out IStore store))
+                return "Store doesn't exist";
+            return store.getInfoSpecific(workerName, username);
         }
     }
 }

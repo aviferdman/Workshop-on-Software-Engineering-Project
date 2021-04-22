@@ -12,6 +12,9 @@ namespace TradingSystem.Business.Market.StoreStates
         private MemberState m;
         private Store s;
         private MemberState appointer;
+
+        public string Username { get => username; set => username = value; }
+
         private Owner(MemberState m, Store s, MemberState appointer)
         {
             this.username = m.UserId;
