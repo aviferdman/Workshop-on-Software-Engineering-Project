@@ -35,7 +35,7 @@ namespace TradingSystemTests.IntegrationTests
             product1 = new ProductData("1", 10, 10, 10, "c");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
         public void CheckValidAddProduct()
@@ -44,7 +44,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(result.IsErr);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
         public void CheckAddProductUnauthorizedUser()
@@ -54,7 +54,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(result.Mess, "Invalid user");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
         public void CheckAddProductInvalidPrice()
@@ -65,7 +65,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(result.Mess, "Invalid product");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
         public void CheckAddProductInvalidName()
@@ -76,7 +76,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(result.Mess, "Invalid product");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Product)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
         public void CheckValidRemoveProduct()
@@ -87,7 +87,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(store.Products.TryRemove(p.Id, out _));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Product)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
         public void CheckRemoveProductInvalidUser()
@@ -98,7 +98,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(store.Products.TryRemove(p.Id, out _));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Product)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
         public void CheckRemoveProductInvalidPermission()
@@ -108,7 +108,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "manager"), "No permission");
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(string, Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(Guid, ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc25")]
         public void CheckValidEditProduct()
@@ -121,7 +121,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(p.Price, 20);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(string, Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(Guid, ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc25")]
         public void CheckEditUnavailablwProduct()
@@ -132,7 +132,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(store.Products.ContainsKey(p1.Id));
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(string, Product, Guid)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(Guid, ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc25")]
         public void CheckEditNoPermission()
