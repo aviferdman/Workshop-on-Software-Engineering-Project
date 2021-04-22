@@ -59,7 +59,7 @@ namespace TradingSystem.Business.Market
             {
                 foreach (var p in buyStatus.PurchaseStatuses)
                 {
-                    var h = new TransactionHistory(p);
+                    var h = new UserHistory(p);
                     userHistory.Add(h);
                     HistoryManager.Instance.AddUserHistory(h);
                 }

@@ -7,15 +7,15 @@ using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market.Histories
 {
-    public class TransactionHistory : IHistory
+    public class StoreHistory : IHistory
     {
         private TransactionStatus _transactionStatus;
-        public TransactionHistory(TransactionStatus transactionStatus)
+        public StoreHistory(TransactionStatus transactionStatus)
         {
             _transactionStatus = transactionStatus;
         }
 
-        public TransactionHistory(PurchaseStatus p)
+        public StoreHistory(PurchaseStatus p)
         {
             _transactionStatus = p.TransactionStatus;
         }

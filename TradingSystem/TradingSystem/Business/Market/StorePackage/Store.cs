@@ -106,7 +106,7 @@ namespace TradingSystem.Business.Market
             //add to history
             else
             {
-                var h = new TransactionHistory(transactionStatus);
+                var h = new StoreHistory(transactionStatus);
                 history.Add(h);
                 HistoryManager.Instance.AddUserHistory(h);
             }
