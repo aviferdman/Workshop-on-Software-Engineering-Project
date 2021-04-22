@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Market.StoreStates;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
     class WorkerDetails
     {
-        String Username;
-        State State;
-        List<Permission> permissions;
+        String username;
+        ICollection<Permission> permissions;
 
-        public string Username1 { get => Username; set => Username = value; }
-        public State State1 { get => State; set => State = value; }
-        public List<Permission> Permissions { get => permissions; set => permissions = value; }
+
+        public WorkerDetails(Manager manager)
+        {
+            username = manager.Username;
+            permissions = manager.Store_permission;
+        }
 
         public String toString()
         {
-            String ret = "username: " + Username + "\nPermissions: ";
+            String ret = "Manager - " + username + "\n\tPermissions: ";
             foreach (Permission permission in permissions)
             {
                 ret += permission.ToString() + ", ";

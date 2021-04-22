@@ -45,6 +45,8 @@ namespace TradingSystem.Business.Market
 
         public String RemoveManager(String managerName, User assigner);
 
-        public String getInfo(User user);
+        public String getInfo(String username);
+
+        public String getInfoSpecific(String workerName, String username);
     }
 }
