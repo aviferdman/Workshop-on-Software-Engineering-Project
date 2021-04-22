@@ -159,6 +159,8 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String AddProduct(Product product, string userID)
         {
+            if ((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID)))
+                return "Invalid user";
             if (!hasPremssion(userID, Permission.AddProduct))
                 return "No permission";
             if (!validProduct(product))
@@ -171,34 +173,23 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(Guid productID, string userID)
         {
-            if (!founder.Username.Equals(userID) && !owners.ContainsKey(userID))
-            {
-                IManager m;
-                if (!managers.TryGetValue(userID, out m))
-                    return "Invalid user";
-                else if (!m.GetPermission(Permission.RemoveProduct))
-                    return "No permission";
-            }
-            Product useless;
-            _products.TryRemove(productID, out useless);
+            if ((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID)))
+                return "Invalid user";
+            if (!hasPremssion(userID, Permission.AddProduct))
+                return "No permission";
+            if (!_products.TryRemove(productID, out _))
+                return "Product doesn't exist";
             return "Product removed";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(Guid productID, Product editedProduct, string userID)
         {
-            if (!founder.Username.Equals(userID) && !owners.ContainsKey(userID))
-            {
-                IManager m;
-                if (!managers.TryGetValue(userID, out m))
-                    return "Invalid user";
-                else if (!m.GetPermission(Permission.EditProduct))
-                    return "No permission";
-            }
-            if (!validProduct(editedProduct))
-                return "Invalid edit";
-            Product oldProduct;
-            if (!_products.TryRemove(productID, out oldProduct))
+            if ((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID)))
+                return "Invalid user";
+            if (!hasPremssion(userID, Permission.EditProduct))
+                return "No permission";
+            if (!_products.TryRemove(productID, out _))
                 return "Product not in the store";
             editedProduct.Id = productID;
             _products.TryAdd(productID, editedProduct);
@@ -270,11 +261,8 @@ namespace TradingSystem.Business.Market
 
         private bool validProduct(Product product)
         {
-            if (product.Name == null || product.Name.Equals("") || product.Price < 0)
-            {
-                return false;
-            }
-            return true;
+            return !(product.Name == null || product.Name.Equals("") || product.Price < 0 || product.Category == null);
+
         }
 
         //functional requirement 4.7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/57
