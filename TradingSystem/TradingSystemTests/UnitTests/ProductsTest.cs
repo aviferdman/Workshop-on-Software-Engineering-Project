@@ -122,8 +122,7 @@ namespace TradingSystemTests.UnitTests
             Product product2 = new Product("1", 10, 10, 20, "category");
             store.Products.TryAdd(product1.Id, product1);
             Assert.AreEqual(store.EditProduct(product1.Id, product2, "founder"), "Product edited");
-            Product p;
-            Assert.IsTrue(store.Products.TryRemove(product1.Id, out p));
+            Assert.IsTrue(store.Products.TryRemove(product1.Id, out Product p));
             Assert.AreEqual(p.Price, 20);
         }
 
@@ -144,8 +143,7 @@ namespace TradingSystemTests.UnitTests
             Product product2 = new Product("1", 10, 10, 20, "category");
             store.Products.TryAdd(product1.Id, product1);
             Assert.AreEqual(store.EditProduct(product1.Id, product2, "manager"), "No Permission");
-            Product p;
-            Assert.IsTrue(store.Products.TryRemove(product1.Id, out p));
+            Assert.IsTrue(store.Products.TryRemove(product1.Id, out Product p));
             Assert.AreEqual(p.Price, 10);
         }
 
