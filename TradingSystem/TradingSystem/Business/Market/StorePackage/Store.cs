@@ -304,6 +304,13 @@ namespace TradingSystem.Business.Market
             return ret;
         }
 
+        //functional requirement 4.9 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/60
+        public String getInfo(User user)
+        {
+            if (!user.State.hasPermission(this, Permission.GetPersonnelInfo))
+                return "No permission";
+        }
+
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);
@@ -325,6 +332,7 @@ namespace TradingSystem.Business.Market
                 _products.TryRemove(product.Id, out useless);
             }
         }
+
 
         public void AddDiscount(Discount discount)
         {
