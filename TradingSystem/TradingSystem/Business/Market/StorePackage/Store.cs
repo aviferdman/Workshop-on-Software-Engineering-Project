@@ -167,32 +167,38 @@ namespace TradingSystem.Business.Market
                 return "Invalid product";
             if (!_products.TryAdd(product.Id, product))
                 return "Product exists";
+            MarketStores.Instance.addToCategory(product, product.Category);
             return "Product added";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String RemoveProduct(Guid productID, string userID)
         {
+            Product toRem;
             if ((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID)))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.AddProduct))
                 return "No permission";
-            if (!_products.TryRemove(productID, out _))
+            if (!_products.TryRemove(productID, out toRem))
                 return "Product doesn't exist";
+            MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
             return "Product removed";
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public String EditProduct(Guid productID, Product editedProduct, string userID)
         {
+            Product prev;
             if ((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID)))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.EditProduct))
                 return "No permission";
-            if (!_products.TryRemove(productID, out _))
+            if (!_products.TryRemove(productID, out prev))
                 return "Product not in the store";
+            MarketStores.Instance.removeFromCategory(prev, prev.Category);
             editedProduct.Id = productID;
             _products.TryAdd(productID, editedProduct);
+            MarketStores.Instance.addToCategory(editedProduct, editedProduct.Category);
             return "Product edited";
         }
 
