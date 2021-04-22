@@ -21,6 +21,7 @@ namespace TradingSystemTests
         private Product product1;
         private Product product2;
         private Dictionary<Product, int> product_quantity;
+        private IShoppingBasket shoppingBasket;
 
         public PolicyTests()
         {
@@ -28,6 +29,9 @@ namespace TradingSystemTests
             this.product1 = new Product(QUANTITY1, WEIGHT1, PRICE1);
             this.product2 = new Product(QUANTITY2, WEIGHT2, PRICE2);
             this.product_quantity = new Dictionary<Product, int>();
+            User u = new User();
+            IStore store = new Store("teststore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 
         //START OF UNIT TESTS
@@ -37,13 +41,13 @@ namespace TradingSystemTests
         public void CheckAllRulesReturnTrue()
         {
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<Dictionary<Product, int>>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<Dictionary<Product, int>>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Policy policy = new Policy();
             policy.AddRule(rule1.Object);
             policy.AddRule(rule2.Object);
-            Assert.AreEqual(true,policy.Check(product_quantity));
+            Assert.AreEqual(true,policy.Check(shoppingBasket));
 
         }
 
@@ -52,21 +56,21 @@ namespace TradingSystemTests
         public void CheckSomeRulesFalse()
         {
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<Dictionary<Product, int>>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<Dictionary<Product, int>>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Policy policy = new Policy();
             policy.AddRule(rule1.Object);
             policy.AddRule(rule2.Object);
-            Assert.AreEqual(false, policy.Check(product_quantity));
+            Assert.AreEqual(false, policy.Check(shoppingBasket));
         }
 
 
         //END OF UNIT TESTS
 
-        public bool CheckTotalWeightNoMoreThan400(Dictionary<Product, int> product_quantity)
+        public bool CheckTotalWeightNoMoreThan400(IShoppingBasket shoppingBasket)
         {
-            double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
             return weight <= 400;
         }
 
@@ -76,22 +80,22 @@ namespace TradingSystemTests
         {
             this.product_quantity.Add(product1, 1);
             this.product_quantity.Add(product2, 1);
-            Func < Dictionary<Product, int>, bool> f = new Func<Dictionary<Product, int>, bool>(CheckTotalWeightNoMoreThan400);
+            Func < IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             policyTest.AddRule(r);
-            Assert.IsTrue(policyTest.Check(this.product_quantity));
+            Assert.IsTrue(policyTest.Check(this.shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Check(Dictionary{Product, int})"/>
         [TestMethod]
         public void CheckFailTheRules()
         {
-            this.product_quantity.Add(product1, 1);
-            this.product_quantity.Add(product2, 2);
-            Func<Dictionary<Product, int>, bool> f = new Func<Dictionary<Product, int>, bool>(CheckTotalWeightNoMoreThan400);
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Func<IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             policyTest.AddRule(r);
-            Assert.IsFalse(policyTest.Check(this.product_quantity));
+            Assert.IsFalse(policyTest.Check(this.shoppingBasket));
         }
 
 
@@ -99,6 +103,9 @@ namespace TradingSystemTests
         public void DeleteAll()
         {
             Transaction.Instance.DeleteAllTests();
+            User u = new User();
+            IStore store = new Store("teststore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 
     }
