@@ -35,6 +35,7 @@ namespace TradingSystem.Business.Market
             _stores = new ConcurrentDictionary<Guid, IStore>();
            
             historyManager = HistoryManager.Instance;
+            categories = new ConcurrentDictionary<string, Category>();
         }
 
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)

@@ -53,7 +53,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             Assert.AreEqual(market.RemoveManager("manager", store.Id, "founder"), "success");
             Assert.IsFalse(store.Managers.ContainsKey("manager"));
-            Assert.IsFalse(founder.ManagerAppointments.ContainsKey("manager"));
+            Assert.IsFalse(founder.getM().ManagerAppointments.ContainsKey("manager"));
             Assert.IsFalse(manager.M.ManagerPrems.ContainsKey(store));
         }
 
@@ -64,7 +64,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             Assert.AreEqual(market.RemoveManager("manager2", store.Id, "founder"), "Manager doesn't exist");
             Assert.IsTrue(store.Managers.ContainsKey("manager"));
-            Assert.IsTrue(founder.ManagerAppointments.ContainsKey("manager"));
+            Assert.IsTrue(founder.getM().ManagerAppointments.ContainsKey("manager"));
             Assert.IsTrue(manager.M.ManagerPrems.ContainsKey(store));
         }
 
@@ -75,7 +75,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             Assert.AreEqual(market.RemoveManager("manager", store.Id, "owner"), "Invalid Assigner");
             Assert.IsTrue(store.Managers.ContainsKey("manager"));
-            Assert.IsTrue(founder.ManagerAppointments.ContainsKey("manager"));
+            Assert.IsTrue(founder.getM().ManagerAppointments.ContainsKey("manager"));
             Assert.IsTrue(manager.M.ManagerPrems.ContainsKey(store));
         }
 
