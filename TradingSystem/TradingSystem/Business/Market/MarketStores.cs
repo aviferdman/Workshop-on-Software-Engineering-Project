@@ -200,6 +200,17 @@ namespace TradingSystem.Business.Market
             }
         }
 
+        public void removeFromCategory(Product p, string category)
+        {
+            Category cat;
+            if (categories.TryGetValue(category, out cat))
+            {
+                if(cat.Products.Contains(p))
+                    cat.Products.Remove(p);
+            }
+           
+        }
+
 
 
         //use case 4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/52

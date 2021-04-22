@@ -165,6 +165,7 @@ namespace TradingSystem.Business.Market
                 return "Invalid product";
             if (!_products.TryAdd(product.Id, product))
                 return "Product exists";
+            MarketStores.Instance.addToCategory(product, product.Category);
             return "Product added";
         }
 
