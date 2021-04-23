@@ -33,6 +33,8 @@ namespace TradingSystem.Service
             var bankAccount = new BankAccount(accountNumber, branch);
             var address = new Address(state, city, street, apartmentNum);
             Store store = marketStores.CreateStore(name, username, bankAccount, address);
+            if (store == null)
+                return null;
             return new StoreData(store);
         }
 

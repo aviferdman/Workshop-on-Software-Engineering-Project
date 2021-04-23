@@ -9,6 +9,8 @@ namespace TradingSystem.Business.Market
 
         public bool RemoveProduct(Product product);
 
+        public bool TryUpdateProduct(Product product, int quantity);
+
         public void UpdateProduct(Product product, int quantity);
 
         public double CalcCost();

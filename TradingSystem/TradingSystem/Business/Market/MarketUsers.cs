@@ -244,7 +244,9 @@ namespace TradingSystem.Business.Market
             MarketStores.Instance.findStoreProduct(out found,out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
-            IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
+            IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
+            if (basket == null)
+                return "product isn't in basket";
             if (basket.RemoveProduct(p))
                 return "product removed from shopping basket";
             return "product isn't in basket";
@@ -262,7 +264,9 @@ namespace TradingSystem.Business.Market
                 return "product doesn't exist";
             if (p.Quantity <= quantity)
                 return "product's quantity is insufficient";
-            IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
+            IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
+            if (basket == null)
+                return "product isn't in basket";
             basket.UpdateProduct(p, quantity);
             return "product updated";
 
@@ -275,25 +279,50 @@ namespace TradingSystem.Business.Market
             string ans;
             if (u == null)
                 return new Result<IShoppingCart>(null, true, "user doesn't exist");
+            if(products_removed.Intersect<Guid>(products_added.Keys).Count()!=0||
+               products_removed.Intersect<Guid>(products_quan.Keys).Count() != 0 ||
+                products_added.Keys.Intersect<Guid>(products_quan.Keys).Count() != 0)
+                return new Result<IShoppingCart>(u.ShoppingCart, true, "lists are not disjoint");
+            ShoppingCart c = new ShoppingCart((ShoppingCart)u.ShoppingCart);
             foreach (KeyValuePair<Guid,  int> p in products_added)
             {
                 ans = AddProductToCart(username, p.Key, p.Value);
                 if (!ans.Equals("product added to shopping basket"))
+                {
+                    recover_cart(username, u, c);
                     return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
+                }
             }
             foreach (Guid p in products_removed)
             {
                 ans = RemoveProductFromCart(username, p);
                 if (!ans.Equals("product removed from shopping basket"))
+                {
+                    recover_cart(username, u, c);
                     return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
+                }
+                   
             }
             foreach (KeyValuePair<Guid, int> p in products_quan)
             {
                 ans = ChangeProductQuanInCart(username, p.Key, p.Value);
                 if (!ans.Equals("product updated"))
-                    return new Result<IShoppingCart>(u.ShoppingCart, true,  ans);
+                {
+                    recover_cart(username, u, c);
+                    return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
+                }
             }
             return new Result<IShoppingCart>(u.ShoppingCart, false, null);
+        }
+
+        private void recover_cart(string username, User u, ShoppingCart c)
+        {
+            u.ShoppingCart = c;
+            if (membersShoppingCarts.ContainsKey(u.Username))
+            {
+                membersShoppingCarts.TryRemove(u.Username, out _);
+                membersShoppingCarts.TryAdd(username, c);
+            }
         }
 
         public void CleanMarketUsers()

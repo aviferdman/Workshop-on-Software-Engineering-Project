@@ -13,11 +13,22 @@ namespace TradingSystem.Business.Market
         private User _user;
 
         public SortedSet<IShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
+        public User User1 { get => _user; set => _user = value; }
 
         public ShoppingCart(User user)
         {
             this.shoppingBaskets = new SortedSet<IShoppingBasket>();
             _user = user;
+        }
+
+        public ShoppingCart(ShoppingCart c)
+        {
+            _user = c.User1;
+            this.shoppingBaskets = new SortedSet<IShoppingBasket>();
+            foreach(IShoppingBasket s in c.ShoppingBaskets)
+            {
+                this.shoppingBaskets.Add(new ShoppingBasket((ShoppingBasket)s, this));
+            }
         }
 
         public bool IsEmpty()
@@ -31,6 +42,16 @@ namespace TradingSystem.Business.Market
             if (!shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
             {
                 shoppingBaskets.Add(new ShoppingBasket(this, store));
+            }
+            return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
+        }
+
+        public IShoppingBasket TryGetShoppingBasket(IStore store)
+        {
+            //create if not exists
+            if (!shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
+            {
+                return null;
             }
             return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
         }

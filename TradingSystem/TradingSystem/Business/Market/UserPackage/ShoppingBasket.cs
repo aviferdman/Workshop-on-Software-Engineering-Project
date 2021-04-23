@@ -18,6 +18,17 @@ namespace TradingSystem.Business.Market
             this._product_quantity = new Dictionary<Product, int>();
         }
 
+        public ShoppingBasket(ShoppingBasket s, ShoppingCart shoppingCart)
+        {
+            this.store = s.store;
+            this.shoppingCart = shoppingCart;
+            this._product_quantity = new Dictionary<Product, int>();
+            foreach(KeyValuePair<Product,int> p in s.Product_quantity)
+            {
+                this.Product_quantity.Add(p.Key, p.Value);
+            }
+        }
+
         public Dictionary<Product, int> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
         public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
         public IStore Store { get => store; set => store = value; }
@@ -50,6 +61,19 @@ namespace TradingSystem.Business.Market
             else
             {
                 _product_quantity[product] = quantity;
+            }
+        }
+
+        public bool TryUpdateProduct(Product product, int quantity)
+        {
+            if (!_product_quantity.ContainsKey(product))
+            {
+                return false;
+            }
+            else
+            {
+                _product_quantity[product] = quantity;
+                return true;
             }
         }
 

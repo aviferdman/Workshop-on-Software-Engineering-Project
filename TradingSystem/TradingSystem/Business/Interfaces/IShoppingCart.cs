@@ -12,6 +12,8 @@ namespace TradingSystem.Business.Market
         public BuyStatus Purchase(PaymentMethod method, string clientPhone, Address clientAddress);
         public double CalcPaySum();
 
+        public IShoppingBasket TryGetShoppingBasket(IStore store);
+
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts();
 
         public bool IsEmpty();
