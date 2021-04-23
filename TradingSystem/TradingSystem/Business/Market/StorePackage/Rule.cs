@@ -7,17 +7,17 @@ namespace TradingSystem.Business.Market
     public class Rule : IRule
     {
         //Function gets a products and it's quantities and return legal or not
-        Func<Dictionary<Product, int>, bool> _r;
+        Func<IShoppingBasket, bool> _r;
 
-        public Rule(Func<Dictionary<Product, int>, bool> r)
+        public Rule(Func<IShoppingBasket, bool> r)
         {
             this._r = r;
         }
 
         //All products and it's quantities needs to pass the rule, otherwise its illegal
-        virtual public bool Check(Dictionary<Product, int> product_quantity)
+        virtual public bool Check(IShoppingBasket shoppingBasket)
         {
-            return _r(product_quantity);
+            return _r(shoppingBasket);
         }
     }
 }

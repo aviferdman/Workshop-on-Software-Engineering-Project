@@ -29,12 +29,12 @@ namespace TradingSystem.Business.Market
             _rules.Remove(rule);
         }
 
-        public bool Check(Dictionary<Product, int> product_quantity)
+        public bool Check(IShoppingBasket shoppingBasket)
         {
             bool isLegal = true;
             foreach (IRule rule in _rules)
             {
-                isLegal = isLegal && rule.Check(product_quantity);
+                isLegal = isLegal && rule.Check(shoppingBasket);
             }
             return isLegal;
         }

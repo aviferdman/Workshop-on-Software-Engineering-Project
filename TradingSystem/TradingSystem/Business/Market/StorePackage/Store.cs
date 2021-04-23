@@ -129,7 +129,7 @@ namespace TradingSystem.Business.Market
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
         public double ApplyDiscounts(IShoppingBasket shoppingBasket)
         {
-            var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket.GetDictionaryProductQuantity()));
+            var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket));
             //chose the max value of an available discount
             try
             {
@@ -144,7 +144,7 @@ namespace TradingSystem.Business.Market
         //use case 12 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/75
         public bool CheckPolicy(IShoppingBasket shoppingBasket)
         {
-            return Policy.Check(shoppingBasket.GetDictionaryProductQuantity());
+            return Policy.Check(shoppingBasket);
         }
 
         public void AddRule(IRule rule)

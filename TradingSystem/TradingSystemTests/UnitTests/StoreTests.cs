@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
 
 namespace TradingSystemTests.MarketTests
@@ -96,18 +97,19 @@ namespace TradingSystemTests.MarketTests
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
-            Discount discount1 = new Discount(100);
+            Discount discount1 = new Discount(new DiscountCalculator(return100));
             discount1.AddRule(new Rule(MoreThan10Products));
-            Discount discount2 = new Discount(200);
+            Discount discount2 = new Discount(new DiscountCalculator(return200));
             discount1.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(discount1);
             store.AddDiscount(discount2);
             Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
         }
 
-        public bool MoreThan10Products(Dictionary<Product, int> product_quantity)
+        public bool MoreThan10Products(IShoppingBasket shoppingBasket)
         {
             int count = 0;
+            var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             foreach (KeyValuePair<Product, int> p_q in product_quantity)
             {
                 count += p_q.Value;
@@ -115,9 +117,10 @@ namespace TradingSystemTests.MarketTests
             return count > 10;
         }
 
-        public bool MoreThan20Products(Dictionary<Product, int> product_quantity)
+        public bool MoreThan20Products(IShoppingBasket shoppingBasket)
         {
             int count = 0;
+            var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             foreach (KeyValuePair<Product, int> p_q in product_quantity)
             {
                 count += p_q.Value;
@@ -136,17 +139,25 @@ namespace TradingSystemTests.MarketTests
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
-            Discount discount1 = new Discount(100);
+            Discount discount1 = new Discount(new DiscountCalculator(return100));
             discount1.AddRule(new Rule(MoreThan10Products));
-            Discount discount2 = new Discount(200);
+            Discount discount2 = new Discount(new DiscountCalculator(return200));
             discount2.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(discount1);
             store.AddDiscount(discount2);
             Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
         }
 
+        public double return200(IShoppingBasket shoppingBasket)
+        {
+            return 200;
+        }
 
-        
+        public double return100(IShoppingBasket shoppingBasket)
+        {
+            return 100;
+        }
+
         [TestCleanup]
         public void DeleteAll()
         {

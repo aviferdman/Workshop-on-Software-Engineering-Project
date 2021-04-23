@@ -8,6 +8,7 @@ using System.Text;
 using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Payment;
 
 namespace TradingSystemTests.IntegrationTests
@@ -15,6 +16,7 @@ namespace TradingSystemTests.IntegrationTests
     [TestClass]
     public class PurchaseTests
     {
+        private static readonly double DISCOUNT_VALUE = 15;
         private static readonly int QUANTITY1 = 100;
         private static readonly double WEIGHT1 = 100;
         private static readonly double PRICE1 = 100;
@@ -47,12 +49,17 @@ namespace TradingSystemTests.IntegrationTests
         {
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
-            Discount discount = new Discount(15);
+            Discount discount = new Discount(new DiscountCalculator(return15));
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(discount);
-            Assert.AreEqual(PRICE1 * 5 - discount.DiscountValue, testUser.ShoppingCart.CalcPaySum());
+            Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
             Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+        }
+
+        private double return15(IShoppingBasket arg)
+        {
+            return DISCOUNT_VALUE;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -105,7 +112,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public void CheckLegalPurcahsePolicyIsIllegal()
         {
-            Func<Dictionary<Product, int>, bool> f = new Func<Dictionary<Product, int>, bool>(CheckTotalWeightNoMoreThan400);
+            Func<IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             testStore.AddRule(r);
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
@@ -219,15 +226,15 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
-            private bool CheckTotalWeightMoreThan400(Dictionary<Product, int> product_quantity)
+            private bool CheckTotalWeightMoreThan400(IShoppingBasket shoppingBasket)
         {
-            double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
             return weight > 400;
         }
 
-        private bool CheckTotalWeightNoMoreThan400(Dictionary<Product, int> product_quantity)
+        private bool CheckTotalWeightNoMoreThan400(IShoppingBasket shoppingBasket)
         {
-            double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
             return weight <= 400;
         }
         
