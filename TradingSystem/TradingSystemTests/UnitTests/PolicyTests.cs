@@ -65,9 +65,6 @@ namespace TradingSystemTests
             Assert.AreEqual(false, policy.Check(shoppingBasket));
         }
 
-
-        //END OF UNIT TESTS
-
         public bool CheckTotalWeightNoMoreThan400(IShoppingBasket shoppingBasket)
         {
             double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
@@ -97,6 +94,176 @@ namespace TradingSystemTests
             policyTest.AddRule(r);
             Assert.IsFalse(policyTest.Check(this.shoppingBasket));
         }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
+        [TestMethod]
+        public void CheckAndPolicies()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Assert.IsTrue(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
+        [TestMethod]
+        public void CheckAndPoliciesFirstFalseSecondTrue()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Assert.IsFalse(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
+        [TestMethod]
+        public void CheckAndPoliciesFirstTrueSecondFalse()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Assert.IsFalse(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
+        [TestMethod]
+        public void CheckAndPoliciesFirstFalseSecondFalse()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Assert.IsFalse(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
+        [TestMethod]
+        public void CheckOrPolicies()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.Or(legalPolicy2);
+            Assert.IsTrue(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
+        [TestMethod]
+        public void CheckOrPoliciesFirstFalseSecondTrue()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.Or(legalPolicy2);
+            Assert.IsTrue(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
+        [TestMethod]
+        public void CheckOrPoliciesFirstTrueSecondFalse()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.Or(legalPolicy2);
+            Assert.IsTrue(andPolicy.Check(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
+        [TestMethod]
+        public void CheckOrPoliciesFirstFalseSecondFalse()
+        {
+            this.shoppingBasket.addProduct(product1, 1);
+            this.shoppingBasket.addProduct(product2, 2);
+            Mock<IRule> rule1 = new Mock<IRule>();
+            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            Mock<IRule> rule2 = new Mock<IRule>();
+            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            ICollection<IRule> firstRules = new HashSet<IRule>();
+            ICollection<IRule> secondRules = new HashSet<IRule>();
+            firstRules.Add(rule1.Object);
+            secondRules.Add(rule2.Object);
+            Policy legalPolicy1 = new Policy(firstRules);
+            Policy legalPolicy2 = new Policy(secondRules);
+
+            Policy andPolicy = legalPolicy1.Or(legalPolicy2);
+            Assert.IsFalse(andPolicy.Check(shoppingBasket));
+        }
+
+        //END OF UNIT TESTS
 
 
         [TestCleanup]
