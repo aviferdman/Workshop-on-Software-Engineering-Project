@@ -211,7 +211,7 @@ namespace TradingSystem.Business.Market
             MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null||p==null)
                 return "product doesn't exist";
-            if (p.Quantity <= quantity)
+            if (p.Quantity <= quantity|| quantity<1)
                 return "product's quantity is insufficient";
             IShoppingBasket basket= u.ShoppingCart.GetShoppingBasket(found);
             return basket.addProduct(p, quantity);
@@ -262,12 +262,13 @@ namespace TradingSystem.Business.Market
             MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
-            if (p.Quantity <= quantity)
+            if (p.Quantity <= quantity || quantity < 1)
                 return "product's quantity is insufficient";
             IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
             if (basket == null)
                 return "product isn't in basket";
-            basket.UpdateProduct(p, quantity);
+            if(!basket.TryUpdateProduct(p, quantity))
+                return "product not in cart";
             return "product updated";
 
         }
