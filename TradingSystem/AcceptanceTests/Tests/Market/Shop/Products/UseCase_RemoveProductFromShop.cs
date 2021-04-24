@@ -60,6 +60,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public ShopId ShopId => useCase_addProduct.ShopId;
 
         private UseCase_AddProductToShop useCase_addProduct;
+        private UseCase_AddProductToShop? useCase_addProduct2;
         private IEnumerable<ProductIdentifiable> productsToRemove;
 
         [SetUp]
@@ -76,6 +77,7 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         public override void Teardown()
         {
             useCase_addProduct.Teardown();
+            useCase_addProduct2?.Teardown();
         }
 
         [TestCase]
@@ -158,13 +160,13 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
                 weight: 0.8
             ));
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
-            useCase_addProduct = new UseCase_AddProductToShop
+            useCase_addProduct2 = new UseCase_AddProductToShop
             (
                 SystemContext,
                 new ShopImage(UserInfo, Shop2, new ProductIdentifiable[] { product2 })
             );
-            useCase_addProduct.Setup();
-            useCase_addProduct.Success_Normal_CheckStoreProducts();
+            useCase_addProduct2.Setup();
+            useCase_addProduct2.Success_Normal_CheckStoreProducts();
 
             Assert.IsFalse(MarketBridge.RemoveProductFromShop(ShopId, product2.ProductId));
         }
