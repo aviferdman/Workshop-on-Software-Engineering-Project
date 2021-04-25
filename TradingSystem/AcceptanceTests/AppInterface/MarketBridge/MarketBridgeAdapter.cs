@@ -4,7 +4,11 @@ using System.Linq;
 
 using AcceptanceTests.AppInterface.Data;
 
+using Moq;
+
+using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Payment;
 using TradingSystem.Service;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
@@ -14,19 +18,22 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         private readonly MarketStoreGeneralService marketStoreGeneralService;
         private readonly MarketProductsService marketProductsService;
         private readonly MarketShoppingCartService marketShoppingCartService;
+        private readonly MarketGeneralService marketGeneralService;
 
         private MarketBridgeAdapter
         (
             SystemContext systemContext,
             MarketStoreGeneralService marketStoreGeneralService,
             MarketProductsService marketProductsService,
-            MarketShoppingCartService marketShoppingCartService
+            MarketShoppingCartService marketShoppingCartService,
+            MarketGeneralService marketGeneralService
         )
             : base(systemContext)
         {
             this.marketStoreGeneralService = marketStoreGeneralService;
             this.marketProductsService = marketProductsService;
             this.marketShoppingCartService = marketShoppingCartService;
+            this.marketGeneralService = marketGeneralService;
         }
 
         public static MarketBridgeAdapter New(SystemContext systemContext)
@@ -36,7 +43,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 systemContext,
                 MarketStoreGeneralService.Instance,
                 MarketProductsService.Instance,
-                MarketShoppingCartService.Instance
+                MarketShoppingCartService.Instance,
+                MarketGeneralService.Instance
             );
         }
 
@@ -178,6 +186,56 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 ProductInCart.ToDictionary(productsEdit)
             );
             return result != null && !result.IsErr;
+        }
+
+        public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        {
+            return marketShoppingCartService.PurchaseShoppingCart
+            (
+                SystemContext.TokenUsername,
+                purchaseInfo.BankAccount.AccountNumber,
+                purchaseInfo.BankAccount.Branch,
+                purchaseInfo.PhoneNumber,
+                purchaseInfo.Address.State,
+                purchaseInfo.Address.City,
+                purchaseInfo.Address.Street,
+                purchaseInfo.Address.ApartmentNum
+            );
+        }
+
+        public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)
+        {
+            marketGeneralService.ActivateDebugMode(deliverySystem, paymentSystem, true);
+        }
+
+        public void DisableExternalTransactionMocks()
+        {
+            marketGeneralService.ActivateDebugMode(null, null, false);
+        }
+
+        public PurchaseHistory? GetUserPurchaseHistory()
+        {
+            ICollection<HistoryData>? history = marketGeneralService.GetAllHistory(SystemContext.TokenUsername);
+            if (history == null)
+            {
+                return null;
+            }
+
+            IEnumerable<PurchaseHistoryRecord> records = history.Select
+            (
+                x => new PurchaseHistoryRecord
+                (
+                    x.Products.ProductId_quantity.Select
+                    (
+                        (id_quantity) => new ProductInCart(id_quantity.Key, id_quantity.Value)
+                    ),
+                    x.Deliveries.PackageId,
+                    x.Deliveries.Status,
+                    x.Payments.PaymentId,
+                    x.Payments.Status
+                )
+            );
+            return new PurchaseHistory(records);
         }
     }
 }

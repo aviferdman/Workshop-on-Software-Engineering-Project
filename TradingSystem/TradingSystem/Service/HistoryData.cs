@@ -11,14 +11,15 @@ namespace TradingSystem.Service
 {
     public class HistoryData
     {
-        DeliveryStatus _deliveries;
-        PaymentStatus _payments;
-        ProductHistoryData _products;
         public HistoryData(IHistory history)
         {
-            this._deliveries = history.GetDeliveryStatus();
-            this._payments = history.GetPaymentStatus();
-            this._products = history.GetProductsStatus();
+            this.Deliveries = history.GetDeliveryStatus();
+            this.Payments = history.GetPaymentStatus();
+            this.Products = history.GetProductsStatus();
         }
+
+        public DeliveryStatus Deliveries { get; }
+        public PaymentStatus Payments { get; }
+        public ProductHistoryData Products { get; }
     }
 }

@@ -2,6 +2,11 @@
 
 using AcceptanceTests.AppInterface.Data;
 
+using Moq;
+
+using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Payment;
+
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public interface IMarketBridge
@@ -35,11 +40,18 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         ProductId? AddProductToShop(ShopId shopId, ProductInfo productInfo);
         bool RemoveProductFromShop(ShopId shopId, ProductId productId);
         bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails);
+
+        bool PurchaseShoppingCart(PurchaseInfo purchaseInfo);
         IEnumerable<ProductInCart>? GetShoppingCartItems();
 
         bool AddProductToUserCart(ProductInCart product);
-        bool RemoveProductFromUserCart(ProductId productId);
         bool EditProductInUserCart(ProductInCart product);
+        bool RemoveProductFromUserCart(ProductId productId);
         bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit);
+
+        PurchaseHistory? GetUserPurchaseHistory();
+
+        void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem);
+        void DisableExternalTransactionMocks();
     }
 }

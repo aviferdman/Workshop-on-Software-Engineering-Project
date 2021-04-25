@@ -76,8 +76,6 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         private UseCase_AddProductToShop useCase_addProduct;
-        private UseCase_Login useCase_login_buyer;
-
         private UseCase_AddProductToCart_TestLogic testLogic;
 
         [SetUp]
@@ -91,29 +89,15 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_addProduct.Setup();
             useCase_addProduct.Success_Normal_CheckStoreProducts();
 
-            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
-            useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
-            useCase_login_buyer.Setup();
-            useCase_login_buyer.Success_Normal();
-
-            ProductsTeardown.AddRange(ProductsAdd.Select(x => x.ProductIdentifiable.ProductId));
-            testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext);
+            testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext, UserInfo);
+            testLogic.Setup();
         }
 
         [TearDown]
         public override void Teardown()
         {
-            _ = UserBridge.AssureLogin(UserInfo);
-            foreach (ProductId productId in ProductsTeardown)
-            {
-                _ = MarketBridge.RemoveProductFromUserCart(productId);
-            }
-            useCase_login_buyer?.Teardown();
-            bool loggedInToShopOwner = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
-            if (loggedInToShopOwner)
-            {
-                useCase_addProduct?.Teardown();
-            }
+            testLogic.Teardown();
+            useCase_addProduct?.Teardown();
         }
 
         [TestCase]
@@ -134,7 +118,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             };
             IEnumerable<ProductInCart> products = productsBefore.Concat(productsAdd);
             testLogic.Success_Normal_CheckCartItems(productsAdd, products);
-            ProductsTeardown.AddRange(productsAdd.Select(x => x.ProductId));
+            testLogic.ProductsTeardown.AddRange(productsAdd.Select(x => x.ProductId));
         }
 
         [TestCase]
