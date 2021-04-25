@@ -248,7 +248,14 @@ namespace TradingSystem.Business.Market
             if (basket == null)
                 return "product isn't in basket";
             if (basket.RemoveProduct(p))
+            {
+                if(basket.IsEmpty())
+                {
+                    u.ShoppingCart.removeBasket(found);
+                }
                 return "product removed from shopping basket";
+            }
+                
             return "product isn't in basket";
         }
         //use case 9: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/69

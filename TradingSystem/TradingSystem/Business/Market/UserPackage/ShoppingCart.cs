@@ -46,6 +46,14 @@ namespace TradingSystem.Business.Market
             return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
         }
 
+        public void removeBasket(IStore store)
+        {
+            if (shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
+            {
+                shoppingBaskets.Remove(shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault());
+            }
+        }
+
         public IShoppingBasket TryGetShoppingBasket(IStore store)
         {
             //create if not exists

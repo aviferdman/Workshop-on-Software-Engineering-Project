@@ -11,6 +11,7 @@ namespace TradingSystem.Business.Market
         public bool CheckPolicy();
         public BuyStatus Purchase(PaymentMethod method, string clientPhone, Address clientAddress);
         public double CalcPaySum();
+        public void removeBasket(IStore store);
 
         public IShoppingBasket TryGetShoppingBasket(IStore store);
 
