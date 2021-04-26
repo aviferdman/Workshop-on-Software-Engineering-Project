@@ -19,6 +19,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         private readonly MarketProductsService marketProductsService;
         private readonly MarketShoppingCartService marketShoppingCartService;
         private readonly MarketGeneralService marketGeneralService;
+        private readonly MarketUserService marketUserService;
 
         private MarketBridgeAdapter
         (
@@ -26,7 +27,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             MarketStoreGeneralService marketStoreGeneralService,
             MarketProductsService marketProductsService,
             MarketShoppingCartService marketShoppingCartService,
-            MarketGeneralService marketGeneralService
+            MarketGeneralService marketGeneralService,
+            MarketUserService marketUserService
         )
             : base(systemContext)
         {
@@ -34,6 +36,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             this.marketProductsService = marketProductsService;
             this.marketShoppingCartService = marketShoppingCartService;
             this.marketGeneralService = marketGeneralService;
+            this.marketUserService = marketUserService;
         }
 
         public static MarketBridgeAdapter New(SystemContext systemContext)
@@ -44,7 +47,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 MarketStoreGeneralService.Instance,
                 MarketProductsService.Instance,
                 MarketShoppingCartService.Instance,
-                MarketGeneralService.Instance
+                MarketGeneralService.Instance,
+                MarketUserService.Instance
             );
         }
 
@@ -215,7 +219,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public PurchaseHistory? GetUserPurchaseHistory()
         {
-            ICollection<HistoryData>? history = marketGeneralService.GetAllHistory(SystemContext.TokenUsername);
+            ICollection<HistoryData>? history = marketUserService.GetUserHistory(SystemContext.TokenUsername);
             if (history == null)
             {
                 return null;
