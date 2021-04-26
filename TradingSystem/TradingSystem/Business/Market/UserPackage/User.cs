@@ -49,7 +49,7 @@ namespace TradingSystem.Business.Market
             shoppingBasket.UpdateProduct(product, quantity);
         }
 
-        public bool PurchaseShoppingCart(PaymentMethod method, string phone, Address address)
+        public Result<bool> PurchaseShoppingCart(PaymentMethod method, string phone, Address address)
         {
             
             BuyStatus buyStatus = ShoppingCart.Purchase(method, phone, address);
@@ -65,7 +65,7 @@ namespace TradingSystem.Business.Market
                 }
                 this.ShoppingCart = new ShoppingCart(this);
             }
-            return buyStatus.Status;
+            return new Result<bool>(buyStatus.Status, false, "");
         }
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()

@@ -162,7 +162,7 @@ namespace TradingSystem.Business.Market
         //USER FUNCTIONALITY
 
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
-        public bool PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
+        public Result<bool> PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(PurchaseShoppingCart));
             User user = GetUserByUserName(username);
