@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.Histories;
+using TradingSystem.Business.Notifications;
+using TradingSystem.Notifications;
 
 namespace TradingSystem.Business.Market
 {
+
     public class User
     {
         private State _state;
@@ -15,6 +18,8 @@ namespace TradingSystem.Business.Market
         private string username;
         private bool isLoggedIn;
         private ICollection<IHistory> userHistory;
+        private Publisher publisher;
+        private ICollection<NotificationSubscriber> subscribers;
 
         public User(string username)
         {
@@ -23,6 +28,28 @@ namespace TradingSystem.Business.Market
             this.username = username;
             this.isLoggedIn = false;
             this.UserHistory = new HashSet<IHistory>();
+            InitNotifications();
+        }
+
+        private void InitNotifications()
+        {
+            this.Publisher = new Publisher(this);
+            this.Subscribers = new HashSet<NotificationSubscriber>();
+            NotificationSubscriber subscriber = new NotificationSubscriber(this, nameof(EventType.RegisterEvent));
+            Publisher.Subscribe(EventType.RegisterEvent, subscriber);
+            Subscribers.Add(subscriber);
+            subscriber = new NotificationSubscriber(this, nameof(EventType.OpenStoreEvent));
+            Publisher.Subscribe(EventType.OpenStoreEvent, subscriber);
+            Subscribers.Add(subscriber);
+            subscriber = new NotificationSubscriber(this, nameof(EventType.PurchaseEvent));
+            Publisher.Subscribe(EventType.PurchaseEvent, subscriber);
+            Subscribers.Add(subscriber);
+            subscriber = new NotificationSubscriber(this, nameof(EventType.BecomeManagerEvent));
+            Publisher.Subscribe(EventType.BecomeManagerEvent, subscriber);
+            Subscribers.Add(subscriber);
+            subscriber = new NotificationSubscriber(this, nameof(EventType.RemovedBeingManagerEvent));
+            Publisher.Subscribe(EventType.RemovedBeingManagerEvent, subscriber);
+            Subscribers.Add(subscriber);
         }
 
         public User()
@@ -37,6 +64,8 @@ namespace TradingSystem.Business.Market
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
         public ICollection<IHistory> UserHistory { get => userHistory; set => userHistory = value; }
+        public Publisher Publisher { get => publisher; set => publisher = value; }
+        public ICollection<NotificationSubscriber> Subscribers { get => subscribers; set => subscribers = value; }
 
         public void ChangeState(State state)
         {
