@@ -31,12 +31,6 @@ namespace TradingSystem.Business.Notifications
             };
         }
 
-        // Define Subscribe method
-        public IDisposable Subscribe(EventType eventType, IObserver<Event> observer)
-        {
-            return publishers[eventType].Subscribe(observer);
-        }
-
         // Notify observers when event occurs
         public void EventNotification(EventType eventType, string description)
         {
@@ -60,6 +54,11 @@ namespace TradingSystem.Business.Notifications
                 }
                 waiting[key].Clear();
             }
+        }
+
+        public TypedPublisher Get(EventType eventType)
+        {
+            return publishers[eventType];
         }
     }
 }

@@ -7,13 +7,15 @@ namespace TradingSystem.Notifications
     public class TypedPublisher : IObservable<Event>
     {
         public string ProviderName { get; private set; }
+        public List<IObserver<Event>> Observers { get => _observers; set => _observers = value; }
+
         // Maintain a list of observers
         private List<IObserver<Event>> _observers;
 
         public TypedPublisher(string _providerName)
         {
             ProviderName = _providerName;
-            _observers = new List<IObserver<Event>>();
+            Observers = new List<IObserver<Event>>();
         }
 
         // Define Unsubscriber class
@@ -39,15 +41,15 @@ namespace TradingSystem.Notifications
         // Define Subscribe method
         public IDisposable Subscribe(IObserver<Event> observer)
         {
-            if (!_observers.Contains(observer))
-                _observers.Add(observer);
-            return new Unsubscriber(_observers, observer);
+            if (!Observers.Contains(observer))
+                Observers.Add(observer);
+            return new Unsubscriber(Observers, observer);
         }
 
         // Notify observers when event occurs
         public void EventNotification(string description)
         {
-            foreach (var observer in _observers)
+            foreach (var observer in Observers)
             {
                 observer.OnNext(new Event(ProviderName, description,
                                 DateTime.Now));
