@@ -19,7 +19,6 @@ namespace TradingSystem.Business.Notifications
             {
                 {EventType.RegisterEvent, new TypedPublisher(nameof(EventType.RegisterEvent))},
                 {EventType.BecomeManagerEvent, new TypedPublisher(nameof(EventType.BecomeManagerEvent))},
-                {EventType.RemovedBeingManagerEvent, new TypedPublisher(nameof(EventType.RemovedBeingManagerEvent))},
                 {EventType.OpenStoreEvent, new TypedPublisher(nameof(EventType.OpenStoreEvent))},
                 {EventType.PurchaseEvent, new TypedPublisher(nameof(EventType.PurchaseEvent))}
             };
@@ -27,7 +26,6 @@ namespace TradingSystem.Business.Notifications
             {
                 {EventType.RegisterEvent, new List<string>()},
                 {EventType.BecomeManagerEvent, new List<string>()},
-                {EventType.RemovedBeingManagerEvent, new List<string>()},
                 {EventType.OpenStoreEvent, new List<string>()},
                 {EventType.PurchaseEvent, new List<string>()}
             };

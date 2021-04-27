@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,7 +58,8 @@ namespace TradingSystem.Business.Market
             store.Founder = Founder.makeFounder((MemberState)user.State, store);
             if (!_stores.TryAdd(store.Id, store))
                 return null;
-            user.Publisher.EventNotification(EventType.OpenStoreEvent, "Congragulations! you openned new Store!");
+            user.Publisher?.EventNotification(EventType.OpenStoreEvent, ConfigurationManager.AppSettings["OpenedStoreMessage"]);
+            
             return store;
         }
 

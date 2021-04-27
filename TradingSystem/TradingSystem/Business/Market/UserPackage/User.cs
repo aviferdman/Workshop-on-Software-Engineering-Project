@@ -47,9 +47,6 @@ namespace TradingSystem.Business.Market
             subscriber = new NotificationSubscriber(this, nameof(EventType.BecomeManagerEvent));
             Publisher.Subscribe(EventType.BecomeManagerEvent, subscriber);
             Subscribers.Add(subscriber);
-            subscriber = new NotificationSubscriber(this, nameof(EventType.RemovedBeingManagerEvent));
-            Publisher.Subscribe(EventType.RemovedBeingManagerEvent, subscriber);
-            Subscribers.Add(subscriber);
         }
 
         public User()
@@ -94,7 +91,7 @@ namespace TradingSystem.Business.Market
                 }
                 this.ShoppingCart = new ShoppingCart(this);
             }
-            return new Result<bool>(buyStatus.Status, false, "");
+            return new Result<bool>(buyStatus.Status, !buyStatus.Status, "");
         }
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()

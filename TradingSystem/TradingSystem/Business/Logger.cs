@@ -11,7 +11,7 @@ namespace TradingSystem.Business
     {
         private IList<String> activities;
         private IList<String> errors;
-        private bool writeToFile;
+        private bool writeToFile = false;
         private static readonly Lazy<Logger>
         _lazy =
         new Lazy<Logger>
@@ -21,7 +21,6 @@ namespace TradingSystem.Business
         {
             this.Activities = new List<String>();
             this.Errors = new List<String>();
-            this.writeToFile = ConfigurationManager.AppSettings.Get("EnableLoggerWriteToFile").Equals("true");
         }
 
         public static Logger Instance { get { return _lazy.Value; } }

@@ -9,8 +9,7 @@ namespace TradingSystem.Notifications
         RegisterEvent,
         OpenStoreEvent,
         PurchaseEvent,
-        BecomeManagerEvent,
-        RemovedBeingManagerEvent
+        BecomeManagerEvent
     }
     public class Event
     {
