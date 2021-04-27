@@ -6,6 +6,6 @@ namespace TradingSystem.Communication
 {
     public interface ICommunicate
     {
-        public void SendMessage(string username, string message);
+        public bool SendMessage(string username, string message);
     }
 }

@@ -78,6 +78,14 @@ namespace TradingSystem.Business.Market
             return stores;
         }
 
+        public void DeleteAll()
+        {
+            _stores = new ConcurrentDictionary<Guid, IStore>();
+
+            historyManager = HistoryManager.Instance;
+            categories = new ConcurrentDictionary<string, Category>();
+        }
+
 
         //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
         public ICollection<IHistory> GetStoreHistory(string username, Guid storeId)

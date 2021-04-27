@@ -35,18 +35,18 @@ namespace TradingSystem.Business.Market
         {
             this.Publisher = new Publisher(this);
             this.Subscribers = new HashSet<NotificationSubscriber>();
-            NotificationSubscriber subscriber = new NotificationSubscriber(this, nameof(EventType.RegisterEvent));
-            Publisher.Subscribe(EventType.RegisterEvent, subscriber);
-            Subscribers.Add(subscriber);
-            subscriber = new NotificationSubscriber(this, nameof(EventType.OpenStoreEvent));
-            Publisher.Subscribe(EventType.OpenStoreEvent, subscriber);
-            Subscribers.Add(subscriber);
-            subscriber = new NotificationSubscriber(this, nameof(EventType.PurchaseEvent));
-            Publisher.Subscribe(EventType.PurchaseEvent, subscriber);
-            Subscribers.Add(subscriber);
-            subscriber = new NotificationSubscriber(this, nameof(EventType.BecomeManagerEvent));
-            Publisher.Subscribe(EventType.BecomeManagerEvent, subscriber);
-            Subscribers.Add(subscriber);
+            NotificationSubscriber subscriber1 = new NotificationSubscriber(this, nameof(EventType.RegisterEvent));
+            subscriber1.Subscribe(Publisher.Get(EventType.RegisterEvent));
+            Subscribers.Add(subscriber1);
+            NotificationSubscriber subscriber2 = new NotificationSubscriber(this, nameof(EventType.OpenStoreEvent));
+            subscriber2.Subscribe(Publisher.Get(EventType.OpenStoreEvent));
+            Subscribers.Add(subscriber2);
+            NotificationSubscriber subscriber3 = new NotificationSubscriber(this, nameof(EventType.PurchaseEvent));
+            subscriber3.Subscribe(Publisher.Get(EventType.PurchaseEvent));
+            Subscribers.Add(subscriber3);
+            NotificationSubscriber subscriber4 = new NotificationSubscriber(this, nameof(EventType.BecomeManagerEvent));
+            subscriber4.Subscribe(Publisher.Get(EventType.BecomeManagerEvent));
+            Subscribers.Add(subscriber4);
         }
 
         public User()
@@ -54,6 +54,8 @@ namespace TradingSystem.Business.Market
             this._shoppingCart = new ShoppingCart(this);
             this._state = new GuestState();
             this.isLoggedIn = false;
+            this.UserHistory = new HashSet<IHistory>();
+            InitNotifications();
         }
 
         public State State { get => _state; set => _state = value; }

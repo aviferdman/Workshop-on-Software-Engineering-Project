@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,7 @@ using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.Notifications;
 
 namespace TradingSystem.Business.Market
 {
@@ -70,6 +72,14 @@ namespace TradingSystem.Business.Market
                 u.Username=GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
             return u.Username;
+        }
+
+        public void DeleteAll()
+        {
+            activeUsers = new ConcurrentDictionary<string, User>();
+            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
+            historyManager = HistoryManager.Instance;
+            memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
         //functional requirement 2.2: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/13
@@ -166,7 +176,12 @@ namespace TradingSystem.Business.Market
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(PurchaseShoppingCart));
             User user = GetUserByUserName(username);
-            return user.PurchaseShoppingCart(bank, phone, address);
+            Result<bool> res = user.PurchaseShoppingCart(bank, phone, address);
+            if (!res.IsErr)
+            {
+                user.Publisher?.EventNotification(EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+            }
+            return res;
         }
 
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
