@@ -26,7 +26,7 @@ namespace TradingSystemTests.IntegrationTests
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             ICollection<IHistory> userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(1, userHistory.Count);
 
@@ -51,7 +51,7 @@ namespace TradingSystemTests.IntegrationTests
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             ICollection<IHistory> userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(0, userHistory.Count);
-            Assert.IsFalse(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsFalse(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(0, userHistory.Count);
 
@@ -69,7 +69,7 @@ namespace TradingSystemTests.IntegrationTests
             Store store = new Store("storeTest", bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             user.GetUserHistory(user.Username);
 
         }
@@ -90,7 +90,7 @@ namespace TradingSystemTests.IntegrationTests
             Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             ICollection<IHistory> storeHistory = store.GetStoreHistory(user.Username);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(1, storeHistory.Count);
@@ -120,7 +120,7 @@ namespace TradingSystemTests.IntegrationTests
             ICollection<IHistory> storeHistory = store.GetStoreHistory(user.Username);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(0, storeHistory.Count);
-            Assert.IsFalse(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsFalse(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             storeHistory = store.GetStoreHistory(user.Username);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(0, storeHistory.Count);
@@ -146,7 +146,7 @@ namespace TradingSystemTests.IntegrationTests
             Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             store.GetStoreHistory("false Username");
 
         }
@@ -164,7 +164,7 @@ namespace TradingSystemTests.IntegrationTests
             Store store = new Store("storeTest", bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             ICollection<IHistory> allHistory = user.State.GetAllHistory();
             Assert.IsNotNull(allHistory);
             Assert.AreEqual(2, allHistory.Count);
@@ -183,7 +183,7 @@ namespace TradingSystemTests.IntegrationTests
             Store store = new Store("storeTest", bankAccount, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(user.PurchaseShoppingCart(bankAccount, "0544444444", address));
+            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
             user.State.GetAllHistory();
 
         }

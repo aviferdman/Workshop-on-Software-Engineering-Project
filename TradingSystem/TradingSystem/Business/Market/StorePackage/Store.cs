@@ -196,6 +196,8 @@ namespace TradingSystem.Business.Market
                 return "No permission";
             if (!_products.TryRemove(productID, out prev))
                 return "Product not in the store";
+            if (!validProduct(editedProduct))
+                return "Invalid edit";
             MarketStores.Instance.removeFromCategory(prev, prev.Category);
             editedProduct.Id = productID;
             _products.TryAdd(productID, editedProduct);
@@ -268,7 +270,8 @@ namespace TradingSystem.Business.Market
 
         private bool validProduct(Product product)
         {
-            return !(product.Name == null || product.Name.Equals("") || product.Price < 0 || product.Category == null);
+            return !(product.Name == null || product.Name.Trim().Equals("") || product.Quantity <= 0 || product.Weight < 0 
+                || product.Price <= 0 || product.Category == null || product.Category.Trim().Equals(""));
 
         }
 
