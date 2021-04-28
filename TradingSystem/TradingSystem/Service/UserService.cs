@@ -20,9 +20,9 @@ namespace TradingSystem.Service
 
         public static UserService Instance => instanceLazy.Value;
 
-        public string Signup(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string phone, bool isAdmin)
+        public string Signup(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string phone)
         {
-            string ans= userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone, isAdmin);
+            string ans= userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone);
             PublisherManagement.Instance.EventNotification(username, EventType.RegisterEvent, ConfigurationManager.AppSettings[ans]);
             return ans;
                 

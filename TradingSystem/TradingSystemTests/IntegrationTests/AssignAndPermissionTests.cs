@@ -24,13 +24,13 @@ namespace TradingSystemTests.IntegrationTests
         public void Initialize()
         {
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null, false);
+            userManagement.SignUp("founder", "123", null, null);
             marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null, false);
+            userManagement.SignUp("manager", "123", null, null);
             marketUsers.AddMember("manager", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner", "123", null, null, false);
+            userManagement.SignUp("owner", "123", null, null);
             marketUsers.AddMember("owner", "123", guestName);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);

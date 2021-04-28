@@ -33,19 +33,11 @@ namespace TradingSystem.Business.UserManagement
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
         //using concurrent dictionary try add if usename already exist
         //than fail and return error message otherwise return success
-        public string SignUp( string username, string password, Address address, string phone, bool isAdmin)
+        public string SignUp( string username, string password, Address address, string phone)
         {
-            if(isAdmin)
-            {
-                if (dataUsers.TryAdd(username, new RegisteredAdmin(username, password, address, phone)))
-                    return "success";
-            }
-            else
-            {
-                if (dataUsers.TryAdd(username, new DataUser(username, password, address, phone)))
-                    return "success";
-            }
-            
+           
+            if (dataUsers.TryAdd(username, new DataUser(username, password, address, phone)))
+                return "success";
             return "username: "+username+" is already taken please choose a different one";
         }
 

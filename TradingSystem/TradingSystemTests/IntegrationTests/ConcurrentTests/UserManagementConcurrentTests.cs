@@ -19,7 +19,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         }
         private string signupFirstUser()
         {
-            return UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733", false);
+            return UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733");
         }
         private bool deleteFirstUser()
         {
@@ -48,8 +48,8 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         {
             String val1 = "";
             String val2 = "";
-            Task task1 = Task.Factory.StartNew(() => val1 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733", false));
-            Task task2 = Task.Factory.StartNew(() => val2 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733", false));
+            Task task1 = Task.Factory.StartNew(() => val1 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733"));
+            Task task2 = Task.Factory.StartNew(() => val2 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733"));
             Task.WaitAll(task1, task2);
             bool check1 = String.Equals("success", val1);
             bool check2 = String.Equals("success", val2);
@@ -70,9 +70,9 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                 String val1 = "";
                 String val2 = "";
                 String val3 = "";
-                Task task1 = Task.Factory.StartNew(() => val1 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733", false));
-                Task task2 = Task.Factory.StartNew(() => val2 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733", false));
-                Task task3 = Task.Factory.StartNew(() => val3 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733", false));
+                Task task1 = Task.Factory.StartNew(() => val1 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733"));
+                Task task2 = Task.Factory.StartNew(() => val2 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733"));
+                Task task3 = Task.Factory.StartNew(() => val3 = UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733"));
                 Task.WaitAll(task1, task2, task3);
               
                 bool check1 = String.Equals("success", val1);
