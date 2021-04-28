@@ -35,7 +35,8 @@ namespace TradingSystem.Business.UserManagement
         //than fail and return error message otherwise return success
         public string SignUp( string username, string password, Address address, string phone)
         {
-           
+            if (username == null)
+                return "username cannot be null";
             if (dataUsers.TryAdd(username, new DataUser(username, password, address, phone)))
                 return "success";
             return "username: "+username+" is already taken please choose a different one";
@@ -96,6 +97,8 @@ namespace TradingSystem.Business.UserManagement
         
         public bool Logout(string username)
         {
+            if (username == null)
+                return false;
             DataUser u = null;
             if (dataUsers.TryGetValue(username, out u))
             {
