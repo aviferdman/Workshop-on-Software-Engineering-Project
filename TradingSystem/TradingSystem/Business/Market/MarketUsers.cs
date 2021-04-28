@@ -11,10 +11,11 @@ using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
 using TradingSystem.Business.UserManagement;
 using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Business.Market
 {
-    public class MarketUsers: IMarketUsers
+    public class MarketUsers : IMarketUsers
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
@@ -41,7 +42,7 @@ namespace TradingSystem.Business.Market
             memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
-        
+
 
         public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
         {
@@ -69,7 +70,7 @@ namespace TradingSystem.Business.Market
                 GuidString = Convert.ToBase64String(g.ToByteArray());
                 GuidString = GuidString.Replace("=", "");
                 GuidString = GuidString.Replace("+", "");
-                u.Username=GuidString;
+                u.Username = GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
             return u.Username;
         }
@@ -92,7 +93,7 @@ namespace TradingSystem.Business.Market
 
         //use case 2 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
         ///using login to check password - <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> 
-        public string AddMember(String usrname,string password, string guestusername)
+        public string AddMember(String usrname, string password, string guestusername)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddMember));
             string loginmang = UserManagement.UserManagement.Instance.LogIn(usrname, password);
@@ -107,7 +108,7 @@ namespace TradingSystem.Business.Market
                 return "user not found in market";
             string GuidString;
             MemberState m;
-            if(!memberStates.TryGetValue(usrname, out m))
+            if (!memberStates.TryGetValue(usrname, out m))
             {
                 DataUser du;
                 UserManagement.UserManagement.Instance.DataUsers.TryGetValue(usrname, out du);
@@ -117,7 +118,7 @@ namespace TradingSystem.Business.Market
                     m = new MemberState(usrname, new HashSet<IHistory>());
                 memberStates.TryAdd(usrname, m);
             }
-                
+
             u.State = m;
             u.Username = usrname;
             u.IsLoggedIn = true;
@@ -127,7 +128,7 @@ namespace TradingSystem.Business.Market
                 membersShoppingCarts.TryAdd(usrname, u.ShoppingCart);
             while (!activeUsers.TryAdd(usrname, u))
             {
-                if(activeUsers.TryRemove(usrname,out guest))
+                if (activeUsers.TryRemove(usrname, out guest))
                 {
                     do
                     {
@@ -138,9 +139,9 @@ namespace TradingSystem.Business.Market
                         guest.Username = GuidString;
                     } while (!activeUsers.TryAdd(GuidString, guest));
                 }
-                
+
             };
-            u.Publisher?.BecomeLoggedIn();
+            PublisherManagement.Instance.BecomeLoggedIn(u.Username);
             return "success";
         }
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
@@ -180,7 +181,7 @@ namespace TradingSystem.Business.Market
             Result<bool> res = user.PurchaseShoppingCart(bank, phone, address);
             if (!res.IsErr)
             {
-                user.Publisher?.EventNotification(EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+                PublisherManagement.Instance.EventNotification(username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
             }
             return res;
         }
@@ -188,7 +189,7 @@ namespace TradingSystem.Business.Market
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
         public ICollection<IHistory> GetAllHistory(string username)
         {
-            
+
             User user = GetUserByUserName(username);
             return user.State.GetAllHistory();
         }
@@ -222,19 +223,19 @@ namespace TradingSystem.Business.Market
             User u;
             if (!activeUsers.TryGetValue(username, out u))
                 return "user doesn't exist";
-            Product p=null;
-            Store found=null;
+            Product p = null;
+            Store found = null;
             MarketStores.Instance.findStoreProduct(out found, out p, pid);
-            if (found == null||p==null)
+            if (found == null || p == null)
                 return "product doesn't exist";
-            if (p.Quantity <= quantity|| quantity<1)
+            if (p.Quantity <= quantity || quantity < 1)
                 return "product's quantity is insufficient";
-            IShoppingBasket basket= u.ShoppingCart.GetShoppingBasket(found);
+            IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
             return basket.addProduct(p, quantity);
 
         }
 
-       
+
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts(string userId)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetShopingCartProducts));
@@ -257,7 +258,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            MarketStores.Instance.findStoreProduct(out found,out p, pid);
+            MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
             IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
@@ -265,13 +266,13 @@ namespace TradingSystem.Business.Market
                 return "product isn't in basket";
             if (basket.RemoveProduct(p))
             {
-                if(basket.IsEmpty())
+                if (basket.IsEmpty())
                 {
                     u.ShoppingCart.removeBasket(found);
                 }
                 return "product removed from shopping basket";
             }
-                
+
             return "product isn't in basket";
         }
         //use case 9: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/69
@@ -290,25 +291,25 @@ namespace TradingSystem.Business.Market
             IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
             if (basket == null)
                 return "product isn't in basket";
-            if(!basket.TryUpdateProduct(p, quantity))
+            if (!basket.TryUpdateProduct(p, quantity))
                 return "product not in cart";
             return "product updated";
 
         }
 
         //use case 7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/59
-        public Result<IShoppingCart> editShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid,  int> products_quan)
+        public Result<IShoppingCart> editShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
             User u = GetUserByUserName(username);
             string ans;
             if (u == null)
                 return new Result<IShoppingCart>(null, true, "user doesn't exist");
-            if(products_removed.Intersect<Guid>(products_added.Keys).Count()!=0||
+            if (products_removed.Intersect<Guid>(products_added.Keys).Count() != 0 ||
                products_removed.Intersect<Guid>(products_quan.Keys).Count() != 0 ||
                 products_added.Keys.Intersect<Guid>(products_quan.Keys).Count() != 0)
                 return new Result<IShoppingCart>(u.ShoppingCart, true, "lists are not disjoint");
             ShoppingCart c = new ShoppingCart((ShoppingCart)u.ShoppingCart);
-            foreach (KeyValuePair<Guid,  int> p in products_added)
+            foreach (KeyValuePair<Guid, int> p in products_added)
             {
                 ans = AddProductToCart(username, p.Key, p.Value);
                 if (!ans.Equals("product added to shopping basket"))
@@ -325,7 +326,7 @@ namespace TradingSystem.Business.Market
                     recover_cart(username, u, c);
                     return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
                 }
-                   
+
             }
             foreach (KeyValuePair<Guid, int> p in products_quan)
             {

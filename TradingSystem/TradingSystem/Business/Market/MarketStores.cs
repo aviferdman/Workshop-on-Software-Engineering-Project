@@ -11,15 +11,16 @@ using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
 using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
-    public class MarketStores: IMarketStores
+    public class MarketStores : IMarketStores
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
-        private ConcurrentDictionary<Guid,IStore> _stores;
+        private ConcurrentDictionary<Guid, IStore> _stores;
         private ConcurrentDictionary<string, Category> categories;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
@@ -35,7 +36,7 @@ namespace TradingSystem.Business.Market
         private MarketStores()
         {
             _stores = new ConcurrentDictionary<Guid, IStore>();
-           
+
             historyManager = HistoryManager.Instance;
             categories = new ConcurrentDictionary<string, Category>();
         }
@@ -58,8 +59,8 @@ namespace TradingSystem.Business.Market
             store.Founder = Founder.makeFounder((MemberState)user.State, store);
             if (!_stores.TryAdd(store.Id, store))
                 return null;
-            user.Publisher?.EventNotification(EventType.OpenStoreEvent, ConfigurationManager.AppSettings["OpenedStoreMessage"]);
-            
+            PublisherManagement.Instance.EventNotification(username, EventType.OpenStoreEvent, ConfigurationManager.AppSettings["OpenedStoreMessage"]);
+
             return store;
         }
 
@@ -68,7 +69,7 @@ namespace TradingSystem.Business.Market
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoresByName));
             LinkedList<Store> stores = new LinkedList<Store>();
-            foreach(Store s in _stores.Values)
+            foreach (Store s in _stores.Values)
             {
                 if (s.Name.Equals(name))
                 {
@@ -99,9 +100,9 @@ namespace TradingSystem.Business.Market
 
         public IStore GetStoreById(Guid storeId)
         {
-            IStore s=null;
+            IStore s = null;
             _stores.TryGetValue(storeId, out s);
-            return  s;
+            return s;
         }
 
         public void findStoreProduct(out Store found, out Product p, Guid pid)
@@ -112,8 +113,8 @@ namespace TradingSystem.Business.Market
             {
                 if (s.Products.TryGetValue(pid, out p))
                 {
-                        found = s;
-                        break;
+                    found = s;
+                    break;
                 }
 
             }
@@ -209,7 +210,7 @@ namespace TradingSystem.Business.Market
                 cat = new Category(category);
                 cat.addProduct(p);
                 if (!categories.TryAdd(category, cat))
-                    addToCategory( p,  category);
+                    addToCategory(p, category);
             }
         }
 
@@ -218,10 +219,10 @@ namespace TradingSystem.Business.Market
             Category cat;
             if (categories.TryGetValue(category, out cat))
             {
-                if(cat.Products.Contains(p))
+                if (cat.Products.Contains(p))
                     cat.Products.Remove(p);
             }
-           
+
         }
 
 
@@ -231,9 +232,10 @@ namespace TradingSystem.Business.Market
         {
             List<Product> products = new List<Product>();
             Category cat;
-            if(category != null)
+            if (category != null)
             {
-                if (categories.TryGetValue(category, out cat)){
+                if (categories.TryGetValue(category, out cat))
+                {
                     return cat.getAllProducts(keyword, price_range_low, price_range_high, rating);
                 }
                 else
