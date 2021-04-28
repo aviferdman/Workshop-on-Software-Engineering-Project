@@ -66,7 +66,7 @@ namespace TradingSystem.Service
             return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(dataCart, false, null);
         }
 
-        public bool PurchaseShoppingCart
+        public Result<bool> PurchaseShoppingCart
         (
             string username,
             int accountNumber,

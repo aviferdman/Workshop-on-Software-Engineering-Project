@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,7 @@ using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
+using TradingSystem.Notifications;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
@@ -56,6 +58,8 @@ namespace TradingSystem.Business.Market
             store.Founder = Founder.makeFounder((MemberState)user.State, store);
             if (!_stores.TryAdd(store.Id, store))
                 return null;
+            user.Publisher?.EventNotification(EventType.OpenStoreEvent, ConfigurationManager.AppSettings["OpenedStoreMessage"]);
+            
             return store;
         }
 
@@ -72,6 +76,14 @@ namespace TradingSystem.Business.Market
                 }
             }
             return stores;
+        }
+
+        public void DeleteAll()
+        {
+            _stores = new ConcurrentDictionary<Guid, IStore>();
+
+            historyManager = HistoryManager.Instance;
+            categories = new ConcurrentDictionary<string, Category>();
         }
 
 

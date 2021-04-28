@@ -54,7 +54,7 @@ namespace TradingSystemTests.IntegrationTests
             discount.AddRule(rule);
             testStore.AddDiscount(discount);
             Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
-            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsTrue(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
         }
 
         private double return15(IShoppingBasket arg)
@@ -69,7 +69,7 @@ namespace TradingSystemTests.IntegrationTests
             int originQuantity = product.Quantity;
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
-            bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            bool successPurchase = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
             Assert.AreEqual(successPurchase, true);
             Assert.AreEqual(originQuantity - 5, product.Quantity);
         }
@@ -85,7 +85,7 @@ namespace TradingSystemTests.IntegrationTests
             paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
-            bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            bool successPurchase = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
             Assert.AreEqual(successPurchase, false);
             Assert.AreEqual(originQuantity, product.Quantity);
         }
@@ -102,7 +102,7 @@ namespace TradingSystemTests.IntegrationTests
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             Assert.AreEqual(0, Logger.Instance.Activities.Count);
-            bool successPurchase = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            bool successPurchase = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
             Assert.AreEqual(successPurchase, false);
             bool existsRefund = Logger.Instance.Activities.Where(activity => activity.Contains("CancelTransaction")).Any();
             Assert.IsTrue(existsRefund);
@@ -117,7 +117,7 @@ namespace TradingSystemTests.IntegrationTests
             testStore.AddRule(r);
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
-            Assert.IsFalse(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
@@ -125,7 +125,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckLegalPurcahseEmptyShoppingCart()
         {
             testStore.UpdateProduct(product);
-            Assert.IsFalse(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, PaymentMethod, Guid, BankAccount, double, IShoppingBasket)"/>
@@ -189,7 +189,7 @@ namespace TradingSystemTests.IntegrationTests
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
-            Assert.IsTrue(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsTrue(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
             Assert.IsTrue(testUser.ShoppingCart.IsEmpty());
         }
 
@@ -204,7 +204,7 @@ namespace TradingSystemTests.IntegrationTests
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
-            Assert.IsFalse(testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+            Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
         }
 
@@ -219,8 +219,8 @@ namespace TradingSystemTests.IntegrationTests
             testStore.UpdateProduct(oneProduct);
             testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-            val1 = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
-            val2 = secondTestUser.PurchaseShoppingCart(new BankAccount(2, 2), "0533333333", new Address("2", "2", "2", "2")) ;
+            val1 = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
+            val2 = !secondTestUser.PurchaseShoppingCart(new BankAccount(2, 2), "0533333333", new Address("2", "2", "2", "2")).IsErr ;
             Assert.IsTrue(val1 || val2);
             Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
 

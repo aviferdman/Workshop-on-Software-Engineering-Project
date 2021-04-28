@@ -5,6 +5,7 @@ using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Notifications;
 
 namespace TradingSystem.Business.Market
 {
@@ -58,5 +59,6 @@ namespace TradingSystem.Business.Market
         {
             return founderPrems.ContainsKey(s) || managerPrems.ContainsKey(s) || ownerPrems.ContainsKey(s);
         }
+
     }
 }
