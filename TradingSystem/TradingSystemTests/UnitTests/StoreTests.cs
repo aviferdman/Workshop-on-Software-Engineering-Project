@@ -97,10 +97,10 @@ namespace TradingSystemTests.MarketTests
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
-            Discount discount1 = new Discount(new DiscountCalculator(return100));
+            ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
             discount1.AddRule(new Rule(MoreThan10Products));
-            Discount discount2 = new Discount(new DiscountCalculator(return200));
-            discount1.AddRule(new Rule(MoreThan20Products));
+            ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return200));
+            discount2.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(discount1);
             store.AddDiscount(discount2);
             Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
@@ -139,9 +139,9 @@ namespace TradingSystemTests.MarketTests
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
             store.UpdateProduct(product1);
-            Discount discount1 = new Discount(new DiscountCalculator(return100));
+            ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
             discount1.AddRule(new Rule(MoreThan10Products));
-            Discount discount2 = new Discount(new DiscountCalculator(return200));
+            ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return200));
             discount2.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(discount1);
             store.AddDiscount(discount2);
