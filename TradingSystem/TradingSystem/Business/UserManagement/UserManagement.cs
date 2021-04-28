@@ -30,6 +30,16 @@ namespace TradingSystem.Business.UserManagement
             admins.TryAdd("DEFULT_ADMIN", admin);
         }
 
+        public void tearDown()
+        {
+            dataUsers = new ConcurrentDictionary<string, DataUser>();
+            admins = new ConcurrentDictionary<string, RegisteredAdmin>();
+            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5"), "0501234566");
+            admin.IsAdmin = true;
+            dataUsers.TryAdd("DEFULT_ADMIN", admin);
+            admins.TryAdd("DEFULT_ADMIN", admin);
+        }
+
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
         //using concurrent dictionary try add if usename already exist
         //than fail and return error message otherwise return success

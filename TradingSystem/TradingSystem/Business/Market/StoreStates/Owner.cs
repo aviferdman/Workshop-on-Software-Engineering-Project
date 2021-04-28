@@ -38,20 +38,23 @@ namespace TradingSystem.Business.Market.StoreStates
         public Manager AddAppointmentManager(MemberState m, Store s)
         {
             Manager prem = Manager.makeManager(m, s, this);
-            m.ManagerAppointments.TryAdd(username, prem);
+            this.m.ManagerAppointments.TryAdd(m.UserId, prem);
             return prem;
         }
         public Owner AddAppointmentOwner(MemberState m, Store s)
         {
             Owner prem = makeOwner(m,s, this);
-            m.OwnerAppointments.TryAdd(username, prem);
+            this.m.OwnerAppointments.TryAdd(m.UserId, prem);
             return prem;
         }
         public bool canRemoveAppointment(string userToRemove)
         {
-            Manager man;
-            Owner o;
-            return m.ManagerAppointments.TryRemove(userToRemove, out man) || m.OwnerAppointments.TryRemove(userToRemove, out o);
+            return m.ManagerAppointments.ContainsKey(userToRemove) || m.OwnerAppointments.ContainsKey(userToRemove);
+        }
+
+        public bool removeAppointment(string userToRemove)
+        {
+            return m.ManagerAppointments.TryRemove(userToRemove, out _) || m.OwnerAppointments.TryRemove(userToRemove, out _);
         }
 
         public void DefinePermissions(string username, List<Permission> permissions)
@@ -60,6 +63,34 @@ namespace TradingSystem.Business.Market.StoreStates
             if (!m.ManagerAppointments.TryGetValue(username, out man))
                 throw new UnauthorizedAccessException();
             man.Store_permission = permissions;
+        }
+
+        public bool removePermission(Store store)
+        {
+            bool ret;
+            lock (m.Prem_lock)
+            {
+                ret = m.OwnerPrems.TryRemove(store, out _) | appointer.OwnerAppointments.TryRemove(Username, out _);
+            }
+            return ret;
+        }
+
+        public bool hasAppointees()
+        {
+            return !m.OwnerAppointments.IsEmpty;
+        }
+
+        public void removeManagers()
+        {
+            foreach (Manager manager in m.ManagerAppointments.Values)
+            {
+                s.RemoveManager(manager.Username, Username);
+            }
+        }
+
+        public ICollection<String> getAppointees()
+        {
+            return m.OwnerAppointments.Keys;
         }
     }
 }

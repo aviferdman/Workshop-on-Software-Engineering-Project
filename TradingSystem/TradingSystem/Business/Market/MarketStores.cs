@@ -41,6 +41,14 @@ namespace TradingSystem.Business.Market
             categories = new ConcurrentDictionary<string, Category>();
         }
 
+        public void tearDown()
+        {
+            _stores = new ConcurrentDictionary<Guid, IStore>();
+
+            historyManager = HistoryManager.Instance;
+            categories = new ConcurrentDictionary<string, Category>();
+        }
+
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
         {
             _transaction.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
@@ -195,7 +203,17 @@ namespace TradingSystem.Business.Market
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
             if (!_stores.TryGetValue(storeID, out IStore store))
                 return "Store doesn't exist";
-            return store.RemoveManager(managerName, assigner);
+            return store.RemoveManager(managerName, assignerName);
+        }
+
+        //functional requirement 4.4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/136
+        public String RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(RemoveOwner));
+            User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
+            if (!_stores.TryGetValue(storeID, out IStore store))
+                return "Store doesn't exist";
+            return store.RemoveOwner(ownerName, assignerName);
         }
 
         public void addToCategory(Product p, string category)

@@ -276,7 +276,7 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/57
-        public String RemoveManager(String managerName, User assigner)
+        public String RemoveManager(String managerName, String assigner)
         {
             Appointer a;
             Owner owner;
@@ -285,22 +285,56 @@ namespace TradingSystem.Business.Market
             {
                 return "Manager doesn't exist";
             }
-            if (founder.Username.Equals(assigner.Username))
+            if (founder.Username.Equals(assigner))
                 a = founder;
-            else if (owners.TryGetValue(assigner.Username, out owner))
+            else if (owners.TryGetValue(assigner, out owner))
                 a = owner;
             else return "Invalid Assigner";
             if(!a.canRemoveAppointment(managerName))
                 return "Invalid Assigner";
             lock (prem_lock)
             {
-                if (!manager.removePermission(this))
-                    ret = "Manager doesn't exist";
-                else
+                a.removeAppointment(managerName);
+                manager.removePermission(this);
+                managers.TryRemove(managerName, out _);
+                ret = "success";
+            }
+
+            return ret;
+        }
+
+        //functional requirement 4.4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/136
+        public String RemoveOwner(String ownerName, String assigner)
+        {
+            Appointer a;
+            String ret;
+            if (!owners.TryGetValue(ownerName, out Owner ownerToRemove))
+            {
+                return "Owner doesn't exist";
+            }
+            if (founder.Username.Equals(assigner))
+                a = founder;
+            else if (owners.TryGetValue(assigner, out Owner owner))
+                a = owner;
+            else return "Invalid Assigner";
+            if (!a.canRemoveAppointment(ownerName))
+                return "Invalid Assigner";
+            
+            if (ownerToRemove.hasAppointees())
+            {
+                foreach (String appointee in ownerToRemove.getAppointees())
                 {
-                    managers.TryRemove(managerName, out _);
-                    ret = "success";
+                    ret = RemoveOwner(appointee, ownerName);
+                    if (!ret.Equals("success"))
+                        return ret;
                 }
+            }
+            ownerToRemove.removeManagers();
+            lock (prem_lock)
+            {
+                ownerToRemove.removePermission(this);
+                owners.TryRemove(ownerName, out _);
+                ret = "success";
             }
 
             return ret;

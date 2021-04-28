@@ -145,10 +145,5 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(p.Price, 10);
         }
 
-        [TestCleanup]
-        public void DeleteAll()
-        {
-            Transaction.Instance.DeleteAllTests();
-        }
     }
 }

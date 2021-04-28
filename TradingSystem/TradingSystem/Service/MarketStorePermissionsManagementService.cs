@@ -40,6 +40,11 @@ namespace TradingSystem.Service
             return marketStores.RemoveManager(managerName, storeID, assignerName);
         }
 
+        public String RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        {
+            return marketStores.RemoveOwner(ownerName, storeID, assignerName);
+        }
+
         public String getInfo(Guid storeID, String username)
         {
             return marketStores.getInfo(storeID, username);

@@ -13,7 +13,7 @@ using static TradingSystem.Business.Market.StoreStates.Manager;
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
-    class AssignAndPermissionTests
+    public class AssignAndPermissionTests
     {
         MarketStores market = MarketStores.Instance;
         MarketUsers marketUsers = MarketUsers.Instance;
@@ -71,7 +71,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc34")]
         public void CheckMakeOwnerNotMember()
         {
-            Assert.AreEqual(market.makeOwner("no one", store.Id, "manager"), "the assignee isn't a member");
+            Assert.AreEqual(market.makeOwner("no one", store.Id, "founder"), "the assignee isn't a member");
             Assert.IsFalse(store.Owners.ContainsKey("owner"));
         }
 
@@ -80,8 +80,11 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc33")]
         public void CheckValidMakeManager()
         {
-            Assert.AreEqual(market.makeManager("manager", store.Id, "founder"), "Success");
-            Assert.IsTrue(store.Managers.ContainsKey("manager"));
+            String guestName2 = marketUsers.AddGuest();
+            userManagement.SignUp("manager2", "123", null, null);
+            marketUsers.AddMember("manager2", "123", guestName2);
+            Assert.AreEqual(market.makeManager("manager2", store.Id, "founder"), "Success");
+            Assert.IsTrue(store.Managers.ContainsKey("manager2"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
@@ -98,9 +101,11 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc33")]
         public void CheckMakeManagerInvalidAssigner()
         {
-            market.makeManager("manager", store.Id, "founder");
-            Assert.AreEqual(market.makeManager("manager", store.Id, "manager"), "Invalid assigner");
-            Assert.IsFalse(store.Managers.ContainsKey("manager"));
+            String guestName = marketUsers.AddGuest();
+            userManagement.SignUp("manager2", "123", null, null);
+            marketUsers.AddMember("manager2", "123", guestName);
+            Assert.AreEqual(market.makeManager("manager2", store.Id, "manager"), "Invalid assigner");
+            Assert.IsFalse(store.Managers.ContainsKey("manager2"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
@@ -108,7 +113,6 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc34")]
         public void CheckValidDefinePermissions()
         {
-            market.makeManager("manager", store.Id, "founder");
             List<Permission> permissions = new List<Permission>();
             permissions.Add(Permission.AddProduct);
             Assert.AreEqual(market.DefineManagerPermissions("manager", store.Id, "founder", permissions), "Success");
@@ -121,11 +125,10 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc34")]
         public void CheckDefinePermissionsInvalidAssigner()
         {
-            market.makeManager("manager", store.Id, "founder");
             market.makeOwner("owner", store.Id, "founder");
             List<Permission> permissions = new List<Permission>();
             permissions.Add(Permission.AddProduct);
-            Assert.AreEqual(market.DefineManagerPermissions("manager", store.Id, "owner", permissions), "The manager must be appointed by the user");
+            Assert.AreEqual(market.DefineManagerPermissions("manager", store.Id, "owner", permissions), "Invalid assigner");
             store.Managers.TryGetValue("manager", out IManager manager);
             Assert.IsFalse(manager.GetPermission(Permission.AddProduct));
         }
@@ -137,13 +140,16 @@ namespace TradingSystemTests.IntegrationTests
         {
             List<Permission> permissions = new List<Permission>();
             permissions.Add(Permission.AddProduct);
-            Assert.AreEqual(market.DefineManagerPermissions("manager", store.Id, "founder", permissions), "Manager doesn't exist");
+            Assert.AreEqual(market.DefineManagerPermissions("manager2", store.Id, "founder", permissions), "Manager doesn't exist");
         }
 
         [TestCleanup]
         public void DeleteAll()
         {
-            Transaction.Instance.DeleteAllTests();
+            market.tearDown();
+            marketUsers.tearDown();
+            userManagement.tearDown();
+            store = null;
         }
     }
 }

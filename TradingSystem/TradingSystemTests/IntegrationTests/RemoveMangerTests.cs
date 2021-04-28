@@ -13,7 +13,7 @@ using static TradingSystem.Business.Market.StoreStates.Manager;
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
-    class RemoveManger
+    public class RemoveMangerTests
     {
         MarketStores market = MarketStores.Instance;
         MarketUsers marketUsers = MarketUsers.Instance;
@@ -38,9 +38,9 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             store = market.CreateStore("testStore", "founder", bankAccount, address);
+            founder = store.Founder;
             market.makeManager("manager", store.Id, "founder");
             market.makeOwner("owner", store.Id, "founder");
-            founder = store.Founder;
             store.Owners.TryGetValue("owner", out owner);
             store.Managers.TryGetValue("manager", out IManager imanager);
             manager = (Manager)imanager;
@@ -82,7 +82,10 @@ namespace TradingSystemTests.IntegrationTests
         [TestCleanup]
         public void DeleteAll()
         {
-            Transaction.Instance.DeleteAllTests();
+            market.tearDown();
+            marketUsers.tearDown();
+            userManagement.tearDown();
+            store = null;
         }
     }
 }
