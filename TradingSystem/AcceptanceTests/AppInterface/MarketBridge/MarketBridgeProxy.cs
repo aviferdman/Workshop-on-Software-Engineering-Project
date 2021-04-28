@@ -4,6 +4,11 @@ using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface.Data;
 
+using Moq;
+
+using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Payment;
+
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
     public class MarketBridgeProxy : ProxyBase<IMarketBridge>, IMarketBridge
@@ -119,6 +124,32 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit)
         {
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
+        }
+
+        public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        {
+            return RealBridge != null && RealBridge.PurchaseShoppingCart(purchaseInfo);
+        }
+
+        public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)
+        {
+            if (RealBridge != null)
+            {
+                RealBridge.SetExternalTransactionMocks(deliverySystem, paymentSystem);
+            }
+        }
+
+        public void DisableExternalTransactionMocks()
+        {
+            if (RealBridge != null)
+            {
+                RealBridge.DisableExternalTransactionMocks();
+            }
+        }
+
+        public PurchaseHistory? GetUserPurchaseHistory()
+        {
+            return RealBridge?.GetUserPurchaseHistory();
         }
     }
 }

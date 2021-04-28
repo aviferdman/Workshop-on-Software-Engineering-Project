@@ -10,5 +10,10 @@
 
         public int Branch { get; set; }
         public int AccountNumber { get; set; }
+
+        public override string ToString()
+        {
+            return @$"BankMethod:\{AccountNumber}\{Branch}";
+        }
     }
 }

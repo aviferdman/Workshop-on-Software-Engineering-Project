@@ -142,7 +142,11 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 new ProductForCart[] { new ProductForCart(ShopImage.ShopProducts[0], 10) }
             ).Success_Normal_CheckCartItems();
             Assert.IsFalse(EditProduct(new ProductInCart(ShopImage.ShopProducts[1].ProductId, 3)));
-            AssertCartDidntChange();
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
+                Enumerable.Empty<ProductInCart>(),
+                x => x.ProductId
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
 
         [TestCase]
