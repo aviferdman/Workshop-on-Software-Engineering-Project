@@ -140,6 +140,7 @@ namespace TradingSystem.Business.Market
                 }
                 
             };
+            u.Publisher?.BecomeLoggedIn();
             return "success";
         }
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51

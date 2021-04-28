@@ -23,10 +23,10 @@ namespace TradingSystemTests.IntegrationTests
         public AddRemoveEditProductTests()
         {
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null);
+            userManagement.SignUp("founder", "123", null, null, false);
             marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null);
+            userManagement.SignUp("manager", "123", null, null, false);
             marketUsers.AddMember("manager", "123", guestName);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);

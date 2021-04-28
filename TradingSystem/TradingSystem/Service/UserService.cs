@@ -18,11 +18,20 @@ namespace TradingSystem.Service
 
         public static UserService Instance => instanceLazy.Value;
 
-        public string Signup(string username, string password, string _state, string _city, string _street, string _apartmentNum, string phone)
+        public string Signup(string username, string password, string _state, string _city, string _street, string _apartmentNum, string phone, bool isAdmin)
         {
-            return userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone);
+            return userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone, isAdmin);
         }
 
-       
+        public bool isMember(string username)
+        {
+            return userManagement.isMember(username);
+        }
+        public bool isLoggedIn(string username)
+        {
+            return userManagement.isLoggedIn(username);
+        }
+
+
     }
 }

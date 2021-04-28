@@ -65,7 +65,9 @@ namespace AcceptanceTests.AppInterface.UserBridge
                 signupInfo.Address.City,
                 signupInfo.Address.Street,
                 signupInfo.Address.ApartmentNum,
-                signupInfo.PhoneNumber
+                signupInfo.PhoneNumber,
+                false
+
             );
             return result == "success";
         }

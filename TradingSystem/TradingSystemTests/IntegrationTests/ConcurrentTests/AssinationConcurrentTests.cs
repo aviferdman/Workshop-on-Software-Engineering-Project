@@ -30,19 +30,19 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
 
         }
 
-       
+
 
         [TestInitialize]
         public void Initialize()
         {
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null);
+            userManagement.SignUp("founder", "123", null, null,false);
             marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null);
+            userManagement.SignUp("manager", "123", null, null, false);
             marketUsers.AddMember("manager", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner", "123", null, null);
+            userManagement.SignUp("owner", "123", null, null, false);
             marketUsers.AddMember("owner", "123", guestName);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
@@ -56,7 +56,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         public void TwoAssignersOneAssignment()
         {
             //Assert.AreEqual(market.makeManager("manager", store.Id, "founder"), "Success");
-            
+
 
             String val1 = "";
             String val2 = "";
@@ -64,17 +64,17 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             Task task1 = Task.Factory.StartNew(() => val1 = market.makeManager("manager", store.Id, "founder"));
             Task task2 = Task.Factory.StartNew(() => val2 = market.makeManager("manager", store.Id, "owner"));
             Task.WaitAll(task1, task2);
-           
+
             bool check1 = String.Equals("Success", val1);
             bool check2 = String.Equals("Success", val2);
 
             Assert.IsTrue(store.Managers.ContainsKey("manager"));
             Assert.IsTrue(check1 || check2);
             Assert.IsFalse(check1 && check2);
-             
+
         }
 
-        
+
 
         [TestCleanup]
         public void DeleteAll()
