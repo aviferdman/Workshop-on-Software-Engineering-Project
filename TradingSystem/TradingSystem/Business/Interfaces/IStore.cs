@@ -43,7 +43,9 @@ namespace TradingSystem.Business.Market
 
         public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> permissions);
 
-        public String RemoveManager(String managerName, User assigner);
+        public String RemoveManager(String managerName, String assigner);
+
+        public String RemoveOwner(String ownerName, String assigner);
 
         public String getInfo(String username);
 

@@ -25,5 +25,6 @@ namespace TradingSystem.Business.Market
         public String RemoveManager(String managerName, Guid storeID, String assignerName);
         public String getInfo(Guid storeID, String username);
         public String getInfoSpecific(Guid storeID, String workerName, String username);
+        public String RemoveOwner(String ownerName, Guid storeID, String assignerName);
     }
 }

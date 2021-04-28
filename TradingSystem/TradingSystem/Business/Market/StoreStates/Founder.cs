@@ -34,22 +34,25 @@ namespace TradingSystem.Business.Market.StoreStates
         public Manager AddAppointmentManager(MemberState m, Store s)
         {
             Manager prem = Manager.makeManager(m,s,this);
-            m.ManagerAppointments.TryAdd(username, prem);
+            this.m.ManagerAppointments.TryAdd(m.UserId, prem);
             return prem;
         }
         public Owner AddAppointmentOwner(MemberState m, Store s)
         {
             Owner prem = Owner.makeOwner(m,s , this);
-            m.OwnerAppointments.TryAdd(username, prem);
+            this.m.OwnerAppointments.TryAdd(m.UserId, prem);
             return prem;
         }
 
         
         public bool canRemoveAppointment(string userToRemove)
         {
-            Manager man;
-            Owner o;
-            return m.ManagerAppointments.TryRemove(userToRemove, out man) || m.OwnerAppointments.TryRemove(userToRemove, out o);
+            return m.ManagerAppointments.ContainsKey(userToRemove) || m.OwnerAppointments.ContainsKey(userToRemove);
+        }
+
+        public bool removeAppointment(string userToRemove)
+        {
+            return m.ManagerAppointments.TryRemove(userToRemove, out _) || m.OwnerAppointments.TryRemove(userToRemove, out _);
         }
 
         public void DefinePermissions(string username, List<Permission> permissions)

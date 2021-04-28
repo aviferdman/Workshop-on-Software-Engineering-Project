@@ -42,7 +42,13 @@ namespace TradingSystem.Business.Market
             memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
-
+        public void tearDown()
+        {
+            activeUsers = new ConcurrentDictionary<string, User>();
+            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
+            historyManager = HistoryManager.Instance;
+            memberStates = new ConcurrentDictionary<string, MemberState>();
+        }
 
         public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
         {
