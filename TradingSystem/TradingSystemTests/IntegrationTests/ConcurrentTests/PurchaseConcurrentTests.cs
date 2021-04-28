@@ -56,8 +56,8 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                         testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
                         secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
          
-                    val1 = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
-                    val2 = secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+                        val1 = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+                        val2 = secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
 
                         Assert.IsTrue(val1 || val2);
                         Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
@@ -84,20 +84,20 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                 public void LastProductTwoCustomersLooped()
                 {
                     for(int i=0; i<10; i++)
-                {
-                    bool val1 = false;
-                    bool val2 = false;
-                    testStore.UpdateProduct(oneProduct);
-                    testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-                    secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-                    Task task1 = Task.Factory.StartNew(() => val1 = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
-                    Task task2 = Task.Factory.StartNew(() => val2 = secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress));
-                    Task.WaitAll(task1, task2);
-                    //Console.WriteLine("first: " + val1 + " second: " + val2);
-                    Assert.IsTrue(val1 || val2);
-                    Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
+                    {
+                        bool val1 = false;
+                        bool val2 = false;
+                        testStore.UpdateProduct(oneProduct);
+                        testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
+                        secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
+                        Task task1 = Task.Factory.StartNew(() => val1 = testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress));
+                        Task task2 = Task.Factory.StartNew(() => val2 = secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress));
+                        Task.WaitAll(task1, task2);
+                        //Console.WriteLine("first: " + val1 + " second: " + val2);
+                        Assert.IsTrue(val1 || val2);
+                        Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
+                    }
                 }
-            }
         }
     }
 
