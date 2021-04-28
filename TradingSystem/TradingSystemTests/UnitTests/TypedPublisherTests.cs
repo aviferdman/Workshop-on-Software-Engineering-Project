@@ -20,7 +20,7 @@ namespace TradingSystemTests.UnitTests
         {
             this.publisher = new TypedPublisher("PublisherTest");
             this.user = new User("UserTests");
-            this.subscriber = new NotificationSubscriber(user, user.Username, true);
+            this.subscriber = new NotificationSubscriber(user.Username, true);
             Mock<ICommunicate> communicateMock = new Mock<ICommunicate>();
             communicateMock.Setup(c => c.SendMessage(It.IsAny<String>(), It.IsAny<String>())).Returns(true);
             subscriber.Communicate = communicateMock.Object;

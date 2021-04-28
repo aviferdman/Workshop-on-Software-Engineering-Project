@@ -7,8 +7,10 @@ using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Notifications;
+using TradingSystem.Business.UserManagement;
 using TradingSystem.Communication;
 using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -22,15 +24,16 @@ namespace TradingSystemTests.IntegrationTests
         public PublisherTests()
         {
             this.user = new User("UserTests");
-            foreach (var s in user.Subscribers)
-            {
-                s.TestMode = true;
-            }
             user.ChangeState(new MemberState(user.Username, user.UserHistory));
             marketStores = MarketStores.Instance;
             marketUsers = MarketUsers.Instance;
+            PublisherManagement.Instance.DeleteAll();
             marketUsers.DeleteAll();
             marketStores.DeleteAll();
+            PublisherManagement.Instance.SetTestMode(true);
+            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            dataUser.IsLoggedin = true;
+            UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
         }
 
@@ -44,7 +47,7 @@ namespace TradingSystemTests.IntegrationTests
             store.UpdateProduct(p);
             marketStores.Stores.TryAdd(store.Id, store);
             marketUsers.AddProductToCart(user.Username, p.Id, 5);
-            NotificationSubscriber subscriber = user.Subscribers.Where(s => s.SubscriberName.Equals(nameof(EventType.PurchaseEvent))).FirstOrDefault();
+            NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(user.Username, EventType.PurchaseEvent);
             Assert.AreEqual(0, subscriber.Messages.Count);
             marketUsers.PurchaseShoppingCart(user.Username, new BankAccount(1, 1), "054444444", new Address("1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
@@ -58,13 +61,11 @@ namespace TradingSystemTests.IntegrationTests
             MarketStores marketStores = MarketStores.Instance;
             MarketUsers marketUsers = MarketUsers.Instance;
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
-            NotificationSubscriber subscriber = user.Subscribers.Where(s => s.SubscriberName.Equals(nameof(EventType.OpenStoreEvent))).FirstOrDefault();
+            NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(user.Username, EventType.OpenStoreEvent);
             Assert.AreEqual(0, subscriber.Messages.Count);
             marketStores.CreateStore("TestStore", user.Username, new BankAccount(1, 1), new Address("1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
         }
-
-
 
         [TestCleanup]
         public void DeleteAll()
@@ -72,11 +73,12 @@ namespace TradingSystemTests.IntegrationTests
             marketUsers.DeleteAll();
             marketStores.DeleteAll();
             this.user = new User("UserTests");
-            foreach (var s in user.Subscribers)
-            {
-                s.TestMode = true;
-            }
             user.ChangeState(new MemberState(user.Username, user.UserHistory));
+            PublisherManagement.Instance.DeleteAll();
+            PublisherManagement.Instance.SetTestMode(true);
+            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            dataUser.IsLoggedin = true;
+            UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
         }
 
