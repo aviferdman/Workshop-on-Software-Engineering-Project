@@ -47,7 +47,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             store = market.CreateStore("testStore", "founder", bankAccount, address);
-            market.makeOwner("owner", store.Id, "founder");
+            MarketStores.Instance.makeOwner("owner", store.Id, "founder");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
