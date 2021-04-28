@@ -59,5 +59,13 @@ namespace TradingSystem.Service
             }
             return dataStores;
         }
+
+        public StoreData getStoreById(Guid pid)
+        {
+            IStore s;
+            if (marketStores.Stores.TryGetValue(pid,out s))
+                return new StoreData((Store)s);
+            return null;
+        }
     }
 }

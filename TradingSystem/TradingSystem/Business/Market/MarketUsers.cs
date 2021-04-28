@@ -42,12 +42,35 @@ namespace TradingSystem.Business.Market
             memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
+        
+
         public void tearDown()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
             membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
             memberStates = new ConcurrentDictionary<string, MemberState>();
+        }
+
+        public ICollection<Store> getUserStores(string usrname)
+        {
+            List < Store> s = new List<Store>();
+            MemberState m;
+            if (!memberStates.TryGetValue(usrname, out m))
+                return s;
+            foreach(Store st in m.FounderPrems.Keys)
+            {
+                s.Add(st);
+            }
+            foreach (Store st in m.OwnerPrems.Keys)
+            {
+                s.Add(st);
+            }
+            foreach (Store st in m.ManagerPrems.Keys)
+            {
+                s.Add(st);
+            }
+            return s;
         }
 
         public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
