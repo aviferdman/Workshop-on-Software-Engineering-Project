@@ -10,11 +10,11 @@ namespace TradingSystem.Business.Notifications
     {
         private IDictionary<EventType, TypedPublisher> publishers;
         private IDictionary<EventType, IList<string>> waiting;
-        private User _user;
+        private String _username;
 
-        public Publisher(User user)
+        public Publisher(String username)
         {
-            this._user = user;
+            this._username = username;
             publishers = new Dictionary<EventType, TypedPublisher>()
             {
                 {EventType.RegisterEvent, new TypedPublisher(nameof(EventType.RegisterEvent))},
@@ -34,7 +34,7 @@ namespace TradingSystem.Business.Notifications
         // Notify observers when event occurs
         public void EventNotification(EventType eventType, string description)
         {
-            if (_user.IsLoggedIn)
+            if (UserManagement.UserManagement.Instance.isLoggedIn(_username))
             {
                 publishers[eventType].EventNotification(description);
             }

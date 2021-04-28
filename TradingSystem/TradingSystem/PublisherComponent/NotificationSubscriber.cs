@@ -16,15 +16,13 @@ namespace TradingSystem.Notifications
 
         private IDisposable _unsubscriber;
         private ICommunicate communicate;
-        private User _user;
         private bool testMode;
         private IList<String> messages;
 
-        public NotificationSubscriber(User user, string _subscriberName, bool testMode = false)
+        public NotificationSubscriber(string _subscriberName, bool testMode = false)
         {
             SubscriberName = _subscriberName;
             Communicate = new Communicate();
-            this._user = user;
             this.TestMode = testMode;
             this.Messages = new List<String>();
         }
@@ -38,21 +36,21 @@ namespace TradingSystem.Notifications
 
         public virtual void OnCompleted()
         {
-            Communicate.SendMessage(_user.Username, $"DONE");
+            Communicate.SendMessage(SubscriberName, $"DONE");
         }
 
         public virtual void OnError(Exception e)
         {
-            Communicate.SendMessage(_user.Username, $"{e.Message}");
+            Communicate.SendMessage(SubscriberName, $"{e.Message}");
         }
 
         public virtual void OnNext(Event ev)
         {
-            var message = $"Hey {_user.Username} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
+            var message = $"Hey {SubscriberName} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
             if (ConfigurationManager.AppSettings.Get("ConnectRealCommunication") != null &&
                 ConfigurationManager.AppSettings.Get("ConnectRealCommunication").Equals("true"))
             {
-                Communicate.SendMessage(_user.Username, message);
+                Communicate.SendMessage(SubscriberName, message);
             }
             if (TestMode)
             {
