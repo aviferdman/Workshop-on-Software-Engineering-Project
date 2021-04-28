@@ -194,7 +194,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
         {
-            return marketShoppingCartService.PurchaseShoppingCart
+            Result<bool> result = marketShoppingCartService.PurchaseShoppingCart
             (
                 SystemContext.TokenUsername,
                 purchaseInfo.BankAccount.AccountNumber,
@@ -205,6 +205,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 purchaseInfo.Address.Street,
                 purchaseInfo.Address.ApartmentNum
             );
+            return !result.IsErr && result.Ret;
         }
 
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)
