@@ -1,7 +1,9 @@
 ﻿using System;
-
+using System.Configuration;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Service
 {
