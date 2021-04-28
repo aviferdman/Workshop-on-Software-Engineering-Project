@@ -36,18 +36,19 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         public void Initialize()
         {
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null);
-            marketUsers.AddMember("founder", "123", guestName);
+            userManagement.SignUp("founder_test_conc", "123", null, null);
+            marketUsers.AddMember("founder_test_conc", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null);
-            marketUsers.AddMember("manager", "123", guestName);
+            userManagement.SignUp("manager_test_conc", "123", null, null);
+            marketUsers.AddMember("manager_test_conc", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner", "123", null, null);
-            marketUsers.AddMember("owner", "123", guestName);
+            userManagement.SignUp("owner_test_conc", "123", null, null);
+            marketUsers.AddMember("owner_test_conc", "123", guestName);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
-            store = market.CreateStore("testStore", "founder", bankAccount, address);
-            MarketStores.Instance.makeOwner("owner", store.Id, "founder");
+            store = market.CreateStore("testStore", "founder_test_conc", bankAccount, address);
+            
+            MarketStores.Instance.makeOwner("owner_test_conc", store.Id, "founder_test_conc");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -61,14 +62,14 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             String val1 = "";
             String val2 = "";
             String guestId = MarketUsers.Instance.AddGuest();
-            Task task1 = Task.Factory.StartNew(() => val1 = market.makeManager("manager", store.Id, "founder"));
-            Task task2 = Task.Factory.StartNew(() => val2 = market.makeManager("manager", store.Id, "owner"));
+            Task task1 = Task.Factory.StartNew(() => val1 = market.makeManager("manager_test_conc", store.Id, "founder_test_conc"));
+            Task task2 = Task.Factory.StartNew(() => val2 = market.makeManager("manager_test_conc", store.Id, "owner_test_conc"));
             Task.WaitAll(task1, task2);
 
             bool check1 = String.Equals("Success", val1);
             bool check2 = String.Equals("Success", val2);
 
-            Assert.IsTrue(store.Managers.ContainsKey("manager"));
+            Assert.IsTrue(store.Managers.ContainsKey("manager_test_conc"));
             Assert.IsTrue(check1 || check2);
             Assert.IsFalse(check1 && check2);
 
