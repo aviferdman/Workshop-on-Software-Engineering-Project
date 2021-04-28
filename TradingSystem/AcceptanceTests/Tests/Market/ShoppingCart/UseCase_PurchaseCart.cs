@@ -219,11 +219,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
-            Assert.IsTrue(purchaseHistory.Count() == 1, "Expected exactly 1 purchase in history.");
-
-            PurchaseHistoryRecord purchase = purchaseHistory.First();
-            IEnumerable<ProductInCart> productsCartHistory = ProductForCart.ToProductInCart(useCase_addProduct.ProductsAdd);
-            Assert.IsEmpty(purchase, "Purchase record must be empty.");
+            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
         }
 
         [TestCase]
@@ -274,12 +270,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
-            Assert.IsTrue(purchaseHistory.Count() == 1, "Expected exactly 1 purchase in history.");
-
-            PurchaseHistoryRecord purchase = purchaseHistory.First();
-            IEnumerable<ProductInCart> productsCartHistory = ProductForCart.ToProductInCart(useCase_addProduct.ProductsAdd);
-            Assert.IsEmpty(purchase, "Purchase record must be empty.");
-            Assert.IsFalse(purchase.PaymentStatus, "Expected a failed payment status.");
+            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
         }
 
         [TestCase]
@@ -334,15 +325,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
-            Assert.IsTrue(purchaseHistory.Count() == 1, "Expected exactly 1 purchase in history.");
-
-            PurchaseHistoryRecord purchase = purchaseHistory.First();
-            IEnumerable<ProductInCart> productsCartHistory = ProductForCart.ToProductInCart(useCase_addProduct.ProductsAdd);
-            Assert.IsEmpty(purchase, "Purchase record must be empty.");
-
-            Assert.IsTrue(purchase.PaymentStatus, "Expected a success payment status.");
-            Assert.IsFalse(purchase.DeliveryStatus, "Expected a failure delivery status.");
-            Assert.AreEqual(paymentId, purchase.PaymentId, "The payment id is different than expected.");
+            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
         }
 
         [TestCase]

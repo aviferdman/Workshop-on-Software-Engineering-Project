@@ -59,6 +59,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
         {
             string result = userService.Signup
             (
+                Username,
                 signupInfo.Username,
                 signupInfo.Password,
                 signupInfo.Address.State,
@@ -66,7 +67,6 @@ namespace AcceptanceTests.AppInterface.UserBridge
                 signupInfo.Address.Street,
                 signupInfo.Address.ApartmentNum,
                 signupInfo.PhoneNumber
-
             );
             return result == "success";
         }
