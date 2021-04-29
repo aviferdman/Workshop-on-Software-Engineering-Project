@@ -28,11 +28,19 @@ const useStyles = makeStyles((theme) => ({
         display: 'block',
     },
     formButtonsBlock: {
-        display: 'flex',
-        width: '36%',
+        width: '216px',
+    },
+    topMargin: {
+        marginTop: theme.spacing(1)
     },
     btnLogin: {
-        marginRight: '10px',
+        marginRight: theme.spacing(1),
+    },
+    title: {
+        fontSize: '1.5rem',
+        marginTop: '0px',
+        marginLeft: theme.spacing(1),
+        marginBottom: theme.spacing(2)
     }
 }));
 
@@ -59,6 +67,7 @@ export default function LoginPage() {
     return (
         <div className="center-block">
             <div className="vertical-center-block">
+                <h4 className={classes.title}>Login</h4>
                 <form className={classes.root} noValidate autoComplete="off">
                     <TextField value={values.username} className={classes.textField} label="Username" variant="outlined" onChange={handleChange('username')} />
                     <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
@@ -86,6 +95,9 @@ export default function LoginPage() {
                     <div className={classes.formButtonsBlock}>
                         <Button variant="contained" color="primary" className={classes.btnLogin}>Login</Button>
                         <Button variant="contained" color="primary">Sign up</Button>
+                    </div>
+                    <div className={clsx(classes.formButtonsBlock, classes.topMargin)}>
+                        <Button variant="contained" style={{textTransform: 'none'}}>Log in as guest</Button>
                     </div>
                 </form>
             </div>
