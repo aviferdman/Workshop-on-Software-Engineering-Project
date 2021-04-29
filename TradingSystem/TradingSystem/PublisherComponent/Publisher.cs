@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TradingSystem.Business.Market;
 using TradingSystem.Notifications;
+using TradingSystem.Service;
 
 namespace TradingSystem.Business.Notifications
 {
@@ -34,7 +34,7 @@ namespace TradingSystem.Business.Notifications
         // Notify observers when event occurs
         public void EventNotification(EventType eventType, string description)
         {
-            if (UserManagement.UserManagement.Instance.isLoggedIn(_username))
+            if (UserService.Instance.isLoggedIn(_username))
             {
                 publishers[eventType].EventNotification(description);
             }

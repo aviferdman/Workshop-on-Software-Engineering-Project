@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
-using TradingSystem.Business.Market;
 using TradingSystem.Communication;
 
 namespace TradingSystem.Notifications
