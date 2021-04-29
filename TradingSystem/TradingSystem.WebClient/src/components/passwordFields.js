@@ -32,6 +32,7 @@ export default class PasswordField extends Component {
                     type={this.state.showPassword ? 'text' : 'password'}
                     value={this.props.value}
                     onChange={this.props.onChange}
+                    label={this.props.label} /* this only causes enough spacing when the actual label is moved above the input field */
                     endAdornment={
                         <InputAdornment position="end">
                             <IconButton
