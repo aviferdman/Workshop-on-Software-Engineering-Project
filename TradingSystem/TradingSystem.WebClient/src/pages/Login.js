@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import clsx from 'clsx';
 import {
     Button,
@@ -70,6 +71,11 @@ export default function LoginPage() {
         event.preventDefault();
     };
 
+    const history = useHistory();
+    const onSignupClick = e => {
+        history.push('/signup');
+    };
+
     let errorMessageElement = null;
     let blockHeight = '300px';
     if (values.errorMessage) {
@@ -112,7 +118,7 @@ export default function LoginPage() {
                     {errorMessageElement}
                     <div className={classes.formRow}>
                         <Button variant="contained" color="primary" className={classes.btnLogin}>Login</Button>
-                        <Button variant="contained" color="primary">Sign up</Button>
+                        <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
                     </div>
                     <div className={clsx(classes.formRow, classes.topMargin)}>
                         <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
