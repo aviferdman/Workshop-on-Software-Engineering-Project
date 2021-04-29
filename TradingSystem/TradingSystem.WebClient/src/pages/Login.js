@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import {Visibility, VisibilityOff} from "@material-ui/icons";
 import './Login.scss'
+import {useTitle} from "../App";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -77,6 +78,8 @@ export default function LoginPage() {
         </div>
         blockHeight = '320px';
     }
+
+    useTitle('Login');
 
     return (
         <div className="center-block" style={{height: blockHeight}}>
