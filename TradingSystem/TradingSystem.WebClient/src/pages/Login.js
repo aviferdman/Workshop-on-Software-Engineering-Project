@@ -1,18 +1,14 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import clsx from 'clsx';
 import {
     Button,
-    FormControl,
-    IconButton,
-    InputAdornment,
-    InputLabel,
     makeStyles,
-    OutlinedInput,
     TextField
 } from "@material-ui/core";
-import {Visibility, VisibilityOff} from "@material-ui/icons";
 import './Login.scss'
 import {useTitle} from "../App";
+import PasswordField from "../components/passwordFields";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -54,7 +50,6 @@ export default function LoginPage() {
     const [values, setValues] = React.useState({
         username: '',
         password: '',
-        showPassword: false,
         errorMessage: '',
     });
 
@@ -62,12 +57,9 @@ export default function LoginPage() {
         setValues({ ...values, [prop]: event.target.value });
     };
 
-    const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
-    };
-
-    const handleMouseDownPassword = (event) => {
-        event.preventDefault();
+    const history = useHistory();
+    const onSignupClick = e => {
+        history.push('/signup');
     };
 
     let errorMessageElement = null;
@@ -87,32 +79,16 @@ export default function LoginPage() {
                 <h4 className={classes.title}>Login</h4>
                 <form className={classes.root} noValidate autoComplete="off">
                     <TextField value={values.username} className={classes.textField} label="Username" variant="outlined" onChange={handleChange('username')} />
-                    <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
-                        <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                        <OutlinedInput
-                            id="outlined-adornment-password"
-                            type={values.showPassword ? 'text' : 'password'}
-                            value={values.password}
-                            onChange={handleChange('password')}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        onMouseDown={handleMouseDownPassword}
-                                        edge="end"
-                                    >
-                                        {values.showPassword ? <Visibility /> : <VisibilityOff />}
-                                    </IconButton>
-                                </InputAdornment>
-                            }
-                            labelWidth={70}
-                        />
-                    </FormControl>
+                    <PasswordField value={values.password}
+                                   onChange={handleChange('password')}
+                                   label="Password"
+                                   className={clsx(classes.margin, classes.textField)}
+                                   variant="outlined"
+                                   id="outlined-adornment-password" />
                     {errorMessageElement}
                     <div className={classes.formRow}>
                         <Button variant="contained" color="primary" className={classes.btnLogin}>Login</Button>
-                        <Button variant="contained" color="primary">Sign up</Button>
+                        <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
                     </div>
                     <div className={clsx(classes.formRow, classes.topMargin)}>
                         <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
