@@ -6,7 +6,6 @@ namespace TradingSystem.Notifications
 {
     public enum EventType
     {
-        RegisterEvent,
         OpenStoreEvent,
         PurchaseEvent,
         BecomeManagerEvent

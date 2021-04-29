@@ -62,9 +62,6 @@ namespace TradingSystem.PublisherComponent
         {
             var publisher = username_publisher[username];
             var subscribers = username_subscribers[username];
-            NotificationSubscriber subscriber1 = new NotificationSubscriber(nameof(EventType.RegisterEvent), _testMode);
-            subscriber1.Subscribe(publisher.Get(EventType.RegisterEvent));
-            subscribers.Add(subscriber1);
             NotificationSubscriber subscriber2 = new NotificationSubscriber(nameof(EventType.OpenStoreEvent), _testMode);
             subscriber2.Subscribe(publisher.Get(EventType.OpenStoreEvent));
             subscribers.Add(subscriber2);

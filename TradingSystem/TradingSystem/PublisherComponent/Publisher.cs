@@ -17,14 +17,12 @@ namespace TradingSystem.Business.Notifications
             this._username = username;
             publishers = new Dictionary<EventType, TypedPublisher>()
             {
-                {EventType.RegisterEvent, new TypedPublisher(nameof(EventType.RegisterEvent))},
                 {EventType.BecomeManagerEvent, new TypedPublisher(nameof(EventType.BecomeManagerEvent))},
                 {EventType.OpenStoreEvent, new TypedPublisher(nameof(EventType.OpenStoreEvent))},
                 {EventType.PurchaseEvent, new TypedPublisher(nameof(EventType.PurchaseEvent))}
             };
             waiting = new Dictionary<EventType, IList<string>>()
             {
-                {EventType.RegisterEvent, new List<string>()},
                 {EventType.BecomeManagerEvent, new List<string>()},
                 {EventType.OpenStoreEvent, new List<string>()},
                 {EventType.PurchaseEvent, new List<string>()}
