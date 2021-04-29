@@ -115,7 +115,7 @@ export default function LoginPage() {
                         <Button variant="contained" color="primary">Sign up</Button>
                     </div>
                     <div className={clsx(classes.formRow, classes.topMargin)}>
-                        <Button variant="contained" style={{textTransform: 'none'}}>Log in as guest</Button>
+                        <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
                     </div>
                 </form>
             </div>
