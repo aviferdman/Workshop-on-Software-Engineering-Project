@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import {Visibility, VisibilityOff} from "@material-ui/icons";
 import './Login.scss'
+import {useTitle} from "../App";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,12 +28,24 @@ const useStyles = makeStyles((theme) => ({
         width: '25ch',
         display: 'block',
     },
-    formButtonsBlock: {
-        display: 'flex',
-        width: '36%',
+    formRow: {
+        width: '216px',
+    },
+    topMargin: {
+        marginTop: theme.spacing(1)
     },
     btnLogin: {
-        marginRight: '10px',
+        marginRight: theme.spacing(1),
+    },
+    title: {
+        fontSize: '1.5rem',
+        marginTop: '0px',
+        marginLeft: theme.spacing(1),
+        marginBottom: theme.spacing(2)
+    },
+    errorMessage: {
+        color: "red",
+        marginBottom: theme.spacing(1)
     }
 }));
 
@@ -42,6 +55,7 @@ export default function LoginPage() {
         username: '',
         password: '',
         showPassword: false,
+        errorMessage: '',
     });
 
     const handleChange = (prop) => (event) => {
@@ -56,9 +70,21 @@ export default function LoginPage() {
         event.preventDefault();
     };
 
+    let errorMessageElement = null;
+    let blockHeight = '300px';
+    if (values.errorMessage) {
+        errorMessageElement = <div className={clsx(classes.errorMessage, classes.formRow)}>
+            <label> { values.errorMessage } </label>
+        </div>
+        blockHeight = '320px';
+    }
+
+    useTitle('Login');
+
     return (
-        <div className="center-block">
+        <div className="center-block" style={{height: blockHeight}}>
             <div className="vertical-center-block">
+                <h4 className={classes.title}>Login</h4>
                 <form className={classes.root} noValidate autoComplete="off">
                     <TextField value={values.username} className={classes.textField} label="Username" variant="outlined" onChange={handleChange('username')} />
                     <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
@@ -83,9 +109,13 @@ export default function LoginPage() {
                             labelWidth={70}
                         />
                     </FormControl>
-                    <div className={classes.formButtonsBlock}>
+                    {errorMessageElement}
+                    <div className={classes.formRow}>
                         <Button variant="contained" color="primary" className={classes.btnLogin}>Login</Button>
                         <Button variant="contained" color="primary">Sign up</Button>
+                    </div>
+                    <div className={clsx(classes.formRow, classes.topMargin)}>
+                        <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
                     </div>
                 </form>
             </div>
