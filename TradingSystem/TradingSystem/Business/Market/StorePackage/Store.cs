@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.Histories;
 using TradingSystem.Business.Market.StorePackage;
+using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
@@ -452,7 +453,7 @@ namespace TradingSystem.Business.Market
             return products.FirstOrDefault();
         }
 
-        private Discount GetDiscountById(Guid discountId)
+        public Discount GetDiscountById(Guid discountId)
         {
             IEnumerable<Discount> discounts = Discounts.Where(discount => discount.Id.Equals(discountId));
             return discounts.FirstOrDefault();
@@ -502,6 +503,11 @@ namespace TradingSystem.Business.Market
                 }
             }
             return products;
+        }
+
+        public IRule GetRuleById(Guid ruleId)
+        {
+            return this.Policy.Rules.Where(r => r.GetId().Equals(ruleId)).FirstOrDefault();
         }
     }
 }

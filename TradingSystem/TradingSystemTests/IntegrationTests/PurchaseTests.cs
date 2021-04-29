@@ -49,7 +49,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
-            Discount discount = new Discount(new DiscountCalculator(return15));
+            ConditionDiscount discount = new ConditionDiscount(new DiscountCalculator(return15));
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(discount);

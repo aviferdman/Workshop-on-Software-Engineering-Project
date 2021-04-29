@@ -20,6 +20,7 @@ namespace TradingSystem.Business.Market
         public String RemoveProduct(Guid productID, Guid storeID, String username);
         public String EditProduct(Guid productID, ProductData details, Guid storeID, String username);
         public String makeOwner(String assigneeName, Guid storeID, String assignerName);
+        IStore GetStoreById(Guid storeId);
         public String makeManager(String assignee, Guid storeID, String assigner);
         public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions);
         public String RemoveManager(String managerName, Guid storeID, String assignerName);
