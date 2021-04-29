@@ -148,14 +148,16 @@ namespace TradingSystem.Business.Market
             return Policy.Check(shoppingBasket);
         }
 
-        public void AddRule(IRule rule)
+        public Guid AddRule(IRule rule)
         {
             _policy.AddRule(rule);
+            return rule.GetId();
         }
 
-        public void RemoveRule(IRule rule)
+        public Guid RemoveRule(IRule rule)
         {
             _policy.RemoveRule(rule);
+            return rule.GetId();
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -404,18 +406,20 @@ namespace TradingSystem.Business.Market
         }
 
 
-        public void AddDiscount(Discount discount)
+        public Guid AddDiscount(Discount discount)
         {
             Discounts.Add(discount);
+            return discount.Id;
         }
 
-        public void RemoveDiscount(Guid discountId)
+        public Guid RemoveDiscount(Guid discountId)
         {
             Discount d = GetDiscountById(discountId);
             if (d != null)
             {    //remove old discount if exists
                 Discounts.Remove(d);
             }
+            return discountId;
         }
 
 

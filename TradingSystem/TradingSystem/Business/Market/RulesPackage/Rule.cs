@@ -46,5 +46,11 @@ namespace TradingSystem.Business.Market
         {
             return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => rule1.Check(basket) || rule2.Check(basket)));
         }
+        public static Rule CompositeTwoRules(IRule rule1, IRule rule2)
+        {
+            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => rule1.Check(basket) ? rule2.Check(basket) : true));
+        }
+
+
     }
 }

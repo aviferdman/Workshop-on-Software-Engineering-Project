@@ -55,5 +55,13 @@ namespace TradingSystem.Business.Market
             orRules.Add(or);
             return new Policy(orRules);
         }
+
+        public Policy Condition(Policy orPolicy)
+        {
+            ICollection<IRule> conditionRules = new HashSet<IRule>();
+            IRule condition = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) ? orPolicy.Check(shoppingBasket) : true));
+            conditionRules.Add(condition);
+            return new Policy(conditionRules);
+        }
     }
 }
