@@ -32,19 +32,20 @@ namespace TradingSystem.WebApi
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    if (CurrentEnvironment.IsDevelopment())
-                    {
-                        builder.WithOrigins("http://localhost:3000");
-                    }
-                    else
-                    {
-                        // TBD
-                        // builder.WithOrigins("");
-                    }
+                    //if (CurrentEnvironment.IsDevelopment())
+                    //{
+                    //    builder.WithOrigins("http://localhost:3000");
+                    //}
+                    //else
+                    //{
+                    //    // TBD
+                    //    // builder.WithOrigins("");
+                    //}
 
                     builder
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowAnyOrigin();
                 });
             });
 
