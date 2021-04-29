@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
         width: '25ch',
         display: 'block',
     },
-    formButtonsBlock: {
+    formRow: {
         width: '216px',
     },
     topMargin: {
@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
         marginTop: '0px',
         marginLeft: theme.spacing(1),
         marginBottom: theme.spacing(2)
+    },
+    errorMessage: {
+        color: "red",
+        marginBottom: theme.spacing(1)
     }
 }));
 
@@ -50,6 +54,7 @@ export default function LoginPage() {
         username: '',
         password: '',
         showPassword: false,
+        errorMessage: '',
     });
 
     const handleChange = (prop) => (event) => {
@@ -64,8 +69,17 @@ export default function LoginPage() {
         event.preventDefault();
     };
 
+    let errorMessageElement = null;
+    let blockHeight = '300px';
+    if (values.errorMessage) {
+        errorMessageElement = <div className={clsx(classes.errorMessage, classes.formRow)}>
+            <label> { values.errorMessage } </label>
+        </div>
+        blockHeight = '320px';
+    }
+
     return (
-        <div className="center-block">
+        <div className="center-block" style={{height: blockHeight}}>
             <div className="vertical-center-block">
                 <h4 className={classes.title}>Login</h4>
                 <form className={classes.root} noValidate autoComplete="off">
@@ -92,11 +106,12 @@ export default function LoginPage() {
                             labelWidth={70}
                         />
                     </FormControl>
-                    <div className={classes.formButtonsBlock}>
+                    {errorMessageElement}
+                    <div className={classes.formRow}>
                         <Button variant="contained" color="primary" className={classes.btnLogin}>Login</Button>
                         <Button variant="contained" color="primary">Sign up</Button>
                     </div>
-                    <div className={clsx(classes.formButtonsBlock, classes.topMargin)}>
+                    <div className={clsx(classes.formRow, classes.topMargin)}>
                         <Button variant="contained" style={{textTransform: 'none'}}>Log in as guest</Button>
                     </div>
                 </form>
