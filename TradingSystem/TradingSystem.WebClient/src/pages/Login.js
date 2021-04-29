@@ -3,15 +3,9 @@ import { useHistory } from "react-router-dom";
 import clsx from 'clsx';
 import {
     Button,
-    FormControl,
-    IconButton,
-    InputAdornment,
-    InputLabel,
     makeStyles,
-    OutlinedInput,
     TextField
 } from "@material-ui/core";
-import {Visibility, VisibilityOff} from "@material-ui/icons";
 import './Login.scss'
 import {useTitle} from "../App";
 import PasswordField from "../components/passwordFields";

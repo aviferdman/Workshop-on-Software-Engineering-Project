@@ -1,11 +1,10 @@
-import LoginPage from "./pages/Login";
 import {useEffect} from "react";
 import Routes from "./routes";
 
 export function useTitle(title) {
   useEffect(() => {
     document.title = 'Ecommerce - ' + title;
-  }, []);
+  }, [title]);
 }
 
 function App() {
