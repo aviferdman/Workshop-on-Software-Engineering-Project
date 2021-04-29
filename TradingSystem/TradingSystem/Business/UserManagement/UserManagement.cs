@@ -20,6 +20,11 @@ namespace TradingSystem.Business.UserManagement
 
         public ConcurrentDictionary<string, DataUser> DataUsers { get => dataUsers; set => dataUsers = value; }
 
+        internal int GetUserAge(string username)
+        {
+            throw new NotImplementedException();
+        }
+
         private UserManagement()
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();

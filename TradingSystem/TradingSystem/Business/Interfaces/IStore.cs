@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
@@ -50,5 +51,9 @@ namespace TradingSystem.Business.Market
         public String getInfo(String username);
 
         public String getInfoSpecific(String workerName, String username);
+
+        public IRule GetRuleById(Guid ruleId);
+
+        public Discount GetDiscountById(Guid discountId);
     }
 }

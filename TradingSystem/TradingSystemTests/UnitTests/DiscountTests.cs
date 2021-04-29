@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 
 namespace TradingSystemTests.UnitTests
 {
@@ -37,7 +38,7 @@ namespace TradingSystemTests.UnitTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             discount.AddRule(rule1.Object);
             discount.AddRule(rule2.Object);
             Assert.AreEqual(true, discount.Available(shoppingBasket));
@@ -51,7 +52,7 @@ namespace TradingSystemTests.UnitTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             discount.AddRule(rule1.Object);
             discount.AddRule(rule2.Object);
             Assert.AreEqual(false, discount.Available(shoppingBasket));
@@ -61,7 +62,7 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckApplyDiscounts()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Assert.AreEqual(15, discount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -69,15 +70,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckAndDiscounts()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            additionalRules.Add(rule2.Object);
-            Discount addedDiscount = discount.And(additionalRules);
+            ConditionDiscount addedDiscount = discount.And(rule2.Object);
             Assert.AreEqual(15, addedDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -85,15 +84,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckAndDiscountsAddedRulesFalse()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            additionalRules.Add(rule2.Object);
-            Discount addedDiscount = discount.And(additionalRules);
+            ConditionDiscount addedDiscount = discount.And(rule2.Object);
             Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -101,15 +98,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckAndDiscountsMyRulesFalse()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            additionalRules.Add(rule2.Object);
-            Discount addedDiscount = discount.And(additionalRules);
+            ConditionDiscount addedDiscount = discount.And(rule2.Object);
             Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -117,15 +112,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckAndDiscountsBothMyRulesAndAddedFalse()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            additionalRules.Add(rule2.Object);
-            Discount addedDiscount = discount.And(additionalRules);
+            ConditionDiscount addedDiscount = discount.And(rule2.Object);
             Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -133,15 +126,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckOrDiscounts()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            additionalRules.Add(rule2.Object);
-            Discount orDiscount = discount.Or(additionalRules);
+            ConditionDiscount orDiscount = discount.Or(rule2.Object);
             Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -149,15 +140,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckOrDiscountsAddedRulesFalse()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            additionalRules.Add(rule2.Object);
-            Discount orDiscount = discount.Or(additionalRules);
+            ConditionDiscount orDiscount = discount.Or(rule2.Object);
             Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -165,15 +154,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckOrDiscountsMyRulesFalse()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            additionalRules.Add(rule2.Object);
-            Discount orDiscount = discount.Or(additionalRules);
+            ConditionDiscount orDiscount = discount.Or(rule2.Object);
             Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -181,15 +168,13 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckOrDiscountsBothMyAndAddedRulesFalse()
         {
-            Discount discount = new Discount(discountCalc1.Object);
+            ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount.AddRule(rule1.Object);
-            ICollection<IRule> additionalRules = new HashSet<IRule>();
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            additionalRules.Add(rule2.Object);
-            Discount orDiscount = discount.Or(additionalRules);
+            ConditionDiscount orDiscount = discount.Or(rule2.Object);
             Assert.AreEqual(0, orDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -197,15 +182,15 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckXorDiscountsTakeFirstDiscount()
         {
-            Discount discount1 = new Discount(discountCalc1.Object);
-            Discount discount2 = new Discount(discountCalc2.Object);
+            ConditionDiscount discount1 = new ConditionDiscount(discountCalc1.Object);
+            ConditionDiscount discount2 = new ConditionDiscount(discountCalc2.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount1.AddRule(rule1.Object);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
-            Discount xorDiscount = discount1.Xor(discount2, true);
+            ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
             Assert.AreEqual(15, xorDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -213,15 +198,15 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckXorDiscountsTakeSecondDiscount()
         {
-            Discount discount1 = new Discount(discountCalc1.Object);
-            Discount discount2 = new Discount(discountCalc2.Object);
+            ConditionDiscount discount1 = new ConditionDiscount(discountCalc1.Object);
+            ConditionDiscount discount2 = new ConditionDiscount(discountCalc2.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount1.AddRule(rule1.Object);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
-            Discount xorDiscount = discount1.Xor(discount2, false);
+            ConditionDiscount xorDiscount = discount1.Xor(discount2, false);
             Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -229,15 +214,15 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckXorDiscountsFirstFalseSecondTrue()
         {
-            Discount discount1 = new Discount(discountCalc1.Object);
-            Discount discount2 = new Discount(discountCalc2.Object);
+            ConditionDiscount discount1 = new ConditionDiscount(discountCalc1.Object);
+            ConditionDiscount discount2 = new ConditionDiscount(discountCalc2.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount1.AddRule(rule1.Object);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
-            Discount xorDiscount = discount1.Xor(discount2, true);
+            ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
             Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -245,15 +230,15 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckXorDiscountsFirstTrueSecondFalse()
         {
-            Discount discount1 = new Discount(discountCalc1.Object);
-            Discount discount2 = new Discount(discountCalc2.Object);
+            ConditionDiscount discount1 = new ConditionDiscount(discountCalc1.Object);
+            ConditionDiscount discount2 = new ConditionDiscount(discountCalc2.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount1.AddRule(rule1.Object);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
-            Discount xorDiscount = discount1.Xor(discount2, true);
+            ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
             Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket));
         }
 
@@ -261,15 +246,15 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckXorDiscountsBothFalse()
         {
-            Discount discount1 = new Discount(discountCalc1.Object);
-            Discount discount2 = new Discount(discountCalc2.Object);
+            ConditionDiscount discount1 = new ConditionDiscount(discountCalc1.Object);
+            ConditionDiscount discount2 = new ConditionDiscount(discountCalc2.Object);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount1.AddRule(rule1.Object);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             discount2.AddRule(rule2.Object);
-            Discount xorDiscount = discount1.Xor(discount2, true);
+            ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
             Assert.AreEqual(0, xorDiscount.ApplyDiscounts(shoppingBasket));
         }
     }
