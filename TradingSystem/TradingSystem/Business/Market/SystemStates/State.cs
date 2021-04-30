@@ -13,6 +13,7 @@ namespace TradingSystem.Business.Market
         public State()
         {
         }
+        public abstract void AddHistory(IHistory history);
 
         public abstract ICollection<IHistory> GetUserHistory(string username);
 

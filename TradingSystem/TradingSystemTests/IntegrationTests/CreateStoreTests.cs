@@ -18,7 +18,7 @@ namespace TradingSystemTests.IntegrationTests
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Address address = new Address("1", "1", "1", "1");
             User user = new User("testUser");
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             MarketStores market = MarketStores.Instance;
             MarketUsers marketUsers = MarketUsers.Instance;
@@ -36,7 +36,7 @@ namespace TradingSystemTests.IntegrationTests
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Address address = new Address("1", "1", "1", "1");
             User user = new User("testUser");
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             MarketStores market = MarketStores.Instance;
             MarketUsers marketUsers = MarketUsers.Instance;

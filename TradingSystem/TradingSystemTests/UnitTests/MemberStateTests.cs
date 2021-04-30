@@ -19,7 +19,7 @@ namespace TradingSystemTests.MarketTests
         public void GetUserHistoryWithCorrectUserId()
         {
             User user = new User("UserTest");
-            MemberState memberState = new MemberState(user.Username, new HashSet<IHistory>());
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             Assert.IsNotNull(memberState.GetUserHistory(user.Username)); // succeeded and returns an object
 
@@ -30,7 +30,7 @@ namespace TradingSystemTests.MarketTests
         public void GetUserHistoryWithWrongUserId()
         {
             User user = new User("UserTest");
-            MemberState memberState = new MemberState(user.Username, new HashSet<IHistory>());
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             Assert.IsNotNull(memberState.GetUserHistory(user.Username)); // succeeded and returns an object
 

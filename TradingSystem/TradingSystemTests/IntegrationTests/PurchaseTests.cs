@@ -40,7 +40,7 @@ namespace TradingSystemTests.IntegrationTests
             testStoreBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
             Store s = new Store("testStore", testStoreBankAccount, testStoreAddress);
-            s.Founder = Founder.makeFounder(new MemberState("userTest", null), s);
+            s.Founder = Founder.makeFounder(new MemberState("userTest"), s);
             testStore = s;
             this.shoppingCart = new ShoppingCart(testUser);
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
@@ -245,7 +245,7 @@ namespace TradingSystemTests.IntegrationTests
         public void DeleteAll()
         {
             Store s = new Store("testStore", testStoreBankAccount, testStoreAddress);
-            s.Founder = Founder.makeFounder(new MemberState("userTest", null), s);
+            s.Founder = Founder.makeFounder(new MemberState("userTest"), s);
             testStore = s;
             this.shoppingCart = new ShoppingCart(testUser);
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);

@@ -27,8 +27,7 @@ namespace TradingSystemTests.UnitTests
             address = new Address("1", "1", "1", "1");
             bankAccount = new BankAccount(1000, 1000);
             store = new Store("testStore", bankAccount, address);
-            ICollection<IHistory> histories = new List<IHistory>();
-            MemberState ms = new MemberState("founder", histories);
+            MemberState ms = new MemberState("founder");
             founder = Founder.makeFounder(ms, store);
             Mock<IManager> imanager = new Mock<IManager>();
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);

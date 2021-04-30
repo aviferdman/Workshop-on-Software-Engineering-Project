@@ -44,7 +44,7 @@ namespace TradingSystemTests.MarketTests
             product_quantity.Add(product2, 2);
             shoppingBasket.Product_quantity = product_quantity;
             Store store = new Store("testStore", bankAccount, address);
-            store.Founder = Founder.makeFounder(new MemberState("userTest", null), store);
+            store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
             PurchaseStatus purchaseStatus = store.Purchase(shoppingBasket, clientPhone, address, bankAccount);

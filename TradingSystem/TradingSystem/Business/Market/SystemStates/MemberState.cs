@@ -20,11 +20,11 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<string, Manager> managerAppointments;
         private ConcurrentDictionary<string, Owner> ownerAppointments;
         private object prem_lock;
-        public MemberState(string userId, ICollection<IHistory> userHistory) : base()
+        public MemberState(string userId) : base()
         {
             this._userId = userId;
             this.prem_lock = new object();
-            this._userHistory = userHistory;
+            this._userHistory = new HashSet<IHistory>();
             founderPrems = new ConcurrentDictionary<Store, Founder>();
             ownerPrems = new ConcurrentDictionary<Store, Owner>();
             managerPrems = new ConcurrentDictionary<Store, Manager>();
@@ -48,6 +48,11 @@ namespace TradingSystem.Business.Market
         public override ICollection<IHistory> GetStoreHistory(Store store)
         {
             throw new UnauthorizedAccessException();
+        }
+
+        public override void AddHistory(IHistory history)
+        {
+            this._userHistory.Add(history);
         }
 
         public override ICollection<IHistory> GetUserHistory(string username)

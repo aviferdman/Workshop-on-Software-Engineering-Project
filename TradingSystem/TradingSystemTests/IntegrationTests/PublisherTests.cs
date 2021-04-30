@@ -35,7 +35,7 @@ namespace TradingSystemTests.IntegrationTests
             PublisherManagement.Instance.SetTestMode(true);
 
             this.user = new User("UserTests");
-            user.ChangeState(new MemberState(user.Username, user.UserHistory));
+            user.ChangeState(new MemberState(user.Username));
             var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
@@ -44,7 +44,7 @@ namespace TradingSystemTests.IntegrationTests
             this.store = new Store("Founder", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
 
             founderUser = new User("Founder");
-            founderUser.ChangeState(new MemberState(founderUser.Username, founderUser.UserHistory));
+            founderUser.ChangeState(new MemberState(founderUser.Username));
             this.founder = Founder.makeFounder((MemberState)founderUser.State, store);
             store.Founder = founder;
             dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1"), "054444444");
@@ -131,7 +131,7 @@ namespace TradingSystemTests.IntegrationTests
             PublisherManagement.Instance.SetTestMode(true);
 
             this.user = new User("UserTests");
-            user.ChangeState(new MemberState(user.Username, user.UserHistory));
+            user.ChangeState(new MemberState(user.Username));
             var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
@@ -140,7 +140,7 @@ namespace TradingSystemTests.IntegrationTests
             this.store = new Store("Founder", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
 
             founderUser = new User("Founder");
-            founderUser.ChangeState(new MemberState(founderUser.Username, founderUser.UserHistory));
+            founderUser.ChangeState(new MemberState(founderUser.Username));
             this.founder = Founder.makeFounder((MemberState)founderUser.State, store);
             store.Founder = founder;
             dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1"), "054444444");
