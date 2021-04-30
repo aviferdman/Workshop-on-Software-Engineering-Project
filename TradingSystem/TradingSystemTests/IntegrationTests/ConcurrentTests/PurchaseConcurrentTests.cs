@@ -44,7 +44,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             testSecondUserBankAccount = new BankAccount(3, 3);
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
             testUser = new User("testUser");
-            MemberState m = new MemberState(testUser.Username, testUser.UserHistory);
+            MemberState m = new MemberState(testUser.Username);
             Founder f = Founder.makeFounder(m, testStore);
             secondTestUser = new User("secondTestUser");
             testStore.Founder = f;

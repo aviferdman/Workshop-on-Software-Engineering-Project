@@ -23,8 +23,8 @@ namespace TradingSystemTests.IntegrationTests
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", bankAccount, address);
-            store.Founder = Founder.makeFounder(new MemberState("userTest", null), store);
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
@@ -43,7 +43,7 @@ namespace TradingSystemTests.IntegrationTests
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", bankAccount, address);
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
@@ -69,7 +69,7 @@ namespace TradingSystemTests.IntegrationTests
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", bankAccount, address);
-            store.Founder = Founder.makeFounder(new MemberState("userTest", null), store);
+            store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
@@ -85,7 +85,7 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             MarketUsers market = MarketUsers.Instance;
             MarketStores marketStores = MarketStores.Instance;
@@ -108,7 +108,7 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             MarketUsers market = MarketUsers.Instance;
             MarketStores marketStores = MarketStores.Instance;
@@ -140,7 +140,7 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            MemberState memberState = new MemberState(user.Username, user.UserHistory);
+            MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             MarketUsers market = MarketUsers.Instance;
             MarketStores marketStores = MarketStores.Instance;
@@ -162,10 +162,10 @@ namespace TradingSystemTests.IntegrationTests
             Address address = new Address("1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            MemberState adminState = new AdministratorState(user.Username, user.UserHistory);
+            MemberState adminState = new AdministratorState(user.Username);
             user.ChangeState(adminState);
             Store store = new Store("storeTest", bankAccount, address);
-            store.Founder = Founder.makeFounder(new MemberState("userTest", null), store);
+            store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
@@ -185,7 +185,7 @@ namespace TradingSystemTests.IntegrationTests
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", bankAccount, address);
-            store.Founder = Founder.makeFounder(new MemberState("userTest", null), store);
+            store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);

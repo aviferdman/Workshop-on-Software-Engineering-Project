@@ -10,10 +10,9 @@ namespace TradingSystem.Business.Market
     {
         private string _userId;
         private ICollection<IHistory> _userHistory;
-        public AdministratorState(string username, ICollection<IHistory> userHistory) : base(username, userHistory)
+        public AdministratorState(string username) : base(username)
         {
             _userId = username;
-            _userHistory = userHistory;
         }
 
         public override ICollection<IHistory> GetAllHistory()
@@ -30,7 +29,7 @@ namespace TradingSystem.Business.Market
         //use case 40 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/66
         public ICollection<IHistory> GetUserHistory(string username)
         {
-            return _userHistory;
+            return HistoryManager.Instance.GetUserHistory(username);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TradingSystem.Business.Interfaces;
 
@@ -27,6 +28,11 @@ namespace TradingSystem.Business.Market
         public ICollection<IHistory> GetAllHistories()
         {
             return histories;
+        }
+
+        public ICollection<IHistory> GetUserHistory(string username)
+        {
+            return histories.Where(h => h.GetPaymentStatus().Username.Equals(username)).ToList();
         }
     }
 }

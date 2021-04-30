@@ -142,9 +142,9 @@ namespace TradingSystem.Business.Market
                 DataUser du;
                 UserManagement.UserManagement.Instance.DataUsers.TryGetValue(usrname, out du);
                 if (du.IsAdmin)
-                    m = new AdministratorState(usrname, new HashSet<IHistory>());
+                    m = new AdministratorState(usrname);
                 else
-                    m = new MemberState(usrname, new HashSet<IHistory>());
+                    m = new MemberState(usrname);
                 memberStates.TryAdd(usrname, m);
             }
 

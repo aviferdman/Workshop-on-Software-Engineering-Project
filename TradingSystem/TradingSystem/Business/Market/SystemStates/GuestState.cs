@@ -13,6 +13,11 @@ namespace TradingSystem.Business.Market
 
         }
 
+        public override void AddHistory(IHistory history)
+        {
+            
+        }
+
         public override ICollection<IHistory> GetAllHistory()
         {
             throw new UnauthorizedAccessException();

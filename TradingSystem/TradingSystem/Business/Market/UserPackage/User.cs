@@ -17,7 +17,6 @@ namespace TradingSystem.Business.Market
         private IShoppingCart _shoppingCart;
         private string username;
         private bool isLoggedIn;
-        private ICollection<IHistory> userHistory;
 
         public User(string username)
         {
@@ -25,7 +24,6 @@ namespace TradingSystem.Business.Market
             this._state = new GuestState();
             this.username = username;
             this.isLoggedIn = false;
-            this.UserHistory = new HashSet<IHistory>();
         }
 
         public User()
@@ -33,14 +31,12 @@ namespace TradingSystem.Business.Market
             this._shoppingCart = new ShoppingCart(this);
             this._state = new GuestState();
             this.isLoggedIn = false;
-            this.UserHistory = new HashSet<IHistory>();
         }
 
         public State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
         public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
-        public ICollection<IHistory> UserHistory { get => userHistory; set => userHistory = value; }
 
         public void ChangeState(State state)
         {
@@ -64,7 +60,7 @@ namespace TradingSystem.Business.Market
                 foreach (var p in buyStatus.PurchaseStatuses)
                 {
                     var h = new UserHistory(p);
-                    userHistory.Add(h);
+                    _state.AddHistory(h);
                     HistoryManager.Instance.AddUserHistory(h);
                 }
                 this.ShoppingCart = new ShoppingCart(this);
