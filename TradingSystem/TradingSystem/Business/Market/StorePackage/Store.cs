@@ -170,10 +170,9 @@ namespace TradingSystem.Business.Market
             return rule.GetId();
         }
 
-        public Guid RemoveRule(IRule rule)
+        public void RemoveRule()
         {
-            _policy.RemoveRule(rule);
-            return rule.GetId();
+            _policy.RemoveRule();
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
