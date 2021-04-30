@@ -57,6 +57,11 @@ namespace TradingSystem.Notifications
             }
         }
 
+        public void MyCallback()
+        {
+
+        }
+
         public virtual void Unsubscribe()
         {
             _unsubscriber.Dispose();

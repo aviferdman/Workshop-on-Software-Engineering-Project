@@ -20,6 +20,10 @@ namespace TradingSystem.Business.Market
 
         public bool CheckPolicy(IShoppingBasket shoppingBasket);
 
+        public void SetPolicy(Policy policy);
+
+        public Policy GetPolicy();
+
         public Guid AddRule(IRule rule);
 
         public Guid RemoveRule(IRule rule);

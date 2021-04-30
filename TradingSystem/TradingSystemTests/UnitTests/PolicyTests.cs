@@ -105,14 +105,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Policy andPolicy = legalPolicy1.And(rule2.Object);
             Assert.IsTrue(andPolicy.Check(shoppingBasket));
         }
 
@@ -126,14 +121,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Policy andPolicy = legalPolicy1.And(rule2.Object);
             Assert.IsFalse(andPolicy.Check(shoppingBasket));
         }
 
@@ -147,14 +137,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Policy andPolicy = legalPolicy1.And(rule2.Object);
             Assert.IsFalse(andPolicy.Check(shoppingBasket));
         }
 
@@ -168,14 +153,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy andPolicy = legalPolicy1.And(legalPolicy2);
+            Policy andPolicy = legalPolicy1.And(rule2.Object);
             Assert.IsFalse(andPolicy.Check(shoppingBasket));
         }
 
@@ -189,14 +169,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy orPolicy = legalPolicy1.Or(legalPolicy2);
+            Policy orPolicy = legalPolicy1.Or(rule2.Object);
             Assert.IsTrue(orPolicy.Check(shoppingBasket));
         }
 
@@ -210,14 +185,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy orPolicy = legalPolicy1.Or(legalPolicy2);
+            Policy orPolicy = legalPolicy1.Or(rule2.Object);
             Assert.IsTrue(orPolicy.Check(shoppingBasket));
         }
 
@@ -231,14 +201,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy orPolicy = legalPolicy1.Or(legalPolicy2);
+            Policy orPolicy = legalPolicy1.Or(rule2.Object);
             Assert.IsTrue(orPolicy.Check(shoppingBasket));
         }
 
@@ -252,14 +217,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy orPolicy = legalPolicy1.Or(legalPolicy2);
+            Policy orPolicy = legalPolicy1.Or(rule2.Object);
             Assert.IsFalse(orPolicy.Check(shoppingBasket));
         }
 
@@ -273,14 +233,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy conditionPolicy = legalPolicy1.Condition(legalPolicy2);
+            Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
             Assert.IsTrue(conditionPolicy.Check(shoppingBasket));
         }
 
@@ -294,14 +249,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy conditionPolicy = legalPolicy1.Condition(legalPolicy2);
+            Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
             Assert.IsTrue(conditionPolicy.Check(shoppingBasket));
         }
 
@@ -315,14 +265,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy conditionPolicy = legalPolicy1.Condition(legalPolicy2);
+            Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
             Assert.IsFalse(conditionPolicy.Check(shoppingBasket));
         }
 
@@ -336,14 +281,9 @@ namespace TradingSystemTests
             rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
-            ICollection<IRule> firstRules = new HashSet<IRule>();
-            ICollection<IRule> secondRules = new HashSet<IRule>();
-            firstRules.Add(rule1.Object);
-            secondRules.Add(rule2.Object);
-            Policy legalPolicy1 = new Policy(firstRules);
-            Policy legalPolicy2 = new Policy(secondRules);
+            Policy legalPolicy1 = new Policy(rule1.Object);
 
-            Policy conditionPolicy = legalPolicy1.Condition(legalPolicy2);
+            Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
             Assert.IsTrue(conditionPolicy.Check(shoppingBasket));
         }
 

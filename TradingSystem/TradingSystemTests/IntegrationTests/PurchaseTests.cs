@@ -9,6 +9,7 @@ using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
+using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
 
 namespace TradingSystemTests.IntegrationTests
@@ -38,7 +39,9 @@ namespace TradingSystemTests.IntegrationTests
             testUserBankAccount = new BankAccount(1, 1);
             testStoreBankAccount = new BankAccount(2, 2);
             testUser = new User("testUser");
-            testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            Store s = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            s.Founder = Founder.makeFounder(new MemberState("userTest", null), s);
+            testStore = s;
             this.shoppingCart = new ShoppingCart(testUser);
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
         }
@@ -241,7 +244,9 @@ namespace TradingSystemTests.IntegrationTests
         [TestCleanup]
         public void DeleteAll()
         {
-            testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            Store s = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            s.Founder = Founder.makeFounder(new MemberState("userTest", null), s);
+            testStore = s;
             this.shoppingCart = new ShoppingCart(testUser);
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
             Transaction.Instance.DeleteAllTests();

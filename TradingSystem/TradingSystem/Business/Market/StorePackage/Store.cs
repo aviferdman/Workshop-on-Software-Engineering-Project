@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ using TradingSystem.Business.Market.Histories;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
@@ -110,6 +113,9 @@ namespace TradingSystem.Business.Market
                 var h = new StoreHistory(transactionStatus);
                 history.Add(h);
                 HistoryManager.Instance.AddUserHistory(h);
+
+                //notify the founder for a new purchase
+                PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
             }
             return new PurchaseStatus(true, transactionStatus, _id);
         }
@@ -146,6 +152,16 @@ namespace TradingSystem.Business.Market
         public bool CheckPolicy(IShoppingBasket shoppingBasket)
         {
             return Policy.Check(shoppingBasket);
+        }
+
+        public void SetPolicy(Policy policy)
+        {
+            this.Policy = policy;
+        }
+
+        public Policy GetPolicy()
+        {
+            return Policy;
         }
 
         public Guid AddRule(IRule rule)
@@ -511,7 +527,11 @@ namespace TradingSystem.Business.Market
 
         public IRule GetRuleById(Guid ruleId)
         {
-            return this.Policy.Rules.Where(r => r.GetId().Equals(ruleId)).FirstOrDefault();
+            if (this.Policy.Rule.GetId().Equals(ruleId))
+            {
+                return this.Policy.Rule;
+            }
+            return null;
         }
     }
 }

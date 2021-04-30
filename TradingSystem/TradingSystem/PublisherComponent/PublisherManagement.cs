@@ -44,6 +44,13 @@ namespace TradingSystem.PublisherComponent
         
         }
 
+        public Publisher FindPublisher(String username)
+        {
+            SetIfNotExists(username);
+            var publisher = username_publisher[username];
+            return publisher;
+        }
+
         private void SetIfNotExists(String username)
         {
             if (!username_publisher.Keys.Contains(username))
@@ -62,6 +69,9 @@ namespace TradingSystem.PublisherComponent
         {
             var publisher = username_publisher[username];
             var subscribers = username_subscribers[username];
+            NotificationSubscriber subscriber1 = new NotificationSubscriber(nameof(EventType.RemoveAppointment), _testMode);
+            subscriber1.Subscribe(publisher.Get(EventType.RemoveAppointment));
+            subscribers.Add(subscriber1);
             NotificationSubscriber subscriber2 = new NotificationSubscriber(nameof(EventType.OpenStoreEvent), _testMode);
             subscriber2.Subscribe(publisher.Get(EventType.OpenStoreEvent));
             subscribers.Add(subscriber2);

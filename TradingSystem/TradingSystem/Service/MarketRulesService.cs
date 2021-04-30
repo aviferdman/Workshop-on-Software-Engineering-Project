@@ -32,29 +32,14 @@ namespace TradingSystem.Service
             return marketRules.AddRuleToStore(storeId, ruleContext, ruleType, precent, category, productId, username, valueLessThan, valueGreaterEQThan, d1, d2);
         }
 
-        public Guid AddPolicyAndRule(Guid storeId, Guid ruleId1, Guid ruleId2)
+        public Guid AddDiscountRule(DiscountRuleRelation discountRuleRelation, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId, Guid discountId2 = new Guid(), bool decide = false)
         {
-            return marketRules.AddPolicyAndRule(storeId, ruleId1, ruleId2);
+            return marketRules.AddDiscountRule(discountRuleRelation, storeId, ruleId1, ruleId2, discountId, discountId2, decide);
         }
 
-        public Guid AddPolicyOrRule(Guid storeId, Guid ruleId1, Guid ruleId2)
+        public Guid RemoveDiscount(Guid storeId, Guid discountId)
         {
-            return marketRules.AddPolicyOrRule(storeId, ruleId1, ruleId2);
-        }
-
-        public Guid AddDiscountAndRule(Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
-        {
-            return marketRules.AddDiscountAndRule(storeId, ruleId1, ruleId2, discountId);
-        }
-
-        public Guid AddDiscountOrRule(Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
-        {
-            return marketRules.AddDiscountOrRule(storeId, ruleId1, ruleId2, discountId);
-        }
-
-        public Guid AddXorDiscount(Guid storeId, Guid discountId1, Guid discountId2, bool decide)
-        {
-            return marketRules.AddXorDiscount(storeId, discountId1, discountId2, decide);
+            return marketRules.RemoveDiscount(storeId, discountId);
         }
 
         public Guid RemovePolicyRule(Guid storeId, Guid ruleId)
@@ -62,9 +47,10 @@ namespace TradingSystem.Service
             return marketRules.RemovePolicyRule(storeId, ruleId);
         }
 
-        public Guid RemoveDiscount(Guid storeId, Guid discountId)
+        public void AddPolicyRule(Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(), string username = "",
+            double valueLessThan = double.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
-            return marketRules.RemoveDiscount(storeId, discountId);
+            marketRules.AddPolicyRule(storeId, policyRuleRelation, ruleContext, ruleType, category, productId, username, valueLessThan, valueGreaterEQThan, d1, d2);
         }
     }
 }
