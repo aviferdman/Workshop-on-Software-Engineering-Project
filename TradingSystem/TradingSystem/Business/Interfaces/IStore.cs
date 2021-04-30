@@ -26,7 +26,7 @@ namespace TradingSystem.Business.Market
 
         public Guid AddRule(IRule rule);
 
-        public Guid RemoveRule(IRule rule);
+        public void RemoveRule();
 
         public String AddProduct(Product product, string userID);
 

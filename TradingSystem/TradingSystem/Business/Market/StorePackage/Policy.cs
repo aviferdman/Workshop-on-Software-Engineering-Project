@@ -25,9 +25,9 @@ namespace TradingSystem.Business.Market
             _rule = rule;
         }
         
-        public void RemoveRule(IRule rule)
+        public void RemoveRule()
         {
-            rule = null;
+            _rule = null;
         }
 
         public bool Check(IShoppingBasket shoppingBasket)

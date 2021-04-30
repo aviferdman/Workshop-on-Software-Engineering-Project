@@ -127,11 +127,10 @@ namespace TradingSystem.Business.Market
             return store.RemoveDiscount(discountId);
         }
 
-        public Guid RemovePolicyRule(Guid storeId, Guid ruleId)
+        public void RemovePolicyRule(Guid storeId)
         {
             IStore store = marketStores.GetStoreById(storeId);
-            var rule = store.GetRuleById(ruleId);
-            return store.RemoveRule(rule);
+            store.RemoveRule();
         }
 
         public void AddPolicyRule(Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(), string username = "",

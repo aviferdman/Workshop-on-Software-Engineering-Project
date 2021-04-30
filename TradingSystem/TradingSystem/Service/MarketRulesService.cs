@@ -42,9 +42,9 @@ namespace TradingSystem.Service
             return marketRules.RemoveDiscount(storeId, discountId);
         }
 
-        public Guid RemovePolicyRule(Guid storeId, Guid ruleId)
+        public void RemovePolicyRule(Guid storeId)
         {
-            return marketRules.RemovePolicyRule(storeId, ruleId);
+            marketRules.RemovePolicyRule(storeId);
         }
 
         public void AddPolicyRule(Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(), string username = "",
