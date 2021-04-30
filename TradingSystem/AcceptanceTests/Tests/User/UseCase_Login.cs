@@ -50,6 +50,11 @@ namespace AcceptanceTests.Tests.User
             Assert.AreEqual(true, Bridge.Login(UserInfo));
         }
 
+        public void Success_Assure()
+        {
+            Assert.AreEqual(true, Bridge.AssureLogin(UserInfo));
+        }
+
         [Test]
         public void Failure_PasswordMismatch()
         {

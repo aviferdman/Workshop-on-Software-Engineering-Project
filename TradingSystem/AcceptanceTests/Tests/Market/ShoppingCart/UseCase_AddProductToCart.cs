@@ -96,7 +96,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TearDown]
         public override void Teardown()
         {
-            testLogic.Teardown();
+            testLogic?.Teardown();
             useCase_addProduct?.Teardown();
         }
 
