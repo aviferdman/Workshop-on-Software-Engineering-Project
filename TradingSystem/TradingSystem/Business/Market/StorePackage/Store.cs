@@ -110,14 +110,29 @@ namespace TradingSystem.Business.Market
             //add to history
             else
             {
-                var h = new StoreHistory(transactionStatus);
-                history.Add(h);
-                HistoryManager.Instance.AddUserHistory(h);
-
-                //notify the founder for a new purchase
-                PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+                AddToHistory(transactionStatus);
+                NotifyOwners();
             }
             return new PurchaseStatus(true, transactionStatus, _id);
+        }
+
+        private void AddToHistory(TransactionStatus transactionStatus)
+        {
+            var h = new StoreHistory(transactionStatus);
+            history.Add(h);
+            HistoryManager.Instance.AddUserHistory(h);
+        }
+
+        private void NotifyOwners()
+        {
+            //notify the founder for a new purchase
+            PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+
+            //notify the owners
+            foreach (var owner in owners.Values)
+            {
+                PublisherManagement.Instance.EventNotification(owner.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+            }
         }
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity)
@@ -540,6 +555,11 @@ namespace TradingSystem.Business.Market
                 return this.Policy.Rule;
             }
             return null;
+        }
+
+        public IRule GetDiscountRuleById(Guid ruleId)
+        {
+            return Discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
         }
     }
 }

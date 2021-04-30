@@ -17,11 +17,13 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         private double Calc(IShoppingBasket basket, Guid productId, double percent)
         {
             double discount = 0;
-            foreach (Product p in basket.GetProducts())
+            foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                if (p.Id.Equals(productId))
+                var product = p_q.Key;
+                var quantity = p_q.Value;
+                if (product.Id.Equals(productId))
                 {
-                    discount += p.Quantity * p.Price * percent;
+                    discount += quantity * product.Price * percent;
                 }
             }
             return discount;

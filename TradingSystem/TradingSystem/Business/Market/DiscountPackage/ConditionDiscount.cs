@@ -12,6 +12,10 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         {
             
         }
+        public override IRule GetRule()
+        {
+            return _rule;
+        }
         public void AddRule(IRule rule)
         {
             _rule = rule;

@@ -60,7 +60,7 @@ namespace TradingSystem.Business.Market
             return store.AddDiscount(discount);
         }
         public Guid CreateConditionalDiscount(Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(), string username = "",
-            double valueLessThan = double.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
+            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
             IStore store = marketStores.GetStoreById(storeId);
             var d = CreateCalculator(discountType, precent, category, productId);
@@ -86,8 +86,8 @@ namespace TradingSystem.Business.Market
         public Guid AddDiscountAndRule(Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
         {
             IStore store = marketStores.GetStoreById(storeId);
-            var rule1 = store.GetRuleById(ruleId1);
-            var rule2 = store.GetRuleById(ruleId2);
+            var rule1 = store.GetDiscountRuleById(ruleId1);
+            var rule2 = store.GetDiscountRuleById(ruleId2);
             var andRule = Rule.AddTwoRules(rule1, rule2);
             var discount = (ConditionDiscount)store.GetDiscountById(discountId);
             discount.AddRule(andRule);
@@ -97,8 +97,8 @@ namespace TradingSystem.Business.Market
         public Guid AddDiscountOrRule(Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
         {
             IStore store = marketStores.GetStoreById(storeId);
-            var rule1 = store.GetRuleById(ruleId1);
-            var rule2 = store.GetRuleById(ruleId2);
+            var rule1 = store.GetDiscountRuleById(ruleId1);
+            var rule2 = store.GetDiscountRuleById(ruleId2);
             var andRule = Rule.OrTwoRules(rule1, rule2);
             var discount = (ConditionDiscount)store.GetDiscountById(discountId);
             discount.AddRule(andRule);
@@ -121,7 +121,7 @@ namespace TradingSystem.Business.Market
         }
 
         public void AddPolicyRule(Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(), string username = "",
-            double valueLessThan = double.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
+            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
             var r = CreateRule(ruleContext, ruleType, category, productId, username, valueLessThan, valueGreaterEQThan, d1, d2);
             switch (policyRuleRelation)
@@ -174,7 +174,7 @@ namespace TradingSystem.Business.Market
             store.RemoveRule();
         }
 
-        private Rule CreateRule(RuleContext discountType, RuleType ruleType, string category, Guid productId, string username, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        public Rule CreateRule(RuleContext discountType, RuleType ruleType, string category, Guid productId, string username, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
         {
             Rule r;
             switch (ruleType)

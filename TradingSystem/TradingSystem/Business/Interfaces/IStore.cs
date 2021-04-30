@@ -59,5 +59,6 @@ namespace TradingSystem.Business.Market
         public IRule GetRuleById(Guid ruleId);
 
         public Discount GetDiscountById(Guid discountId);
+        public IRule GetDiscountRuleById(Guid ruleId);
     }
 }
