@@ -229,6 +229,8 @@ namespace TradingSystem.Business.Market
             Appointer a;
             MemberState assignee;
             string ret;
+            if (assigner == null)
+                return "invalid assiner";
             if (managers.ContainsKey(assigner.Username))
                 return "Invalid assigner";
             else if (founder.Username.Equals(assigner.Username))

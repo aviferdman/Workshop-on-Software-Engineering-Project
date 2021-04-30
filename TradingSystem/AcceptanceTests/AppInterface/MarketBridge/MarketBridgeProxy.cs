@@ -129,28 +129,34 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool MakeOwner(string assignee, Guid storeID, string assigner)
         {
-            return RealBridge != null && RealBridge.MakeOwner(assignee, storeID, assigner).Equals("success");
+            return RealBridge != null && RealBridge.MakeOwner(assignee, storeID, assigner);
         }
         public bool MakeManager(string assignee, Guid storeID, string assigner)
         {
-            return RealBridge != null && RealBridge.MakeManager(assignee, storeID, assigner).Equals("success");
+            return RealBridge != null && RealBridge.MakeManager(assignee, storeID, assigner);
         }
         public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
-           return RealBridge != null && RealBridge.RemoveOwner(ownerName, storeID, assignerName).Equals("success");
+           return RealBridge != null && RealBridge.RemoveOwner(ownerName, storeID, assignerName);
         }
         public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
         {
-            return RealBridge != null && RealBridge.DefineManagerPermissions(manager, storeID, assigner, permissions).Equals("success");
+            return RealBridge != null && RealBridge.DefineManagerPermissions(manager, storeID, assigner, permissions);
         }
         public bool RemoveManager(String managerName, Guid storeID, String assignerName)
         {
-            return RealBridge != null && RealBridge.RemoveManager(managerName, storeID, assignerName).Equals("success");
+            return RealBridge != null && RealBridge.RemoveManager(managerName, storeID, assignerName);
         }
 
         public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
         {
             return RealBridge != null && RealBridge.PurchaseShoppingCart(purchaseInfo);
+        }
+
+        public void tearDown()
+        {
+            if(RealBridge != null)
+                RealBridge.tearDown();
         }
 
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)

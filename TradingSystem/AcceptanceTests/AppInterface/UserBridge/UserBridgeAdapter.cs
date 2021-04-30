@@ -124,5 +124,10 @@ namespace AcceptanceTests.AppInterface.UserBridge
         {
             return !string.IsNullOrWhiteSpace(username);
         }
+
+        public void tearDown()
+        {
+            userService.tearDown();
+        }
     }
 }

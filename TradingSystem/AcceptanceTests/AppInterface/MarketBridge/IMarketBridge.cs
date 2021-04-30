@@ -55,7 +55,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         bool RemoveOwner(String ownerName, Guid storeID, String assignerName);
         bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions);
         bool RemoveManager(String managerName, Guid storeID, String assignerName);
-
+        void tearDown();
         PurchaseHistory? GetUserPurchaseHistory();
 
         void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem);

@@ -215,11 +215,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool MakeOwner(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeOwner(assignee, storeID, assigner).Equals("success");
+            return marketStorePermissionsManagementService.MakeOwner(assignee, storeID, assigner).Equals("Success");
         }
         public bool MakeManager(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeManager(assignee, storeID, assigner).Equals("success");
+            return marketStorePermissionsManagementService.MakeManager(assignee, storeID, assigner).Equals("Success");
         }
         public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
@@ -227,7 +227,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         }
         public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
         {
-            return marketStorePermissionsManagementService.DefineManagerPermissions(manager, storeID, assigner, permissions).Equals("success");
+            return marketStorePermissionsManagementService.DefineManagerPermissions(manager, storeID, assigner, permissions).Equals("Success");
         }
         public bool RemoveManager(String managerName, Guid storeID, String assignerName)
         {
@@ -267,6 +267,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 )
             );
             return new PurchaseHistory(records);
+        }
+
+        public void tearDown()
+        {
+            marketGeneralService.tearDown();
         }
     }
 }
