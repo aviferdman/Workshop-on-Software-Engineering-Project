@@ -8,6 +8,7 @@ using Moq;
 
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Payment;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
@@ -124,6 +125,27 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit)
         {
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
+        }
+
+        public bool MakeOwner(string assignee, Guid storeID, string assigner)
+        {
+            return RealBridge != null && RealBridge.MakeOwner(assignee, storeID, assigner).Equals("success");
+        }
+        public bool MakeManager(string assignee, Guid storeID, string assigner)
+        {
+            return RealBridge != null && RealBridge.MakeManager(assignee, storeID, assigner).Equals("success");
+        }
+        public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        {
+           return RealBridge != null && RealBridge.RemoveOwner(ownerName, storeID, assignerName).Equals("success");
+        }
+        public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
+        {
+            return RealBridge != null && RealBridge.DefineManagerPermissions(manager, storeID, assigner, permissions).Equals("success");
+        }
+        public bool RemoveManager(String managerName, Guid storeID, String assignerName)
+        {
+            return RealBridge != null && RealBridge.RemoveManager(managerName, storeID, assignerName).Equals("success");
         }
 
         public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
