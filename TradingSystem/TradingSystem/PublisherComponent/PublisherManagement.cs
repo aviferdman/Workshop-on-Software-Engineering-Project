@@ -85,7 +85,7 @@ namespace TradingSystem.PublisherComponent
 
         public void Subscribe(String username, NotificationSubscriber subscriber, EventType ev){
             var publisher = username_publisher[username];
-            subscriber.Subscribe(publisher.Get(ev));
+            subscriber.Subscribe(publisher);
             username_subscribers[username].Add(subscriber);
         }
 
