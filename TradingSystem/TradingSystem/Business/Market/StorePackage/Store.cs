@@ -249,12 +249,16 @@ namespace TradingSystem.Business.Market
                         if (type.Equals("owner"))
                         {
                             a.AddAppointmentOwner(assignee, this);
+                            PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, ConfigurationManager.AppSettings[assigner.Username + " has appointed you as an owner for store " + name]);
                         }
                         else
                         {
                             a.AddAppointmentManager(assignee, this);
+                            PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, ConfigurationManager.AppSettings[assigner.Username + " has appointed you as a manager for store "+name]);
                         }
+
                         ret = "Success";
+                        
                     }
                     catch { ret = "this member is already assigned as a store owner or manager"; }
                 }
@@ -317,6 +321,8 @@ namespace TradingSystem.Business.Market
                 manager.removePermission(this);
                 managers.TryRemove(managerName, out _);
                 ret = "success";
+                PublisherManagement.Instance.EventNotification(managerName, EventType.RemoveAppointment, ConfigurationManager.AppSettings[assigner + " has revoked your appointment as a manager for store " + name]);
+
             }
 
             return ret;
@@ -354,6 +360,7 @@ namespace TradingSystem.Business.Market
                 ownerToRemove.removePermission(this);
                 owners.TryRemove(ownerName, out _);
                 ret = "success";
+                PublisherManagement.Instance.EventNotification(ownerName, EventType.RemoveAppointment, ConfigurationManager.AppSettings[assigner + " has revoked your appointment as an owner for store " + name]);
             }
 
             return ret;

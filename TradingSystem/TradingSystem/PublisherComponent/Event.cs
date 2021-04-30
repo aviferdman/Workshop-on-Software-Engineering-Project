@@ -8,7 +8,7 @@ namespace TradingSystem.Notifications
     {
         OpenStoreEvent,
         PurchaseEvent,
-        BecomeManagerEvent,
+        AddAppointmentEvent,
         RemoveAppointment
     }
     public class Event

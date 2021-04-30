@@ -78,7 +78,7 @@ namespace TradingSystem.PublisherComponent
             NotificationSubscriber subscriber3 = new NotificationSubscriber(EventType.PurchaseEvent.ToString(), _testMode);
             subscriber3.Subscribe(publisher);
             subscribers.Add(subscriber3);
-            NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.BecomeManagerEvent.ToString(), _testMode);
+            NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.AddAppointmentEvent.ToString(), _testMode);
             subscriber4.Subscribe(publisher);
             subscribers.Add(subscriber4);
         }
