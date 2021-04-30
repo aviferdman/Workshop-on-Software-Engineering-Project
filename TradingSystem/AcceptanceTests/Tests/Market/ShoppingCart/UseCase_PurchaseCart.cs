@@ -95,7 +95,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_addProduct?.Teardown();
             useCase_login?.Teardown();
             MarketBridge.DisableExternalTransactionMocks();
-            base.Setup();
+            base.Teardown();
         }
 
         [TestCase]
