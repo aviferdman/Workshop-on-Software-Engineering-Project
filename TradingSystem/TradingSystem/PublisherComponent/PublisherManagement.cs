@@ -73,6 +73,12 @@ namespace TradingSystem.PublisherComponent
             subscribers.Add(subscriber4);
         }
 
+        public void Subscribe(String username, NotificationSubscriber subscriber, EventType ev){
+            var publisher = username_publisher[username];
+            subscriber.Subscribe(publisher.Get(ev));
+            username_subscribers[username].Add(subscriber);
+        }
+
         public void DeleteAll()
         {
             this.username_publisher = new Dictionary<String, Publisher>();
