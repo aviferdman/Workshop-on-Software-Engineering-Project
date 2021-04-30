@@ -23,6 +23,7 @@ namespace TradingSystem.Business.Market
     }
     public enum PolicyRuleRelation
     {
+        Simple,
         And,
         Or,
         Condition
@@ -51,14 +52,14 @@ namespace TradingSystem.Business.Market
             this.marketStores = MarketStores.Instance;
         }
 
-        public Guid AddSimpleDiscount(Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
+        public Guid CreateSimpleDiscount(Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
         {
             IStore store = marketStores.GetStoreById(storeId);
             var d = CreateCalculator(discountType, precent, category, productId);
             Discount discount = new Discount(d);
             return store.AddDiscount(discount);
         }
-        public Guid AddConditionalDiscount(Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(), string username = "",
+        public Guid CreateConditionalDiscount(Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(), string username = "",
             double valueLessThan = double.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
             IStore store = marketStores.GetStoreById(storeId);
@@ -69,7 +70,7 @@ namespace TradingSystem.Business.Market
             return store.AddDiscount(discount);
         }
 
-        public Guid AddDiscountRule(DiscountRuleRelation discountRuleRelation, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId, Guid discountId2, bool decide)
+        public Guid GenerateConditionalDiscounts(DiscountRuleRelation discountRuleRelation, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId, Guid discountId2, bool decide)
         {
             switch (discountRuleRelation)
             {
@@ -80,14 +81,6 @@ namespace TradingSystem.Business.Market
                 default:
                     return AddDiscountXorRule(storeId, discountId, discountId2, decide);
             }
-        }
-
-        public Guid AddRuleToStore(Guid storeId, RuleContext ruleContext, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(), string username = "",
-            double valueLessThan = double.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
-        {
-            IStore store = marketStores.GetStoreById(storeId);
-            var r = CreateRule(ruleContext, ruleType, category, productId, username, valueLessThan, valueGreaterEQThan, d1, d2);
-            return store.AddRule(r);
         }
 
         public Guid AddDiscountAndRule(Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
@@ -127,49 +120,58 @@ namespace TradingSystem.Business.Market
             return store.RemoveDiscount(discountId);
         }
 
-        public void RemovePolicyRule(Guid storeId)
-        {
-            IStore store = marketStores.GetStoreById(storeId);
-            store.RemoveRule();
-        }
-
         public void AddPolicyRule(Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(), string username = "",
             double valueLessThan = double.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
             var r = CreateRule(ruleContext, ruleType, category, productId, username, valueLessThan, valueGreaterEQThan, d1, d2);
             switch (policyRuleRelation)
             {
+                case PolicyRuleRelation.Simple:
+                    CreateRuleToStore(storeId, r);
+                    break;
                 case PolicyRuleRelation.And:
-                    AddPolicyAndRule(storeId, r);
+                    GeneratePolicyAndRule(storeId, r);
                     break;
                 case PolicyRuleRelation.Or:
-                    AddPolicyOrRule(storeId, r);
+                    GeneratePolicyOrRule(storeId, r);
                     break;
                 default:
-                    AddPolicyConditionRule(storeId, r);
+                    GeneratePolicyConditionRule(storeId, r);
                     break;
             }
         }
 
-        public void AddPolicyAndRule(Guid storeId, Rule rule)
+        public Guid CreateRuleToStore(Guid storeId, Rule rule)
+        {
+            IStore store = marketStores.GetStoreById(storeId);
+            return store.AddRule(rule);
+        }
+
+        public void GeneratePolicyAndRule(Guid storeId, Rule rule)
         {
             IStore store = marketStores.GetStoreById(storeId);
             var newPolicy = store.GetPolicy().And(rule);
             store.SetPolicy(newPolicy);
         }
 
-        public void AddPolicyOrRule(Guid storeId, Rule rule)
+        public void GeneratePolicyOrRule(Guid storeId, Rule rule)
         {
             IStore store = marketStores.GetStoreById(storeId);
             var newPolicy = store.GetPolicy().Or(rule);
             store.SetPolicy(newPolicy);
         }
 
-        public void AddPolicyConditionRule(Guid storeId, Rule rule)
+        public void GeneratePolicyConditionRule(Guid storeId, Rule rule)
         {
             IStore store = marketStores.GetStoreById(storeId);
             var newPolicy = store.GetPolicy().Condition(rule);
             store.SetPolicy(newPolicy);
+        }
+
+        public void RemovePolicyRule(Guid storeId)
+        {
+            IStore store = marketStores.GetStoreById(storeId);
+            store.RemoveRule();
         }
 
         private Rule CreateRule(RuleContext discountType, RuleType ruleType, string category, Guid productId, string username, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
