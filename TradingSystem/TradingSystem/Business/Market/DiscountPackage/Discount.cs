@@ -25,5 +25,9 @@ namespace TradingSystem.Business.Market
         {
             return _calc.CalcDiscount(shoppingBasket);
         }
+        public virtual IRule GetRule()
+        {
+            return null;
+        }
     }
 }
