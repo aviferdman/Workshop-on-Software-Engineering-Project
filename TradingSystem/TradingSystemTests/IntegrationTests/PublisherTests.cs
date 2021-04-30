@@ -81,10 +81,10 @@ namespace TradingSystemTests.IntegrationTests
             marketUsers.AddProductToCart(user.Username, p.Id, 5);
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(founder.Username, EventType.PurchaseEvent);
             Assert.AreEqual(0, subscriber.Messages.Count);
-            Assert.AreEqual(0, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting[EventType.PurchaseEvent].Count);
+            Assert.AreEqual(0, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting.Count);
             marketUsers.PurchaseShoppingCart(user.Username, new BankAccount(1, 1), "054444444", new Address("1", "1", "1", "1"));
             Assert.AreEqual(0, subscriber.Messages.Count);
-            Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting[EventType.PurchaseEvent].Count);
+            Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting.Count);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
@@ -113,10 +113,10 @@ namespace TradingSystemTests.IntegrationTests
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(user.Username, EventType.OpenStoreEvent);
             Assert.AreEqual(0, subscriber.Messages.Count);
-            Assert.AreEqual(0, PublisherManagement.Instance.FindPublisher(user.Username).Waiting[EventType.OpenStoreEvent].Count);
+            Assert.AreEqual(0, PublisherManagement.Instance.FindPublisher(user.Username).Waiting.Count);
             marketStores.CreateStore("TestStore", user.Username, new BankAccount(1, 1), new Address("1", "1", "1", "1"));
             Assert.AreEqual(0, subscriber.Messages.Count);
-            Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(user.Username).Waiting[EventType.OpenStoreEvent].Count);
+            Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(user.Username).Waiting.Count);
         }
 
 

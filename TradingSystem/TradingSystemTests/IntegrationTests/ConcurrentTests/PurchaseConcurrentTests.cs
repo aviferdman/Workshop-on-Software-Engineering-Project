@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
 
 
@@ -41,9 +42,12 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             testUserBankAccount = new BankAccount(1, 1);
             testStoreBankAccount = new BankAccount(2, 2);
             testSecondUserBankAccount = new BankAccount(3, 3);
-            testUser = new User("testUser");
-            secondTestUser = new User("secondTestUser");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            testUser = new User("testUser");
+            MemberState m = new MemberState(testUser.Username, testUser.UserHistory);
+            Founder f = Founder.makeFounder(m, testStore);
+            secondTestUser = new User("secondTestUser");
+            testStore.Founder = f;
         }
 
         [TestMethod]

@@ -4,21 +4,23 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Notifications;
+using TradingSystem.Business.UserManagement;
 using TradingSystem.Communication;
 using TradingSystem.Notifications;
 
 namespace TradingSystemTests.UnitTests
 {
     [TestClass]
-    public class TypedPublisherTests
+    public class PublisherTests
     {
-        private TypedPublisher publisher;
+        private Publisher publisher;
         private NotificationSubscriber subscriber;
         private User user;
 
-        public TypedPublisherTests()
+        public PublisherTests()
         {
-            this.publisher = new TypedPublisher("PublisherTest");
+            this.publisher = new Publisher("UserTests");
             this.user = new User("UserTests");
             this.subscriber = new NotificationSubscriber(user.Username, true);
             Mock<ICommunicate> communicateMock = new Mock<ICommunicate>();
@@ -51,16 +53,20 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckEventNotification()
         {
+            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            dataUser.IsLoggedin = true;
+            UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
+            UserManagement.Instance.DataUsers[user.Username] = dataUser;
             Assert.AreEqual(0, subscriber.Messages.Count);
             subscriber.Subscribe(publisher);
-            publisher.EventNotification("Test Message");
+            publisher.EventNotification(EventType.OpenStoreEvent, "Test Message");
             Assert.AreEqual(1, subscriber.Messages.Count);
         }
 
         [TestCleanup]
         public void DeleteAll()
         {
-            this.publisher = new TypedPublisher("PublisherTest");
+            this.publisher = new Publisher("UserTests");
         }
     }
 }
