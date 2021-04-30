@@ -73,8 +73,9 @@ namespace TradingSystem.Business.Notifications
                 {
                     observer.OnNext(e);
                 }
-                Waiting.Clear();
+               
             }
+            Waiting.Clear();
         }
     }
 }
