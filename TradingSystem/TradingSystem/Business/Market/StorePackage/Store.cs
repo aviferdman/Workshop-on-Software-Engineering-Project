@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,8 @@ using TradingSystem.Business.Market.Histories;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
@@ -110,6 +113,9 @@ namespace TradingSystem.Business.Market
                 var h = new StoreHistory(transactionStatus);
                 history.Add(h);
                 HistoryManager.Instance.AddUserHistory(h);
+
+                //notify the founder for a new purchase
+                PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
             }
             return new PurchaseStatus(true, transactionStatus, _id);
         }
@@ -148,14 +154,26 @@ namespace TradingSystem.Business.Market
             return Policy.Check(shoppingBasket);
         }
 
-        public void AddRule(IRule rule)
+        public void SetPolicy(Policy policy)
         {
-            _policy.AddRule(rule);
+            this.Policy = policy;
         }
 
-        public void RemoveRule(IRule rule)
+        public Policy GetPolicy()
+        {
+            return Policy;
+        }
+
+        public Guid AddRule(IRule rule)
+        {
+            _policy.AddRule(rule);
+            return rule.GetId();
+        }
+
+        public Guid RemoveRule(IRule rule)
         {
             _policy.RemoveRule(rule);
+            return rule.GetId();
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -404,18 +422,20 @@ namespace TradingSystem.Business.Market
         }
 
 
-        public void AddDiscount(Discount discount)
+        public Guid AddDiscount(Discount discount)
         {
             Discounts.Add(discount);
+            return discount.Id;
         }
 
-        public void RemoveDiscount(Guid discountId)
+        public Guid RemoveDiscount(Guid discountId)
         {
             Discount d = GetDiscountById(discountId);
             if (d != null)
             {    //remove old discount if exists
                 Discounts.Remove(d);
             }
+            return discountId;
         }
 
 
@@ -507,7 +527,11 @@ namespace TradingSystem.Business.Market
 
         public IRule GetRuleById(Guid ruleId)
         {
-            return this.Policy.Rules.Where(r => r.GetId().Equals(ruleId)).FirstOrDefault();
+            if (this.Policy.Rule.GetId().Equals(ruleId))
+            {
+                return this.Policy.Rule;
+            }
+            return null;
         }
     }
 }

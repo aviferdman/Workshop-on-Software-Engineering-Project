@@ -12,6 +12,8 @@ namespace TradingSystem.Business.Notifications
         private IDictionary<EventType, IList<string>> waiting;
         private String _username;
 
+        public IDictionary<EventType, IList<string>> Waiting { get => waiting; set => waiting = value; }
+
         public Publisher(String username)
         {
             this._username = username;
@@ -19,13 +21,15 @@ namespace TradingSystem.Business.Notifications
             {
                 {EventType.BecomeManagerEvent, new TypedPublisher(nameof(EventType.BecomeManagerEvent))},
                 {EventType.OpenStoreEvent, new TypedPublisher(nameof(EventType.OpenStoreEvent))},
-                {EventType.PurchaseEvent, new TypedPublisher(nameof(EventType.PurchaseEvent))}
+                {EventType.PurchaseEvent, new TypedPublisher(nameof(EventType.PurchaseEvent))},
+                {EventType.RemoveAppointment, new TypedPublisher(nameof(EventType.RemoveAppointment))}
             };
-            waiting = new Dictionary<EventType, IList<string>>()
+            Waiting = new Dictionary<EventType, IList<string>>()
             {
                 {EventType.BecomeManagerEvent, new List<string>()},
                 {EventType.OpenStoreEvent, new List<string>()},
-                {EventType.PurchaseEvent, new List<string>()}
+                {EventType.PurchaseEvent, new List<string>()},
+                {EventType.RemoveAppointment, new List<string>()}
             };
         }
 
@@ -38,19 +42,19 @@ namespace TradingSystem.Business.Notifications
             }
             else
             {
-                waiting[eventType].Add(description);
+                Waiting[eventType].Add(description);
             }
         }
 
         public void BecomeLoggedIn()
         {
-            foreach(EventType key in waiting.Keys)
+            foreach(EventType key in Waiting.Keys)
             {
-                foreach(string description in waiting[key])
+                foreach(string description in Waiting[key])
                 {
                     publishers[key].EventNotification(description);
                 }
-                waiting[key].Clear();
+                Waiting[key].Clear();
             }
         }
 

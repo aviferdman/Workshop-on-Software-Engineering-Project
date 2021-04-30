@@ -208,10 +208,6 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(PurchaseShoppingCart));
             User user = GetUserByUserName(username);
             Result<bool> res = user.PurchaseShoppingCart(bank, phone, address);
-            if (!res.IsErr)
-            {
-                PublisherManagement.Instance.EventNotification(username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
-            }
             return res;
         }
 

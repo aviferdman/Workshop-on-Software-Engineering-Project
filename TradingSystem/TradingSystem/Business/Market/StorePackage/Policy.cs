@@ -6,54 +6,51 @@ namespace TradingSystem.Business.Market
 {
     public class Policy
     {
-        private ICollection<IRule> _rules;
+        private IRule _rule;
+
+        public IRule Rule { get => _rule; set => _rule = value; }
 
         public Policy()
         {
-            this._rules = new HashSet<IRule>();
+            
         }
 
-        public Policy(ICollection<IRule> rules)
+        public Policy(IRule rule)
         {
-            this._rules = rules;
+            this._rule = rule;
         }
-
-        public ICollection<IRule> Rules { get => _rules; set => _rules = value; }
 
         public void AddRule(IRule rule)
         {
-            _rules.Add(rule);
+            _rule = rule;
         }
         
         public void RemoveRule(IRule rule)
         {
-            _rules.Remove(rule);
+            rule = null;
         }
 
         public bool Check(IShoppingBasket shoppingBasket)
         {
-            bool isLegal = true;
-            foreach (IRule rule in _rules)
-            {
-                isLegal = isLegal && rule.Check(shoppingBasket);
-            }
-            return isLegal;
+            return _rule == null || _rule.Check(shoppingBasket);
         }
 
-        public Policy And(Policy additionalPolicy)
+        public Policy And(IRule additionalPolicy)
         {
-            ICollection<IRule> andRules = new HashSet<IRule>();
             IRule and = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) && additionalPolicy.Check(shoppingBasket)));
-            andRules.Add(and);
-            return new Policy(andRules);
+            return new Policy(and);
         }
 
-        public Policy Or(Policy orPolicy)
+        public Policy Or(IRule orPolicy)
         {
-            ICollection<IRule> orRules = new HashSet<IRule>();
             IRule or = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) || orPolicy.Check(shoppingBasket)));
-            orRules.Add(or);
-            return new Policy(orRules);
+            return new Policy(or);
+        }
+
+        public Policy Condition(IRule orPolicy)
+        {
+            IRule condition = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) ? orPolicy.Check(shoppingBasket) : true));
+            return new Policy(condition);
         }
     }
 }

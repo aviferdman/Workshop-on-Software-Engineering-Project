@@ -20,9 +20,13 @@ namespace TradingSystem.Business.Market
 
         public bool CheckPolicy(IShoppingBasket shoppingBasket);
 
-        public void AddRule(IRule rule);
+        public void SetPolicy(Policy policy);
 
-        public void RemoveRule(IRule rule);
+        public Policy GetPolicy();
+
+        public Guid AddRule(IRule rule);
+
+        public Guid RemoveRule(IRule rule);
 
         public String AddProduct(Product product, string userID);
 
@@ -36,9 +40,9 @@ namespace TradingSystem.Business.Market
 
         public void RemoveProduct(Product product);
 
-        public void AddDiscount(Discount discount);
+        public Guid AddDiscount(Discount discount);
 
-        public void RemoveDiscount(Guid discountId);
+        public Guid RemoveDiscount(Guid discountId);
 
         public ICollection<IHistory> GetStoreHistory(string username);
 
