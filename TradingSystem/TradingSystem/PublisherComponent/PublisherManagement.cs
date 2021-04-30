@@ -69,17 +69,17 @@ namespace TradingSystem.PublisherComponent
         {
             var publisher = username_publisher[username];
             var subscribers = username_subscribers[username];
-            NotificationSubscriber subscriber1 = new NotificationSubscriber(nameof(EventType.RemoveAppointment), _testMode);
-            subscriber1.Subscribe(publisher.Get(EventType.RemoveAppointment));
+            NotificationSubscriber subscriber1 = new NotificationSubscriber(EventType.RemoveAppointment.ToString(), _testMode);
+            subscriber1.Subscribe(publisher);
             subscribers.Add(subscriber1);
-            NotificationSubscriber subscriber2 = new NotificationSubscriber(nameof(EventType.OpenStoreEvent), _testMode);
-            subscriber2.Subscribe(publisher.Get(EventType.OpenStoreEvent));
+            NotificationSubscriber subscriber2 = new NotificationSubscriber(EventType.OpenStoreEvent.ToString(), _testMode);
+            subscriber2.Subscribe(publisher);
             subscribers.Add(subscriber2);
-            NotificationSubscriber subscriber3 = new NotificationSubscriber(nameof(EventType.PurchaseEvent), _testMode);
-            subscriber3.Subscribe(publisher.Get(EventType.PurchaseEvent));
+            NotificationSubscriber subscriber3 = new NotificationSubscriber(EventType.PurchaseEvent.ToString(), _testMode);
+            subscriber3.Subscribe(publisher);
             subscribers.Add(subscriber3);
-            NotificationSubscriber subscriber4 = new NotificationSubscriber(nameof(EventType.BecomeManagerEvent), _testMode);
-            subscriber4.Subscribe(publisher.Get(EventType.BecomeManagerEvent));
+            NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.BecomeManagerEvent.ToString(), _testMode);
+            subscriber4.Subscribe(publisher);
             subscribers.Add(subscriber4);
         }
 

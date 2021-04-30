@@ -6,61 +6,75 @@ using TradingSystem.Service;
 
 namespace TradingSystem.Business.Notifications
 {
-    public class Publisher
+    public class Publisher : IObservable<Event>
     {
-        private IDictionary<EventType, TypedPublisher> publishers;
-        private IDictionary<EventType, IList<string>> waiting;
-        private String _username;
+        public List<IObserver<Event>> Observers { get => _observers; set => _observers = value; }
+        public IList<Event> Waiting { get => waiting; set => waiting = value; }
 
-        public IDictionary<EventType, IList<string>> Waiting { get => waiting; set => waiting = value; }
+        private IList<Event> waiting;
+        private String _username;
+        // Maintain a list of observers
+        private List<IObserver<Event>> _observers;
 
         public Publisher(String username)
         {
             this._username = username;
-            publishers = new Dictionary<EventType, TypedPublisher>()
+            Observers = new List<IObserver<Event>>();
+            Waiting = new List<Event>();
+        }
+        private class Unsubscriber : IDisposable
+        {
+
+            private List<IObserver<Event>> _observers;
+            private IObserver<Event> _observer;
+
+            public Unsubscriber(List<IObserver<Event>> observers,
+                                IObserver<Event> observer)
             {
-                {EventType.BecomeManagerEvent, new TypedPublisher(nameof(EventType.BecomeManagerEvent))},
-                {EventType.OpenStoreEvent, new TypedPublisher(nameof(EventType.OpenStoreEvent))},
-                {EventType.PurchaseEvent, new TypedPublisher(nameof(EventType.PurchaseEvent))},
-                {EventType.RemoveAppointment, new TypedPublisher(nameof(EventType.RemoveAppointment))}
-            };
-            Waiting = new Dictionary<EventType, IList<string>>()
+                this._observers = observers;
+                this._observer = observer;
+            }
+
+            public void Dispose()
             {
-                {EventType.BecomeManagerEvent, new List<string>()},
-                {EventType.OpenStoreEvent, new List<string>()},
-                {EventType.PurchaseEvent, new List<string>()},
-                {EventType.RemoveAppointment, new List<string>()}
-            };
+                if (!(_observer == null)) _observers.Remove(_observer);
+            }
         }
 
+        // Define Subscribe method
+        public IDisposable Subscribe(IObserver<Event> observer)
+        {
+            if (!Observers.Contains(observer))
+                Observers.Add(observer);
+            return new Unsubscriber(Observers, observer);
+        }
         // Notify observers when event occurs
         public void EventNotification(EventType eventType, string description)
         {
             if (UserService.Instance.isLoggedIn(_username))
             {
-                publishers[eventType].EventNotification(description);
+                foreach (var observer in Observers)
+                {
+                    observer.OnNext(new Event(eventType.ToString(), description,
+                                    DateTime.Now));
+                }
             }
             else
             {
-                Waiting[eventType].Add(description);
+                Waiting.Add(new Event(eventType.ToString(), description, DateTime.Now));
             }
         }
 
         public void BecomeLoggedIn()
         {
-            foreach(EventType key in Waiting.Keys)
+            foreach(var e in Waiting)
             {
-                foreach(string description in Waiting[key])
+                foreach (var observer in Observers)
                 {
-                    publishers[key].EventNotification(description);
+                    observer.OnNext(e);
                 }
-                Waiting[key].Clear();
+                Waiting.Clear();
             }
-        }
-
-        public TypedPublisher Get(EventType eventType)
-        {
-            return publishers[eventType];
         }
     }
 }
