@@ -90,6 +90,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             {
                 bool val1 = false;
                 bool val2 = false;
+                oneProduct.Quantity = 1;
                 testStore.UpdateProduct(oneProduct);
                 testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
                 secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
