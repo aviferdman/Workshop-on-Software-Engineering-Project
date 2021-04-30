@@ -7,7 +7,8 @@ namespace AcceptanceTests.Tests.Market
 {
     public class MarketTestBase
     {
-        public static readonly UserInfo User_Buyer = SharedTestsData.User_Buyer;
+        public static readonly BuyerUserInfo User_Buyer = SharedTestsData.User_Buyer;
+        public static readonly BuyerUserInfo User_Buyer2 = SharedTestsData.User_Buyer2;
         public static readonly UserInfo User_ShopOwner1 = SharedTestsData.User_ShopOwner1;
         public static readonly UserInfo User_ShopOwner2 = SharedTestsData.User_ShopOwner2;
 
