@@ -7,15 +7,17 @@ namespace AcceptanceTests.AppInterface.Data
 {
     class ATSubscriber : NotificationSubscriber
     {
-        List<Event> eventsReceived;
+        Queue<Event> eventsReceived;
         public ATSubscriber(string _subscriberName, bool testMode = false) : base(_subscriberName, testMode)
         {
-            eventsReceived = new List<Event>();
+            eventsReceived = new Queue<Event>();
         }
+
+        public Queue<Event> EventsReceived { get => eventsReceived; set => eventsReceived = value; }
 
         public override void OnNext(Event ev)
         {
-            eventsReceived.Add(ev);
+            eventsReceived.Enqueue(ev);
         }
     }
 }
