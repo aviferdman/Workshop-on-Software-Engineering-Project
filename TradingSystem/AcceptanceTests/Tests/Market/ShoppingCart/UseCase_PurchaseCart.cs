@@ -84,16 +84,18 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public BuyerUserInfo BuyerUser2 { get; }
         public BuyerUserInfo CompetitorUser { get; }
 
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             useCase_addProductOther?.Teardown();
             useCase_addProduct?.Teardown();
             useCase_login?.Teardown();
             MarketBridge.DisableExternalTransactionMocks();
+            base.Setup();
         }
 
         [TestCase]

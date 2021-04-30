@@ -3,6 +3,8 @@ using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
 using AcceptanceTests.AppInterface.UserBridge;
 
+using NUnit.Framework;
+
 namespace AcceptanceTests.Tests.Market
 {
     public class MarketTestBase
@@ -21,6 +23,12 @@ namespace AcceptanceTests.Tests.Market
         {
             SystemContext = systemContext;
         }
+
+        [SetUp]
+        public virtual void Setup() { }
+
+        [TearDown]
+        public virtual void Teardown() { }
 
         protected IMarketBridge MarketBridge => SystemContext.MarketBridge;
         protected IUserBridge UserBridge => SystemContext.UserBridge;

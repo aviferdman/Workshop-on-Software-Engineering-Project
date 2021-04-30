@@ -2,8 +2,6 @@
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.Tests.User;
 
-using NUnit.Framework;
-
 namespace AcceptanceTests.Tests.Market
 {
     public class MarketMemberTestBase : MarketTestBase
@@ -15,12 +13,6 @@ namespace AcceptanceTests.Tests.Market
         {
             UserInfo = userInfo;
         }
-
-        [SetUp]
-        public virtual void Setup() { }
-
-        [TearDown]
-        public virtual void Teardown() { }
 
         protected UseCase_Login Login()
         {
