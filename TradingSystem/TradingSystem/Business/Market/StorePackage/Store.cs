@@ -110,14 +110,29 @@ namespace TradingSystem.Business.Market
             //add to history
             else
             {
-                var h = new StoreHistory(transactionStatus);
-                history.Add(h);
-                HistoryManager.Instance.AddUserHistory(h);
-
-                //notify the founder for a new purchase
-                PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+                AddToHistory(transactionStatus);
+                NotifyOwners();
             }
             return new PurchaseStatus(true, transactionStatus, _id);
+        }
+
+        private void AddToHistory(TransactionStatus transactionStatus)
+        {
+            var h = new StoreHistory(transactionStatus);
+            history.Add(h);
+            HistoryManager.Instance.AddUserHistory(h);
+        }
+
+        private void NotifyOwners()
+        {
+            //notify the founder for a new purchase
+            PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+
+            //notify the owners
+            foreach (var owner in owners.Values)
+            {
+                PublisherManagement.Instance.EventNotification(owner.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+            }
         }
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity)
@@ -170,10 +185,9 @@ namespace TradingSystem.Business.Market
             return rule.GetId();
         }
 
-        public Guid RemoveRule(IRule rule)
+        public void RemoveRule()
         {
-            _policy.RemoveRule(rule);
-            return rule.GetId();
+            _policy.RemoveRule();
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -230,6 +244,8 @@ namespace TradingSystem.Business.Market
             Appointer a;
             MemberState assignee;
             string ret;
+            if (assigner == null)
+                return "invalid assiner";
             if (managers.ContainsKey(assigner.Username))
                 return "Invalid assigner";
             else if (founder.Username.Equals(assigner.Username))
@@ -249,12 +265,12 @@ namespace TradingSystem.Business.Market
                         if (type.Equals("owner"))
                         {
                             a.AddAppointmentOwner(assignee, this);
-                            PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, ConfigurationManager.AppSettings[assigner.Username + " has appointed you as an owner for store " + name]);
+                            PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as an owner for store " + name);
                         }
                         else
                         {
                             a.AddAppointmentManager(assignee, this);
-                            PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, ConfigurationManager.AppSettings[assigner.Username + " has appointed you as a manager for store "+name]);
+                            PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as a manager for store "+name);
                         }
 
                         ret = "Success";
@@ -321,7 +337,7 @@ namespace TradingSystem.Business.Market
                 manager.removePermission(this);
                 managers.TryRemove(managerName, out _);
                 ret = "success";
-                PublisherManagement.Instance.EventNotification(managerName, EventType.RemoveAppointment, ConfigurationManager.AppSettings[assigner + " has revoked your appointment as a manager for store " + name]);
+                PublisherManagement.Instance.EventNotification(managerName, EventType.RemoveAppointment, assigner + " has revoked your appointment as a manager for store " + name);
 
             }
 
@@ -360,7 +376,7 @@ namespace TradingSystem.Business.Market
                 ownerToRemove.removePermission(this);
                 owners.TryRemove(ownerName, out _);
                 ret = "success";
-                PublisherManagement.Instance.EventNotification(ownerName, EventType.RemoveAppointment, ConfigurationManager.AppSettings[assigner + " has revoked your appointment as an owner for store " + name]);
+                PublisherManagement.Instance.EventNotification(ownerName, EventType.RemoveAppointment, assigner + " has revoked your appointment as an owner for store " + name);
             }
 
             return ret;
@@ -539,6 +555,11 @@ namespace TradingSystem.Business.Market
                 return this.Policy.Rule;
             }
             return null;
+        }
+
+        public IRule GetDiscountRuleById(Guid ruleId)
+        {
+            return Discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
         }
     }
 }

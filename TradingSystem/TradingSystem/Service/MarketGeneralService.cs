@@ -24,6 +24,11 @@ namespace TradingSystem.Service
 
         public static MarketGeneralService Instance => instanceLazy.Value;
 
+        public void tearDown()
+        {
+            marketStores.tearDown();
+            marketUsers.tearDown();
+        }
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode = false)
         {
             marketStores.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);

@@ -7,11 +7,42 @@ namespace AcceptanceTests
     /// </summary>
     public static class SharedTestsData
     {
-        public static readonly UserInfo User_Buyer = new UserInfo
+        public static readonly BuyerUserInfo User_Other = new BuyerUserInfo
+        (
+            "user123",
+            "mypassword1",
+            "0539876543",
+            new BankAccount(branch: 1, accountNumber: 9),
+            new Address
+            {
+                State = "Israel",
+                City = "Ramat Gan",
+                Street = "Bialik",
+                ApartmentNum = "54",
+            }
+        );
+
+        public static readonly BuyerUserInfo User_Buyer = new BuyerUserInfo
         (
             "buyer78",
             "buyer_pass78",
             "0500000000",
+            new BankAccount(branch: 3, accountNumber: 10),
+            new Address
+            {
+                State = "Israel",
+                City = "Tel-Aviv",
+                Street = "Rot Shield",
+                ApartmentNum = "5d",
+            }
+        );
+
+        public static readonly BuyerUserInfo User_Buyer2 = new BuyerUserInfo
+        (
+            "buyer78",
+            "buyer_pass78",
+            "0500000000",
+            new BankAccount(branch: 6, accountNumber: 7),
             new Address
             {
                 State = "Israel",
@@ -46,20 +77,6 @@ namespace AcceptanceTests
                 City = "forsenGa",
                 Street = "Kappa",
                 ApartmentNum = "123"
-            }
-        );
-
-        public static readonly UserInfo User_Other = new UserInfo
-        (
-            "user123",
-            "mypassword1",
-            "0539876543",
-            new Address
-            {
-                State = "Israel",
-                City = "Ramat Gan",
-                Street = "Bialik",
-                ApartmentNum = "54",
             }
         );
 

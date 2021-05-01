@@ -40,7 +40,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
         /// <param name="loginInfo">The info to login with</param>
         /// <returns>Whether logging-in was successful</returns>
         bool AssureLogin(UserInfo loginInfo);
-
+        void tearDown();
         bool Logout();
     }
 }

@@ -3,11 +3,14 @@ using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
 using AcceptanceTests.AppInterface.UserBridge;
 
+using NUnit.Framework;
+
 namespace AcceptanceTests.Tests.Market
 {
     public class MarketTestBase
     {
-        public static readonly UserInfo User_Buyer = SharedTestsData.User_Buyer;
+        public static readonly BuyerUserInfo User_Buyer = SharedTestsData.User_Buyer;
+        public static readonly BuyerUserInfo User_Buyer2 = SharedTestsData.User_Buyer2;
         public static readonly UserInfo User_ShopOwner1 = SharedTestsData.User_ShopOwner1;
         public static readonly UserInfo User_ShopOwner2 = SharedTestsData.User_ShopOwner2;
 
@@ -20,6 +23,12 @@ namespace AcceptanceTests.Tests.Market
         {
             SystemContext = systemContext;
         }
+
+        [SetUp]
+        public virtual void Setup() { }
+
+        [TearDown]
+        public virtual void Teardown() { }
 
         protected IMarketBridge MarketBridge => SystemContext.MarketBridge;
         protected IUserBridge UserBridge => SystemContext.UserBridge;

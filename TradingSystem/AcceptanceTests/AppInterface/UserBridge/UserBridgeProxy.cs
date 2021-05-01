@@ -104,5 +104,13 @@ namespace AcceptanceTests.AppInterface.UserBridge
             }
             return success;
         }
+
+        public void tearDown()
+        {
+            if (RealBridge == null)
+            {
+                RealBridge.tearDown();
+            }
+        }
     }
 }

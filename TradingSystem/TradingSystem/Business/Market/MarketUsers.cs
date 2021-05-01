@@ -240,6 +240,24 @@ namespace TradingSystem.Business.Market
             return u;
         }
 
+        public User GetMemberByUserName(string username)
+        {
+            User u = null;
+            MemberState m;
+            if (!activeUsers.TryGetValue(username, out u))
+            {
+                if (memberStates.TryGetValue(username, out m))
+                {
+                    u = new User(username);
+                    u.ChangeState(m);
+
+                }
+                else
+                    return null;
+            }
+            return u;
+        }
+
 
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53

@@ -23,7 +23,7 @@ namespace TradingSystem.Business.Market.RulesPackage
             return UserManagement.UserManagement.Instance.GetUserAge(username) < ageLessThan;
         }
 
-        public Rule CreateProductWeightRule(Guid productId, double weightLessThan = Double.MaxValue, double weightGreaterEQThan = 0)
+        public Rule CreateProductWeightRule(Guid productId, double weightLessThan = int.MaxValue, double weightGreaterEQThan = 0)
         {
             return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
                 ProductWeightLessThan(basket, productId, weightLessThan) && !ProductWeightLessThan(basket, productId, weightGreaterEQThan)
@@ -33,11 +33,13 @@ namespace TradingSystem.Business.Market.RulesPackage
         private bool ProductWeightLessThan(IShoppingBasket basket, Guid productId, double quantityLessThan)
         {
             double counter = 0;
-            foreach (Product p in basket.GetProducts())
+            foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                if (p.Id.Equals(productId))
+                var product = p_q.Key;
+                var quantity = p_q.Value;
+                if (product.Id.Equals(productId))
                 {
-                    counter += p.Weight;
+                    counter += product.Weight * quantity;
                 }
             }
             return counter < quantityLessThan;
@@ -52,11 +54,13 @@ namespace TradingSystem.Business.Market.RulesPackage
         private bool ProductLessThan(IShoppingBasket basket, Guid productId, int quantityLessThan)
         {
             int counter = 0;
-            foreach (Product p in basket.GetProducts())
+            foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                if (p.Id.Equals(productId))
+                var product = p_q.Key;
+                var quantity = p_q.Value;
+                if (product.Id.Equals(productId))
                 {
-                    counter += p.Quantity;
+                    counter += quantity;
                 }
             }
             return counter < quantityLessThan;
@@ -72,16 +76,18 @@ namespace TradingSystem.Business.Market.RulesPackage
         private bool CategoryLessThan(IShoppingBasket basket, string category, int quantityLessThan)
         {
             int counter = 0;
-            foreach (Product p in basket.GetProducts())
+            foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                if (p.Category.Equals(category))
+                var product = p_q.Key;
+                var quantity = p_q.Value;
+                if (product.Category.Equals(category))
                 {
-                    counter += p.Quantity;
+                    counter += quantity;
                 }
             }
             return counter < quantityLessThan;
         }
-        public Rule CreateStorePriceRule(double priceLessThan = Double.MaxValue, double priceGreaterEQThan = 0)
+        public Rule CreateStorePriceRule(double priceLessThan = int.MaxValue, double priceGreaterEQThan = 0)
         {
             return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
                 StorePriceLessThan(basket, priceLessThan) && !StorePriceLessThan(basket, priceGreaterEQThan)
@@ -91,9 +97,11 @@ namespace TradingSystem.Business.Market.RulesPackage
         private bool StorePriceLessThan(IShoppingBasket basket, double priceLessThan)
         {
             double counter = 0;
-            foreach (Product p in basket.GetProducts())
+            foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                counter += p.Price;
+                var product = p_q.Key;
+                var quantity = p_q.Value;
+                counter += product.Price * quantity;
             }
             return counter < priceLessThan;
         }
@@ -107,9 +115,11 @@ namespace TradingSystem.Business.Market.RulesPackage
         private bool StoreLessThan(IShoppingBasket basket, int quantityLessThan)
         {
             int counter = 0;
-            foreach (Product p in basket.GetProducts())
+            foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                counter += p.Quantity;
+                var product = p_q.Key;
+                var quantity = p_q.Value;
+                counter += quantity;
             }
             return counter < quantityLessThan;
         }

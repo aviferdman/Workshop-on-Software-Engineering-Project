@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using AcceptanceTests.AppInterface.Data;
 
@@ -6,6 +7,7 @@ using Moq;
 
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Payment;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
@@ -48,7 +50,12 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         bool EditProductInUserCart(ProductInCart product);
         bool RemoveProductFromUserCart(ProductId productId);
         bool EditUserCart(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductId> productsRemove, IEnumerable<ProductInCart> productsEdit);
-
+        bool MakeOwner(string assignee, Guid storeID, string assigner);
+        bool MakeManager(string assignee, Guid storeID, string assigner);
+        bool RemoveOwner(String ownerName, Guid storeID, String assignerName);
+        bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions);
+        bool RemoveManager(String managerName, Guid storeID, String assignerName);
+        void tearDown();
         PurchaseHistory? GetUserPurchaseHistory();
 
         void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem);

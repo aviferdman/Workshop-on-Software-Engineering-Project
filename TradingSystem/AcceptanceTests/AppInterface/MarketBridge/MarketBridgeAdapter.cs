@@ -10,6 +10,7 @@ using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Payment;
 using TradingSystem.Service;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
@@ -20,6 +21,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         private readonly MarketShoppingCartService marketShoppingCartService;
         private readonly MarketGeneralService marketGeneralService;
         private readonly MarketUserService marketUserService;
+        private readonly MarketStorePermissionsManagementService marketStorePermissionsManagementService;
 
         private MarketBridgeAdapter
         (
@@ -28,7 +30,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             MarketProductsService marketProductsService,
             MarketShoppingCartService marketShoppingCartService,
             MarketGeneralService marketGeneralService,
-            MarketUserService marketUserService
+            MarketUserService marketUserService,
+            MarketStorePermissionsManagementService marketStorePermissionsManagementService
         )
             : base(systemContext)
         {
@@ -37,6 +40,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             this.marketShoppingCartService = marketShoppingCartService;
             this.marketGeneralService = marketGeneralService;
             this.marketUserService = marketUserService;
+            this.marketStorePermissionsManagementService = marketStorePermissionsManagementService;
         }
 
         public static MarketBridgeAdapter New(SystemContext systemContext)
@@ -48,7 +52,8 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 MarketProductsService.Instance,
                 MarketShoppingCartService.Instance,
                 MarketGeneralService.Instance,
-                MarketUserService.Instance
+                MarketUserService.Instance,
+                MarketStorePermissionsManagementService.Instance
             );
         }
 
@@ -208,6 +213,27 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return !result.IsErr && result.Ret;
         }
 
+        public bool MakeOwner(string assignee, Guid storeID, string assigner)
+        {
+            return marketStorePermissionsManagementService.MakeOwner(assignee, storeID, assigner).Equals("Success");
+        }
+        public bool MakeManager(string assignee, Guid storeID, string assigner)
+        {
+            return marketStorePermissionsManagementService.MakeManager(assignee, storeID, assigner).Equals("Success");
+        }
+        public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        {
+            return marketStorePermissionsManagementService.RemoveOwner(ownerName, storeID, assignerName).Equals("success");
+        }
+        public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
+        {
+            return marketStorePermissionsManagementService.DefineManagerPermissions(manager, storeID, assigner, permissions).Equals("Success");
+        }
+        public bool RemoveManager(String managerName, Guid storeID, String assignerName)
+        {
+            return marketStorePermissionsManagementService.RemoveManager(managerName, storeID, assignerName).Equals("success");
+        }
+
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)
         {
             marketGeneralService.ActivateDebugMode(deliverySystem, paymentSystem, true);
@@ -241,6 +267,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 )
             );
             return new PurchaseHistory(records);
+        }
+
+        public void tearDown()
+        {
+            marketGeneralService.tearDown();
         }
     }
 }

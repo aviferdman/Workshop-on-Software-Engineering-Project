@@ -8,6 +8,7 @@ using Moq;
 
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Payment;
+using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace AcceptanceTests.AppInterface.MarketBridge
 {
@@ -126,9 +127,36 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
         }
 
+        public bool MakeOwner(string assignee, Guid storeID, string assigner)
+        {
+            return RealBridge != null && RealBridge.MakeOwner(assignee, storeID, assigner);
+        }
+        public bool MakeManager(string assignee, Guid storeID, string assigner)
+        {
+            return RealBridge != null && RealBridge.MakeManager(assignee, storeID, assigner);
+        }
+        public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        {
+           return RealBridge != null && RealBridge.RemoveOwner(ownerName, storeID, assignerName);
+        }
+        public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
+        {
+            return RealBridge != null && RealBridge.DefineManagerPermissions(manager, storeID, assigner, permissions);
+        }
+        public bool RemoveManager(String managerName, Guid storeID, String assignerName)
+        {
+            return RealBridge != null && RealBridge.RemoveManager(managerName, storeID, assignerName);
+        }
+
         public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
         {
             return RealBridge != null && RealBridge.PurchaseShoppingCart(purchaseInfo);
+        }
+
+        public void tearDown()
+        {
+            if(RealBridge != null)
+                RealBridge.tearDown();
         }
 
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)
