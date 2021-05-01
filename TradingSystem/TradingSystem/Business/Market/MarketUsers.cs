@@ -147,7 +147,6 @@ namespace TradingSystem.Business.Market
                     m = new MemberState(usrname);
                 memberStates.TryAdd(usrname, m);
             }
-
             u.State = m;
             u.Username = usrname;
             u.IsLoggedIn = true;
@@ -155,6 +154,7 @@ namespace TradingSystem.Business.Market
                 u.ShoppingCart = s;
             else
                 membersShoppingCarts.TryAdd(usrname, u.ShoppingCart);
+            ((ShoppingCart)u.ShoppingCart).User1 = u;
             while (!activeUsers.TryAdd(usrname, u))
             {
                 if (activeUsers.TryRemove(usrname, out guest))
@@ -166,6 +166,7 @@ namespace TradingSystem.Business.Market
                         GuidString = GuidString.Replace("=", "");
                         GuidString = GuidString.Replace("+", "");
                         guest.Username = GuidString;
+                        ((ShoppingCart)guest.ShoppingCart).User1 = guest;
                     } while (!activeUsers.TryAdd(GuidString, guest));
                 }
 

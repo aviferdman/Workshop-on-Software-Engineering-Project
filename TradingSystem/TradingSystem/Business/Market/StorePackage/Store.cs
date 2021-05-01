@@ -46,6 +46,7 @@ namespace TradingSystem.Business.Market
         public ConcurrentDictionary<string, Owner> Owners { get => owners; set => owners = value; }
         public Founder Founder { get => founder; set => founder = value; }
         public object Prem_lock { get => prem_lock; set => prem_lock = value; }
+        public string Name1 { get => name; set => name = value; }
 
         public Store(string name, BankAccount bank, Address address)
         {
