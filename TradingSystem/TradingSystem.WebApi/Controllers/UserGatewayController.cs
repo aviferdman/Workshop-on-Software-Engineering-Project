@@ -29,7 +29,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<String> SignUp([FromBody] SignUpInfo info)
+        public ActionResult<String> Signup([FromBody] SignUpInfo info)
         {
             string res = UserService.Instance.Signup(info.guestusername, info.username, info.password, info._state, info._city, info._street, info._apartmentNum, info.phone);
             if (!res.Equals("success"))
