@@ -79,6 +79,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Bridge.Logout();
             Bridge.Login(founder);
             marketBridge.MakeManager("manager", store.Value, "founder");
+
         }
         /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
         [Test]

@@ -8,6 +8,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Payment;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 using Address = AcceptanceTests.AppInterface.Data.Address;
