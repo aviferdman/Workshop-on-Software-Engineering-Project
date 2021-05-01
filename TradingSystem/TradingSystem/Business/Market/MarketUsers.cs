@@ -187,6 +187,7 @@ namespace TradingSystem.Business.Market
             if (!activeUsers.TryRemove(username, out u))
                 return null;
             u.ChangeState(new GuestState());
+            ((ShoppingCart)u.ShoppingCart).User1 = null;
             u.ShoppingCart = new ShoppingCart(u);
             string GuidString;
             do

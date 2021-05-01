@@ -60,12 +60,11 @@ namespace TradingSystem.PublisherComponent
                 if (!username_subscribers.Keys.Contains(username))
                 {
                     username_subscribers.Add(username, new HashSet<NotificationSubscriber>());
-                    InitNotifications(username);
                 }
             }
         }
 
-        private void InitNotifications(String username)
+       /* private void InitNotifications(String username)
         {
             var publisher = username_publisher[username];
             var subscribers = username_subscribers[username];
@@ -81,7 +80,7 @@ namespace TradingSystem.PublisherComponent
             NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.AddAppointmentEvent.ToString(), _testMode);
             subscriber4.Subscribe(publisher);
             subscribers.Add(subscriber4);
-        }
+        }*/
 
         public void Subscribe(String username, NotificationSubscriber subscriber, EventType ev){
             var publisher = username_publisher[username];

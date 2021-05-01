@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
-using TradingSystem.Communication;
 
 namespace TradingSystem.Notifications
 {
@@ -10,18 +9,15 @@ namespace TradingSystem.Notifications
     {
         public string SubscriberName { get; private set; }
         public IList<string> Messages { get => messages; set => messages = value; }
-        public ICommunicate Communicate { get => communicate; set => communicate = value; }
         public bool TestMode { get => testMode; set => testMode = value; }
 
         private IDisposable _unsubscriber;
-        private ICommunicate communicate;
         private bool testMode;
         private IList<String> messages;
 
         public NotificationSubscriber(string _subscriberName, bool testMode = false)
         {
             SubscriberName = _subscriberName;
-            Communicate = new Communicate();
             this.TestMode = testMode;
             this.Messages = new List<String>();
         }
@@ -35,26 +31,24 @@ namespace TradingSystem.Notifications
 
         public virtual void OnCompleted()
         {
-            Communicate.SendMessage(SubscriberName, $"DONE");
+            throw new NotImplementedException();
         }
 
         public virtual void OnError(Exception e)
         {
-            Communicate.SendMessage(SubscriberName, $"{e.Message}");
+            throw new NotImplementedException();
         }
 
         public virtual void OnNext(Event ev)
         {
             var message = $"Hey {SubscriberName} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
-            if (ConfigurationManager.AppSettings.Get("ConnectRealCommunication") != null &&
-                ConfigurationManager.AppSettings.Get("ConnectRealCommunication").Equals("true"))
-            {
-                Communicate.SendMessage(SubscriberName, message);
-            }
+            
             if (TestMode)
             {
                 messages.Add(message);
             }
+            else
+                throw new NotImplementedException();
         }
 
         public void MyCallback()
