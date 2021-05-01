@@ -60,6 +60,8 @@ namespace TradingSystem.WebApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseWebSockets();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
