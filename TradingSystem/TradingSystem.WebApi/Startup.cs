@@ -1,16 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.WebSockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TradingSystem.WebApi.Controllers;
 
 namespace TradingSystem.WebApi
 {
@@ -72,6 +77,46 @@ namespace TradingSystem.WebApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseWebSockets();
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/login")
+                {
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
+                        var username = new byte[1024 * 4];
+                        WebSocketReceiveResult result = await ws.ReceiveAsync(new ArraySegment<byte>(username), CancellationToken.None);
+                        LoggedInController.Instance.addClient(BitConverter.ToString(username), ws);
+                        await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                    }
+                    else { context.Response.StatusCode = 400; }
+                }
+                
+                else
+                {
+                    await next();
+                }
+            });
+
+            app.Run(async context =>
+            {
+                await context.Response.WriteAsync("hi");
+            });
         }
     }
+
+
+
+    /*was WebSocketRecieveResult, changed to String
+    private async Task RecieveMessage(WebSocket socket, Action<String, byte[]> action)
+    {
+        var buf = new byte[1024 * 4];
+        while(socket.State == WebSocketState.Open)
+        {
+            
+        }
+    }*/
 }
