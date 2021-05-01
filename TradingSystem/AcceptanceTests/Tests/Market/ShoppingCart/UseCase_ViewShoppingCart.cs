@@ -66,22 +66,16 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ChosenProducts = chooseProductsForCart(MarketImage);
 
             // already setup earlier
-            addToCart_logic = new UseCase_AddProductToCart_TestLogic(SystemContext);
+            addToCart_logic = new UseCase_AddProductToCart_TestLogic(SystemContext, UserInfo);
+            addToCart_logic.Setup();
             addToCart_logic.Success_Normal_CheckCartItems(ChosenProducts, ChosenProducts);
         }
 
         public override void Teardown()
         {
-            base.Teardown();
-
-            if (ChosenProducts != null)
-            {
-                foreach (ProductInCart product in ChosenProducts)
-                {
-                    _ = MarketBridge.RemoveProductFromUserCart(product.ProductId);
-                }
-            }
+            addToCart_logic?.Teardown();
             useCase_search.Teardown();
+            base.Teardown();
         }
 
         [TestCase]

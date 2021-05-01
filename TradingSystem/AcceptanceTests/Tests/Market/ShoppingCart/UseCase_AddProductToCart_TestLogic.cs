@@ -35,10 +35,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 throw new InvalidOperationException("A user which to add the products to his cart must be specified.");
             }
 
-            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             useCase_login_buyer = new UseCase_Login(SystemContext, UserInfo);
             useCase_login_buyer.Setup();
-            useCase_login_buyer.Success_Normal();
+            useCase_login_buyer.Success_Assure();
 
             ProductsTeardown = new List<ProductId>();
         }
