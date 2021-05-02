@@ -53,7 +53,7 @@ export default function Signup() {
     };
 
     function onCancelClick(e) {
-        history.push('/login');
+        history.goBack();
     }
 
     const handleChange = prop => e => {
