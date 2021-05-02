@@ -90,6 +90,20 @@ namespace TradingSystem.PublisherComponent
             username_subscribers[username].Add(subscriber);
         }
 
+        public void Unsbscribe(string username)
+        {
+            ICollection<NotificationSubscriber> subs;
+            if(username_subscribers.TryGetValue(username, out subs))
+            {
+                foreach(NotificationSubscriber n in subs)
+                {
+                    n.Unsubscribe();
+                }
+                username_subscribers.Remove(username);
+                username_subscribers.Add(username, new HashSet<NotificationSubscriber>());
+            }
+        }
+
         public void DeleteAll()
         {
             this.username_publisher = new Dictionary<String, Publisher>();
