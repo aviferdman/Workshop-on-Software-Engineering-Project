@@ -230,7 +230,6 @@ namespace AcceptanceTests.Tests.Market
 
             public void Teardown()
             {
-                _ = SystemContext.UserBridge.AssureLogin(ShopImage.OwnerUser);
                 useCase_addProduct?.Teardown();
             }
         }
