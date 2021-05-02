@@ -30,26 +30,41 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                           new ProductInCart(marketImage[0].ShopProducts[0].ProductId, 3),
                       };
                   },
+                (Func<ShopImage[], ProductsForEdit>)
+                  delegate(ShopImage[] marketImage)
+                  {
+                      return new ProductsForEdit
+                      {
+                          ProductsAdd = new HashSet<ProductInCart> { new ProductInCart(marketImage[1].ShopProducts[1].ProductId, 10) },
+                          ProductsRemove = new HashSet<ProductId> { marketImage[1].ShopProducts[0].ProductId },
+                          ProductsEdit = new HashSet<ProductInCart> { new ProductInCart(marketImage[0].ShopProducts[0].ProductId, 5) },
+                      };
+                  },
             },
         };
-
-        private UseCase_ViewShoppingCart useCase_viewShoppingCart;
 
         public ShopImage[] MarketImage => useCase_viewShoppingCart.MarketImage;
         public Func<ShopImage[]> MarketImageFactory { get; }
         public Func<ShopImage[], IEnumerable<ProductInCart>> ChooseProductsForCart { get; }
+        public Func<ShopImage[], ProductsForEdit> ChooseProductsForEdit { get; }
 
         public UseCase_EditShoppingCart
         (
             SystemContext systemContext,
             UserInfo userInfo,
             Func<ShopImage[]> marketImageFactory,
-            Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart
+            Func<ShopImage[], IEnumerable<ProductInCart>> chooseProductsForCart,
+            Func<ShopImage[], ProductsForEdit> chooseProductsForEdit
         ) : base(systemContext, userInfo)
         {
             MarketImageFactory = marketImageFactory;
             ChooseProductsForCart = chooseProductsForCart;
+            ChooseProductsForEdit = chooseProductsForEdit;
         }
+
+        private ProductsForEdit productsForEdit;
+
+        private UseCase_ViewShoppingCart useCase_viewShoppingCart;
 
         public override void Setup()
         {
@@ -64,11 +79,20 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 ChooseProductsForCart
             );
             useCase_viewShoppingCart.Setup();
+
+            productsForEdit = ChooseProductsForEdit(MarketImage);
         }
 
         public override void Teardown()
         {
             base.Teardown();
+            if (productsForEdit != null && productsForEdit.ProductsAdd != null)
+            {
+                foreach (ProductInCart product in productsForEdit.ProductsAdd)
+                {
+                    MarketBridge.RemoveProductFromUserCart(product.ProductId);
+                }
+            }
             useCase_viewShoppingCart.Teardown();
         }
 
@@ -76,9 +100,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public void Success_AllChanged()
         {
             Assert.IsTrue(MarketBridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
-                new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
+                productsForEdit.ProductsAdd,
+                productsForEdit.ProductsRemove,
+                productsForEdit.ProductsEdit
             ));
             /// TODO: check cart items changed properly
             /// <see cref="AcceptanceTests.AppInterface.MarketBridge.IMarketBridge.GetShoppingCartItems"/>
