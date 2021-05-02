@@ -12,6 +12,7 @@ import PasswordField from "../components/passwordFields";
 import FormFieldInfo from "../formFieldInfo";
 import axios from "axios";
 import useFormsStyles from "../style/forms";
+import SimpleAlertDialog from "../components/simpleAlertDialog";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -57,6 +58,14 @@ export default function LoginPage() {
     const history = useHistory();
     const onSignupClick = e => {
         history.push('/signup');
+    };
+
+    const closeErrorDialog = () => {
+        setState({
+           ...state,
+           showErrorDialog: false,
+           errorMessage: ''
+        });
     };
 
     const handleChange = prop => e => {
@@ -137,34 +146,35 @@ export default function LoginPage() {
     }
 
     let errorMessageElement = null;
-    let blockHeight = '300px';
     if (state.errorMessage && !state.showErrorDialog) {
-        errorMessageElement = <div className={clsx(classes.errorMessage, classes.formRow)}>
+        errorMessageElement = <div className={classes.errorMessage}>
             <label> { state.errorMessage } </label>
         </div>
-        blockHeight = '320px';
     }
 
     return (
-        <div className={formsClasses.center}>
-            <form className={clsx(formsClasses.form, classes.form)} onSubmit={onSubmit} noValidate autoComplete="off">
-                <h4 className={formsClasses.title}>Login</h4>
-                <TextField value={state.username.value} onChange={handleChange('username')}
-                           error={state.username.isError} helperText={state.username.errorMessage}
-                           label="Username" variant="outlined" className={clsx(classes.margin, classes.textField)} />
-                <PasswordField value={state.password.value} onChange={handleChange('password')}
-                               error={state.password.isError} helperText={state.password.errorMessage}
-                               label="Password" variant="outlined" className={clsx(classes.margin, classes.textField)}
-                               id="outlined-adornment-password" />
-                {errorMessageElement}
-                <div className={classes.topMargin}>
-                    <Button variant="contained" color="primary" type='submit' className={classes.btnLogin}>Login</Button>
-                    <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
-                </div>
-                <div className={classes.topMargin}>
-                    <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
-                </div>
-            </form>
+        <div>
+            <SimpleAlertDialog isShown={state.showErrorDialog} message={state.errorMessage} onClose={closeErrorDialog} />
+            <div className={formsClasses.center}>
+                <form className={clsx(formsClasses.form, classes.form)} onSubmit={onSubmit} noValidate autoComplete="off">
+                    <h4 className={formsClasses.title}>Login</h4>
+                    <TextField value={state.username.value} onChange={handleChange('username')}
+                               error={state.username.isError} helperText={state.username.errorMessage}
+                               label="Username" variant="outlined" className={clsx(classes.margin, classes.textField)} />
+                    <PasswordField value={state.password.value} onChange={handleChange('password')}
+                                   error={state.password.isError} helperText={state.password.errorMessage}
+                                   label="Password" variant="outlined" className={clsx(classes.margin, classes.textField)}
+                                   id="outlined-adornment-password" />
+                    {errorMessageElement}
+                    <div className={classes.topMargin}>
+                        <Button variant="contained" color="primary" type='submit' className={classes.btnLogin}>Login</Button>
+                        <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
+                    </div>
+                    <div className={classes.topMargin}>
+                        <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
