@@ -90,7 +90,9 @@ namespace TradingSystem.WebApi
                         var username = new byte[1024 * 4];
                         WebSocketReceiveResult result = await ws.ReceiveAsync(new ArraySegment<byte>(username), CancellationToken.None);
                         LoggedInController.Instance.addClient(BitConverter.ToString(username), ws);
-                        await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                        //in logout
+                        //await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+                        //LoggedInController.Instance.RemoveClient(BitConverter.ToString(username));
                     }
                     else { context.Response.StatusCode = 400; }
                 }
@@ -99,11 +101,6 @@ namespace TradingSystem.WebApi
                 {
                     await next();
                 }
-            });
-
-            app.Run(async context =>
-            {
-                await context.Response.WriteAsync("hi");
             });
         }
     }

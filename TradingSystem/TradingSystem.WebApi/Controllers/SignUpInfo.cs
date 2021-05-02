@@ -7,13 +7,13 @@ namespace TradingSystem.WebApi.Controllers
 {
     public class SignUpInfo
     {
-        public string guestusername;
-        public string username;
-        public string password;
-        public string _state;
-        public string _city;
-        public string _street;
-        public string _apartmentNum;
-        public string phone;
+        public string guestusername { get; set; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public string _state { get; set; }
+        public string _city { get; set; }
+        public string _street { get; set; }
+        public string _apartmentNum { get; set; }
+        public string phone { get; set; }
     }
 }

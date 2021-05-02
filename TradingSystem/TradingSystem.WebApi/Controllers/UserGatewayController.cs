@@ -9,7 +9,7 @@ using TradingSystem.Service;
 namespace TradingSystem.WebApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]/[action]")]
     public class UserGatewayController : ControllerBase
     {
         [HttpPost]

@@ -7,8 +7,8 @@ namespace TradingSystem.WebApi.Controllers
 {
     public class LoginInfo
     {
-        public String username;
-        public String password;
-        public String guestusername;
+        public String username { get; set; }
+        public String password { get; set; }
+        public String guestusername { get; set; }
     }
 }
