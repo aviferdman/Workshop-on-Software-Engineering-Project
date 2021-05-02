@@ -7,8 +7,10 @@ import {
     TextField
 } from "@material-ui/core";
 import './Login.scss'
-import {useTitle} from "../App";
+import {guestUsername, useTitle} from "../App";
 import PasswordField from "../components/passwordFields";
+import FormFieldInfo from "../formFieldInfo";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,48 +48,122 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginPage() {
-    const classes = useStyles();
-    const [values, setValues] = React.useState({
-        username: '',
-        password: '',
-        errorMessage: '',
-    });
+    useTitle('Login');
 
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
+    const classes = useStyles();
+    const [state, setState] = React.useState({
+        username: new FormFieldInfo(''),
+        password: new FormFieldInfo(''),
+        errorMessage: '',
+        showErrorDialog: false
+    });
 
     const history = useHistory();
     const onSignupClick = e => {
         history.push('/signup');
     };
 
+    const handleChange = prop => e => {
+        let newState = {
+            ...state
+        };
+        newState[prop].value = e.target.value;
+        setState(newState);
+    };
+
+    let submitting = false;
+    async function onSubmit(e) {
+        e.preventDefault();
+        if (submitting) {
+            return;
+        }
+
+        submitting = true;
+        let formError = false;
+        let newState = {
+            ...state
+        };
+
+        if (!state.username.value) {
+            formError = true;
+            newState.username.isError = true;
+            newState.username.errorMessage = 'Required';
+        }
+        else {
+            newState.username.isError = false;
+            newState.username.errorMessage = '';
+        }
+        if (!state.password.value) {
+            formError = true;
+            newState.password.isError = true;
+            newState.password.errorMessage = 'Required';
+        }
+        else {
+            newState.password.isError = false;
+            newState.password.errorMessage = '';
+        }
+
+        setState(newState);
+        if (!formError) {
+            try {
+                await axios.post('/UserGateway/Login', {
+                    guestusername: guestUsername,
+                    username: state.username.value,
+                    password: state.password.value,
+                });
+            }
+            catch (e) {
+                let errMsg = '';
+                let showErrDialog = false;
+                if (e.response.status === 400) {
+                    if (e.response.data.startsWith('user is already logged in')) {
+                        errMsg = 'Already logged-in';
+                    }
+                    else if (e.response.data.startsWith('the password doesn\'t match')) {
+                        errMsg = 'Incorrect password'
+                    }
+                    else if (e.response.data.startsWith('username: ' + state.username.value + ' doesn\'t exist')) {
+                        errMsg = 'Username doesn\'t exist'
+                    }
+                }
+                if (!errMsg) {
+                    errMsg = 'Unknown error occurred: ' + e.message;
+                    showErrDialog = true;
+                }
+                setState({
+                    ...state,
+                    errorMessage: errMsg,
+                    showErrorDialog: showErrDialog
+                });
+            }
+        }
+        submitting = false;
+    }
+
     let errorMessageElement = null;
     let blockHeight = '300px';
-    if (values.errorMessage) {
+    if (state.errorMessage && !state.showErrorDialog) {
         errorMessageElement = <div className={clsx(classes.errorMessage, classes.formRow)}>
-            <label> { values.errorMessage } </label>
+            <label> { state.errorMessage } </label>
         </div>
         blockHeight = '320px';
     }
-
-    useTitle('Login');
 
     return (
         <div className="center-block" style={{height: blockHeight}}>
             <div className="vertical-center-block">
                 <h4 className={classes.title}>Login</h4>
-                <form className={classes.root} noValidate autoComplete="off">
-                    <TextField value={values.username} className={classes.textField} label="Username" variant="outlined" onChange={handleChange('username')} />
-                    <PasswordField value={values.password}
-                                   onChange={handleChange('password')}
-                                   label="Password"
-                                   className={clsx(classes.margin, classes.textField)}
-                                   variant="outlined"
+                <form className={classes.root} onSubmit={onSubmit} noValidate autoComplete="off">
+                    <TextField value={state.username.value} onChange={handleChange('username')}
+                               error={state.username.isError} helperText={state.username.errorMessage}
+                               label="Username" variant="outlined" className={classes.textField} />
+                    <PasswordField value={state.password.value} onChange={handleChange('password')}
+                                   error={state.password.isError} helperText={state.password.errorMessage}
+                                   label="Password" variant="outlined" className={clsx(classes.margin, classes.textField)}
                                    id="outlined-adornment-password" />
                     {errorMessageElement}
                     <div className={classes.formRow}>
-                        <Button variant="contained" color="primary" className={classes.btnLogin}>Login</Button>
+                        <Button variant="contained" color="primary" type='submit' className={classes.btnLogin}>Login</Button>
                         <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
                     </div>
                     <div className={clsx(classes.formRow, classes.topMargin)}>
