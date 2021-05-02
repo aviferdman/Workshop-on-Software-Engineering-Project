@@ -9,7 +9,6 @@ using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Notifications;
 using TradingSystem.Business.UserManagement;
-using TradingSystem.Communication;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 
@@ -42,7 +41,6 @@ namespace TradingSystemTests.IntegrationTests
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
 
             this.store = new Store("Founder", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
-
             founderUser = new User("Founder");
             founderUser.ChangeState(new MemberState(founderUser.Username));
             this.founder = Founder.makeFounder((MemberState)founderUser.State, store);

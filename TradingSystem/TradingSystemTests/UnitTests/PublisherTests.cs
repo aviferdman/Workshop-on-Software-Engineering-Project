@@ -6,7 +6,6 @@ using System.Text;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Notifications;
 using TradingSystem.Business.UserManagement;
-using TradingSystem.Communication;
 using TradingSystem.Notifications;
 
 namespace TradingSystemTests.UnitTests
@@ -23,9 +22,6 @@ namespace TradingSystemTests.UnitTests
             this.publisher = new Publisher("UserTests");
             this.user = new User("UserTests");
             this.subscriber = new NotificationSubscriber(user.Username, true);
-            Mock<ICommunicate> communicateMock = new Mock<ICommunicate>();
-            communicateMock.Setup(c => c.SendMessage(It.IsAny<String>(), It.IsAny<String>())).Returns(true);
-            subscriber.Communicate = communicateMock.Object;
 
         }
 
