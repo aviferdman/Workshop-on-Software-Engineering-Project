@@ -38,7 +38,7 @@ class App extends React.Component {
     await this.init();
   }
 
-  async componentWillUnmount() {
+  componentWillUnmount() {
     guestUsername = '';
   }
 

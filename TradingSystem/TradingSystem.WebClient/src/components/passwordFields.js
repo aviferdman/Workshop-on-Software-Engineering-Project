@@ -9,6 +9,12 @@ export default class PasswordField extends Component {
             showPassword: false
         };
 
+        this.formControlProps = {...props};
+        delete this.formControlProps.id;
+        delete this.formControlProps.label;
+        delete this.formControlProps.value;
+        delete this.formControlProps.onChange;
+
         this.handleClickShowPassword = this.handleClickShowPassword.bind(this);
         this.handleMouseDownPassword = this.handleMouseDownPassword.bind(this);
     }
@@ -25,7 +31,7 @@ export default class PasswordField extends Component {
 
     render() {
         return (
-            <FormControl variant={this.props.variant} className={this.props.className}>
+            <FormControl {...this.formControlProps}>
                 <InputLabel htmlFor={this.props.id}>{this.props.label}</InputLabel>
                 <OutlinedInput
                     id={this.props.id}
