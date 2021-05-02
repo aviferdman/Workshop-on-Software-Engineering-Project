@@ -6,6 +6,7 @@ import React from "react";
 import clsx from "clsx";
 import FormFieldInfo from "../formFieldInfo";
 import axios from "axios";
+import useFormsStyles from "../style/forms";
 
 export default function Signup() {
     const history = useHistory();
@@ -25,24 +26,6 @@ export default function Signup() {
     });
 
     const useStyles = makeStyles((theme) => ({
-        center: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100vh'
-        },
-        form: {
-            border: '2px solid gray',
-            // width: '300px',
-            // height: '300px',
-            padding: theme.spacing(1)
-        },
-        title: {
-            fontSize: '1.5rem',
-            marginTop: '0px',
-            marginBottom: theme.spacing(1),
-            alignSelf: 'flex-start'
-        },
         formRow: {
             marginTop: theme.spacing(1),
             alignSelf: 'flex-start'
@@ -58,6 +41,7 @@ export default function Signup() {
         },
     }));
     const classes = useStyles();
+    const formsClasses = useFormsStyles();
 
     function onCancelClick(e) {
         history.push('/login');
@@ -216,9 +200,9 @@ export default function Signup() {
     }
 
     return (
-        <div className={classes.center}>
-            <form className={classes.form} onSubmit={onSubmit} noValidate autoComplete="off">
-                <h4 className={classes.title}>Sign up</h4>
+        <div className={formsClasses.center}>
+            <form className={formsClasses.form} onSubmit={onSubmit} noValidate autoComplete="off">
+                <h4 className={formsClasses.title}>Sign up</h4>
                 <TextField label={'Username'} variant={'outlined'} className={classes.formRow}
                            required error={state.username.isError} helperText={state.username.errorMessage}
                            onChange={handleChange("username")}/>

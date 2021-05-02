@@ -11,23 +11,17 @@ import {guestUsername, useTitle} from "../App";
 import PasswordField from "../components/passwordFields";
 import FormFieldInfo from "../formFieldInfo";
 import axios from "axios";
+import useFormsStyles from "../style/forms";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(1),
-            width: '25ch',
-        },
+    form: {
+      width: '300px'
     },
     margin: {
         margin: theme.spacing(1)
     },
     textField: {
         width: '25ch',
-        display: 'block',
-    },
-    formRow: {
-        width: '216px',
     },
     topMargin: {
         marginTop: theme.spacing(1)
@@ -51,6 +45,8 @@ export default function LoginPage() {
     useTitle('Login');
 
     const classes = useStyles();
+    const formsClasses = useFormsStyles();
+
     const [state, setState] = React.useState({
         username: new FormFieldInfo(''),
         password: new FormFieldInfo(''),
@@ -150,27 +146,25 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="center-block" style={{height: blockHeight}}>
-            <div className="vertical-center-block">
-                <h4 className={classes.title}>Login</h4>
-                <form className={classes.root} onSubmit={onSubmit} noValidate autoComplete="off">
-                    <TextField value={state.username.value} onChange={handleChange('username')}
-                               error={state.username.isError} helperText={state.username.errorMessage}
-                               label="Username" variant="outlined" className={classes.textField} />
-                    <PasswordField value={state.password.value} onChange={handleChange('password')}
-                                   error={state.password.isError} helperText={state.password.errorMessage}
-                                   label="Password" variant="outlined" className={clsx(classes.margin, classes.textField)}
-                                   id="outlined-adornment-password" />
-                    {errorMessageElement}
-                    <div className={classes.formRow}>
-                        <Button variant="contained" color="primary" type='submit' className={classes.btnLogin}>Login</Button>
-                        <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
-                    </div>
-                    <div className={clsx(classes.formRow, classes.topMargin)}>
-                        <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
-                    </div>
-                </form>
-            </div>
+        <div className={formsClasses.center}>
+            <form className={clsx(formsClasses.form, classes.form)} onSubmit={onSubmit} noValidate autoComplete="off">
+                <h4 className={formsClasses.title}>Login</h4>
+                <TextField value={state.username.value} onChange={handleChange('username')}
+                           error={state.username.isError} helperText={state.username.errorMessage}
+                           label="Username" variant="outlined" className={clsx(classes.margin, classes.textField)} />
+                <PasswordField value={state.password.value} onChange={handleChange('password')}
+                               error={state.password.isError} helperText={state.password.errorMessage}
+                               label="Password" variant="outlined" className={clsx(classes.margin, classes.textField)}
+                               id="outlined-adornment-password" />
+                {errorMessageElement}
+                <div className={classes.topMargin}>
+                    <Button variant="contained" color="primary" type='submit' className={classes.btnLogin}>Login</Button>
+                    <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
+                </div>
+                <div className={classes.topMargin}>
+                    <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
+                </div>
+            </form>
         </div>
     );
 }
