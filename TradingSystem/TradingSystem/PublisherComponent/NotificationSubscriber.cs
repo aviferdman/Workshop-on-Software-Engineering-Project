@@ -9,16 +9,16 @@ namespace TradingSystem.Notifications
     {
         public string SubscriberName { get; private set; }
         public IList<string> Messages { get => messages; set => messages = value; }
-        public bool TestMode { get => testMode; set => testMode = value; }
+        public bool SaveNotificationsMode { get => saveNotificationsMode; set => saveNotificationsMode = value; }
 
         private IDisposable _unsubscriber;
-        private bool testMode;
+        private bool saveNotificationsMode;
         private IList<String> messages;
 
-        public NotificationSubscriber(string _subscriberName, bool testMode = false)
+        public NotificationSubscriber(string _subscriberName, bool saveNotificationsMode = false)
         {
             SubscriberName = _subscriberName;
-            this.TestMode = testMode;
+            this.SaveNotificationsMode = saveNotificationsMode;
             this.Messages = new List<String>();
         }
 
@@ -43,12 +43,12 @@ namespace TradingSystem.Notifications
         {
             var message = $"Hey {SubscriberName} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
             
-            if (TestMode)
+            if (SaveNotificationsMode)
             {
                 messages.Add(message);
             }
-            else
-                throw new NotImplementedException();
+            //Send message to communication HERE:
+
         }
 
         public void MyCallback()

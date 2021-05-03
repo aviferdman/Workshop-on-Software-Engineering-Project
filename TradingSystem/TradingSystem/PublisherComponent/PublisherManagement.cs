@@ -11,7 +11,7 @@ namespace TradingSystem.PublisherComponent
     {
         private IDictionary<String, Publisher> username_publisher;
         private IDictionary<String, ICollection<NotificationSubscriber>> username_subscribers;
-        private bool _testMode;
+        private bool _saveNotifications;
         private static readonly Lazy<PublisherManagement>
         lazy =
         new Lazy<PublisherManagement>
@@ -20,7 +20,7 @@ namespace TradingSystem.PublisherComponent
         public static PublisherManagement Instance { get { return lazy.Value; } }
         private PublisherManagement()
         {
-            this._testMode = false;
+            this._saveNotifications = false;
             this.username_publisher = new Dictionary<String, Publisher>();
             this.username_subscribers = new Dictionary<String, ICollection<NotificationSubscriber>>();
         }
@@ -60,8 +60,7 @@ namespace TradingSystem.PublisherComponent
                 if (!username_subscribers.Keys.Contains(username))
                 {
                     username_subscribers.Add(username, new HashSet<NotificationSubscriber>());
-                    if (_testMode)
-                        InitNotifications(username);
+                    InitNotifications(username);
                 }
             }
         }
@@ -70,16 +69,16 @@ namespace TradingSystem.PublisherComponent
         {
             var publisher = username_publisher[username];
             var subscribers = username_subscribers[username];
-            NotificationSubscriber subscriber1 = new NotificationSubscriber(EventType.RemoveAppointment.ToString(), _testMode);
+            NotificationSubscriber subscriber1 = new NotificationSubscriber(EventType.RemoveAppointment.ToString(), _saveNotifications);
             subscriber1.Subscribe(publisher);
             subscribers.Add(subscriber1);
-            NotificationSubscriber subscriber2 = new NotificationSubscriber(EventType.OpenStoreEvent.ToString(), _testMode);
+            NotificationSubscriber subscriber2 = new NotificationSubscriber(EventType.OpenStoreEvent.ToString(), _saveNotifications);
             subscriber2.Subscribe(publisher);
             subscribers.Add(subscriber2);
-            NotificationSubscriber subscriber3 = new NotificationSubscriber(EventType.PurchaseEvent.ToString(), _testMode);
+            NotificationSubscriber subscriber3 = new NotificationSubscriber(EventType.PurchaseEvent.ToString(), _saveNotifications);
             subscriber3.Subscribe(publisher);
             subscribers.Add(subscriber3);
-            NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.AddAppointmentEvent.ToString(), _testMode);
+            NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.AddAppointmentEvent.ToString(), _saveNotifications);
             subscriber4.Subscribe(publisher);
             subscribers.Add(subscriber4);
         }
@@ -110,9 +109,9 @@ namespace TradingSystem.PublisherComponent
             this.username_subscribers = new Dictionary<String, ICollection<NotificationSubscriber>>();
         }
 
-        public void SetTestMode(bool testMode = false)
+        public void SetSaveNotifications(bool save = false)
         {
-            this._testMode = testMode;
+            this._saveNotifications = save;
         }
 
     }

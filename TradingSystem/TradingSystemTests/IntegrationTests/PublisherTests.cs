@@ -31,7 +31,7 @@ namespace TradingSystemTests.IntegrationTests
             PublisherManagement.Instance.DeleteAll();
             marketUsers.DeleteAll();
             marketStores.DeleteAll();
-            PublisherManagement.Instance.SetTestMode(true);
+            PublisherManagement.Instance.SetSaveNotifications(true);
 
             this.user = new User("UserTests");
             user.ChangeState(new MemberState(user.Username));
@@ -126,7 +126,7 @@ namespace TradingSystemTests.IntegrationTests
             PublisherManagement.Instance.DeleteAll();
             marketUsers.DeleteAll();
             marketStores.DeleteAll();
-            PublisherManagement.Instance.SetTestMode(true);
+            PublisherManagement.Instance.SetSaveNotifications(true);
 
             this.user = new User("UserTests");
             user.ChangeState(new MemberState(user.Username));
