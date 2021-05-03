@@ -53,6 +53,7 @@ namespace TradingSystemTests.UnitTests
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
             UserManagement.Instance.DataUsers[user.Username] = dataUser;
+            publisher.LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
             subscriber.Subscribe(publisher);
             publisher.EventNotification(EventType.OpenStoreEvent, "Test Message");

@@ -55,7 +55,7 @@ namespace TradingSystemTests.IntegrationTests
             ConditionDiscount discount = new ConditionDiscount(new DiscountCalculator(return15));
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
-            testStore.AddDiscount(discount);
+            testStore.AddDiscount(testStore.GetFounder().Username, discount);
             Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
             Assert.IsTrue(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
         }
@@ -117,7 +117,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             Func<IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
-            testStore.AddRule(r);
+            testStore.AddRule(testStore.GetFounder().Username, r);
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);

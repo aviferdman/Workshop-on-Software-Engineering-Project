@@ -170,8 +170,10 @@ namespace TradingSystem.Business.Market
             return Policy.Check(shoppingBasket);
         }
 
-        public void SetPolicy(Policy policy)
+        public void SetPolicy(string userID, Policy policy)
         {
+            if (((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID))) || !hasPremssion(userID, Permission.EditPolicy))
+                return;
             this.Policy = policy;
         }
 
@@ -180,14 +182,20 @@ namespace TradingSystem.Business.Market
             return Policy;
         }
 
-        public Guid AddRule(IRule rule)
+        public Guid AddRule(string userID, IRule rule)
         {
+            //Have no permission to do the action
+            if (((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID))) || !hasPremssion(userID, Permission.EditPolicy))
+                return new Guid();
             _policy.AddRule(rule);
             return rule.GetId();
         }
 
-        public void RemoveRule()
+        public void RemoveRule(string userID)
         {
+            //Have no permission to do the action
+            if (((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID))) || !hasPremssion(userID, Permission.EditPolicy))
+                return;
             _policy.RemoveRule();
         }
 
@@ -446,14 +454,20 @@ namespace TradingSystem.Business.Market
         }
 
 
-        public Guid AddDiscount(Discount discount)
+        public Guid AddDiscount(string userID, Discount discount)
         {
+            //Have no permission to do the action
+            if (((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID))) || !hasPremssion(userID, Permission.EditDiscount))
+                return new Guid();
             Discounts.Add(discount);
             return discount.Id;
         }
 
-        public Guid RemoveDiscount(Guid discountId)
+        public Guid RemoveDiscount(string userID, Guid discountId)
         {
+            //Have no permission to do the action
+            if (((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID))) || !hasPremssion(userID, Permission.EditDiscount))
+                return new Guid();
             Discount d = GetDiscountById(discountId);
             if (d != null)
             {    //remove old discount if exists
@@ -562,5 +576,16 @@ namespace TradingSystem.Business.Market
         {
             return Discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
         }
+
+        public Founder GetFounder()
+        {
+            return founder;
+        }
+
+        public void SetFounder(Founder f)
+        {
+            this.founder = f;
+        }
+
     }
 }

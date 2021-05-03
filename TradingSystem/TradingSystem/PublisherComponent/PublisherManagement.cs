@@ -36,6 +36,12 @@ namespace TradingSystem.PublisherComponent
             username_publisher[username].BecomeLoggedIn();
         }
 
+        public void BecomeLoggedOut(String username)
+        {
+            SetIfNotExists(username);
+            username_publisher[username].BecomeLoggedOut();
+        }
+
         public NotificationSubscriber FindSubscriber(String username, EventType eventType)
         {
             SetIfNotExists(username);

@@ -10,9 +10,11 @@ namespace TradingSystem.Business.Notifications
     {
         public List<IObserver<Event>> Observers { get => _observers; set => _observers = value; }
         public IList<Event> Waiting { get => waiting; set => waiting = value; }
+        public bool LoggedIn { get => loggedIn; set => loggedIn = value; }
 
         private IList<Event> waiting;
         private String _username;
+        private bool loggedIn;
         // Maintain a list of observers
         private List<IObserver<Event>> _observers;
 
@@ -21,6 +23,7 @@ namespace TradingSystem.Business.Notifications
             this._username = username;
             Observers = new List<IObserver<Event>>();
             Waiting = new List<Event>();
+            LoggedIn = false;
         }
         private class Unsubscriber : IDisposable
         {
@@ -51,7 +54,7 @@ namespace TradingSystem.Business.Notifications
         // Notify observers when event occurs
         public void EventNotification(EventType eventType, string description)
         {
-            if (UserService.Instance.isLoggedIn(_username))
+            if (loggedIn)
             {
                 foreach (var observer in Observers)
                 {
@@ -67,6 +70,7 @@ namespace TradingSystem.Business.Notifications
 
         public void BecomeLoggedIn()
         {
+            loggedIn = true;
             foreach(var e in Waiting)
             {
                 foreach (var observer in Observers)
@@ -76,6 +80,11 @@ namespace TradingSystem.Business.Notifications
                
             }
             Waiting.Clear();
+        }
+
+        public void BecomeLoggedOut()
+        {
+            loggedIn = false;
         }
     }
 }

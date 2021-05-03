@@ -26,7 +26,9 @@ namespace TradingSystem.Business.Market.StoreStates
             EditProduct,
             GetShopHistory,
             EditPermissions,
-            CloseShop
+            CloseShop,
+            EditDiscount,
+            EditPolicy
         }
 
         private Manager(MemberState m, Store s, MemberState appointer) 

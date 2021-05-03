@@ -61,6 +61,7 @@ namespace TradingSystemTests.IntegrationTests
             marketStores.Stores.TryAdd(store.Id, store);
             marketUsers.AddProductToCart(user.Username, p.Id, 5);
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(founder.Username, EventType.PurchaseEvent);
+            PublisherManagement.Instance.FindPublisher(founder.Username).LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
             marketUsers.PurchaseShoppingCart(user.Username, new BankAccount(1, 1), "054444444", new Address("1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
@@ -94,6 +95,7 @@ namespace TradingSystemTests.IntegrationTests
             MarketUsers marketUsers = MarketUsers.Instance;
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(user.Username, EventType.OpenStoreEvent);
+            PublisherManagement.Instance.FindPublisher(user.Username).LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
             marketStores.CreateStore("TestStore", user.Username, new BankAccount(1, 1), new Address("1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
