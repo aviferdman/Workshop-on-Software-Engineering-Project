@@ -14,7 +14,6 @@ class Products extends Component {
                             </a>
                             <div className="product-price">
                                 <div>{formatCurrency(product.price)}</div>
-
                             </div>
                             <button className="button primary">Add To Cart</button>
                         </div>

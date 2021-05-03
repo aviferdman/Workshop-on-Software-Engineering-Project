@@ -20,7 +20,7 @@ body, input, select, button, textarea{
        "search"
        "main"
        "footer";
-    grid-template-rows: 5rem 5rem 1fr 5rem;
+    grid-template-rows: 5rem 6rem 1fr 5rem;
     grid-template-columns: 1fr;
     height: 100%;
     padding: 0.5rem;
@@ -81,7 +81,7 @@ footer{
     flex: 1 20rem
 }
 
-/* proudcts */
+/* Products */
 
 .products{
     display: flex;
@@ -142,7 +142,21 @@ footer{
 }
 
 .button.primary{
-    background-color: #eccc77;
+    background-color: #ECCC77FF;
+}
+
+/* Filter */
+
+.filter{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    margin: 1rem;
+    border-bottom: 0.1rem #c0c0c0 solid;
+}
+
+.filter div{
+    flex: 1;
 }
 
 
