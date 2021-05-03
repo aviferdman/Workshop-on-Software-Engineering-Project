@@ -3,8 +3,6 @@ import {useEffect} from "react";
 import Routes from "./routes";
 import axios from "axios";
 import SimpleAlertDialog from "./components/simpleAlertDialog";
-import SearchBar from "./components/searchBar.js";
-import SearchAppBar from "./components/AppBar";
 
 export function useTitle(title) {
   useEffect(() => {
