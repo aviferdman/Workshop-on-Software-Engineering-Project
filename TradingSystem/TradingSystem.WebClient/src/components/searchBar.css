@@ -1,0 +1,20 @@
+.ui-search{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.searchButton{
+    padding: 0.2rem;
+    margin-right: 2rem;
+    border: 0.1rem #c0c0c0 solid;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.searchButton:hover{
+    border: 0.1rem #808080 solid;
+}
+
+.searchButton.Sprimary{
+    background-color: #ECCC77FF;
+}
