@@ -1,5 +1,7 @@
 import {useEffect} from "react";
 import Routes from "./routes";
+import SearchBar from "./components/searchBar.js";
+import SearchAppBar from "./components/AppBar";
 
 export function useTitle(title) {
   useEffect(() => {
@@ -9,7 +11,7 @@ export function useTitle(title) {
 
 function App() {
   return (
-      <Routes />
+      <Routes></Routes>
   );
 }
 
