@@ -32,7 +32,6 @@ namespace TradingSystem.WebApi
         {
             var message = $"Hey {SubscriberName} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
             byte[] buffer = Encoding.ASCII.GetBytes(message);
-
             socket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
         }
     }

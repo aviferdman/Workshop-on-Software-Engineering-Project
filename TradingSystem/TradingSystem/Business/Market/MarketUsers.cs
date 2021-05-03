@@ -198,6 +198,7 @@ namespace TradingSystem.Business.Market
                 GuidString = GuidString.Replace("+", "");
                 u.Username = GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
+            PublisherManagement.Instance.BecomeLoggedOut(username);
             return u.Username;
         }
 
