@@ -86,7 +86,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         [TestMethod]
         public void LastProductTwoCustomersLooped()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 bool val1 = false;
                 bool val2 = false;
