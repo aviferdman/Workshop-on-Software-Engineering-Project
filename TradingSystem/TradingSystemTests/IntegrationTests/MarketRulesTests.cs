@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StoreStates;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -12,13 +13,14 @@ namespace TradingSystemTests.IntegrationTests
         private MarketStores marketStores = MarketStores.Instance;
         private MarketRules marketRules = MarketRules.Instance;
 
-        public IStore store;
+        public Store store;
         public Product product;
         public IShoppingBasket shoppingBasket;
 
         public MarketRulesTests()
         {
             this.store = new Store("TestStore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             marketStores.Stores.TryAdd(store.GetId(), store);
             this.product = new Product("ProductName", 100, 100, 100, "CategoryName");
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(new User()), store);
@@ -32,7 +34,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleProductDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscount(store.GetId(), RuleContext.Product, 0.2, productId: product.Id);
+            marketRules.CreateSimpleDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Product, 0.2, productId: product.Id);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -41,7 +43,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleProductDiscountDifferenrId()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscount(store.GetId(), RuleContext.Product, 0.2, productId: Guid.NewGuid());
+            marketRules.CreateSimpleDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Product, 0.2, productId: Guid.NewGuid());
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
         }
 
@@ -50,7 +52,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleCategoryDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscount(store.GetId(), RuleContext.Category, 0.2, category: "CategoryName");
+            marketRules.CreateSimpleDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Category, 0.2, category: "CategoryName");
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -59,7 +61,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleCategoryDiscountDifferentCategory()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscount(store.GetId(), RuleContext.Category, 0.2, category: "DifferentCategoryName");
+            marketRules.CreateSimpleDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Category, 0.2, category: "DifferentCategoryName");
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
         }
 
@@ -68,7 +70,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleStoreDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscount(store.GetId(), RuleContext.Store, 0.2);
+            marketRules.CreateSimpleDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Store, 0.2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -77,7 +79,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckConditionalProductQuantityDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: product.Id, valueGreaterEQThan: 5);
+            marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: product.Id, valueGreaterEQThan: 5);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -86,7 +88,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckConditionalProductQuantityDiscountDifferentId()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: Guid.NewGuid(), valueGreaterEQThan: 5);
+            marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: Guid.NewGuid(), valueGreaterEQThan: 5);
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
         }
 
@@ -95,7 +97,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckConditionalProductWeightDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Product, RuleType.Weight, 0.2, productId: product.Id, valueGreaterEQThan: 100);
+            marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Weight, 0.2, productId: product.Id, valueGreaterEQThan: 100);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -104,7 +106,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckConditionalCategoryQuantityDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
+            marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -114,13 +116,13 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckAndConditionalDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            Guid discount1 = marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
-            Guid discount2 = marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
+            Guid discount1 = marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
+            Guid discount2 = marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
             var rule1 = store.GetDiscountById(discount1).GetRule();
             var rule2 = store.GetDiscountById(discount2).GetRule();
             //Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId
-            marketRules.GenerateConditionalDiscounts(DiscountRuleRelation.And, store.GetId(), rule1.GetId(), rule2.GetId(), discount1, new Guid(), false);
-            store.RemoveDiscount(discount2);
+            marketRules.GenerateConditionalDiscounts(store.GetFounder().Username, DiscountRuleRelation.And, store.GetId(), rule1.GetId(), rule2.GetId(), discount1, new Guid(), false);
+            store.RemoveDiscount(store.GetFounder().Username, discount2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -130,12 +132,12 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckXorConditionalDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            Guid discount1 = marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
-            Guid discount2 = marketRules.CreateConditionalDiscount(store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueLessThan: 5);
+            Guid discount1 = marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
+            Guid discount2 = marketRules.CreateConditionalDiscount(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueLessThan: 5);
             //Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId
-            marketRules.GenerateConditionalDiscounts(DiscountRuleRelation.Xor, store.GetId(), Guid.NewGuid(), Guid.NewGuid(), discount1, discount2, false);
-            store.RemoveDiscount(discount1);
-            store.RemoveDiscount(discount2);
+            marketRules.GenerateConditionalDiscounts(store.GetFounder().Username, DiscountRuleRelation.Xor, store.GetId(), Guid.NewGuid(), Guid.NewGuid(), discount1, discount2, false);
+            store.RemoveDiscount(store.GetFounder().Username, discount1);
+            store.RemoveDiscount(store.GetFounder().Username, discount2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -146,7 +148,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleLegalProductPolicy()
         {
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
         }
 
@@ -155,7 +157,7 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckSimpleIllegalProductPolicy()
         {
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 20);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 20);
             Assert.AreEqual(false, store.CheckPolicy(shoppingBasket));
         }
 
@@ -165,8 +167,8 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckAndProductPolicy()
         {
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.And, RuleContext.Product, RuleType.Weight, productId: product.Id, valueGreaterEQThan: 100);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.And, RuleContext.Product, RuleType.Weight, productId: product.Id, valueGreaterEQThan: 100);
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
         }
 
@@ -177,8 +179,8 @@ namespace TradingSystemTests.IntegrationTests
         public void CheckIllegalOrProductPolicy()
         {
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 20);
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Or, RuleContext.Product, RuleType.Weight, productId: product.Id, valueLessThan: 100);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 20);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Or, RuleContext.Product, RuleType.Weight, productId: product.Id, valueLessThan: 100);
             Assert.AreEqual(false, store.CheckPolicy(shoppingBasket));
         }
 
@@ -189,8 +191,8 @@ namespace TradingSystemTests.IntegrationTests
         {
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
 
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Price, productId: product.Id, valueLessThan: 500);
-            marketRules.AddPolicyRule(store.GetId(), PolicyRuleRelation.Condition, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Price, productId: product.Id, valueLessThan: 500);
+            marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Condition, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
         }
 

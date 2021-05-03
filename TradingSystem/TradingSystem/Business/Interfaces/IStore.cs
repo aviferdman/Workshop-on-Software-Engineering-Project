@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
+using TradingSystem.Business.Market.StoreStates;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
@@ -20,13 +21,13 @@ namespace TradingSystem.Business.Market
 
         public bool CheckPolicy(IShoppingBasket shoppingBasket);
 
-        public void SetPolicy(Policy policy);
+        public void SetPolicy(string username, Policy policy);
 
         public Policy GetPolicy();
 
-        public Guid AddRule(IRule rule);
+        public Guid AddRule(string username, IRule rule);
 
-        public void RemoveRule();
+        public void RemoveRule(string username);
 
         public String AddProduct(Product product, string userID);
 
@@ -40,9 +41,9 @@ namespace TradingSystem.Business.Market
 
         public void RemoveProduct(Product product);
 
-        public Guid AddDiscount(Discount discount);
+        public Guid AddDiscount(string userID, Discount discount);
 
-        public Guid RemoveDiscount(Guid discountId);
+        public Guid RemoveDiscount(string userID, Guid discountId);
 
         public ICollection<IHistory> GetStoreHistory(string username);
 
@@ -60,5 +61,9 @@ namespace TradingSystem.Business.Market
 
         public Discount GetDiscountById(Guid discountId);
         public IRule GetDiscountRuleById(Guid ruleId);
+
+        public Founder GetFounder();
+
+        public void SetFounder(Founder f);
     }
 }

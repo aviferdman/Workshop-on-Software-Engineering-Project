@@ -97,13 +97,14 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
+            store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             store.UpdateProduct(product1);
             ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
             discount1.AddRule(new Rule(MoreThan10Products));
             ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return200));
             discount2.AddRule(new Rule(MoreThan20Products));
-            store.AddDiscount(discount1);
-            store.AddDiscount(discount2);
+            store.AddDiscount(store.Founder.Username, discount1);
+            store.AddDiscount(store.Founder.Username, discount2);
             Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
         }
 
@@ -139,13 +140,14 @@ namespace TradingSystemTests.MarketTests
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             Store store = new Store("testStore", bankAccount, address);
+            store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             store.UpdateProduct(product1);
             ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
             discount1.AddRule(new Rule(MoreThan10Products));
             ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return200));
             discount2.AddRule(new Rule(MoreThan20Products));
-            store.AddDiscount(discount1);
-            store.AddDiscount(discount2);
+            store.AddDiscount(store.Founder.Username, discount1);
+            store.AddDiscount(store.Founder.Username, discount2);
             Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
         }
 
