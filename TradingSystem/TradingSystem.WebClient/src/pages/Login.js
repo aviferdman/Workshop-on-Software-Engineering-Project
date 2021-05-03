@@ -111,11 +111,21 @@ export default function LoginPage() {
         setState(newState);
         if (!formError) {
             try {
-                await axios.post('/UserGateway/Login', {
+                let respone =await axios.post('/UserGateway/Login', {
                     guestusername: guestUsername,
                     username: state.username.value,
                     password: state.password.value,
                 });
+                if (respone.data === "success") {
+                    history.push('/home');
+                }
+                else {
+                    setState({
+                        ...state,
+                        errorMessage: 'Error: ' + respone.data,
+                        showErrorDialog: true
+                    });
+                }
             }
             catch (e) {
                 let errMsg = '';
