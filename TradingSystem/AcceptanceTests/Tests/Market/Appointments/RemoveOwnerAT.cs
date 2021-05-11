@@ -46,6 +46,13 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Street = "Hello",
             ApartmentNum = "5",
         });
+        UserInfo manager = new UserInfo("manager", "123", null, new Address
+        {
+            State = "Israel",
+            City = "City 2",
+            Street = "Hello",
+            ApartmentNum = "5",
+        });
         ShopId? store;
 
         [SetUp]
@@ -71,12 +78,20 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Bridge.SignUp(owner3);
             Bridge.Login(owner3);
             Bridge.Logout();
+            Bridge.SignUp(manager);
+            Bridge.Login(manager);
+            Bridge.Logout();
             Bridge.Login(founder);
             marketBridge.MakeOwner("owner1", store.Value, "founder");
             Bridge.Logout();
             Bridge.Login(owner1);
             marketBridge.MakeOwner("owner2", store.Value, "owner1");
-            marketBridge.MakeOwner("owner3", store.Value, "owner1");
+            Bridge.Logout();
+            Bridge.Login(owner2);
+            marketBridge.MakeOwner("owner3", store.Value, "owner2");
+            Bridge.Logout();
+            Bridge.Login(owner3);
+            marketBridge.MakeManager("manager", store.Value, "owner3");
             Bridge.Logout();
         }
 
@@ -84,9 +99,19 @@ namespace AcceptanceTests.Tests.Market.Appointments
         [Test]
         public void checkValidRemoveOwner()
         {
-            Bridge.Login(owner1);
-            Assert.IsTrue(marketBridge.RemoveOwner("owner2", store.Value, "owner1"));
-            Assert.IsFalse(marketBridge.RemoveOwner("owner2", store.Value, "owner1"));
+            Bridge.Login(owner2);
+            Assert.IsTrue(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
+            Assert.IsFalse(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
+        }
+
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        [Test]
+        public void checkValidRemovemanager()
+        {
+            Bridge.Login(owner2);
+            Assert.IsTrue(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
+            Assert.IsFalse(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
+            Assert.IsFalse(marketBridge.RemoveManager("manager", store.Value, "owner3"));
         }
 
         /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
@@ -96,7 +121,8 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsTrue(marketBridge.RemoveOwner("owner1", store.Value, "founder"));
             Assert.IsFalse(marketBridge.RemoveOwner("owner1", store.Value, "founder"));
             Assert.IsFalse(marketBridge.RemoveOwner("owner2", store.Value, "owner1"));
-            Assert.IsFalse(marketBridge.RemoveOwner("owner3", store.Value, "owner1"));
+            Assert.IsFalse(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
+            Assert.IsFalse(marketBridge.RemoveManager("manager", store.Value, "owner3"));
         }
 
         /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
