@@ -16,20 +16,23 @@ namespace TradingSystem.Business.Delivery
 
         private DeliverySystem()
         {
+
         }
 
-        public Guid CreateDelivery(string username, string recieverPhone, double weight, string source, string destination)
+        public async Task<string> CreateDelivery(string username, string recieverPhone, double weight, string source, string destination)
         {
             return generatePackageId();
         }
 
-        public Guid CancelDelivery(Guid packageId)
+        public async Task<string> CancelDelivery(string packageId)
         {
             return generatePackageId();
         }
-        private Guid generatePackageId()
+        private string generatePackageId()
         {
-            return Guid.NewGuid();
+            Random r = new Random();
+            int rInt = r.Next(10000, 100000);
+            return rInt.ToString();
         }
     }
 }

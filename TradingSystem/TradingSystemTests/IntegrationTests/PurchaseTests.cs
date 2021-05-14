@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
@@ -48,7 +49,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void CheckLegalPurcahseWithDiscount()
+        public async Task CheckLegalPurcahseWithDiscount()
         {
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
@@ -57,7 +58,8 @@ namespace TradingSystemTests.IntegrationTests
             discount.AddRule(rule);
             testStore.AddDiscount(testStore.GetFounder().Username, discount);
             Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
-            Assert.IsTrue(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.IsTrue(!v1.IsErr);
         }
 
         private double return15(IShoppingBasket arg)
@@ -67,45 +69,48 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void CheckLegalPurcahseUpdatedQuantityAtStore()
+        public async Task CheckLegalPurcahseUpdatedQuantityAtStore()
         {
             int originQuantity = product.Quantity;
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
-            bool successPurchase = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            bool successPurchase = !v1.IsErr;
             Assert.AreEqual(successPurchase, true);
             Assert.AreEqual(originQuantity - 5, product.Quantity);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void CheckIllegalPurcahseStoreQuantityRemains()
+        public async Task CheckIllegalPurcahseStoreQuantityRemains()
         {
             int originQuantity = product.Quantity;
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
-            bool successPurchase = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            bool successPurchase = !v1.IsErr;
             Assert.AreEqual(successPurchase, false);
             Assert.AreEqual(originQuantity, product.Quantity);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void CheckIllegalPurcahseUserRefund()
+        public async Task CheckIllegalPurcahseUserRefund()
         {
             Logger.Instance.CleanLogs();
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             Assert.AreEqual(0, Logger.Instance.Activities.Count);
-            bool successPurchase = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            bool successPurchase = !v1.IsErr;
             Assert.AreEqual(successPurchase, false);
             bool existsRefund = Logger.Instance.Activities.Where(activity => activity.Contains("CancelTransaction")).Any();
             Assert.IsTrue(existsRefund);
@@ -113,30 +118,32 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void CheckLegalPurcahsePolicyIsIllegal()
+        public async Task CheckLegalPurcahsePolicyIsIllegal()
         {
             Func<IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             testStore.AddRule(testStore.GetFounder().Username, r);
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
-            Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.IsFalse(!v1.IsErr);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void CheckLegalPurcahseEmptyShoppingCart()
+        public async Task CheckLegalPurcahseEmptyShoppingCart()
         {
             testStore.UpdateProduct(product);
-            Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.IsFalse(!v1.IsErr);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, PaymentMethod, Guid, BankAccount, double, IShoppingBasket)"/>
         [TestMethod]
-        public void CheckLegalTransaction()
+        public async Task CheckLegalTransaction()
         {
             Transaction transaction = Transaction.Instance;
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
+            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, true);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, true);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
@@ -144,13 +151,13 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
         [TestMethod]
-        public void CheckUnAvailablePaymentTransaction()
+        public async Task CheckUnAvailablePaymentTransaction()
         {
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
+            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.IsNull(transactionStatus.DeliveryStatus);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, false);
@@ -158,16 +165,16 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, BankAccount, Guid, BankAccount, double)"/>
         [TestMethod]
-        public void CheckUnAvailableDeliveryTransaction()
+        public async Task CheckUnAvailableDeliveryTransaction()
         {
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Guid.NewGuid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Task.FromResult(Guid.NewGuid().ToString()));
             Mock<ExternalDeliverySystem> deliverySystem = new Mock<ExternalDeliverySystem>();
-            deliverySystem.Setup(p => p.CreateDelivery(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<string>(), It.IsAny<string>())).Returns(new Guid());
+            deliverySystem.Setup(p => p.CreateDelivery(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             transaction.DeliveryAdapter.SetDeliverySystem(deliverySystem.Object);
-            TransactionStatus transactionStatus = transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
+            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserBankAccount, testStore.GetId(), testStoreBankAccount, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, false);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
@@ -187,33 +194,35 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void SucceessPurchaseBasketBecomesEmpty()
+        public async Task SucceessPurchaseBasketBecomesEmpty()
         {
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
-            Assert.IsTrue(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.IsTrue(!v1.IsErr);
             Assert.IsTrue(testUser.ShoppingCart.IsEmpty());
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void FailedPurchaseBasketRemainsTheSame()
+        public async Task FailedPurchaseBasketRemainsTheSame()
         {
             testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
-            Assert.IsFalse(!testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            Assert.IsFalse(!v1.IsErr);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(BankAccount, string, Address)"/>
         [TestMethod]
-        public void LastProductTwoCustomersSynchro()
+        public async Task LastProductTwoCustomersSynchro()
         {
             bool val1 = false;
             bool val2 = false;
@@ -222,8 +231,10 @@ namespace TradingSystemTests.IntegrationTests
             testStore.UpdateProduct(oneProduct);
             testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-            val1 = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
-            val2 = !secondTestUser.PurchaseShoppingCart(new BankAccount(2, 2), "0533333333", new Address("2", "2", "2", "2")).IsErr ;
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            var v2 = await secondTestUser.PurchaseShoppingCart(new BankAccount(2, 2), "0533333333", new Address("2", "2", "2", "2"));
+            val1 = !v1.IsErr;
+            val2 = !v2.IsErr;
             Assert.IsTrue(val1 || val2);
             Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
 

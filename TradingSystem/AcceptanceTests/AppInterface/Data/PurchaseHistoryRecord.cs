@@ -10,9 +10,9 @@ namespace AcceptanceTests.AppInterface.Data
         public PurchaseHistoryRecord
         (
             IEnumerable<ProductInCart> products,
-            Guid deliveryPackageId,
+            string deliveryPackageId,
             bool deliveryStatus,
-            Guid paymentId,
+            string paymentId,
             bool paymentStatus
         )
         {
@@ -25,10 +25,10 @@ namespace AcceptanceTests.AppInterface.Data
 
         public IEnumerable<ProductInCart> Products { get; }
 
-        public Guid DeliveryPackageId { get; }
+        public string DeliveryPackageId { get; }
         public bool DeliveryStatus { get; }
 
-        public Guid PaymentId { get; }
+        public string PaymentId { get; }
         public bool PaymentStatus { get; }
 
         public IEnumerator<ProductInCart> GetEnumerator()

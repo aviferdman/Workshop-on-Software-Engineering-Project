@@ -92,7 +92,7 @@ namespace TradingSystem.Business.Market
         {
             return owners;
         }
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
+        public async Task<PurchaseStatus> Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
@@ -109,7 +109,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paySum, shoppingBasket);
+            transactionStatus = await Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paySum, shoppingBasket);
             //transaction failed
             if (!transactionStatus.Status)
             {

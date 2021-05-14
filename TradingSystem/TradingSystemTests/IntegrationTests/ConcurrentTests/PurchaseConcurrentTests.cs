@@ -51,7 +51,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         }
 
         [TestMethod]
-        public void LastProductTwoCustomersSynchro()
+        public async Task LastProductTwoCustomersSynchro()
         {
             bool val1 = false;
             bool val2 = false;
@@ -59,8 +59,10 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
 
-            val1 = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr;
-            val2 = !secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress).IsErr;
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+            val1 = !v1.IsErr;
+            val2 = !v2.IsErr;
 
             Assert.IsTrue(val1 || val2);
             Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
@@ -68,15 +70,17 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         }
 
         [TestMethod]
-        public void LastProductTwoCustomers()
+        public async Task LastProductTwoCustomers()
         {
             bool val1 = false;
             bool val2 = false;
             testStore.UpdateProduct(oneProduct);
             testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-            Task task1 = Task.Factory.StartNew(() => val1 = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
-            Task task2 = Task.Factory.StartNew(() => val2 = !secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress).IsErr);
+            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+            var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+            Task task1 = Task.Factory.StartNew(() => val1 = !v1.IsErr);
+            Task task2 = Task.Factory.StartNew(() => val2 = !v2.IsErr);
             Task.WaitAll(task1, task2);
             //Console.WriteLine("first: " + val1 + " second: " + val2);
             Assert.IsTrue(val1 || val2);
@@ -84,7 +88,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         }
 
         [TestMethod]
-        public void LastProductTwoCustomersLooped()
+        public async Task LastProductTwoCustomersLooped()
         {
             for (int i = 0; i < 1000; i++)
             {
@@ -94,8 +98,10 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                 testStore.UpdateProduct(oneProduct);
                 testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
                 secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-                Task task1 = Task.Factory.StartNew(() => val1 = !testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress).IsErr);
-                Task task2 = Task.Factory.StartNew(() => val2 = !secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress).IsErr);
+                var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
+                var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+                Task task1 = Task.Factory.StartNew(() => val1 = !v1.IsErr);
+                Task task2 = Task.Factory.StartNew(() => val2 = !v2.IsErr);
                 Task.WaitAll(task1, task2);
                 //Console.WriteLine("first: " + val1 + " second: " + val2);
                 Assert.IsTrue(val1 || val2);

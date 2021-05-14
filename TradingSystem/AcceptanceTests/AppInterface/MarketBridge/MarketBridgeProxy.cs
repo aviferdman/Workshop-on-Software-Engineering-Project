@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using AcceptanceTests.AppInterface.Data;
 
 using Moq;
@@ -148,9 +148,9 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.RemoveManager(managerName, storeID, assignerName);
         }
 
-        public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        public async Task<bool> PurchaseShoppingCart(PurchaseInfo purchaseInfo)
         {
-            return RealBridge != null && RealBridge.PurchaseShoppingCart(purchaseInfo);
+            return RealBridge != null && await RealBridge.PurchaseShoppingCart(purchaseInfo);
         }
 
         public void tearDown()

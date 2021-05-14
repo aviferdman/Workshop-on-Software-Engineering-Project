@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
@@ -9,6 +11,8 @@ namespace TradingSystem.Business.Payment
 {
     public class PaymentSystem : ExternalPaymentSystem
     {
+        private static readonly HttpClient client = new HttpClient();
+
         private static readonly Lazy<PaymentSystem>
         _lazy =
         new Lazy<PaymentSystem>
@@ -20,19 +24,20 @@ namespace TradingSystem.Business.Payment
         {
         }
 
-        public Guid CancelPayment(Guid paymentId)
+        public async Task<string> CancelPayment(string paymentId)
         {
-            return generatePaymentId();
+            return generatePackageId();
         }
 
-        public Guid generatePaymentId()
+        public async Task<string> CreatePaymentAsync(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
         {
-            return Guid.NewGuid();
+            return generatePackageId();
         }
-
-        public Guid CreatePayment(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
+        private string generatePackageId()
         {
-            return Guid.NewGuid();
+            Random r = new Random();
+            int rInt = r.Next(10000, 100000);
+            return rInt.ToString();
         }
     }
 }

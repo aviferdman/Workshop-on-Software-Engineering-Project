@@ -13,6 +13,7 @@ using TradingSystem.PublisherComponent;
 using TradingSystem.Notifications;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Payment;
+using System.Threading.Tasks;
 
 namespace AcceptanceTests.Tests.LiveNotification
 {
@@ -102,27 +103,27 @@ namespace AcceptanceTests.Tests.LiveNotification
                   It.IsAny<double>(),
                   It.IsAny<string>(),
                   It.IsAny<string>()
-              )).Returns(packageId);
+              )).Returns(new Task<string>( () => packageId.ToString()));
             var paymentId = Guid.NewGuid();
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePayment
+            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
               (
                   It.IsAny<string>(),
                   It.IsAny<string>(),
                   It.IsAny<int>(),
                   It.IsAny<int>(),
                   It.IsAny<double>()
-              )).Returns(paymentId);
+              )).Returns(new Task<string>( () => paymentId.ToString()));
 
         }
 
         [Test]
-        public void CheckValidPurchaseFounderNotified()
+        public async Task CheckValidPurchaseFounderNotified()
         {
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
             marketBridge.AddProductToUserCart(new ProductInCart(pid.Value, 3));
-            Assert.IsTrue(marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677" , new BankAccount(), a)));
+            Assert.IsTrue(await marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677" , new BankAccount(), a)));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -131,7 +132,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         }
 
         [Test]
-        public void CheckValidPurchaseAllOwnersNotified()
+        public async Task CheckValidPurchaseAllOwnersNotified()
         {
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
@@ -140,7 +141,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             publisherManagement.Subscribe("owner1", s1, EventType.PurchaseEvent);
             Bridge.Login(buyer1);
             marketBridge.AddProductToUserCart(new ProductInCart(pid.Value, 3));
-            Assert.IsTrue(marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
+            Assert.IsTrue(await marketBridge .PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -165,7 +166,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         }
 
         [Test]
-        public void CheckInvalidPurchaseAllOwnerNotNotified()
+        public async Task CheckInvalidPurchaseAllOwnerNotNotified()
         {
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
@@ -180,7 +181,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             marketBridge.EditProductInShop(store.Value, pid.Value, p);
             Bridge.Logout();
             Bridge.Login(buyer1);
-            Assert.IsFalse(marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
+            Assert.IsFalse(await marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -191,10 +192,6 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s1.EventsReceived.Count, 0);
             p.Quantity = 5;
         }
-
-        
-       
-
 
         [TearDown]
         public void DeleteAll()
