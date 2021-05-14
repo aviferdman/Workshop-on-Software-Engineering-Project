@@ -14,7 +14,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingSystemTests", "Tradi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AcceptanceTests", "AcceptanceTests\AcceptanceTests.csproj", "{3EFAE6AF-DB02-40FC-BD8E-B11305970B98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TradingSystem.WebApi", "TradingSystem.WebApi\TradingSystem.WebApi.csproj", "{C81E9F00-7899-4097-A7CE-043E818BE0E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TradingSystem.WebApi", "TradingSystem.WebApi\TradingSystem.WebApi.csproj", "{C81E9F00-7899-4097-A7CE-043E818BE0E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
