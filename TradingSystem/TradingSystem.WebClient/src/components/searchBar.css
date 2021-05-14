@@ -7,6 +7,7 @@
     padding: 0.2rem;
     margin-right: 2rem;
     border: 0.1rem #c0c0c0 solid;
+    height: 3.5rem;
     background-color: #f0f0f0;
     cursor: pointer;
 }
@@ -17,4 +18,10 @@
 
 .searchButton.Sprimary{
     background-color: #ECCC77FF;
+}
+
+.inputProps {
+    width: 25rem;
+    height: 3rem;
+
 }
