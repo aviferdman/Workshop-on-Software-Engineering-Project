@@ -19,6 +19,7 @@ namespace AcceptanceTests
                 City = "Ramat Gan",
                 Street = "Bialik",
                 ApartmentNum = "54",
+                ZipCode = "584268",
             }
         );
 
@@ -34,6 +35,7 @@ namespace AcceptanceTests
                 City = "Tel-Aviv",
                 Street = "Rot Shield",
                 ApartmentNum = "5d",
+                ZipCode = "58426300",
             }
         );
 
@@ -49,6 +51,7 @@ namespace AcceptanceTests
                 City = "Tel-Aviv",
                 Street = "Rot Shield",
                 ApartmentNum = "5d",
+                ZipCode = "58426300",
             }
         );
 
@@ -63,6 +66,7 @@ namespace AcceptanceTests
                 City = "Beer-Sheva",
                 Street = "Rager",
                 ApartmentNum = "100",
+                ZipCode = "7563187",
             }
         );
 
@@ -76,7 +80,8 @@ namespace AcceptanceTests
                 State = "Sviden",
                 City = "forsenGa",
                 Street = "Kappa",
-                ApartmentNum = "123"
+                ApartmentNum = "123",
+                ZipCode = "123456",
             }
         );
 
@@ -90,6 +95,7 @@ namespace AcceptanceTests
                 City = "Los Santos",
                 Street = "The Hood",
                 ApartmentNum = "8",
+                ZipCode = "1547623",
             }
         );
 
@@ -103,6 +109,7 @@ namespace AcceptanceTests
                 City = "Ramat-Gan",
                 Street = "HaYarden",
                 ApartmentNum = "67",
+                ZipCode = "53288742",
             }
         );
     }

@@ -76,6 +76,7 @@ namespace AcceptanceTests.Tests.Market.Shop
                     City = "Henesys",
                     Street = "Free Market",
                     ApartmentNum = "52",
+                    ZipCode = "1111111",
                 }
             )));
         }

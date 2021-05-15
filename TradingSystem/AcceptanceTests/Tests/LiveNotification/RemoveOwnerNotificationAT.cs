@@ -24,6 +24,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner1 = new UserInfo("owner1", "123", null, new Address
@@ -32,6 +33,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner2 = new UserInfo("owner2", "123", null, new Address
@@ -40,6 +42,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner3 = new UserInfo("owner3", "123", null, new Address
@@ -48,6 +51,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
         ShopId? store;
 
@@ -64,6 +68,7 @@ namespace AcceptanceTests.Tests.LiveNotification
                 City = "City 2",
                 Street = "Hello",
                 ApartmentNum = "5",
+                ZipCode = "55555",
             }));
             Bridge.Logout();
             Bridge.SignUp(owner1);

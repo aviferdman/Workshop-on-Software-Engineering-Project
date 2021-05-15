@@ -22,6 +22,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner1 = new UserInfo("owner", "123", null, new Address
@@ -30,6 +31,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo manager = new UserInfo("manager", "123", null, new Address
@@ -38,6 +40,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo manager2 = new UserInfo("manager2", "123", null, new Address
@@ -46,6 +49,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         ShopId? store;
@@ -62,6 +66,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
                 City = "City 2",
                 Street = "Hello",
                 ApartmentNum = "5",
+                ZipCode = "55555",
             }));
             Bridge.Logout();
             Bridge.SignUp(owner1);

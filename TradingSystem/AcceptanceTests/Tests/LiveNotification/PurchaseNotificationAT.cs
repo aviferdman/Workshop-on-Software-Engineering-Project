@@ -28,6 +28,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         Address a = new Address
@@ -36,6 +37,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 3",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         };
 
         UserInfo buyer1 = new UserInfo("buyer1", "123", null, new Address
@@ -44,6 +46,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo buyer2 = new UserInfo("buyer2", "123", null, new Address
@@ -52,6 +55,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
         UserInfo owner1 = new UserInfo("owner1", "123", null, new Address
         {
@@ -59,6 +63,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         ProductInfo p = new ProductInfo("potato", 5, 5.0, "veggies", 0.5);
@@ -85,6 +90,7 @@ namespace AcceptanceTests.Tests.LiveNotification
                 City = "City 2",
                 Street = "Hello",
                 ApartmentNum = "5",
+                ZipCode = "55555",
             }));
             pid =marketBridge.AddProductToShop(store.Value, p);
             Bridge.Logout();
@@ -100,7 +106,7 @@ namespace AcceptanceTests.Tests.LiveNotification
               (
                   It.IsAny<string>(),
                   It.IsAny<string>(),
-                  It.IsAny<double>(),
+                  It.IsAny<string>(),
                   It.IsAny<string>(),
                   It.IsAny<string>()
               )).Returns(new Task<string>( () => packageId.ToString()));
@@ -110,9 +116,10 @@ namespace AcceptanceTests.Tests.LiveNotification
               (
                   It.IsAny<string>(),
                   It.IsAny<string>(),
-                  It.IsAny<int>(),
-                  It.IsAny<int>(),
-                  It.IsAny<double>()
+                  It.IsAny<string>(),
+                  It.IsAny<string>(),
+                  It.IsAny<string>(),
+                  It.IsAny<string>()
               )).Returns(new Task<string>( () => paymentId.ToString()));
 
         }

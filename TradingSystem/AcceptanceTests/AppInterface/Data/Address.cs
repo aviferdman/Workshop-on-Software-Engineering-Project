@@ -6,10 +6,6 @@
         public string City { get; set; }
         public string Street { get; set; }
         public string ApartmentNum { get; set; }
-
-        public override string ToString()
-        {
-            return State + "\\" + City + "\\" + Street + "\\" + ApartmentNum;
-        }
+        public string ZipCode { get; set; }
     }
 }

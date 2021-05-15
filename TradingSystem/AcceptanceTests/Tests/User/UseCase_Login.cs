@@ -70,6 +70,7 @@ namespace AcceptanceTests.Tests.User
                 City = "City 2",
                 Street = "Hello",
                 ApartmentNum = "5",
+                ZipCode = "14700000",
             })));
         }
 
