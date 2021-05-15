@@ -9,7 +9,7 @@ class SearchBar extends Component {
                     <input
                         type="text"
                         placeholder="Search"
-                        className="prompt"
+                        className="inputProps"
                     />
                     <button className="searchButton Sprimary">Search</button>
                 </div>

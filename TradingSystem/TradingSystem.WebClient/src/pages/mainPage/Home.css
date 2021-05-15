@@ -27,6 +27,22 @@ body, input, select, button, textarea{
 
 }
 
+.header-container{
+    display: grid;
+    grid-template-columns: 15% 75% 5% 5%;
+}
+
+.icons {
+
+    border: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0px;
+    color: white;
+    cursor: pointer;
+}
+
+
 a{
     text-decoration: none;
 
@@ -49,6 +65,15 @@ search{
     align-items: center;
     flex: 3 60;
     margin-left: 37rem;
+
+}
+
+.search-grid{
+    grid-area: search;
+    display: grid;
+    grid-template-columns: 10% 10% 10% 10%;
+    padding: 2rem;
+    align-items: center;
 }
 
 header a{
@@ -158,6 +183,18 @@ footer{
 .filter div{
     flex: 1;
 }
+
+/* min max input */
+.rangeinput {
+    margin-left: 1.5rem;
+}
+
+.sizeInput {
+    width: 4rem;
+}
+
+
+
 
 
 

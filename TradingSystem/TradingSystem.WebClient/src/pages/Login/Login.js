@@ -7,12 +7,12 @@ import {
     TextField
 } from "@material-ui/core";
 import './Login.scss'
-import {guestUsername, useTitle} from "../App";
-import PasswordField from "../components/passwordFields";
-import FormFieldInfo from "../formFieldInfo";
+import {guestUsername, useTitle} from "../../App";
+import PasswordField from "../../components/passwordFields";
+import FormFieldInfo from "../../formFieldInfo";
 import axios from "axios";
-import useFormsStyles from "../style/forms";
-import SimpleAlertDialog from "../components/simpleAlertDialog";
+import useFormsStyles from "../../style/forms";
+import SimpleAlertDialog from "../../components/simpleAlertDialog";
 
 const useStyles = makeStyles((theme) => ({
     form: {
