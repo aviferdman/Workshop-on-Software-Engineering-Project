@@ -23,7 +23,7 @@ namespace TradingSystem.Business.Market
         private Founder founder;
         private ConcurrentDictionary<string, IManager> managers;
         private ConcurrentDictionary<string, Owner> owners;
-        private BankAccount _bank;
+        private CreditCard _bank;
         private Guid _id;
         private string name;
         private ICollection<Discount> _discounts;
@@ -40,7 +40,7 @@ namespace TradingSystem.Business.Market
         internal ICollection<TransactionStatus> TransactionsHistory { get => _transactionsHistory; set => _transactionsHistory = value; }
         public Guid Id { get => _id; set => _id = value; }
         public string Name { get => name; set => name = value; }
-        internal BankAccount Bank { get => _bank; set => _bank = value; }
+        internal CreditCard Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public ICollection<IHistory> History { get => history; set => history = value; }
         public ConcurrentDictionary<string, IManager> Managers { get => managers; set => managers = value; }
@@ -49,7 +49,7 @@ namespace TradingSystem.Business.Market
         public object Prem_lock { get => prem_lock; set => prem_lock = value; }
         public string Name1 { get => name; set => name = value; }
 
-        public Store(string name, BankAccount bank, Address address)
+        public Store(string name, CreditCard bank, Address address)
         {
             this.name = name;
             this._products = new ConcurrentDictionary<Guid, Product>();

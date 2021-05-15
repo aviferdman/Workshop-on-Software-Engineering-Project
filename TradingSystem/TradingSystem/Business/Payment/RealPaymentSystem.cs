@@ -25,17 +25,17 @@ namespace TradingSystem.Business.Payment
             return responseString;
         }
 
-        public async Task<string> CreatePaymentAsync(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
+        public async Task<string> CreatePaymentAsync(string cardnumber, string month, string year, string holderName, string ccv, string id)
         {
             var postContent = new Dictionary<string, string>
             {
                 { "action_type", "pay" },
-                { "card_number", "2222333344445555" },
-                { "month", "4" },
-                { "year", "2021" },
-                { "holder", "Israel Israelovice" },
-                { "ccv", "262" },
-                { "id", "20444444" }
+                { "card_number", cardnumber },
+                { "month", month },
+                { "year", year },
+                { "holder", holderName },
+                { "ccv", ccv },
+                { "id", id }
             };
 
             var responseString = await client.Send(postContent);

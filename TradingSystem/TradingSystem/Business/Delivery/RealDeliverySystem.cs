@@ -28,19 +28,20 @@ namespace TradingSystem.Business.Payment
         
         }
 
-        public async Task<string> CreateDelivery(string username, string recieverPhone, double weight, string source, string destination)
+        public async Task<string> CreateDelivery(string name, string street, string city, string country, string zip)
         {
-            throw new NotImplementedException();
             var postContent = new Dictionary<string, string>
             {
                 { "action_type", "supply" },
-                { "name", username },
-                { "address", "Rager Blvd 12" },
-                { "city", "Beer Sheva" },
-                { "country", "Israel" },
-                { "zip", "8458527" }
+                { "name", name },
+                { "address", street },
+                { "city", city },
+                { "country", country },
+                { "zip", zip }
             };
 
+            var responseString = await client.Send(postContent);
+            return responseString;
         }
     }
 }

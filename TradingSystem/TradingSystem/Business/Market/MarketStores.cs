@@ -57,7 +57,7 @@ namespace TradingSystem.Business.Market
         //USER FUNCTIONALITY
 
         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-        public Store CreateStore(string name, string username, BankAccount bank, Address address)
+        public Store CreateStore(string name, string username, CreditCard bank, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
             User user = MarketUsers.Instance.GetUserByUserName(username);

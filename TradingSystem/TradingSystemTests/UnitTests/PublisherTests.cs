@@ -49,7 +49,7 @@ namespace TradingSystemTests.UnitTests
         [TestMethod]
         public void CheckEventNotification()
         {
-            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
             UserManagement.Instance.DataUsers[user.Username] = dataUser;

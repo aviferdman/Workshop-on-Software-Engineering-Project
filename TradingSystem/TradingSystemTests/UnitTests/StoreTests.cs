@@ -25,51 +25,51 @@ namespace TradingSystemTests.MarketTests
         {
             this.testUser = new User("testuser");
             this.shoppingCart = new ShoppingCart(testUser);
-            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
             
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, CreditCard, double))"/>
         [TestMethod]
         public async Task CheckLegalPurchaseAsync()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             
             string clientPhone = "0544444444";
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product("1", 10, 10, 10, "category");
             Product product2 = new Product("2", 20, 20, 20, "category");
             product_quantity.Add(product1, 1);
             product_quantity.Add(product2, 2);
             shoppingBasket.Product_quantity = product_quantity;
-            Store store = new Store("testStore", bankAccount, address);
+            Store store = new Store("testStore", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
-            PurchaseStatus purchaseStatus = await store.Purchase(shoppingBasket, clientPhone, address, bankAccount);
+            PurchaseStatus purchaseStatus = await store.Purchase(shoppingBasket, clientPhone, address, card);
             Assert.AreEqual(true, purchaseStatus.TransactionStatus.Status);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, CreditCard, double))"/>
         [TestMethod]
         public async Task CheckNotEnoghtProductQuantityPurchase()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             string clientPhone = "0544444444";
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product("1", 10, 10, 10, "category");
             Product product2 = new Product("2", 20, 20, 20, "category");
             product_quantity.Add(product1, 11);
             product_quantity.Add(product2, 22);
-            Store store = new Store("testStore", bankAccount, address);
+            Store store = new Store("testStore", card, address);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
             shoppingBasket.Product_quantity = product_quantity;
-            PurchaseStatus purchaseStatus = await store.Purchase(shoppingBasket, clientPhone, address, bankAccount);
+            PurchaseStatus purchaseStatus = await store.Purchase(shoppingBasket, clientPhone, address, card);
             Assert.AreEqual(false, purchaseStatus.PreConditions);
 
         }
@@ -81,9 +81,9 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 5);
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Store store = new Store("testStore", bankAccount, address);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Store store = new Store("testStore", card, address);
             store.UpdateProduct(product1);
             Assert.AreEqual(0,store.ApplyDiscounts(shoppingBasket));
         }
@@ -95,9 +95,9 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 30);
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Store store = new Store("testStore", bankAccount, address);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Store store = new Store("testStore", card, address);
             store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             store.UpdateProduct(product1);
             ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
@@ -138,9 +138,9 @@ namespace TradingSystemTests.MarketTests
         {
             Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 19);
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Store store = new Store("testStore", bankAccount, address);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Store store = new Store("testStore", card, address);
             store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             store.UpdateProduct(product1);
             ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
@@ -167,7 +167,7 @@ namespace TradingSystemTests.MarketTests
         {
             this.testUser = new User("testuser");
             this.shoppingCart = new ShoppingCart(testUser);
-            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
             Transaction.Instance.DeleteAllTests();
         }

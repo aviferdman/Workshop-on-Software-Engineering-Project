@@ -19,7 +19,7 @@ namespace TradingSystem.Business.Delivery
 
         }
 
-        public async Task<string> CreateDelivery(string username, string recieverPhone, double weight, string source, string destination)
+        public async Task<string> CreateDelivery(string name, string street, string city, string country, string zip)
         {
             return generatePackageId();
         }

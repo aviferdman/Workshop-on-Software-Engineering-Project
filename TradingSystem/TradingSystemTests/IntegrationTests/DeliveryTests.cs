@@ -18,8 +18,8 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = "usertest";
             Guid storeId = Guid.NewGuid();
-            Address source = new Address("1", "1", "1", "1");
-            Address destination = new Address("2", "2", "2", "2");
+            Address source = new Address("1", "1", "1", "1", "1");
+            Address destination = new Address("2", "2", "2", "2", "2");
             DeliveryAdapter deliveryAdapter = new DeliveryImpl();
             DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, "0544444444", 1, source, destination);
             DeliveryStatus deliveryStatus = await deliveryAdapter.CreateDelivery(deliveryDetails);

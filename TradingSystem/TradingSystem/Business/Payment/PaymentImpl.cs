@@ -33,7 +33,7 @@ namespace TradingSystem.Business.Delivery
         //use case 19 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/74
         public async Task<PaymentStatus> CreatePayment(PaymentDetails paymentDetails)
         {
-            string paymentId = await _paymentSystem.CreatePaymentAsync(paymentDetails.Username, paymentDetails.Method.GeneratePaymentDetails(), paymentDetails.RecieverBankAccountId.AccountNumber, paymentDetails.RecieverBankAccountId.Branch, paymentDetails.PaymentSum);
+            string paymentId = await _paymentSystem.CreatePaymentAsync(paymentDetails.Method.GetCardNumber(), paymentDetails.Method.GetMonth(), paymentDetails.Method.GetYear(), paymentDetails.Method.GetHolderName(), paymentDetails.Method.GetCVV(), paymentDetails.Method.GetHolderId());
             return new PaymentStatus(paymentId, paymentDetails.Username, paymentDetails.StoreId, !paymentId.ToString().Equals(ErrorPaymentId));
         }
 

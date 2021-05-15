@@ -18,7 +18,7 @@ namespace TradingSystemTests.MarketTests
         {
             this.testUser = new User("testuser");
             this.shoppingCart = new ShoppingCart(testUser);
-            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
         }
 
@@ -76,7 +76,7 @@ namespace TradingSystemTests.MarketTests
         {
             this.testUser = new User("testuser");
             this.shoppingCart = new ShoppingCart(testUser);
-            this.store = new Store("tets", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
             Transaction.Instance.DeleteAllTests();
         }

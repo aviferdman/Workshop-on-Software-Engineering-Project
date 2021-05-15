@@ -207,7 +207,7 @@ namespace TradingSystem.Business.Market
         //USER FUNCTIONALITY
 
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
-        public async Task<Result<bool>> PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
+        public async Task<Result<bool>> PurchaseShoppingCart(string username, CreditCard bank, string phone, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(PurchaseShoppingCart));
             User user = GetUserByUserName(username);

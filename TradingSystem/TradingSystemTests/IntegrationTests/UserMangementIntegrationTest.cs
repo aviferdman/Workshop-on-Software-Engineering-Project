@@ -14,7 +14,7 @@ namespace TradingSystemTests.IntegrationTests
     {
         private String signup()
         {
-            UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la"), "0501234733");
+            UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la", "1111111"), "0501234733");
             return MarketUsers.Instance.AddGuest();
         }
 

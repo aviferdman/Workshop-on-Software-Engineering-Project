@@ -24,6 +24,7 @@ export default function Signup() {
         city: new FormFieldInfo(''),
         street: new FormFieldInfo(''),
         apartmentNumber: new FormFieldInfo(''),
+        zipCode: new FormFieldInfo(''),
         dialogErrorMessage: '',
         showErrorDialog: false
     });
@@ -119,7 +120,7 @@ export default function Signup() {
         }
         else {
             let match = /(\d{3})(-?)(\d{7})/.exec(state.phoneNumber.value);
-            if (match.length === 0) {
+            if (match == null || match.length === 0) {
                 newState.phoneNumber.isError = true;
                 newState.phoneNumber.errorMessage = 'Invalid format';
             }
@@ -175,6 +176,15 @@ export default function Signup() {
                 newState.apartmentNumber.errorMessage = '';
             }
         }
+        if (!state.zipCode.value) {
+            formError = true;
+            newState.zipCode.isError = true;
+            newState.zipCode.errorMessage = 'Required';
+        }
+        else {
+            newState.zipCode.isError = false;
+            newState.zipCode.errorMessage = '';
+        }
 
         setState(newState);
         if (!formError) {
@@ -187,6 +197,7 @@ export default function Signup() {
                     _city: state.city.value,
                     _street: state.street.value,
                     _apartmentNum: state.apartmentNumber.value,
+                    zip: state.zipCode.value,
                     phone: state.phoneNumber.value
                 });
                 history.push('/login');
@@ -248,6 +259,9 @@ export default function Signup() {
                                            required error={state.apartmentNumber.isError} helperText={state.apartmentNumber.errorMessage}
                                            onChange={handleChange("apartmentNumber")}/>
                             </div>
+                            <TextField label={'Zip code'} variant={'outlined'} className={classes.formRow}
+                                       required error={state.zipCode.isError} helperText={state.zipCode.errorMessage}
+                                       onChange={handleChange("zipCode")}/>
                             <div className={clsx(classes.btnBlock, classes.formRow)}>
                                 <Button variant="contained" color="primary" className={classes.btnCancel} onClick={onCancelClick}>Cancel</Button>
                                 <Button type={"submit"} variant="contained" color="primary">Confirm</Button>

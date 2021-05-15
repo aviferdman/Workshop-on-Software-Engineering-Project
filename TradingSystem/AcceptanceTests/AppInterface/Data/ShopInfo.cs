@@ -2,15 +2,20 @@
 {
     public class ShopInfo
     {
-        public ShopInfo(string name, BankAccount bankAccount, Address address)
+        public ShopInfo(string name, CreditCard creditCard, Address address)
         {
+            if (creditCard is null)
+            {
+                throw new System.ArgumentNullException(nameof(creditCard));
+            }
+
             Name = name;
-            BankAccount = bankAccount;
+            CreditCard = creditCard;
             Address = address;
         }
 
         public string Name { get; }
-        public BankAccount BankAccount { get; }
+        public CreditCard CreditCard { get; }
         public Address Address { get; }
 
         public override bool Equals(object? obj) => obj is ShopInfo other && Equals(other);
