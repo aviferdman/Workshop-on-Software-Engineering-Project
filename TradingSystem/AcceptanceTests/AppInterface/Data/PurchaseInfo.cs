@@ -6,15 +6,20 @@ namespace AcceptanceTests.AppInterface.Data
 {
     public class PurchaseInfo
     {
-        public PurchaseInfo(string phoneNumber, BankAccount bankAccount, Address address)
+        public PurchaseInfo(string phoneNumber, CreditCard creditCard, Address address)
         {
+            if (creditCard is null)
+            {
+                throw new ArgumentNullException(nameof(creditCard));
+            }
+
             PhoneNumber = phoneNumber;
-            BankAccount = bankAccount;
+            CreditCard = creditCard;
             Address = address;
         }
 
         public string PhoneNumber { get; set; }
-        public BankAccount BankAccount { get; set; }
+        public CreditCard CreditCard { get; }
         public Address Address { get; set; }
     }
 }

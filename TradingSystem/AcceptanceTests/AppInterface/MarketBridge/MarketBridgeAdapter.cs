@@ -77,12 +77,17 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             (
                 shopInfo.Name,
                 Username,
-                shopInfo.BankAccount.AccountNumber,
-                shopInfo.BankAccount.Branch,
+                shopInfo.CreditCard.CardNumber,
+                shopInfo.CreditCard.Month,
+                shopInfo.CreditCard.Year,
+                shopInfo.CreditCard.HolderName,
+                shopInfo.CreditCard.Cvv,
+                shopInfo.CreditCard.HolderId,
                 shopInfo.Address.State,
                 shopInfo.Address.City,
                 shopInfo.Address.Street,
-                shopInfo.Address.ApartmentNum
+                shopInfo.Address.ApartmentNum,
+                shopInfo.Address.ZipCode
             );
             return storeData == null ? (ShopId?)null : new ShopId(storeData.Id, shopInfo.Name);
         }
@@ -202,13 +207,18 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             Result<bool> result = await marketShoppingCartService.PurchaseShoppingCart
             (
                 SystemContext.TokenUsername,
-                purchaseInfo.BankAccount.AccountNumber,
-                purchaseInfo.BankAccount.Branch,
+                purchaseInfo.CreditCard.CardNumber,
+                purchaseInfo.CreditCard.Month,
+                purchaseInfo.CreditCard.Year,
+                purchaseInfo.CreditCard.HolderName,
+                purchaseInfo.CreditCard.Cvv,
+                purchaseInfo.CreditCard.HolderId,
                 purchaseInfo.PhoneNumber,
                 purchaseInfo.Address.State,
                 purchaseInfo.Address.City,
                 purchaseInfo.Address.Street,
-                purchaseInfo.Address.ApartmentNum
+                purchaseInfo.Address.ApartmentNum,
+                purchaseInfo.Address.ZipCode
             );
             return !result.IsErr && result.Ret;
         }

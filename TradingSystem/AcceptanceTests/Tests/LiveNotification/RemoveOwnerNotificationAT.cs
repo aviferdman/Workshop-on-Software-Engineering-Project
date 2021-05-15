@@ -62,14 +62,27 @@ namespace AcceptanceTests.Tests.LiveNotification
             Bridge.Connect();
             Bridge.SignUp(founder);
             Bridge.Login(founder);
-            store = marketBridge.OpenShop(new ShopInfo("whyy", new BankAccount(), new Address
-            {
-                State = "Israel",
-                City = "City 2",
-                Street = "Hello",
-                ApartmentNum = "5",
-                ZipCode = "55555",
-            }));
+            store = marketBridge.OpenShop(new ShopInfo
+            (
+                "whyy",
+                new CreditCard
+                (
+                    cardNumber: "145236987",
+                    month: "09",
+                    year: "26",
+                    holderName: "Nunu Willamp",
+                    cvv: "000",
+                    holderId: "030301777"
+                ),
+                new Address
+                {
+                    State = "Israel",
+                    City = "City 2",
+                    Street = "Hello",
+                    ApartmentNum = "5",
+                    ZipCode = "55555",
+                })
+            );
             Bridge.Logout();
             Bridge.SignUp(owner1);
             Bridge.Login(owner1);

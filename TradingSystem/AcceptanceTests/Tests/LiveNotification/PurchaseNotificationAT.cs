@@ -84,14 +84,27 @@ namespace AcceptanceTests.Tests.LiveNotification
             Bridge.Logout();
             Bridge.SignUp(founder);
             Bridge.Login(founder);
-            store = marketBridge.OpenShop(new ShopInfo("whyy", new BankAccount(), new Address
-            {
-                State = "Israel",
-                City = "City 2",
-                Street = "Hello",
-                ApartmentNum = "5",
-                ZipCode = "55555",
-            }));
+            store = marketBridge.OpenShop(new ShopInfo
+            (
+                "whyy",
+                new CreditCard
+                (
+                    cardNumber: "145236987",
+                    month: "09",
+                    year: "26",
+                    holderName: "Nunu Willamp",
+                    cvv: "000",
+                    holderId: "030301777"
+                ),
+                new Address
+                {
+                    State = "Israel",
+                    City = "City 2",
+                    Street = "Hello",
+                    ApartmentNum = "5",
+                    ZipCode = "55555",
+                })
+            );
             pid =marketBridge.AddProductToShop(store.Value, p);
             Bridge.Logout();
             Bridge.SignUp(buyer1);
@@ -130,7 +143,20 @@ namespace AcceptanceTests.Tests.LiveNotification
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
             marketBridge.AddProductToUserCart(new ProductInCart(pid.Value, 3));
-            Assert.IsTrue(await marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677" , new BankAccount(), a)));
+            Assert.IsTrue(await marketBridge.PurchaseShoppingCart(new PurchaseInfo
+            (
+                "0501345677",
+                new CreditCard
+                (
+                    cardNumber: "5555000011113333",
+                    month: "01",
+                    year: "23",
+                    holderName: "Forsen",
+                    cvv: "999",
+                    holderId: "302301007"
+                ),
+                a
+            )));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -148,7 +174,20 @@ namespace AcceptanceTests.Tests.LiveNotification
             publisherManagement.Subscribe("owner1", s1, EventType.PurchaseEvent);
             Bridge.Login(buyer1);
             marketBridge.AddProductToUserCart(new ProductInCart(pid.Value, 3));
-            Assert.IsTrue(await marketBridge .PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
+            Assert.IsTrue(await marketBridge.PurchaseShoppingCart(new PurchaseInfo
+            (
+                "0501345677",
+                new CreditCard
+                (
+                    cardNumber: "5555000011113333",
+                    month: "01",
+                    year: "23",
+                    holderName: "Forsen",
+                    cvv: "999",
+                    holderId: "302301007"
+                ),
+                a
+            )));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -188,7 +227,20 @@ namespace AcceptanceTests.Tests.LiveNotification
             marketBridge.EditProductInShop(store.Value, pid.Value, p);
             Bridge.Logout();
             Bridge.Login(buyer1);
-            Assert.IsFalse(await marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
+            Assert.IsFalse(await marketBridge.PurchaseShoppingCart(new PurchaseInfo
+            (
+                "0501345677",
+                new CreditCard
+                (
+                    cardNumber: "5555000011113333",
+                    month: "01",
+                    year: "23",
+                    holderName: "Forsen",
+                    cvv: "999",
+                    holderId: "302301007"
+                ),
+                a
+            )));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
