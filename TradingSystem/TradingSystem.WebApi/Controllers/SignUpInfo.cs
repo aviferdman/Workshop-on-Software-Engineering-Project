@@ -14,6 +14,7 @@ namespace TradingSystem.WebApi.Controllers
         public string _city { get; set; }
         public string _street { get; set; }
         public string _apartmentNum { get; set; }
+        public string zip { get; set; }
         public string phone { get; set; }
     }
 }
