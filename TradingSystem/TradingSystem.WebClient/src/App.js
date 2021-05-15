@@ -3,6 +3,7 @@ import {useEffect} from "react";
 import Routes from "./routes";
 import axios from "axios";
 import SimpleAlertDialog from "./components/simpleAlertDialog";
+import {GlobalContext} from "./globalContext";
 
 export function useTitle(title) {
   useEffect(() => {
@@ -10,22 +11,38 @@ export function useTitle(title) {
   }, [title]);
 }
 
-export let guestUsername;
-
 // TODO: make it flexible based on environment build
 // Setup the base URL of the web API server.
 axios.defaults.baseURL = 'https://localhost:5001/api';
-guestUsername = '';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      showErrorDialog: false,
-      errorMessage: null
-    };
 
     this.handleCloseErrorDialog = this.handleCloseErrorDialog.bind(this);
+    this.setUsername = this.setUsername.bind(this);
+
+    this.state = {
+      showErrorDialog: false,
+      errorMessage: null,
+      globalContext: {
+        username: '',
+        setUsername: this.setUsername,
+        webSocket: null,
+        setWebSocket: () => {}
+      }
+    };
+  }
+
+  setUsername = username => {
+    this.setState({
+      globalContext: {
+        username: username,
+        setUsername: this.state.globalContext.setUsername,
+        webSocket: this.state.globalContext.webSocket,
+        setWebSocket: this.state.globalContext.setWebSocket,
+      }
+    });
   }
 
   handleCloseErrorDialog = () => {
@@ -39,27 +56,50 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    guestUsername = '';
+    this.setState({
+      globalContext: {
+        username: '',
+        setUsername: this.state.globalContext.setUsername,
+        webSocket: this.state.globalContext.webSocket,
+        setWebSocket: this.state.globalContext.setWebSocket,
+      }
+    });
   }
 
   render() {
     if (this.state.showErrorDialog) {
       return <SimpleAlertDialog message={this.state.errorMessage} isShown={true} onClose={this.handleCloseErrorDialog} />;
     }
-    return <Routes />;
+    return (
+      <GlobalContext.Provider value={this.state.globalContext}>
+        <Routes />;
+      </GlobalContext.Provider>
+    );
   }
 
   async init() {
     try {
       let response = await axios.post('/UserGateway/AddGuest/', { });
-      guestUsername = response.data;
       this.setState({
         showErrorDialog: false,
-        errorMessage: null
-      })
+        errorMessage: null,
+        globalContext: {
+          username: response.data,
+          setUsername: this.state.globalContext.setUsername,
+          webSocket: this.state.globalContext.webSocket,
+          setWebSocket: this.state.globalContext.setWebSocket,
+        }
+      });
     }
     catch (e) {
-      guestUsername = '';
+      this.setState({
+        globalContext: {
+          username: '',
+          setUsername: this.state.globalContext.setUsername,
+          webSocket: this.state.globalContext.webSocket,
+          setWebSocket: this.state.globalContext.setWebSocket,
+        }
+      });
       if (e.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
