@@ -2,6 +2,17 @@ import React, {Component} from 'react';
 import  './searchBar.css';
 
 class SearchBar extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    onKeyUp = e => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            this.props.onSearch();
+        }
+    };
+
     render() {
         return (
             <div className="ui search">
@@ -10,8 +21,11 @@ class SearchBar extends Component {
                         type="text"
                         placeholder="Search"
                         className="inputProps"
+                        onChange={this.props.onChange}
+                        onKeyUp={this.onKeyUp}
+                        value={this.props.value}
                     />
-                    <button className="searchButton Sprimary">Search</button>
+                    <button className="searchButton primary" onClick={this.props.onSearch}>Search</button>
                 </div>
 
             </div>

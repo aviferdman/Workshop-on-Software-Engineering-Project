@@ -15,6 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using TradingSystem.Service;
 using TradingSystem.WebApi.Controllers;
 
 namespace TradingSystem.WebApi
@@ -55,6 +57,9 @@ namespace TradingSystem.WebApi
             });
 
             services.AddControllers();
+
+            services.AddSingleton(CurrentEnvironment.ContentRootFileProvider);
+            services.AddSingleton(MarketProductsService.Instance);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
