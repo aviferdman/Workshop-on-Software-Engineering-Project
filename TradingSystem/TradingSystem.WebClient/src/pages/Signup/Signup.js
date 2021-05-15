@@ -1,13 +1,15 @@
-import {username, useTitle} from "../../App";
+import React from "react";
+
+import {useTitle} from "../../App";
 import {useHistory} from "react-router-dom";
 import {Button, makeStyles, TextField} from "@material-ui/core";
 import PasswordField from "../../components/passwordFields";
-import React from "react";
 import clsx from "clsx";
 import FormFieldInfo from "../../formFieldInfo";
 import axios from "axios";
 import useFormsStyles from "../../style/forms";
 import SimpleAlertDialog from "../../components/simpleAlertDialog";
+import {GlobalContext} from "../../globalContext";
 
 export default function Signup() {
     const history = useHistory();
@@ -64,7 +66,7 @@ export default function Signup() {
         setState(newState);
     };
 
-    async function onSubmit(e) {
+    const makeOnSubmit = context => async function onSubmit(e) {
         e.preventDefault();
         let formError = false;
         let newState = {
@@ -178,7 +180,7 @@ export default function Signup() {
         if (!formError) {
             try {
                 await axios.post('/UserGateway/SignUp', {
-                    guestusername: username,
+                    guestusername: context.username,
                     username: state.username.value,
                     password: state.password.value,
                     _state: state.state.value,
@@ -209,47 +211,51 @@ export default function Signup() {
     }
 
     return (
-        <div>
-            <SimpleAlertDialog isShown={state.showErrorDialog} message={state.dialogErrorMessage} onClose={closeErrorDialog} />
-            <div className={formsClasses.center}>
-                <form className={formsClasses.form} onSubmit={onSubmit} noValidate autoComplete="off">
-                    <h4 className={formsClasses.title}>Sign up</h4>
-                    <TextField label={'Username'} variant={'outlined'} className={classes.formRow}
-                               required error={state.username.isError} helperText={state.username.errorMessage}
-                               onChange={handleChange("username")}/>
-                    <div className={classes.formRow}>
-                        <PasswordField label={'Password'} variant={'outlined'} className={classes.formInRowInput}
-                                       required error={state.password.isError} helperText={state.password.errorMessage}
-                                       onChange={handleChange("password")} id={'input-password'}/>
-                        <PasswordField label={'Confirm password'} variant={'outlined'}
-                                       required error={state.confirmPassword.isError} helperText={state.confirmPassword.errorMessage}
-                                       onChange={handleChange("confirmPassword")} id={'input-password-confirm'}/>
+        <GlobalContext.Consumer>
+            {context => (
+                <div>
+                    <SimpleAlertDialog isShown={state.showErrorDialog} message={state.dialogErrorMessage} onClose={closeErrorDialog} />
+                    <div className={formsClasses.center}>
+                        <form className={formsClasses.form} onSubmit={makeOnSubmit(context)} noValidate autoComplete="off">
+                            <h4 className={formsClasses.title}>Sign up</h4>
+                            <TextField label={'Username'} variant={'outlined'} className={classes.formRow}
+                                       required error={state.username.isError} helperText={state.username.errorMessage}
+                                       onChange={handleChange("username")}/>
+                            <div className={classes.formRow}>
+                                <PasswordField label={'Password'} variant={'outlined'} className={classes.formInRowInput}
+                                               required error={state.password.isError} helperText={state.password.errorMessage}
+                                               onChange={handleChange("password")} id={'input-password'}/>
+                                <PasswordField label={'Confirm password'} variant={'outlined'}
+                                               required error={state.confirmPassword.isError} helperText={state.confirmPassword.errorMessage}
+                                               onChange={handleChange("confirmPassword")} id={'input-password-confirm'}/>
+                            </div>
+                            <TextField label={'Phone number'} variant={'outlined'} className={classes.formRow}
+                                       required error={state.phoneNumber.isError} helperText={state.phoneNumber.errorMessage}
+                                       onChange={handleChange("phoneNumber")}/>
+                            <div className={classes.formRow}>
+                                <TextField label={'State'} variant={'outlined'} className={classes.formInRowInput}
+                                           required error={state.state.isError} helperText={state.state.errorMessage}
+                                           onChange={handleChange("state")}/>
+                                <TextField label={'City'} variant={'outlined'}
+                                           required error={state.city.isError} helperText={state.city.errorMessage}
+                                           onChange={handleChange("city")}/>
+                            </div>
+                            <div className={classes.formRow}>
+                                <TextField label={'Street'} variant={'outlined'} className={classes.formInRowInput}
+                                           required error={state.street.isError} helperText={state.street.errorMessage}
+                                           onChange={handleChange("street")}/>
+                                <TextField label={'Apartment number'} variant={'outlined'}
+                                           required error={state.apartmentNumber.isError} helperText={state.apartmentNumber.errorMessage}
+                                           onChange={handleChange("apartmentNumber")}/>
+                            </div>
+                            <div className={clsx(classes.btnBlock, classes.formRow)}>
+                                <Button variant="contained" color="primary" className={classes.btnCancel} onClick={onCancelClick}>Cancel</Button>
+                                <Button type={"submit"} variant="contained" color="primary">Confirm</Button>
+                            </div>
+                        </form>
                     </div>
-                    <TextField label={'Phone number'} variant={'outlined'} className={classes.formRow}
-                               required error={state.phoneNumber.isError} helperText={state.phoneNumber.errorMessage}
-                               onChange={handleChange("phoneNumber")}/>
-                    <div className={classes.formRow}>
-                        <TextField label={'State'} variant={'outlined'} className={classes.formInRowInput}
-                                   required error={state.state.isError} helperText={state.state.errorMessage}
-                                   onChange={handleChange("state")}/>
-                        <TextField label={'City'} variant={'outlined'}
-                                   required error={state.city.isError} helperText={state.city.errorMessage}
-                                   onChange={handleChange("city")}/>
-                    </div>
-                    <div className={classes.formRow}>
-                        <TextField label={'Street'} variant={'outlined'} className={classes.formInRowInput}
-                                   required error={state.street.isError} helperText={state.street.errorMessage}
-                                   onChange={handleChange("street")}/>
-                        <TextField label={'Apartment number'} variant={'outlined'}
-                                   required error={state.apartmentNumber.isError} helperText={state.apartmentNumber.errorMessage}
-                                   onChange={handleChange("apartmentNumber")}/>
-                    </div>
-                    <div className={clsx(classes.btnBlock, classes.formRow)}>
-                        <Button variant="contained" color="primary" className={classes.btnCancel} onClick={onCancelClick}>Cancel</Button>
-                        <Button type={"submit"} variant="contained" color="primary">Confirm</Button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                </div>
+            )}
+        </GlobalContext.Consumer>
     );
 }

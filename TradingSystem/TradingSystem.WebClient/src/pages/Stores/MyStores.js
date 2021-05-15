@@ -2,10 +2,9 @@ import React from "react";
 import './MyStores.css';
 import Navbar from "../../components/Navbar/Navbar";
 import * as HiIcons from "react-icons/hi";
-import data from "./StoresData.json";
 import Store from "./StoreList"
 import axios from "axios";
-import {username} from "../../App";
+import {GlobalContext} from "../../globalContext";
 
 export class MyStores extends React.Component {
     constructor(props) {
@@ -18,8 +17,10 @@ export class MyStores extends React.Component {
 
     async componentDidMount() {
         try {
-            let response = await axios.post('/Stores/MyStores', {
-                username: username
+            let response = await axios.post('/Stores/MyStores', '"' + this.context.username + '"', {
+                headers: {
+                    'content-type': 'application/json'
+                }
             });
             this.setState({
                 stores: response.data
@@ -31,24 +32,25 @@ export class MyStores extends React.Component {
     }
 
     render() {
-            return (
-                <div className="grid-container">
-                    <header className="header-container">
-                        <a href="/">E - commerce Application</a>
-                        <div></div>
-                        <button className="icons">
-                            <HiIcons.HiShoppingCart />
-                        </button>
-                        <Navbar></Navbar>
-                    </header>
+        return (
+            <div className="grid-container">
+                <header className="header-container">
+                    <a href="/">E - commerce Application</a>
+                    <div></div>
+                    <button className="icons">
+                        <HiIcons.HiShoppingCart />
+                    </button>
+                    <Navbar></Navbar>
+                </header>
 
-                    <main>
-                        <Store stores={this.state.stores}>  </Store>
+                <main>
+                    <Store stores={this.state.stores}>  </Store>
 
-                    </main>
-                    <footer> End of Stores</footer>
-                </div>
-            )
-        }
+                </main>
+                <footer> End of Stores</footer>
+            </div>
+        )
     }
+}
 
+MyStores.contextType = GlobalContext;
