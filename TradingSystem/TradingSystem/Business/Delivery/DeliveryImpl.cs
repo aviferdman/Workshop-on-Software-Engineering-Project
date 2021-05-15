@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Delivery
 {
     public class DeliveryImpl : DeliveryAdapter
     {
-        private readonly Guid ErrorPackageId = new Guid();
+        private readonly string ErrorPackageId = "-1";
         private ExternalDeliverySystem _deliverySystem;
 
         public DeliveryImpl(ExternalDeliverySystem externalDeliverySystem = null)
@@ -23,17 +23,17 @@ namespace TradingSystem.Business.Delivery
             }            
         }
 
-        public DeliveryStatus CancelDelivery(DeliveryStatus deliveryStatus)
+        public async Task<DeliveryStatus> CancelDelivery(DeliveryStatus deliveryStatus)
         {
-            Guid packageId = _deliverySystem.CancelDelivery(deliveryStatus.PackageId);
-            return new DeliveryStatus(packageId, deliveryStatus.Username, deliveryStatus.StoreId, !packageId.Equals(ErrorPackageId));
+            string packageId = await _deliverySystem.CancelDelivery(deliveryStatus.PackageId);
+            return new DeliveryStatus(packageId, deliveryStatus.Username, deliveryStatus.StoreId, !packageId.ToString().Equals(ErrorPackageId));
         }
 
         //use case 42 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/73
-        public DeliveryStatus CreateDelivery(DeliveryDetails deliveryDetails)
+        public async Task<DeliveryStatus> CreateDelivery(DeliveryDetails deliveryDetails)
         {
-            Guid packageId =_deliverySystem.CreateDelivery(deliveryDetails.Username, deliveryDetails.RecieverPhone, deliveryDetails.Weight, deliveryDetails.Source.ToString(), deliveryDetails.Destination.ToString());
-            return new DeliveryStatus(packageId, deliveryDetails.Username, deliveryDetails.StoreId, !packageId.Equals(ErrorPackageId));
+            string packageId = await _deliverySystem.CreateDelivery(deliveryDetails.Username, deliveryDetails.RecieverPhone, deliveryDetails.Weight, deliveryDetails.Source.ToString(), deliveryDetails.Destination.ToString());
+            return new DeliveryStatus(packageId, deliveryDetails.Username, deliveryDetails.StoreId, !packageId.ToString().Equals(ErrorPackageId));
         }
 
         public bool SetDeliverySystem(ExternalDeliverySystem externalDeliverySystem)

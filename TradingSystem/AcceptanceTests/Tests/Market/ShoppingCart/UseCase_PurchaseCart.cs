@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.Tests.Market.Shop.Products;
@@ -117,7 +117,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             Success_Normal(BuyerUser, useCase_addProduct.ProductsAdd);
         }
 
-        private void Success_Normal(BuyerUserInfo buyerUser, IEnumerable<ProductForCart> products)
+        private async Task Success_Normal(BuyerUserInfo buyerUser, IEnumerable<ProductForCart> products)
         {
             double weight = products.Select(x => x.ProductIdentifiable.ProductInfo.Weight * x.CartQuantity).Sum();
             string addressSource = ShopImage.ShopInfo.Address.ToString();
@@ -132,23 +132,23 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                   It.Is<double>(x => x == weight),
                   It.Is<string>(x => x == addressSource),
                   It.Is<string>(x => x == addressDest)
-              )).Returns(packageId);
+              )).Returns(new Task<string>( () => packageId.ToString()));
 
             double price = products.Select(x => x.ProductIdentifiable.ProductInfo.Price * x.CartQuantity).Sum();
             var paymentId = Guid.NewGuid();
 
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePayment
+            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
               (
                   It.Is<string>(x => x == buyerUser.Username),
                   It.Is<string>(x => x == buyerUser.BankAccount.ToString()),
                   It.Is<int>(x => x == ShopImage.ShopInfo.BankAccount.AccountNumber),
                   It.Is<int>(x => x == ShopImage.ShopInfo.BankAccount.Branch),
                   It.Is<double>(x => x == price)
-              )).Returns(paymentId);
+              )).Returns(new Task<string>(() => paymentId.ToString()));
 
             MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
-            Assert.IsTrue(MarketBridge.PurchaseShoppingCart(new PurchaseInfo(buyerUser.PhoneNumber, buyerUser.BankAccount, buyerUser.Address)));
+            Assert.IsTrue(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(buyerUser.PhoneNumber, buyerUser.BankAccount, buyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
@@ -169,7 +169,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         [TestCase]
-        public void Failure_ProductsUnavailable()
+        public async Task Failure_ProductsUnavailable()
         {
             useCase_addProduct = new UseCase_AddProductToCart
             (
@@ -212,7 +212,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ), Times.Never(), "Delivery have been called despite the products unavailablity in the shop.");
 
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            paymenySystemMock.Verify(ps => ps.CreatePayment
+            paymenySystemMock.Verify(ps => ps.CreatePaymentAsync
             (
                 It.IsAny<string>(),
                 It.IsAny<string>(),
@@ -222,7 +222,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ), Times.Never(), "Payment have been called despite the products unavailablity in the shop.");
 
             MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
-            Assert.IsFalse(MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser2.PhoneNumber, BuyerUser2.BankAccount, BuyerUser2.Address)));
+            Assert.IsFalse(await MarketBridge .PurchaseShoppingCart(new PurchaseInfo(BuyerUser2.PhoneNumber, BuyerUser2.BankAccount, BuyerUser2.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
@@ -230,7 +230,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         [TestCase]
-        public void Failure_PaymentFailed()
+        public async Task Failure_PaymentFailed()
         {
             useCase_addProduct = new UseCase_AddProductToCart
             (
@@ -258,22 +258,22 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                   It.Is<double>(x => x == weight),
                   It.Is<string>(x => x == addressSource),
                   It.Is<string>(x => x == addressDest)
-              )).Returns(packageId);
+              )).Returns(Task.FromResult(packageId.ToString()));
 
             double price = useCase_addProduct.ProductsAdd.Select(x => x.ProductIdentifiable.ProductInfo.Price * x.CartQuantity).Sum();
 
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            paymenySystemMock.Setup(ps => ps.CreatePayment
+            paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
             (
                 It.Is<string>(x => x == BuyerUser.Username),
                 It.Is<string>(x => x == BuyerUser.BankAccount.ToString()),
                 It.Is<int>(x => x == ShopImage.ShopInfo.BankAccount.AccountNumber),
                 It.Is<int>(x => x == ShopImage.ShopInfo.BankAccount.Branch),
                 It.Is<double>(x => x == price)
-            )).Returns(Guid.Empty);
+            )).Returns(Task.FromResult("-1"));
 
             MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
-            Assert.IsFalse(MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.BankAccount, BuyerUser.Address)));
+            Assert.IsFalse(await MarketBridge .PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.BankAccount, BuyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
@@ -281,7 +281,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         [TestCase]
-        public void Failure_DeliveryFailed()
+        public async Task Failure_DeliveryFailed()
         {
             useCase_addProduct = new UseCase_AddProductToCart
             (
@@ -308,27 +308,27 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                   It.Is<double>(x => x == weight),
                   It.Is<string>(x => x == addressSource),
                   It.Is<string>(x => x == addressDest)
-              )).Returns(Guid.Empty);
+              )).Returns(Task.FromResult("-1"));
 
             double price = useCase_addProduct.ProductsAdd.Select(x => x.ProductIdentifiable.ProductInfo.Price * x.CartQuantity).Sum();
             var paymentId = Guid.NewGuid();
             var refundPaymentId = Guid.NewGuid();
 
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePayment
+            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
             (
                 It.Is<string>(x => x == BuyerUser.Username),
                 It.Is<string>(x => x == BuyerUser.BankAccount.ToString()),
                 It.Is<int>(x => x == ShopImage.ShopInfo.BankAccount.AccountNumber),
                 It.Is<int>(x => x == ShopImage.ShopInfo.BankAccount.Branch),
                 It.Is<double>(x => x == price)
-            )).Returns(paymentId);
+            )).Returns(Task.FromResult(paymentId.ToString()));
             _ = paymenySystemMock.Setup(ps => ps
-                .CancelPayment(It.Is<Guid>(x => x == paymentId)))
-                .Returns(refundPaymentId);
+                .CancelPayment(It.Is<string>(x => x.Equals(paymentId.ToString()))))
+                .Returns(Task.FromResult(refundPaymentId.ToString()));
 
             MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
-            Assert.IsFalse(MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.BankAccount, BuyerUser.Address)));
+            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.BankAccount, BuyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);
@@ -336,7 +336,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         [TestCase]
-        public void Failure_EmptyCart()
+        public async Task Failure_EmptyCart()
         {
             useCase_login = new UseCase_Login(SystemContext, BuyerUser);
             useCase_login.Setup();
@@ -353,7 +353,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ), Times.Never(), "Delivery have been called despite no products in cart.");
 
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            paymenySystemMock.Verify(ps => ps.CreatePayment
+            paymenySystemMock.Verify(ps => ps.CreatePaymentAsync
             (
                 It.IsAny<string>(),
                 It.IsAny<string>(),
@@ -363,7 +363,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ), Times.Never(), "Payment have been called despite no products in cart.");
 
             MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
-            Assert.IsFalse(MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.BankAccount, BuyerUser.Address)));
+            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.BankAccount, BuyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
             Assert.IsNotNull(purchaseHistory);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
@@ -74,7 +75,7 @@ namespace TradingSystem.Service
             return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(dataCart, false, null);
         }
 
-        public Result<bool> PurchaseShoppingCart
+        public async Task<Result<bool>> PurchaseShoppingCart
         (
             string username,
             int accountNumber,
@@ -88,7 +89,7 @@ namespace TradingSystem.Service
         {
             var bankAccount = new BankAccount(accountNumber, branch);
             var address = new Address(state, city, street, apartmentNum);
-            return marketUsers.PurchaseShoppingCart(username, bankAccount, phone, address);
+            return await marketUsers.PurchaseShoppingCart(username, bankAccount, phone, address);
         }
 
         public Result<bool> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)

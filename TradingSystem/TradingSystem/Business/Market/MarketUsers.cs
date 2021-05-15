@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
@@ -206,11 +207,11 @@ namespace TradingSystem.Business.Market
         //USER FUNCTIONALITY
 
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
-        public Result<bool> PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
+        public async Task<Result<bool>> PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(PurchaseShoppingCart));
             User user = GetUserByUserName(username);
-            Result<bool> res = user.PurchaseShoppingCart(bank, phone, address);
+            Result<bool> res = await user.PurchaseShoppingCart(bank, phone, address);
             return res;
         }
 

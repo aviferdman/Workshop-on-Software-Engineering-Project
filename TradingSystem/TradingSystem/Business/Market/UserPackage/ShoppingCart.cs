@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TradingSystem.Business.Market
 {
@@ -74,7 +75,7 @@ namespace TradingSystem.Business.Market
             return isLegal;
         }
 
-        public BuyStatus Purchase(PaymentMethod method, string clientPhone, Address clientAddress)
+        public async Task<BuyStatus> Purchase(PaymentMethod method, string clientPhone, Address clientAddress)
         {
             //chcek is not empty
             if (IsEmpty()) return new BuyStatus(false, null);
@@ -82,7 +83,7 @@ namespace TradingSystem.Business.Market
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
             foreach (IShoppingBasket basket in shoppingBaskets)
             {
-                PurchaseStatus purchaseStatus = basket.GetStore().Purchase(basket, clientPhone, clientAddress, method);
+                PurchaseStatus purchaseStatus = await basket.GetStore().Purchase(basket, clientPhone, clientAddress, method);
                 purchases.Add(purchaseStatus);
                 allStatusesOk = allStatusesOk && purchaseStatus.TransactionStatus != null && purchaseStatus.TransactionStatus.Status;
             }

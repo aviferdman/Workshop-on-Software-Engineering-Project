@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
@@ -31,7 +32,7 @@ namespace TradingSystemTests.MarketTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
         [TestMethod]
-        public void CheckLegalPurchase()
+        public async Task CheckLegalPurchaseAsync()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             
@@ -47,14 +48,14 @@ namespace TradingSystemTests.MarketTests
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
-            PurchaseStatus purchaseStatus = store.Purchase(shoppingBasket, clientPhone, address, bankAccount);
+            PurchaseStatus purchaseStatus = await store.Purchase(shoppingBasket, clientPhone, address, bankAccount);
             Assert.AreEqual(true, purchaseStatus.TransactionStatus.Status);
 
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, BankAccount, double))"/>
         [TestMethod]
-        public void CheckNotEnoghtProductQuantityPurchase()
+        public async Task CheckNotEnoghtProductQuantityPurchase()
         {
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             string clientPhone = "0544444444";
@@ -68,7 +69,7 @@ namespace TradingSystemTests.MarketTests
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
             shoppingBasket.Product_quantity = product_quantity;
-            PurchaseStatus purchaseStatus = store.Purchase(shoppingBasket, clientPhone, address, bankAccount);
+            PurchaseStatus purchaseStatus = await store.Purchase(shoppingBasket, clientPhone, address, bankAccount);
             Assert.AreEqual(false, purchaseStatus.PreConditions);
 
         }

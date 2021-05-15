@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using AcceptanceTests.AppInterface.Data;
 
 using Moq;
@@ -197,9 +197,9 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return result != null && !result.IsErr;
         }
 
-        public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        public async Task<bool> PurchaseShoppingCart(PurchaseInfo purchaseInfo)
         {
-            Result<bool> result = marketShoppingCartService.PurchaseShoppingCart
+            Result<bool> result = await marketShoppingCartService.PurchaseShoppingCart
             (
                 SystemContext.TokenUsername,
                 purchaseInfo.BankAccount.AccountNumber,
