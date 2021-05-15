@@ -77,7 +77,5 @@ namespace TradingSystem.Business.Market
         {
             return _state.GetUserHistory(username);
         }
-
-
     }
 }

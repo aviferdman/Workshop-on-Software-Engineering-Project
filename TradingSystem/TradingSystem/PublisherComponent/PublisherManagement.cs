@@ -88,6 +88,9 @@ namespace TradingSystem.PublisherComponent
             NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.AddAppointmentEvent.ToString(), _testMode);
             subscriber4.Subscribe(publisher);
             subscribers.Add(subscriber4);
+            NotificationSubscriber subscriber5 = new NotificationSubscriber(EventType.RequestPurchaseEvent.ToString(), _testMode);
+            subscriber5.Subscribe(publisher);
+            subscribers.Add(subscriber5);
         }
 
         public void Subscribe(String username, NotificationSubscriber subscriber, EventType ev){
