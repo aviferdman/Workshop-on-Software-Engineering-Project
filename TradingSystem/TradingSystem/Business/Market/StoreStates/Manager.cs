@@ -65,5 +65,7 @@ namespace TradingSystem.Business.Market.StoreStates
             }
             return ret;
         }
+
+        public MemberState getM() { return m; }
     }
 }

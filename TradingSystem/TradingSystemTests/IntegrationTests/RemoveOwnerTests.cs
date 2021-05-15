@@ -22,6 +22,9 @@ namespace TradingSystemTests.IntegrationTests
         Owner owner1;
         Owner owner2;
         Owner owner3;
+        Owner owner4;
+        IManager man1;
+        IManager man2;
 
         [TestInitialize]
         public void Initialize()
@@ -38,16 +41,31 @@ namespace TradingSystemTests.IntegrationTests
             guestName = marketUsers.AddGuest();
             userManagement.SignUp("owner3", "123", null, null);
             marketUsers.AddMember("owner3", "123", guestName);
+            guestName = marketUsers.AddGuest();
+            userManagement.SignUp("owner4", "123", null, null);
+            marketUsers.AddMember("owner4", "123", guestName);
+            guestName = marketUsers.AddGuest();
+            userManagement.SignUp("man1", "123", null, null);
+            marketUsers.AddMember("man1", "123", guestName);
+            guestName = marketUsers.AddGuest();
+            userManagement.SignUp("man2", "123", null, null);
+            marketUsers.AddMember("man2", "123", guestName);
             Address address = new Address("1", "1", "1", "1");
             BankAccount bankAccount = new BankAccount(1000, 1000);
             store = market.CreateStore("testStore", "founder", bankAccount, address);
             market.makeOwner("owner1", store.Id, "founder");
             market.makeOwner("owner2", store.Id, "owner1");
             market.makeOwner("owner3", store.Id, "owner1");
+            market.makeOwner("owner4", store.Id, "founder");
+            market.makeManager("man1", store.Id, "owner4");
+            market.makeManager("man2", store.Id, "owner4");
             founder = store.Founder;
             store.Owners.TryGetValue("owner1", out owner1);
             store.Owners.TryGetValue("owner2", out owner2);
             store.Owners.TryGetValue("owner3", out owner3);
+            store.Owners.TryGetValue("owner4", out owner4);
+            store.Managers.TryGetValue("man1", out man1);
+            store.Managers.TryGetValue("man2", out man2);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
@@ -76,6 +94,23 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(owner1.getM().OwnerPrems.ContainsKey(store));
             Assert.IsFalse(owner2.getM().OwnerPrems.ContainsKey(store));
             Assert.IsFalse(owner3.getM().OwnerPrems.ContainsKey(store));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
+        [TestMethod]
+        [TestCategory("uc34")]
+        public void checkValidRemoveOwnerManagerChain()
+        {
+            Assert.AreEqual(market.RemoveOwner("owner4", store.Id, "founder"), "success");
+            Assert.IsFalse(store.Owners.ContainsKey("owner4"));
+            Assert.IsFalse(store.Managers.ContainsKey("man1"));
+            Assert.IsFalse(store.Managers.ContainsKey("man2"));
+            Assert.IsFalse(founder.getM().OwnerAppointments.ContainsKey("owner4"));
+            Assert.IsFalse(owner1.getM().ManagerAppointments.ContainsKey("man1"));
+            Assert.IsFalse(owner1.getM().ManagerAppointments.ContainsKey("man2"));
+            Assert.IsFalse(owner4.getM().OwnerPrems.ContainsKey(store));
+            Assert.IsFalse(man1.getM().ManagerPrems.ContainsKey(store));
+            Assert.IsFalse(man2.getM().ManagerPrems.ContainsKey(store));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
