@@ -16,7 +16,7 @@ namespace TradingSystemTests.UnitTests
     {
         Product product1;
         static Address address;
-        static BankAccount bankAccount;
+        static CreditCard card;
         Store store;
         Founder founder;
         IManager manager;
@@ -24,9 +24,9 @@ namespace TradingSystemTests.UnitTests
         public ProductsTest()
         {
             product1 = new Product("1", 10, 10, 10, "category");
-            address = new Address("1", "1", "1", "1");
-            bankAccount = new BankAccount(1000, 1000);
-            store = new Store("testStore", bankAccount, address);
+            address = new Address("1", "1", "1", "1", "1");
+            card = new CreditCard("1", "1", "1", "1", "1", "1");
+            store = new Store("testStore", card, address);
             MemberState ms = new MemberState("founder");
             founder = Founder.makeFounder(ms, store);
             Mock<IManager> imanager = new Mock<IManager>();

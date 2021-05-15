@@ -42,9 +42,9 @@ namespace TradingSystemTests.IntegrationTests
             guestName = marketUsers.AddGuest();
             userManagement.SignUp("OwnerTest1", "123", null, null);
             marketUsers.AddMember("OwnerTest1", "123", guestName);
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            store = market.CreateStore("testStore", "FounderTest1", bankAccount, address);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            store = market.CreateStore("testStore", "FounderTest1", card, address);
             market.makeOwner("OwnerTest1", store.Id, "FounderTest1");
             owner = marketUsers.ActiveUsers.GetOrAdd("OwnerTest1", owner);
             customer = marketUsers.ActiveUsers.GetOrAdd("ManagerTest1", customer);

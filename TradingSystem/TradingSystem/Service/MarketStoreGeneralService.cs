@@ -22,17 +22,22 @@ namespace TradingSystem.Service
         (
             string name,
             string username,
-            int accountNumber,
-            int branch,
+            string cardNumber,
+            string month,
+            string year,
+            string holderName,
+            string cvv, 
+            string holderId,
             string state,
             string city,
             string street,
-            string apartmentNum
+            string apartmentNum,
+            string zip
         )
         {
-            var bankAccount = new BankAccount(accountNumber, branch);
-            var address = new Address(state, city, street, apartmentNum);
-            Store store = marketStores.CreateStore(name, username, bankAccount, address);
+            var card = new CreditCard(cardNumber, month, year, holderName, cvv, holderId);
+            var address = new Address(state, city, street, apartmentNum, zip);
+            Store store = marketStores.CreateStore(name, username, card, address);
             if (store == null)
                 return null;
             return new StoreData(store);

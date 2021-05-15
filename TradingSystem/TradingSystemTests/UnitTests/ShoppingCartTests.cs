@@ -52,7 +52,7 @@ namespace TradingSystemTests.MarketTests
         }
 
         
-        /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, BankAccount, string, Address, double))"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, CreditCard, string, Address, double))"/>
         [TestMethod]
         public async Task CheckPurchaseWithLegalPurchaseStatus()
         {
@@ -60,8 +60,8 @@ namespace TradingSystemTests.MarketTests
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
-            Address clientAddress = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(200, 200);
+            Address clientAddress = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product(10, 10, 10);
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(product1, 1);
@@ -69,17 +69,17 @@ namespace TradingSystemTests.MarketTests
             PurchaseStatus purchaseStatus = new PurchaseStatus(false, new TransactionStatus(null, null, null, true), storeId);
 
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>())).Returns(Task.FromResult(purchaseStatus));
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<CreditCard>())).Returns(Task.FromResult(purchaseStatus));
             Mock<IShoppingBasket> shoppingBasket1 = new Mock<IShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
             shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
             shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
-            var v1 = await shoppingCart.Purchase(bankAccount, clientPhone, clientAddress);
+            var v1 = await shoppingCart.Purchase(card, clientPhone, clientAddress);
             Assert.AreEqual(true, v1.Status);
         }
 
         
-        /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, BankAccount, string, Address, double))"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, CreditCard, string, Address, double))"/>
         [TestMethod]
         public async Task CheckPurchaseDeliveryFailed()
         {
@@ -87,8 +87,8 @@ namespace TradingSystemTests.MarketTests
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
-            Address clientAddress = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(200, 200);
+            Address clientAddress = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product(10, 10, 10);
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(product1, 1);
@@ -101,15 +101,15 @@ namespace TradingSystemTests.MarketTests
             PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
 
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>())).Returns(Task.FromResult(purchaseStatus));
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<CreditCard>())).Returns(Task.FromResult(purchaseStatus));
             shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
             shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
-            var v1 = await shoppingCart.Purchase(bankAccount, clientPhone, clientAddress);
+            var v1 = await shoppingCart.Purchase(card, clientPhone, clientAddress);
             Assert.AreEqual(false, v1.Status);
 
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, BankAccount, string, Address, double))"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.ShoppingCart.Purchase(Guid, CreditCard, string, Address, double))"/>
         [TestMethod]
         public async Task CheckPurchasePayFailed()
         {
@@ -117,8 +117,8 @@ namespace TradingSystemTests.MarketTests
             Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
             Guid storeId = Guid.NewGuid();
             string clientPhone = "0544444444";
-            Address clientAddress = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(200, 200);
+            Address clientAddress = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product(10, 10, 10);
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(product1, 1);
@@ -130,10 +130,10 @@ namespace TradingSystemTests.MarketTests
             TransactionStatus transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket1.Object, true);
             PurchaseStatus purchaseStatus = new PurchaseStatus(true, transactionStatus, storeId);
             Mock<IStore> store1 = new Mock<IStore>();
-            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<BankAccount>())).Returns(Task.FromResult(purchaseStatus));
+            store1.Setup(s => s.Purchase(It.IsAny<IShoppingBasket>(), It.IsAny<string>(), It.IsAny<Address>(), It.IsAny<CreditCard>())).Returns(Task.FromResult(purchaseStatus));
             shoppingBasket1.Setup(basket => basket.GetStore()).Returns(store1.Object);
             shoppingCart.ShoppingBaskets.Add(shoppingBasket1.Object);
-            var v1 = await shoppingCart.Purchase(bankAccount, clientPhone, clientAddress);
+            var v1 = await shoppingCart.Purchase(card, clientPhone, clientAddress);
             Assert.AreEqual(false, v1.Status);
 
         }

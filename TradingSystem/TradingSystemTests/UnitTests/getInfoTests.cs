@@ -13,15 +13,15 @@ namespace TradingSystemTests.UnitTests
     class getInfoTests
     {
         static Address address;
-        static BankAccount bankAccount;
+        static CreditCard card;
         Store store;
         Founder founder;
 
         public getInfoTests()
         {
-            address = new Address("1", "1", "1", "1");
-            bankAccount = new BankAccount(1000, 1000);
-            store = new Store("testStore", bankAccount, address);
+            address = new Address("1", "1", "1", "1", "1");
+            card = new CreditCard("1", "1", "1", "1", "1", "1");
+            store = new Store("testStore", card, address);
             MemberState ms = new MemberState("founder");
             founder = Founder.makeFounder(ms, store);
             store.Founder = founder;

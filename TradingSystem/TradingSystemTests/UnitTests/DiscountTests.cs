@@ -26,7 +26,7 @@ namespace TradingSystemTests.UnitTests
             discountCalc2.Setup(d => d.CalcDiscount(It.IsAny<IShoppingBasket>())).Returns(20);
             discountCalc2.Setup(d => d.GetFunction()).Returns(new Func<IShoppingBasket, double>((IShoppingBasket shoppingBasket) => 20));
             User u = new User();
-            IStore store = new Store("teststore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            IStore store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 

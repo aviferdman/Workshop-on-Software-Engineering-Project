@@ -28,9 +28,9 @@ namespace TradingSystemTests.IntegrationTests
             guestName = marketUsers.AddGuest();
             userManagement.SignUp("manager", "123", null, null);
             marketUsers.AddMember("manager", "123", guestName);
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            store = market.CreateStore("testStore", "founder", bankAccount, address);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            store = market.CreateStore("testStore", "founder", card, address);
             market.makeManager("manager", store.Id, "founder");
             product1 = new ProductData("1", 10, 10, 10, "c");
         }

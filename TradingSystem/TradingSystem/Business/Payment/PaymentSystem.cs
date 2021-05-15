@@ -29,7 +29,7 @@ namespace TradingSystem.Business.Payment
             return generatePackageId();
         }
 
-        public async Task<string> CreatePaymentAsync(string username, string paymentMethod, int accountNumber2, int branch2, double paymentSum)
+        public async Task<string> CreatePaymentAsync(string cardnumber, string month, string year, string holderName, string ccv, string id)
         {
             return generatePackageId();
         }

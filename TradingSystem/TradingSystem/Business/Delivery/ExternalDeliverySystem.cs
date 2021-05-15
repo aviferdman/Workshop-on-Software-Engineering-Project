@@ -7,7 +7,7 @@ namespace TradingSystem.Business.Delivery
 {
     public interface ExternalDeliverySystem
     {
-        public Task<string> CreateDelivery(string username, string recieverPhone, double weight, string source, string destination);
+        public Task<string> CreateDelivery(string name, string street, string city, string country, string zip);
         public Task<string> CancelDelivery(string packageId);
     }
 }

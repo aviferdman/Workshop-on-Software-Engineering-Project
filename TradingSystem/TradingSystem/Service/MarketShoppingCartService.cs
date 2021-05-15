@@ -78,18 +78,23 @@ namespace TradingSystem.Service
         public async Task<Result<bool>> PurchaseShoppingCart
         (
             string username,
-            int accountNumber,
-            int branch,
+            string cardNumber, 
+            string month, 
+            string year, 
+            string holderName, 
+            string cvv, 
+            string holderId,
             string phone,
             string state,
             string city,
             string street,
-            string apartmentNum
+            string apartmentNum,
+            string zip
         )
         {
-            var bankAccount = new BankAccount(accountNumber, branch);
-            var address = new Address(state, city, street, apartmentNum);
-            return await marketUsers.PurchaseShoppingCart(username, bankAccount, phone, address);
+            var card = new CreditCard(cardNumber, month, year, holderName, cvv, holderId);
+            var address = new Address(state, city, street, apartmentNum, zip);
+            return await marketUsers.PurchaseShoppingCart(username, card, phone, address);
         }
 
         public Result<bool> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)

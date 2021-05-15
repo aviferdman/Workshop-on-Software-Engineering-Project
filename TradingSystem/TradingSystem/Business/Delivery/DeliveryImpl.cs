@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Delivery
         //use case 42 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/73
         public async Task<DeliveryStatus> CreateDelivery(DeliveryDetails deliveryDetails)
         {
-            string packageId = await _deliverySystem.CreateDelivery(deliveryDetails.Username, deliveryDetails.RecieverPhone, deliveryDetails.Weight, deliveryDetails.Source.ToString(), deliveryDetails.Destination.ToString());
+            string packageId = await _deliverySystem.CreateDelivery(deliveryDetails.Username, $"{deliveryDetails.Source.Street} {deliveryDetails.Source.ApartmentNum}", deliveryDetails.Source.City, deliveryDetails.Source.State, deliveryDetails.Source.Zip);
             return new DeliveryStatus(packageId, deliveryDetails.Username, deliveryDetails.StoreId, !packageId.ToString().Equals(ErrorPackageId));
         }
 

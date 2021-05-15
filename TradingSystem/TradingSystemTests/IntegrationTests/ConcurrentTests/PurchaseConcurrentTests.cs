@@ -23,9 +23,9 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         private User testUser;
         private User secondTestUser;
         private Store testStore;
-        private BankAccount testUserBankAccount;
-        private BankAccount testSecondUserBankAccount;
-        private BankAccount testStoreBankAccount;
+        private CreditCard testUserCreditCard;
+        private CreditCard testSecondUserCreditCard;
+        private CreditCard testStoreBankAccount;
         private Address testUserAddress;
         private Address testSecondUserAddress;
         private Address testStoreAddress;
@@ -36,12 +36,12 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         {
             product = new Product(QUANTITY1, WEIGHT1, PRICE1);
             oneProduct = new Product(1, WEIGHT1, PRICE1);
-            testUserAddress = new Address("1", "1", "1", "1");
-            testStoreAddress = new Address("2", "2", "2", "2");
-            testSecondUserAddress = new Address("3", "3", "3", "3");
-            testUserBankAccount = new BankAccount(1, 1);
-            testStoreBankAccount = new BankAccount(2, 2);
-            testSecondUserBankAccount = new BankAccount(3, 3);
+            testUserAddress = new Address("1", "1", "1", "1", "1");
+            testStoreAddress = new Address("2", "2", "2", "2", "2");
+            testSecondUserAddress = new Address("3", "3", "3", "3", "3");
+            testUserCreditCard = new CreditCard("1", "1", "1", "1", "1", "1");
+            testStoreBankAccount = new CreditCard("1", "1", "1", "1", "1", "1");
+            testSecondUserCreditCard = new CreditCard("2", "2", "2", "2", "2", "2");
             testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
             testUser = new User("testUser");
             MemberState m = new MemberState(testUser.Username);
@@ -59,8 +59,8 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
 
-            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
-            var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+            var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
+            var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserCreditCard, "0533333333", testSecondUserAddress);
             val1 = !v1.IsErr;
             val2 = !v2.IsErr;
 
@@ -77,8 +77,8 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             testStore.UpdateProduct(oneProduct);
             testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-            var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
-            var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+            var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
+            var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserCreditCard, "0533333333", testSecondUserAddress);
             Task task1 = Task.Factory.StartNew(() => val1 = !v1.IsErr);
             Task task2 = Task.Factory.StartNew(() => val2 = !v2.IsErr);
             Task.WaitAll(task1, task2);
@@ -98,8 +98,8 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                 testStore.UpdateProduct(oneProduct);
                 testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
                 secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-                var v1 = await testUser.PurchaseShoppingCart(testUserBankAccount, "0544444444", testUserAddress);
-                var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserBankAccount, "0533333333", testSecondUserAddress);
+                var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
+                var v2 = await secondTestUser.PurchaseShoppingCart(testSecondUserCreditCard, "0533333333", testSecondUserAddress);
                 Task task1 = Task.Factory.StartNew(() => val1 = !v1.IsErr);
                 Task task2 = Task.Factory.StartNew(() => val2 = !v2.IsErr);
                 Task.WaitAll(task1, task2);

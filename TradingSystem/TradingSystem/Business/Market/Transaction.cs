@@ -64,7 +64,7 @@ namespace TradingSystem.Business.Market
             return connectExternalSystems;
         }
 
-        public async Task<TransactionStatus> ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
+        public async Task<TransactionStatus> ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, CreditCard recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
         {
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, recieverPhone, weight, source, destination);
