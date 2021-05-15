@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+using TradingSystem.Business.Market;
 
 namespace TradingSystem.WebApi.DTO
 {
@@ -14,5 +13,19 @@ namespace TradingSystem.WebApi.DTO
         public double Price { get; set; }
         public string? Category { get; set; }
         public int Rating { get; set; }
+
+        public static ProductDTO FromProductData(ProductData productData)
+        {
+            return new ProductDTO
+            {
+                Id = productData.pid,
+                Name = productData._name,
+                Category = productData.category,
+                Quantity = productData._quantity,
+                Price = productData._price,
+                Weight = productData._weight,
+                Rating = productData.rating,
+            };
+        }
     }
 }

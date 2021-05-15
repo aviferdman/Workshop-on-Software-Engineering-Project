@@ -4,14 +4,30 @@ import Navbar from "../../components/Navbar/Navbar";
 import * as HiIcons from "react-icons/hi";
 import data from "./StoresData.json";
 import Store from "./StoreList"
+import axios from "axios";
+import {username} from "../../App";
 
 export class MyStores extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            stores: data.stores
+            stores: []
         };
+    }
+
+    async componentDidMount() {
+        try {
+            let response = await axios.post('/Stores/MyStores', {
+                username: username
+            });
+            this.setState({
+                stores: response.data
+            });
+        }
+        catch (e) {
+            console.error("search error occurred: ", e);
+        }
     }
 
     render() {

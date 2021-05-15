@@ -7,7 +7,7 @@ import {
     TextField
 } from "@material-ui/core";
 import './Login.scss'
-import {guestUsername, useTitle} from "../../App";
+import {username, useTitle} from "../../App";
 import PasswordField from "../../components/passwordFields";
 import FormFieldInfo from "../../formFieldInfo";
 import axios from "axios";
@@ -111,18 +111,19 @@ export default function LoginPage() {
         setState(newState);
         if (!formError) {
             try {
-                let respone =await axios.post('/UserGateway/Login', {
-                    guestusername: guestUsername,
+                let response = await axios.post('/UserGateway/Login', {
+                    guestusername: username,
                     username: state.username.value,
                     password: state.password.value,
                 });
-                if (respone.data === "success") {
+                if (response.data === "success") {
+                    // username = state.username.value;
                     history.push('/home');
                 }
                 else {
                     setState({
                         ...state,
-                        errorMessage: 'Error: ' + respone.data,
+                        errorMessage: 'Error: ' + response.data,
                         showErrorDialog: true
                     });
                 }

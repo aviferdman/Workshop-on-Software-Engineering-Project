@@ -1,4 +1,4 @@
-import {guestUsername, useTitle} from "../../App";
+import {username, useTitle} from "../../App";
 import {useHistory} from "react-router-dom";
 import {Button, makeStyles, TextField} from "@material-ui/core";
 import PasswordField from "../../components/passwordFields";
@@ -178,7 +178,7 @@ export default function Signup() {
         if (!formError) {
             try {
                 await axios.post('/UserGateway/SignUp', {
-                    guestusername: guestUsername,
+                    guestusername: username,
                     username: state.username.value,
                     password: state.password.value,
                     _state: state.state.value,

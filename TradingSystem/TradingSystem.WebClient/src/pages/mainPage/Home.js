@@ -10,7 +10,7 @@ import * as HiIcons from "react-icons/hi";
 import {IconContext} from "react-icons";
 import Cart from "../../components/Cart";
 import axios from "axios";
-import {guestUsername} from "../../App";
+import {username} from "../../App";
 
     export class Home extends React.Component {
         constructor(props) {
@@ -52,7 +52,6 @@ import {guestUsername} from "../../App";
         };
 
         onSearch = async () => {
-            console.log("search entered");
             try {
                 let response = await axios.get('/Products/Search', {
                     params: {

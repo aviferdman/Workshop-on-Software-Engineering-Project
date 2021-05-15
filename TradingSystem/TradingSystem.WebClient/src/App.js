@@ -10,12 +10,12 @@ export function useTitle(title) {
   }, [title]);
 }
 
-export let guestUsername;
+export let username;
 
 // TODO: make it flexible based on environment build
 // Setup the base URL of the web API server.
 axios.defaults.baseURL = 'https://localhost:5001/api';
-guestUsername = '';
+username = '';
 
 class App extends React.Component {
   constructor(props) {
@@ -39,7 +39,7 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    guestUsername = '';
+    username = '';
   }
 
   render() {
@@ -52,14 +52,14 @@ class App extends React.Component {
   async init() {
     try {
       let response = await axios.post('/UserGateway/AddGuest/', { });
-      guestUsername = response.data;
+      username = response.data;
       this.setState({
         showErrorDialog: false,
         errorMessage: null
       })
     }
     catch (e) {
-      guestUsername = '';
+      username = '';
       if (e.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
