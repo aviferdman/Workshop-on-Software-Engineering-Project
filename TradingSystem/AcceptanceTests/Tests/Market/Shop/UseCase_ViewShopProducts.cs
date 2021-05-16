@@ -58,8 +58,9 @@ namespace AcceptanceTests.Tests.Market.Shop
         public ShopImage ShopImage { get; }
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
             useCase_addProduct = new UseCase_AddProductToShop(SystemContext, ShopImage);
             useCase_addProduct.Setup();
             useCase_addProduct.Success_Normal_NoCheckStoreProducts();
@@ -69,10 +70,11 @@ namespace AcceptanceTests.Tests.Market.Shop
         }
 
         [TearDown]
-        public void Teardown()
+        public override void Teardown()
         {
             _ = SystemContext.UserBridge.Login(ShopImage.OwnerUser);
             useCase_addProduct?.Teardown();
+            base.Teardown();
         }
 
         [TestCase]
