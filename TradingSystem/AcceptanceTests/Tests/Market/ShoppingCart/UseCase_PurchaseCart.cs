@@ -224,6 +224,34 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             return useCase_Login;
         }
 
+        private void AssertHistory_Empty()
+        {
+            AssertHistory(Enumerable.Empty<PurchaseHistoryRecord>());
+        }
+
+        private void AssertHistory(IEnumerable<PurchaseHistoryRecord> expectedHistoryRecords)
+        {
+            PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
+            new Assert_SetEquals<string, PurchaseHistoryRecord>
+            (
+                expectedHistoryRecords,
+                x => x.PaymentId,
+                (record_expected, record_actual) =>
+                {
+                    new Assert_SetEquals<ProductId, ProductInCart>
+                    (
+                        record_expected.Products,
+                        x => x.ProductId
+                    ).AssertEquals(record_actual.Products);
+                    Assert.AreEqual(record_expected.PaymentStatus, record_actual.PaymentStatus, "Expected a success payment status.");
+                    Assert.AreEqual(record_expected.DeliveryStatus, record_actual.DeliveryStatus, "Expected a success delivery status.");
+                    Assert.AreEqual(record_expected.PaymentId, record_actual.PaymentId, "The payment id is different than expected.");
+                    Assert.AreEqual(record_expected.DeliveryPackageId, record_actual.DeliveryPackageId, "The delivery package id is different than expected.");
+                    return true;
+                }
+            ).AssertEquals(purchaseHistory);
+        }
+
         [TestCase]
         public async Task Success_Normal()
         {
@@ -238,23 +266,11 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SetupMock_Payment_Success(buyerUser);
             });
 
-            Assert.IsTrue(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(buyerUser.PhoneNumber, buyerUser.CreditCard, buyerUser.Address)));
-
-            PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
-            Assert.IsNotNull(purchaseHistory);
-            Assert.IsTrue(purchaseHistory.Count() == 1, "Expected exactly 1 purchase in history.");
-
-            PurchaseHistoryRecord purchase = purchaseHistory.First();
-            new Assert_SetEquals<ProductId, ProductInCart>
-            (
-                expectedProductsCartHistory,
-                x => x.ProductId
-            ).AssertEquals(purchase);
-
-            Assert.IsTrue(purchase.PaymentStatus, "Expected a success payment status.");
-            Assert.IsTrue(purchase.DeliveryStatus, "Expected a success delivery status.");
-            Assert.AreEqual(TicketId_Payment, purchase.PaymentId, "The payment id is different than expected.");
-            Assert.AreEqual(TicketId_Delivery, purchase.DeliveryPackageId, "The delivery package id is different than expected.");
+            Assert.IsTrue(await MarketBridge.PurchaseShoppingCart(buyerUser));
+            AssertHistory(new PurchaseHistoryRecord[]
+            {
+                new PurchaseHistoryRecord(expectedProductsCartHistory, TicketId_Delivery, true, TicketId_Payment, true),
+            });
         }
 
         [TestCase]
@@ -263,18 +279,15 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             // Another user buys enough units so the primary user don't enough left
             await Success_Normal(CompetitorUser, useCase_AddProductToCart_TestLogic_competitor.Products!);
 
-            // log in again to the primary user
+            // log in again to the primary user and re-setup the mocks
             _ = Prepare(BuyerUser2, buyerUser =>
             {
                 SetupMock_Delivery_NeverCalled("Delivery have been called despite the products unavailablity in the shop.");
                 SetupMock_Payment_NeverCalled("Payment have been called despite the products unavailablity in the shop.");
             });
 
-            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser2.PhoneNumber, BuyerUser2.CreditCard, BuyerUser2.Address)));
-
-            PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
-            Assert.IsNotNull(purchaseHistory);
-            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
+            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(BuyerUser2));
+            AssertHistory_Empty();
         }
 
         [TestCase]
@@ -286,11 +299,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SetupMock_Payment_Fails(buyerUser);
             });
 
-            Assert.IsFalse(await MarketBridge .PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.CreditCard, BuyerUser.Address)));
-
-            PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
-            Assert.IsNotNull(purchaseHistory);
-            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
+            Assert.IsFalse(await MarketBridge .PurchaseShoppingCart(BuyerUser));
+            AssertHistory_Empty();
         }
 
         [TestCase]
@@ -303,16 +313,13 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
                 // make sure cancel payment is called
                 TicketId_Payment_Cancel = GenerateTicket();
-                _ = Mock_Payment.Setup(ps => ps
-                    .CancelPayment(It.Is<string>(x => x.Equals(TicketId_Payment))))
+                _ = Mock_Payment
+                    .Setup(ps => ps.CancelPayment(It.Is<string>(x => x.Equals(TicketId_Payment))))
                     .Returns(Task.FromResult(TicketId_Payment_Cancel));
             });
 
-            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.CreditCard, BuyerUser.Address)));
-
-            PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
-            Assert.IsNotNull(purchaseHistory);
-            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
+            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(BuyerUser));
+            AssertHistory_Empty();
         }
 
         [TestCase]
@@ -324,11 +331,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SetupMock_Payment_NeverCalled("Payment have been called despite no products in cart.");
             });
 
-            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.CreditCard, BuyerUser.Address)));
-
-            PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
-            Assert.IsNotNull(purchaseHistory);
-            Assert.IsFalse(purchaseHistory.Any(), "Expected no purchases in history.");
+            Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(BuyerUser));
+            AssertHistory_Empty();
         }
     }
 }
