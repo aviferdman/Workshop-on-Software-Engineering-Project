@@ -79,6 +79,30 @@ namespace AcceptanceTests
             }
         );
 
+        public static readonly BuyerUserInfo User_Buyer3 = new BuyerUserInfo
+        (
+            "buyer_3",
+            "buyer_3",
+            "0500875325",
+            new CreditCard
+            (
+                cardNumber: "2111211134443444",
+                month: "04",
+                year: "22",
+                holderName: "Joe Miller",
+                cvv: "852",
+                holderId: "630214578"
+            ),
+            new Address
+            {
+                State = "Zero Dawn",
+                City = "Meridian",
+                Street = "Street 1",
+                ApartmentNum = "6",
+                ZipCode = "0798487",
+            }
+        );
+
         public static readonly UserInfo User_ShopOwner1 = new UserInfo
         (
             "shopowner78",

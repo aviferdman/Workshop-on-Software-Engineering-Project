@@ -94,7 +94,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public ShopId? AssureOpenShop(ShopInfo shopInfo)
         {
-            throw new InvalidOperationException($"Should not call this method, use {nameof(OpenShop)} method instead.");
+            throw new NotImplementedException($"Should not call this method, use {nameof(OpenShop)} method instead.");
         }
 
         public ShopInfo? GetShopDetails(ShopId shopId)
@@ -200,6 +200,11 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 ProductInCart.ToDictionary(productsEdit)
             );
             return result != null && !result.IsErr;
+        }
+
+        public Task<bool> PurchaseShoppingCart(BuyerUserInfo buyerUserInfo)
+        {
+            throw new NotImplementedException($"Should not call this method, use {nameof(PurchaseShoppingCart)}({nameof(PurchaseInfo)}) method instead.");
         }
 
         public async Task<bool> PurchaseShoppingCart(PurchaseInfo purchaseInfo)
