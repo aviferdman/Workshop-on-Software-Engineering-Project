@@ -62,7 +62,7 @@ namespace AcceptanceTests.Tests.LiveNotification
                 "whyy",
                 new CreditCard
                 (
-                    cardNumber: "145236987",
+                    cardNumber: "1452369878887888",
                     month: "09",
                     year: "26",
                     holderName: "Nunu Willamp",
