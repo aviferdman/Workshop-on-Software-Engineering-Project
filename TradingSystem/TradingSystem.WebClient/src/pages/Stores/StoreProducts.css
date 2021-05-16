@@ -1,0 +1,21 @@
+
+.store-products-main-conatiner{
+    display: grid;
+    grid-template-rows: 85% 15%
+}
+
+.bottom-row{
+    display: grid;
+    grid-template-columns: 15% 15% 15%;
+    position: relative;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+.store-products-button-view{
+    cursor: pointer;
+    font-size: 2rem;
+    width: 20rem;
+    height: 5rem;
+    background-color: #ECCC77FF;
+}

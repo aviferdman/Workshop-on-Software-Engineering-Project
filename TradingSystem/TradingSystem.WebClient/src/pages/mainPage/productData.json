@@ -4,6 +4,8 @@
       "id": "xyz1",
       "name": "Milk",
       "price": 29.9,
+      "quantity": 3,
+      "weight": 7,
       "category": "Dairy",
       "rating": 3
 
@@ -12,6 +14,8 @@
       "id": "xyz2",
       "name": "Bread",
       "price": 5.9,
+      "quantity": 3,
+      "weight": 7,
       "category": "Pastries",
       "rating": 4
     },
@@ -19,6 +23,8 @@
       "id": "xyz3",
       "name": "Cheese",
       "price": 29.9,
+      "quantity": 3,
+      "weight": 7,
       "category": "Dairy",
       "rating": 3
     },
@@ -26,6 +32,8 @@
       "id": "xyz4",
       "name": "Croissant",
       "price": 7.5,
+      "quantity": 3,
+      "weight": 7,
       "category": "Pastries",
       "rating": 5
     },
@@ -33,6 +41,8 @@
       "id": "xyz5",
       "name": "Orange Juice",
       "price": 5.8,
+      "quantity": 3,
+      "weight": 7,
       "category": "Beverage",
       "rating": 5
     },
@@ -40,6 +50,8 @@
       "id": "xyz6",
       "name": "Coca Cola",
       "price": 6.0,
+      "quantity": 3,
+      "weight": 7,
       "category": "Beverage",
       "rating": 4
     }

@@ -4,6 +4,9 @@ import LoginPage from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import {Home} from "./pages/mainPage/Home";
 import {MyStores} from "./pages/Stores/MyStores";
+import Store from "./pages/Stores/Store";
+import StoreProducts from "./pages/Stores/StoreProducts";
+
 
 
 export default function Routes() {
@@ -23,6 +26,12 @@ export default function Routes() {
             </Route>
             <Route path={"/myStores"}>
                 <MyStores />
+            </Route>
+            <Route path={"/store"}>
+                <Store />
+            </Route>
+            <Route path={"/storeProducts"}>
+                <StoreProducts />
             </Route>
 
         </Switch>

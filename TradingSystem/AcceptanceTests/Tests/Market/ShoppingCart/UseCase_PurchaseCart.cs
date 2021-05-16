@@ -121,27 +121,10 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         {
             var packageId = Guid.NewGuid();
             var deliverySytemMock = new Mock<ExternalDeliverySystem>();
-            _ = deliverySytemMock.Setup(ds => ds.CreateDelivery
-              (
-                  It.Is<string>(x => x == buyerUser.Username),
-                  It.Is<string>(x => x == $"{buyerUser.Address.Street} {buyerUser.Address.ApartmentNum}"),
-                  It.Is<string>(x => x == buyerUser.Address.City),
-                  It.Is<string>(x => x == buyerUser.Address.State),
-                  It.Is<string>(x => x == buyerUser.Address.ZipCode)
-              )).Returns(Task.FromResult(packageId.ToString()));
-
+            _ = deliverySytemMock.Setup(ds => ds.CreateDelivery(It.Is<string>(x => x == buyerUser.Username), It.Is<string>(x => x == $"{buyerUser.Address.Street} {buyerUser.Address.ApartmentNum}"), It.Is<string>(x => x == buyerUser.Address.City), It.Is<string>(x => x == buyerUser.Address.State), It.Is<string>(x => x == buyerUser.Address.ZipCode))).Returns(Task.FromResult(packageId.ToString()));
             var paymentId = Guid.NewGuid();
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
-              (
-                  It.Is<string>(x => x == buyerUser.CreditCard.CardNumber),
-                  It.Is<string>(x => x == buyerUser.CreditCard.Month),
-                  It.Is<string>(x => x == buyerUser.CreditCard.Year),
-                  It.Is<string>(x => x == buyerUser.CreditCard.HolderName),
-                  It.Is<string>(x => x == buyerUser.CreditCard.Cvv),
-                  It.Is<string>(x => x == buyerUser.CreditCard.HolderId)
-              )).Returns(Task.FromResult(paymentId.ToString()));
-
+            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync(It.Is<string>(x => x == buyerUser.CreditCard.CardNumber),It.Is<string>(x => x == buyerUser.CreditCard.Month),It.Is<string>(x => x == buyerUser.CreditCard.Year),It.Is<string>(x => x == buyerUser.CreditCard.HolderName),It.Is<string>(x => x == buyerUser.CreditCard.Cvv),It.Is<string>(x => x == buyerUser.CreditCard.HolderId))).Returns(Task.FromResult(paymentId.ToString()));
             MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
             Assert.IsTrue(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(buyerUser.PhoneNumber, buyerUser.CreditCard, buyerUser.Address)));
 
