@@ -2,6 +2,7 @@
 using AcceptanceTests.AppInterface.Data;
 using AcceptanceTests.AppInterface.MarketBridge;
 using AcceptanceTests.AppInterface.UserBridge;
+using AcceptanceTests.Tests.User;
 
 using NUnit.Framework;
 
@@ -32,5 +33,21 @@ namespace AcceptanceTests.Tests.Market
 
         protected IMarketBridge MarketBridge => SystemContext.MarketBridge;
         protected IUserBridge UserBridge => SystemContext.UserBridge;
+
+        protected UseCase_Login Login(UserInfo userInfo)
+        {
+            var useCase_login = new UseCase_Login(SystemContext, userInfo);
+            useCase_login.Setup();
+            useCase_login.Success_Normal();
+            return useCase_login;
+        }
+
+        protected UseCase_Login LoginAssure(UserInfo userInfo)
+        {
+            var useCase_login = new UseCase_Login(SystemContext, userInfo);
+            useCase_login.Setup();
+            useCase_login.Success_Assure();
+            return useCase_login;
+        }
     }
 }

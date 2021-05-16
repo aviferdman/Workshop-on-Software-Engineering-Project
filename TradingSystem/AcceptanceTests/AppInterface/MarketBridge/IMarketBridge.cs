@@ -43,6 +43,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         bool RemoveProductFromShop(ShopId shopId, ProductId productId);
         bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails);
 
+        Task<bool> PurchaseShoppingCart(BuyerUserInfo buyerUserInfo);
         Task<bool> PurchaseShoppingCart(PurchaseInfo purchaseInfo);
         IEnumerable<ProductInCart>? GetShoppingCartItems();
 
