@@ -9,6 +9,7 @@ using AcceptanceTests.Tests.Market.Shop.Products;
 using AcceptanceTests.Tests.User;
 
 using Moq;
+using Moq.Language.Flow;
 
 using NUnit.Framework;
 
@@ -84,6 +85,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         public BuyerUserInfo BuyerUser_Empty { get; }
         public BuyerUserInfo CompetitorUser { get; }
 
+        private Mock<ExternalDeliverySystem> Mock_Delivery { get; set; }
+        private string TicketId_Delivery { get; set; }
+        private Mock<ExternalPaymentSystem> Mock_Payment { get; set; }
+        private string TicketId_Payment { get; set; }
+        private string TicketId_Payment_Cancel { get; set; }
+
         private UseCase_AddProductToShop useCase_addProductToShop;
         private UseCase_AddProductToCart_TestLogic useCase_AddProductToCart_TestLogic_1;
         private UseCase_AddProductToCart_TestLogic useCase_AddProductToCart_TestLogic_2;
@@ -127,6 +134,96 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             return new ProductForCart[] { new ProductForCart(ShopImage.ShopProducts[0], qunatity), };
         }
 
+        private void SetupMock_Delivery_Success(BuyerUserInfo buyerUser)
+        {
+            Mock_Delivery = new Mock<ExternalDeliverySystem>();
+            TicketId_Delivery = GenerateTicket();
+            _ = SetupMock_Delivery(Mock_Delivery, buyerUser).Returns(Task.FromResult(TicketId_Delivery));
+        }
+        private void SetupMock_Delivery_Fails(BuyerUserInfo buyerUser)
+        {
+            Mock_Delivery = new Mock<ExternalDeliverySystem>();
+            _ = SetupMock_Delivery(Mock_Delivery, buyerUser).Returns(Task.FromResult("-1"));
+        }
+        private ISetup<ExternalDeliverySystem, Task<string>> SetupMock_Delivery(Mock<ExternalDeliverySystem> mock, BuyerUserInfo buyerUser)
+        {
+            return mock.Setup(ds => ds.CreateDelivery
+            (
+                It.Is<string>(x => x == buyerUser.Username),
+                It.Is<string>(x => x == $"{buyerUser.Address.Street} {buyerUser.Address.ApartmentNum}"),
+                It.Is<string>(x => x == buyerUser.Address.City),
+                It.Is<string>(x => x == buyerUser.Address.State),
+                It.Is<string>(x => x == buyerUser.Address.ZipCode)
+            ));
+        }
+        private void SetupMock_Delivery_NeverCalled(string message)
+        {
+            Mock_Delivery = new Mock<ExternalDeliverySystem>();
+            Mock_Delivery.Verify(ds => ds.CreateDelivery
+            (
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>()
+            ), Times.Never(), message);
+        }
+
+        private void SetupMock_Payment_Success(BuyerUserInfo buyerUser)
+        {
+            Mock_Payment = new Mock<ExternalPaymentSystem>();
+            TicketId_Payment = GenerateTicket();
+            _ = SetupMock_Payment(Mock_Payment, buyerUser).Returns(Task.FromResult(TicketId_Payment));
+        }
+        private void SetupMock_Payment_Fails(BuyerUserInfo buyerUser)
+        {
+            Mock_Payment = new Mock<ExternalPaymentSystem>();
+            _ = SetupMock_Payment(Mock_Payment, buyerUser).Returns(Task.FromResult("-1"));
+        }
+        private ISetup<ExternalPaymentSystem, Task<string>> SetupMock_Payment(Mock<ExternalPaymentSystem> mock, BuyerUserInfo buyerUser)
+        {
+            return mock.Setup(ps => ps.CreatePaymentAsync
+            (
+                It.Is<string>(x => x == buyerUser.CreditCard.CardNumber),
+                It.Is<string>(x => x == buyerUser.CreditCard.Month),
+                It.Is<string>(x => x == buyerUser.CreditCard.Year),
+                It.Is<string>(x => x == buyerUser.CreditCard.HolderName),
+                It.Is<string>(x => x == buyerUser.CreditCard.Cvv),
+                It.Is<string>(x => x == buyerUser.CreditCard.HolderId)
+            ));
+        }
+        private void SetupMock_Payment_NeverCalled(string message)
+        {
+            Mock_Payment = new Mock<ExternalPaymentSystem>();
+            Mock_Payment.Verify(ps => ps.CreatePaymentAsync
+            (
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>()
+            ), Times.Never(), message);
+        }
+
+        private string GenerateTicket()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        private void IntasllMocks()
+        {
+            MarketBridge.SetExternalTransactionMocks(Mock_Delivery, Mock_Payment);
+        }
+
+        private UseCase_Login Prepare(BuyerUserInfo buyerUser, Action<BuyerUserInfo> setupMocks)
+        {
+            UseCase_Login useCase_Login = LoginAssure(buyerUser);
+            setupMocks(buyerUser);
+            IntasllMocks();
+            return useCase_Login;
+        }
+
         [TestCase]
         public async Task Success_Normal()
         {
@@ -135,32 +232,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
         private async Task Success_Normal(BuyerUserInfo buyerUser, IEnumerable<ProductInCart> expectedProductsCartHistory)
         {
-            _ = Login(buyerUser);
+            _ = Prepare(buyerUser, buyerUser =>
+            {
+                SetupMock_Delivery_Success(buyerUser);
+                SetupMock_Payment_Success(buyerUser);
+            });
 
-            var packageId = Guid.NewGuid();
-            var deliverySytemMock = new Mock<ExternalDeliverySystem>();
-            _ = deliverySytemMock.Setup(ds => ds.CreateDelivery
-              (
-                  It.Is<string>(x => x == buyerUser.Username),
-                  It.Is<string>(x => x == $"{buyerUser.Address.Street} {buyerUser.Address.ApartmentNum}"),
-                  It.Is<string>(x => x == buyerUser.Address.City),
-                  It.Is<string>(x => x == buyerUser.Address.State),
-                  It.Is<string>(x => x == buyerUser.Address.ZipCode)
-              )).Returns(Task.FromResult(packageId.ToString()));
-
-            var paymentId = Guid.NewGuid();
-            var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
-              (
-                  It.Is<string>(x => x == buyerUser.CreditCard.CardNumber),
-                  It.Is<string>(x => x == buyerUser.CreditCard.Month),
-                  It.Is<string>(x => x == buyerUser.CreditCard.Year),
-                  It.Is<string>(x => x == buyerUser.CreditCard.HolderName),
-                  It.Is<string>(x => x == buyerUser.CreditCard.Cvv),
-                  It.Is<string>(x => x == buyerUser.CreditCard.HolderId)
-              )).Returns(Task.FromResult(paymentId.ToString()));
-
-            MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
             Assert.IsTrue(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(buyerUser.PhoneNumber, buyerUser.CreditCard, buyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
@@ -176,8 +253,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
 
             Assert.IsTrue(purchase.PaymentStatus, "Expected a success payment status.");
             Assert.IsTrue(purchase.DeliveryStatus, "Expected a success delivery status.");
-            Assert.AreEqual(paymentId.ToString(), purchase.PaymentId, "The payment id is different than expected.");
-            Assert.AreEqual(packageId.ToString(), purchase.DeliveryPackageId, "The delivery package id is different than expected.");
+            Assert.AreEqual(TicketId_Payment, purchase.PaymentId, "The payment id is different than expected.");
+            Assert.AreEqual(TicketId_Delivery, purchase.DeliveryPackageId, "The delivery package id is different than expected.");
         }
 
         [TestCase]
@@ -187,31 +264,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             await Success_Normal(CompetitorUser, useCase_AddProductToCart_TestLogic_competitor.Products!);
 
             // log in again to the primary user
-            LoginAssure(BuyerUser);
+            _ = Prepare(BuyerUser2, buyerUser =>
+            {
+                SetupMock_Delivery_NeverCalled("Delivery have been called despite the products unavailablity in the shop.");
+                SetupMock_Payment_NeverCalled("Payment have been called despite the products unavailablity in the shop.");
+            });
 
-            // now the primary user tries to buy
-            var deliverySytemMock = new Mock<ExternalDeliverySystem>();
-            deliverySytemMock.Verify(ds => ds.CreateDelivery
-            (
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()
-            ), Times.Never(), "Delivery have been called despite the products unavailablity in the shop.");
-
-            var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            paymenySystemMock.Verify(ps => ps.CreatePaymentAsync
-            (
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()
-            ), Times.Never(), "Payment have been called despite the products unavailablity in the shop.");
-
-            MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
             Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser2.PhoneNumber, BuyerUser2.CreditCard, BuyerUser2.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
@@ -222,31 +280,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_PaymentFailed()
         {
-            _ = Login(BuyerUser);
+            _ = Prepare(BuyerUser, buyerUser =>
+            {
+                SetupMock_Delivery_NeverCalled("Delivery have been called despite payment failure.");
+                SetupMock_Payment_Fails(buyerUser);
+            });
 
-            var packageId = Guid.NewGuid();
-            var deliverySytemMock = new Mock<ExternalDeliverySystem>();
-            _ = deliverySytemMock.Setup(ds => ds.CreateDelivery
-              (
-                  It.Is<string>(x => x == BuyerUser.Username),
-                  It.Is<string>(x => x == $"{BuyerUser.Address.Street} {BuyerUser.Address.ApartmentNum}"),
-                  It.Is<string>(x => x == BuyerUser.Address.City),
-                  It.Is<string>(x => x == BuyerUser.Address.State),
-                  It.Is<string>(x => x == BuyerUser.Address.ZipCode)
-              )).Returns(Task.FromResult(packageId.ToString()));
-
-            var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
-            (
-                  It.Is<string>(x => x == BuyerUser.CreditCard.CardNumber),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.Month),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.Year),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.HolderName),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.Cvv),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.HolderId)
-            )).Returns(Task.FromResult("-1"));
-
-            MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
             Assert.IsFalse(await MarketBridge .PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.CreditCard, BuyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
@@ -257,35 +296,18 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_DeliveryFailed()
         {
-            _ = Login(BuyerUser);
+            _ = Prepare(BuyerUser, buyerUser =>
+            {
+                SetupMock_Delivery_Fails(buyerUser);
+                SetupMock_Payment_Success(buyerUser);
 
-            var deliverySytemMock = new Mock<ExternalDeliverySystem>();
-            _ = deliverySytemMock.Setup(ds => ds.CreateDelivery
-              (
-                  It.Is<string>(x => x == BuyerUser.Username),
-                  It.Is<string>(x => x == $"{BuyerUser.Address.Street} {BuyerUser.Address.ApartmentNum}"),
-                  It.Is<string>(x => x == BuyerUser.Address.City),
-                  It.Is<string>(x => x == BuyerUser.Address.State),
-                  It.Is<string>(x => x == BuyerUser.Address.ZipCode)
-              )).Returns(Task.FromResult("-1"));
+                // make sure cancel payment is called
+                TicketId_Payment_Cancel = GenerateTicket();
+                _ = Mock_Payment.Setup(ps => ps
+                    .CancelPayment(It.Is<string>(x => x.Equals(TicketId_Payment))))
+                    .Returns(Task.FromResult(TicketId_Payment_Cancel));
+            });
 
-            var paymentId = Guid.NewGuid();
-            var refundPaymentId = Guid.NewGuid();
-            var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
-            (
-                  It.Is<string>(x => x == BuyerUser.CreditCard.CardNumber),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.Month),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.Year),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.HolderName),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.Cvv),
-                  It.Is<string>(x => x == BuyerUser.CreditCard.HolderId)
-            )).Returns(Task.FromResult(paymentId.ToString()));
-            _ = paymenySystemMock.Setup(ps => ps
-                .CancelPayment(It.Is<string>(x => x.Equals(paymentId.ToString()))))
-                .Returns(Task.FromResult(refundPaymentId.ToString()));
-
-            MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
             Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.CreditCard, BuyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
@@ -296,30 +318,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_EmptyCart()
         {
-            useCase_login = Login(BuyerUser_Empty);
+            useCase_login = Prepare(BuyerUser_Empty, buyerUser =>
+            {
+                SetupMock_Delivery_NeverCalled("Delivery have been called despite no products in cart.");
+                SetupMock_Payment_NeverCalled("Payment have been called despite no products in cart.");
+            });
 
-            var deliverySytemMock = new Mock<ExternalDeliverySystem>();
-            deliverySytemMock.Verify(ds => ds.CreateDelivery
-            (
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()
-            ), Times.Never(), "Delivery have been called despite no products in cart.");
-
-            var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            paymenySystemMock.Verify(ps => ps.CreatePaymentAsync
-            (
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>()
-            ), Times.Never(), "Payment have been called despite no products in cart.");
-
-            MarketBridge.SetExternalTransactionMocks(deliverySytemMock, paymenySystemMock);
             Assert.IsFalse(await MarketBridge.PurchaseShoppingCart(new PurchaseInfo(BuyerUser.PhoneNumber, BuyerUser.CreditCard, BuyerUser.Address)));
 
             PurchaseHistory? purchaseHistory = MarketBridge.GetUserPurchaseHistory();
