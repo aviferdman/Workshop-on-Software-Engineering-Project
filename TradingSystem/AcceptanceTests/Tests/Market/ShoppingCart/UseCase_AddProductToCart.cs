@@ -118,7 +118,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             };
             IEnumerable<ProductInCart> products = productsBefore.Concat(productsAdd);
             testLogic.Success_Normal_CheckCartItems(productsAdd, products);
-            testLogic.ProductsTeardown.AddRange(productsAdd.Select(x => x.ProductId));
+            testLogic.Products?.AddRange(productsAdd);
         }
 
         [TestCase]

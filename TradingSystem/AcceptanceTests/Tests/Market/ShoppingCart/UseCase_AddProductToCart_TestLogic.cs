@@ -24,11 +24,11 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         public UserInfo? UserInfo { get; }
-        public List<ProductId>? ProductsTeardown { get; private set; }
+        public List<ProductInCart>? Products { get; private set; }
 
         private UseCase_Login useCase_login_buyer;
 
-        public void Setup()
+        public override void Setup()
         {
             if (UserInfo == null)
             {
@@ -39,10 +39,10 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_login_buyer.Setup();
             useCase_login_buyer.Success_Assure();
 
-            ProductsTeardown = new List<ProductId>();
+            Products = new List<ProductInCart>();
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             if (UserInfo == null)
             {
@@ -50,7 +50,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             }
 
             _ = UserBridge.AssureLogin(UserInfo);
-            foreach (ProductId productId in ProductsTeardown!)
+            IEnumerable<ProductId>? productsTeardown = Products.Select(x => x.ProductId);
+            foreach (ProductId productId in productsTeardown)
             {
                 _ = MarketBridge.RemoveProductFromUserCart(productId);
             }
@@ -64,7 +65,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 Assert.IsTrue(MarketBridge.AddProductToUserCart(product));
             }
 
-            ProductsTeardown?.AddRange(productsAdd.Select(x => x.ProductId));
+            Products?.AddRange(productsAdd);
         }
 
         public void Success_Normal_CheckCartItems(IEnumerable<ProductInCart> productsAdd, IEnumerable<ProductInCart> expected)

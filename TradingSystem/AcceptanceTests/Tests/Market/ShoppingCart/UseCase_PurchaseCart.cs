@@ -32,6 +32,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                 SystemContext.Instance,
                 User_Buyer,
                 User_Buyer2,
+                SharedTestsData.User_Buyer3,
                 SharedTestsData.User_Other,
                 new ShopImage
                 (
@@ -60,15 +61,12 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             },
         };
 
-        private UseCase_AddProductToCart? useCase_addProduct;
-        private UseCase_AddProductToCart_TestLogic useCase_addProductOther;
-        private UseCase_Login? useCase_login;
-
         public UseCase_PurchaseCart
         (
             SystemContext systemContext,
             BuyerUserInfo buyerUser,
             BuyerUserInfo buyerUser2,
+            BuyerUserInfo buyerUser_empty,
             BuyerUserInfo competitorUser,
             ShopImage shopImage
         ) : base(systemContext)
@@ -76,49 +74,69 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ShopImage = shopImage;
             BuyerUser = buyerUser;
             BuyerUser2 = buyerUser2;
+            BuyerUser_Empty = buyerUser_empty;
             CompetitorUser = competitorUser;
         }
 
         public ShopImage ShopImage { get; }
         public BuyerUserInfo BuyerUser { get; }
         public BuyerUserInfo BuyerUser2 { get; }
+        public BuyerUserInfo BuyerUser_Empty { get; }
         public BuyerUserInfo CompetitorUser { get; }
+
+        private UseCase_AddProductToShop useCase_addProductToShop;
+        private UseCase_AddProductToCart_TestLogic useCase_AddProductToCart_TestLogic_1;
+        private UseCase_AddProductToCart_TestLogic useCase_AddProductToCart_TestLogic_2;
+        private UseCase_AddProductToCart_TestLogic useCase_AddProductToCart_TestLogic_competitor;
+        private UseCase_Login? useCase_login;
 
         public override void Setup()
         {
             base.Setup();
+            useCase_addProductToShop = new UseCase_AddProductToShop(SystemContext, ShopImage);
+            useCase_addProductToShop.Setup();
+            useCase_addProductToShop.Success_Normal_CheckStoreProducts();
+            useCase_AddProductToCart_TestLogic_1 = AddProductsToCart(BuyerUser, GetTestProductEnumerable(60));
+            useCase_AddProductToCart_TestLogic_2 = AddProductsToCart(BuyerUser2, GetTestProductEnumerable(60));
+            useCase_AddProductToCart_TestLogic_competitor = AddProductsToCart(CompetitorUser, GetTestProductEnumerable(81));
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
         }
 
         public override void Teardown()
         {
-            useCase_addProductOther?.Teardown();
-            useCase_addProduct?.Teardown();
+            useCase_AddProductToCart_TestLogic_competitor?.Teardown();
+            useCase_AddProductToCart_TestLogic_2?.Teardown();
+            useCase_AddProductToCart_TestLogic_1?.Teardown();
+            useCase_addProductToShop?.Teardown();
             useCase_login?.Teardown();
             MarketBridge.DisableExternalTransactionMocks();
             base.Teardown();
         }
 
-        [TestCase]
-        public void Success_Normal()
+        private UseCase_AddProductToCart_TestLogic AddProductsToCart(UserInfo user, IEnumerable<ProductForCart> products)
         {
-            useCase_addProduct = new UseCase_AddProductToCart
-            (
-                SystemContext,
-                BuyerUser,
-                ShopImage,
-                shopImage => new ProductForCart[]
-                {
-                    new ProductForCart(shopImage.ShopProducts[0], 60),
-                }
-            );
-            useCase_addProduct.Setup();
-            useCase_addProduct.Success_NoBasket();
-
-            Success_Normal(BuyerUser, useCase_addProduct.ProductsAdd).Wait();
+            var useCase_addProductToCart_testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext, user);
+            useCase_addProductToCart_testLogic.Setup();
+            IEnumerable<ProductInCart> products_add = ProductForCart.ToProductInCart(products);
+            useCase_addProductToCart_testLogic.Success_Normal_CheckCartItems(products_add, products_add);
+            return useCase_addProductToCart_testLogic;
         }
 
-        private async Task Success_Normal(BuyerUserInfo buyerUser, IEnumerable<ProductForCart> products)
+        private IEnumerable<ProductForCart> GetTestProductEnumerable(int qunatity)
         {
+            return new ProductForCart[] { new ProductForCart(ShopImage.ShopProducts[0], qunatity), };
+        }
+
+        [TestCase]
+        public async Task Success_Normal()
+        {
+            await Success_Normal(BuyerUser, useCase_AddProductToCart_TestLogic_1.Products!);
+        }
+
+        private async Task Success_Normal(BuyerUserInfo buyerUser, IEnumerable<ProductInCart> expectedProductsCartHistory)
+        {
+            _ = Login(buyerUser);
+
             var packageId = Guid.NewGuid();
             var deliverySytemMock = new Mock<ExternalDeliverySystem>();
             _ = deliverySytemMock.Setup(ds => ds.CreateDelivery
@@ -150,10 +168,9 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             Assert.IsTrue(purchaseHistory.Count() == 1, "Expected exactly 1 purchase in history.");
 
             PurchaseHistoryRecord purchase = purchaseHistory.First();
-            IEnumerable<ProductInCart> productsCartHistory = ProductForCart.ToProductInCart(products);
             new Assert_SetEquals<ProductId, ProductInCart>
             (
-                productsCartHistory,
+                expectedProductsCartHistory,
                 x => x.ProductId
             ).AssertEquals(purchase);
 
@@ -166,34 +183,11 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_ProductsUnavailable()
         {
-            useCase_addProduct = new UseCase_AddProductToCart
-            (
-                SystemContext,
-                BuyerUser2,
-                ShopImage,
-                shopImage => new ProductForCart[]
-                {
-                    new ProductForCart(shopImage.ShopProducts[0], 81),
-                }
-            );
-            useCase_addProduct.Setup();
-            useCase_addProduct.Success_NoBasket();
-
             // Another user buys enough units so the primary user don't enough left
-            useCase_addProductOther = new UseCase_AddProductToCart_TestLogic(SystemContext, CompetitorUser);
-            useCase_addProductOther.Setup();
-            IEnumerable<ProductForCart> competitorCartProducts = new ProductForCart[]
-            {
-                new ProductForCart(ShopImage.ShopProducts[0], 60),
-            };
-            IEnumerable<ProductInCart> competitorCartProducts_add = ProductForCart.ToProductInCart(competitorCartProducts);
-            useCase_addProductOther.Success_Normal_CheckCartItems(competitorCartProducts_add, competitorCartProducts_add);
-            await Success_Normal(CompetitorUser, competitorCartProducts);
+            await Success_Normal(CompetitorUser, useCase_AddProductToCart_TestLogic_competitor.Products!);
 
             // log in again to the primary user
-            var useCase_login = new UseCase_Login(SystemContext, BuyerUser);
-            useCase_login.Setup();
-            useCase_login.Success_Assure();
+            LoginAssure(BuyerUser);
 
             // now the primary user tries to buy
             var deliverySytemMock = new Mock<ExternalDeliverySystem>();
@@ -228,18 +222,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_PaymentFailed()
         {
-            useCase_addProduct = new UseCase_AddProductToCart
-            (
-                SystemContext,
-                BuyerUser,
-                ShopImage,
-                shopImage => new ProductForCart[]
-                {
-                    new ProductForCart(shopImage.ShopProducts[0], 60),
-                }
-            );
-            useCase_addProduct.Setup();
-            useCase_addProduct.Success_NoBasket();
+            _ = Login(BuyerUser);
 
             var packageId = Guid.NewGuid();
             var deliverySytemMock = new Mock<ExternalDeliverySystem>();
@@ -251,8 +234,6 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
                   It.Is<string>(x => x == BuyerUser.Address.State),
                   It.Is<string>(x => x == BuyerUser.Address.ZipCode)
               )).Returns(Task.FromResult(packageId.ToString()));
-
-            double price = useCase_addProduct.ProductsAdd.Select(x => x.ProductIdentifiable.ProductInfo.Price * x.CartQuantity).Sum();
 
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
             paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
@@ -276,18 +257,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_DeliveryFailed()
         {
-            useCase_addProduct = new UseCase_AddProductToCart
-            (
-                SystemContext,
-                BuyerUser,
-                ShopImage,
-                shopImage => new ProductForCart[]
-                {
-                    new ProductForCart(shopImage.ShopProducts[0], 60),
-                }
-            );
-            useCase_addProduct.Setup();
-            useCase_addProduct.Success_NoBasket();
+            _ = Login(BuyerUser);
 
             var deliverySytemMock = new Mock<ExternalDeliverySystem>();
             _ = deliverySytemMock.Setup(ds => ds.CreateDelivery
@@ -326,9 +296,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public async Task Failure_EmptyCart()
         {
-            useCase_login = new UseCase_Login(SystemContext, BuyerUser);
-            useCase_login.Setup();
-            useCase_login.Success_Normal();
+            useCase_login = Login(BuyerUser_Empty);
 
             var deliverySytemMock = new Mock<ExternalDeliverySystem>();
             deliverySytemMock.Verify(ds => ds.CreateDelivery
