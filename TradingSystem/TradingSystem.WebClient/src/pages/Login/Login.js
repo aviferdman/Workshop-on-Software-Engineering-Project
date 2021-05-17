@@ -119,6 +119,7 @@ export default function LoginPage() {
                 });
                 if (response.data === "success") {
                     context.setUsername(state.username.value);
+                    context.setWebSocket(state.username.value);
                     history.push('/home');
                 }
                 else {
@@ -132,7 +133,7 @@ export default function LoginPage() {
             catch (e) {
                 let errMsg = '';
                 let showErrDialog = false;
-                if (e.response.status === 400) {
+                if (e.response && e.response.status === 400) {
                     if (e.response.data.startsWith('user is already logged in')) {
                         errMsg = 'Already logged-in';
                     }
@@ -144,7 +145,20 @@ export default function LoginPage() {
                     }
                 }
                 if (!errMsg) {
-                    errMsg = 'Unknown error occurred: ' + e.message + ' \n ' + e.response.data;
+                    let errMsgBuilder = '';
+                    if (e.response && e.response.data) {
+                        errMsgBuilder += e.response.data;
+                    }
+                    if (e.message) {
+                        if (errMsgBuilder) {
+                            errMsgBuilder += ', ';
+                        }
+                        errMsgBuilder += e.message;
+                    }
+                    errMsg = 'Unknown error occurred';
+                    if (errMsgBuilder) {
+                        errMsg += ': ' + errMsgBuilder;
+                    }
                     showErrDialog = true;
                 }
                 setState({
