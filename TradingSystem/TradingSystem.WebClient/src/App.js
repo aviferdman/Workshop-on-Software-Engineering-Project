@@ -4,6 +4,7 @@ import Routes from "./routes";
 import axios from "axios";
 import SimpleAlertDialog from "./components/simpleAlertDialog";
 import {GlobalContext} from "./globalContext";
+import './App.css'
 
 export function useTitle(title) {
   useEffect(() => {

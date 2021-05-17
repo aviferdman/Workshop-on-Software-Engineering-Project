@@ -9,7 +9,7 @@ import {
 import './Login.scss'
 import {useTitle} from "../../App";
 import PasswordField from "../../components/passwordFields";
-import FormFieldInfo from "../../formFieldInfo";
+import FormFieldInfo from "../../formsUtil/formFieldInfo";
 import axios from "axios";
 import useFormsStyles from "../../style/forms";
 import SimpleAlertDialog from "../../components/simpleAlertDialog";
@@ -17,7 +17,10 @@ import {GlobalContext} from "../../globalContext";
 
 const useStyles = makeStyles((theme) => ({
     form: {
-      width: '300px'
+      width: '300px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     margin: {
         margin: theme.spacing(1)
