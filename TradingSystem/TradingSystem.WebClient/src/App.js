@@ -21,6 +21,7 @@ class App extends React.Component {
 
     this.handleCloseErrorDialog = this.handleCloseErrorDialog.bind(this);
     this.setUsername = this.setUsername.bind(this);
+    this.setWebSocket = this.setWebSocket.bind(this);
 
     this.state = {
       showErrorDialog: false,
@@ -29,7 +30,7 @@ class App extends React.Component {
         username: '',
         setUsername: this.setUsername,
         webSocket: null,
-        setWebSocket: () => {}
+        setWebSocket: this.setWebSocket
       }
     };
   }
@@ -39,6 +40,25 @@ class App extends React.Component {
       globalContext: {
         ...this.state.globalContext,
         username: username,
+      }
+    });
+  }
+
+  setWebSocket = username => {
+    // Create WebSocket connection.
+    const socket = new WebSocket('wss://localhost:5001/login');
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+      console.log('web socket connection opened');
+      socket.send(username);
+      console.log('sent username');
+    });
+
+    this.setState({
+      globalContext: {
+        ...this.state.globalContext,
+        webSocket: socket
       }
     });
   }
