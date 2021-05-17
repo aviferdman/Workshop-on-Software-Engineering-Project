@@ -37,10 +37,8 @@ class App extends React.Component {
   setUsername = username => {
     this.setState({
       globalContext: {
+        ...this.state.globalContext,
         username: username,
-        setUsername: this.state.globalContext.setUsername,
-        webSocket: this.state.globalContext.webSocket,
-        setWebSocket: this.state.globalContext.setWebSocket,
       }
     });
   }
@@ -58,10 +56,8 @@ class App extends React.Component {
   componentWillUnmount() {
     this.setState({
       globalContext: {
+        ...this.state.globalContext,
         username: '',
-        setUsername: this.state.globalContext.setUsername,
-        webSocket: this.state.globalContext.webSocket,
-        setWebSocket: this.state.globalContext.setWebSocket,
       }
     });
   }
@@ -84,20 +80,16 @@ class App extends React.Component {
         showErrorDialog: false,
         errorMessage: null,
         globalContext: {
+          ...this.state.globalContext,
           username: response.data,
-          setUsername: this.state.globalContext.setUsername,
-          webSocket: this.state.globalContext.webSocket,
-          setWebSocket: this.state.globalContext.setWebSocket,
         }
       });
     }
     catch (e) {
       this.setState({
         globalContext: {
+          ...this.state.globalContext,
           username: '',
-          setUsername: this.state.globalContext.setUsername,
-          webSocket: this.state.globalContext.webSocket,
-          setWebSocket: this.state.globalContext.setWebSocket,
         }
       });
       if (e.response) {
