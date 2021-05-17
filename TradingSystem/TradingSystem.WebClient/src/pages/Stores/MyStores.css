@@ -57,3 +57,31 @@
     justify-content: space-between;
     height: 100%;
 }
+
+.center-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+}
+
+.my-stores-create-store-top-block {
+    padding: 1rem;
+    margin: 1rem;
+    border-bottom: 0.1rem #c0c0c0 solid;
+}
+
+.my-stores-no-stores-block {
+    width: 60%;
+    height: 25%;
+    font-size: 6rem;
+}
+
+.my-stores-no-stores-participation-text-block {
+    margin-bottom: 32px;
+}
+
+.my-stores-create-first-store-button {
+    width: 100%;
+    font-size: inherit;
+}
