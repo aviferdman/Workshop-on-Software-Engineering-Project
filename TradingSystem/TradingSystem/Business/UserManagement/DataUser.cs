@@ -8,12 +8,12 @@ namespace TradingSystem.Business.UserManagement
 {
     public class DataUser
     {
-        private string username;
-        private string password;
-        private bool isLoggedin;
-        private Address address;
-        private string phone;
-        private bool isAdmin;
+        private string username { get; set; }
+        private string password { get; set; }
+        private bool isLoggedin { get; set; }
+        private Address address { get; set; }
+        private string phone { get; set; }
+        public bool isAdmin { get; set; }
 
         public DataUser(string username, string password, Address address, string phone)
         {
@@ -24,12 +24,7 @@ namespace TradingSystem.Business.UserManagement
             this.phone = phone;
         }
 
-        public string Username { get => username; set => username = value; }
-        public string Password { get => password; set => password = value; }
-        public Address Address { get => address; set => address = value; }
-        public bool IsLoggedin { get => isLoggedin; set => isLoggedin = value; }
-        public string Phone { get => phone; set => phone = value; }
-        public bool IsAdmin { get => isAdmin; set => isAdmin = value; }
+        
 
         public override bool Equals(object obj)
         {

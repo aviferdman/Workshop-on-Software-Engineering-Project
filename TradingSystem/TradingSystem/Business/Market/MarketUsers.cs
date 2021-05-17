@@ -141,7 +141,7 @@ namespace TradingSystem.Business.Market
             {
                 DataUser du;
                 UserManagement.UserManagement.Instance.DataUsers.TryGetValue(usrname, out du);
-                if (du.IsAdmin)
+                if (du.isAdmin)
                     m = new AdministratorState(usrname);
                 else
                     m = new MemberState(usrname);
