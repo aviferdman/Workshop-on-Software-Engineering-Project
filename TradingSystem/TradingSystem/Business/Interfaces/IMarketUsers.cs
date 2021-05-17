@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Payment;
@@ -16,7 +17,7 @@ namespace TradingSystem.Business.Market
         public string AddMember(String usrname, string password, string guestusername);
 
         bool UpdateProductInShoppingBasket(string username, Guid storeId, Product product, int quantity);
-        public Result<bool> PurchaseShoppingCart(string username, BankAccount bank, string phone, Address address);
+        public Task<Result<bool>> PurchaseShoppingCart(string username, CreditCard bank, string phone, Address address);
         public ICollection<IHistory> GetAllHistory(string username);
         public ICollection<IHistory> GetUserHistory(string username);
         public string logout(string username);

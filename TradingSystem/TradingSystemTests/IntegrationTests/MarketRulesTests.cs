@@ -19,7 +19,7 @@ namespace TradingSystemTests.IntegrationTests
 
         public MarketRulesTests()
         {
-            this.store = new Store("TestStore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("TestStore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             marketStores.Stores.TryAdd(store.GetId(), store);
             this.product = new Product("ProductName", 100, 100, 100, "CategoryName");

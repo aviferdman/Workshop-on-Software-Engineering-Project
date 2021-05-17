@@ -18,13 +18,5 @@ namespace AcceptanceTests.Tests.Market
         {
             return Login(UserInfo);
         }
-
-        protected UseCase_Login Login(UserInfo userInfo)
-        {
-            var useCase_login = new UseCase_Login(SystemContext, userInfo);
-            useCase_login.Setup();
-            useCase_login.Success_Normal();
-            return useCase_login;
-        }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Moq;
 using System;
+using System.Configuration;
+using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
+using TradingSystem.Business.Handshake;
 using TradingSystem.Business.Payment;
 
 namespace TradingSystem.Business.Market
@@ -9,6 +12,7 @@ namespace TradingSystem.Business.Market
     {
         private PaymentAdapter _paymentAdapter;
         private DeliveryAdapter _deliveryAdapter;
+        private HandshakeAdapter _handshakeAdapter;
         private static readonly Lazy<Transaction>
         _lazy =
         new Lazy<Transaction>
@@ -18,11 +22,24 @@ namespace TradingSystem.Business.Market
 
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }
+        public HandshakeAdapter HandshakeAdapter { get => _handshakeAdapter; set => _handshakeAdapter = value; }
 
         private Transaction()
         {
-            this.PaymentAdapter = new PaymentImpl();
-            this.DeliveryAdapter = new DeliveryImpl();
+            string enabled = ConfigurationManager.AppSettings["EnableRealExternalSystems"]; 
+            bool enableExternal = enabled != null? enabled.ToLower().Equals("true") : false;
+            if (enableExternal)
+            {
+                this.PaymentAdapter = new PaymentImpl(new RealPaymentSystem());
+                this.DeliveryAdapter = new DeliveryImpl(new RealDeliverySystem());
+                this.HandshakeAdapter = new HandshakeImpl(new RealHandshakeSystem());
+            }
+            else
+            {
+                this.PaymentAdapter = new PaymentImpl();
+                this.DeliveryAdapter = new DeliveryImpl();
+                this.HandshakeAdapter = new HandshakeImpl();
+            }
         }
 
         internal bool ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
@@ -47,41 +64,48 @@ namespace TradingSystem.Business.Market
             return connectExternalSystems;
         }
 
-        public TransactionStatus ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, BankAccount recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
+        public async Task<TransactionStatus> ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, CreditCard recieverBankAccountId, double paymentSum, IShoppingBasket shoppingBasket)
         {
-            TransactionStatus transactionStatus;
-            DeliveryStatus deliveryStatus;
-            PaymentStatus paymentStatus;
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, recieverPhone, weight, source, destination);
             PaymentDetails paymentDetails = new PaymentDetails(username, method, storeId, recieverBankAccountId, paymentSum);
             ProductsStatus productsDetails = new ProductsStatus(username, storeId, product_quantity);
-            paymentStatus = PaymentAdapter.CreatePayment(paymentDetails);
-            //check if possible to deliver
-            if (paymentStatus.Status)
+            bool handshake = await _handshakeAdapter.CheckAvailablity();
+            //handshake
+            if (!handshake)
             {
-                deliveryStatus = DeliveryAdapter.CreateDelivery(deliveryDetails);
-                transactionStatus = new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
+                return new TransactionStatus(null, null, shoppingBasket, false);
             }
-            else
+            //payment
+            var paymentStatus = await PaymentAdapter.CreatePayment(paymentDetails);
+            if (!paymentStatus.Status)
             {
-                transactionStatus = new TransactionStatus(paymentStatus, null, shoppingBasket, false);
+                return new TransactionStatus(paymentStatus, null, shoppingBasket, false);
             }
-            return transactionStatus;
+            //deliver
+            var deliveryStatus = await DeliveryAdapter.CreateDelivery(deliveryDetails);
+
+            return new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
         }
 
-        public bool CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
+        public async Task<bool> CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
         {
             Logger.Instance.MonitorActivity(nameof(Transaction) + " " + nameof(CancelTransaction));
             PaymentStatus paymentStatus = null;
             DeliveryStatus deliveryStatus = null;
+            bool handshake = await _handshakeAdapter.CheckAvailablity();
+            // handshake
+            if (!handshake)
+            {
+                return false;
+            }
             if (cancelPayments)
             {
-                paymentStatus = PaymentAdapter.CancelPayment(transactionStatus.PaymentStatus);
+                paymentStatus = await PaymentAdapter.CancelPayment(transactionStatus.PaymentStatus);
             }
             if (cancelDeliveries)
             {
-                deliveryStatus = DeliveryAdapter.CancelDelivery(transactionStatus.DeliveryStatus);
+                deliveryStatus = await DeliveryAdapter.CancelDelivery(transactionStatus.DeliveryStatus);
             }
             bool allSucceeded = (deliveryStatus == null || deliveryStatus.Status) && (paymentStatus == null || paymentStatus.Status);
             return allSucceeded;

@@ -25,9 +25,9 @@ namespace TradingSystem.Service
             userManagement.tearDown();
         }
 
-        public string Signup(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string phone)
+        public string Signup(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string zip, string phone)
         {
-            string ans= userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum), phone);
+            string ans= userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum, zip), phone);
             return ans;
                 
         }

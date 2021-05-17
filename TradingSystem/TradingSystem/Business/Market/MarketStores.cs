@@ -57,7 +57,7 @@ namespace TradingSystem.Business.Market
         //USER FUNCTIONALITY
 
         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-        public Store CreateStore(string name, string username, BankAccount bank, Address address)
+        public Store CreateStore(string name, string username, CreditCard bank, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
             User user = MarketUsers.Instance.GetUserByUserName(username);
@@ -105,6 +105,16 @@ namespace TradingSystem.Business.Market
             return store.GetStoreHistory(username);
         }
 
+        public Result<bool> OwnerAcceptBid(string ownerUsername, string username, Guid storeId, Guid productId, double newBidPrice)
+        {
+            IStore store = null;
+            User u = MarketUsers.Instance.GetUserByUserName(username);
+            if (!_stores.TryGetValue(storeId, out store))
+            {
+                return new Result<bool>(false, true, "Store doesn't exist");
+            }
+            return store.AcceptBid(ownerUsername, username, productId, newBidPrice);
+        }
 
         public IStore GetStoreById(Guid storeId)
         {
@@ -139,6 +149,24 @@ namespace TradingSystem.Business.Market
             if (res.Equals("Product added"))
                 return new Result<Product>(product, false, res);
             return new Result<Product>(product, true, res);
+        }
+
+        public Result<bool> CustomerRequestBid(string username, Guid storeId, Guid productId, double newBidPrice)
+        {
+            IStore store = null;
+            User u = MarketUsers.Instance.GetUserByUserName(username);
+            if (!_stores.TryGetValue(storeId, out store))
+            {
+                return new Result<bool>(false, true, "Store doesn't exist");
+            }
+            foreach (var owner in store.GetOwners())
+            {
+                var ownerUsername = owner.Key;
+                var message = $"{username} {storeId} {productId} {newBidPrice}";
+                PublisherManagement.Instance.EventNotification(ownerUsername, EventType.RequestPurchaseEvent, message);
+            }
+            return new Result<bool>(true, false, "");
+
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17

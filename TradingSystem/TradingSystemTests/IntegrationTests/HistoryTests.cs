@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
@@ -16,19 +17,20 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(string)"/>
         [TestMethod]
-        public void GetUserHistoryWithPermission()
+        public async Task GetUserHistoryWithPermission()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            Store store = new Store("storeTest", bankAccount, address);
+            Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsTrue(!v1.IsErr);
             ICollection<IHistory> userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(1, userHistory.Count);
 
@@ -36,24 +38,25 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(string)"/>
         [TestMethod]
-        public void GetUserEmptyHistoryPurcahseFailed()
+        public async Task GetUserEmptyHistoryPurcahseFailed()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            Store store = new Store("storeTest", bankAccount, address);
+            Store store = new Store("storeTest", card, address);
             MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             ICollection<IHistory> userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(0, userHistory.Count);
-            Assert.IsFalse(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsFalse(!v1.IsErr);
             userHistory = user.GetUserHistory(user.Username);
             Assert.AreEqual(0, userHistory.Count);
 
@@ -62,27 +65,28 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetUserHistory(string)"/>
         [TestMethod]
         [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void GetUserHistoryWithoutPermission()
+        public async Task GetUserHistoryWithoutPermission()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            Store store = new Store("storeTest", bankAccount, address);
+            Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsTrue(!v1.IsErr);
             user.GetUserHistory(user.Username);
 
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Store)"/>
         [TestMethod]
-        public void GetStoreHistoryWithPermission()
+        public async Task GetStoreHistoryWithPermission()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             MemberState memberState = new MemberState(user.Username);
@@ -90,10 +94,11 @@ namespace TradingSystemTests.IntegrationTests
             MarketUsers market = MarketUsers.Instance;
             MarketStores marketStores = MarketStores.Instance;
             market.ActiveUsers.TryAdd(user.Username, user);
-            Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
+            Store store = marketStores.CreateStore("storeTest", user.Username, card, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsTrue(!v1.IsErr);
             ICollection<IHistory> storeHistory = store.GetStoreHistory(user.Username);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(1, storeHistory.Count);
@@ -102,10 +107,10 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Store)"/>
         [TestMethod]
-        public void GetStoreEmptyHistoryPurchaseFailed()
+        public async Task GetStoreEmptyHistoryPurchaseFailed()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             MemberState memberState = new MemberState(user.Username);
@@ -113,17 +118,18 @@ namespace TradingSystemTests.IntegrationTests
             MarketUsers market = MarketUsers.Instance;
             MarketStores marketStores = MarketStores.Instance;
             market.ActiveUsers.TryAdd(user.Username, user);
-            Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
+            Store store = marketStores.CreateStore("storeTest", user.Username, card, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
-            paymentSystem.Setup(p => p.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<double>())).Returns(new Guid());
+            paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             ICollection<IHistory> storeHistory = store.GetStoreHistory(user.Username);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(0, storeHistory.Count);
-            Assert.IsFalse(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsFalse(!v1.IsErr);
             storeHistory = store.GetStoreHistory(user.Username);
             Assert.IsNotNull(storeHistory);
             Assert.AreEqual(0, storeHistory.Count);
@@ -133,11 +139,10 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetStoreHistory(Store)"/>
         [TestMethod]
         [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void GetStoreHistoryWithoutPermission()
+        public async Task GetStoreHistoryWithoutPermission()
         {
-
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             MemberState memberState = new MemberState(user.Username);
@@ -146,29 +151,31 @@ namespace TradingSystemTests.IntegrationTests
             MarketStores marketStores = MarketStores.Instance;
             //market.DeleteAllTests();
             market.ActiveUsers.TryAdd(user.Username, user);
-            Store store = marketStores.CreateStore("storeTest", user.Username, bankAccount, address);
+            Store store = marketStores.CreateStore("storeTest", user.Username, card, address);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsTrue(!v1.IsErr);
             store.GetStoreHistory("false Username");
 
         }
         
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetAllHistory()"/>
         [TestMethod]
-        public void GetAllHistoryWithPermission()
+        public async Task GetAllHistoryWithPermission()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
             MemberState adminState = new AdministratorState(user.Username);
             user.ChangeState(adminState);
-            Store store = new Store("storeTest", bankAccount, address);
+            Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsTrue(!v1.IsErr);
             ICollection<IHistory> allHistory = user.State.GetAllHistory();
             Assert.IsNotNull(allHistory);
             Assert.AreEqual(2, allHistory.Count);
@@ -178,17 +185,18 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MemberState.GetAllHistory()"/>
         [TestMethod]
         [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void GetAllHistoryWithoutPermission()
+        public async Task GetAllHistoryWithoutPermission()
         {
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            Address address = new Address("1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            Address address = new Address("1", "1", "1", "1", "1");
             Product product = new Product(100, 100, 100);
             User user = new User("testUser");
-            Store store = new Store("storeTest", bankAccount, address);
+            Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
             store.UpdateProduct(product);
             user.UpdateProductInShoppingBasket(store, product, 5);
-            Assert.IsTrue(!user.PurchaseShoppingCart(bankAccount, "0544444444", address).IsErr);
+            var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
+            Assert.IsTrue(!v1.IsErr);
             user.State.GetAllHistory();
 
         }

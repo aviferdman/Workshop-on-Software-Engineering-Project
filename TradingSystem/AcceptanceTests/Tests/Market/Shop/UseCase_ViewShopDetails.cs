@@ -40,8 +40,9 @@ namespace AcceptanceTests.Tests.Market.Shop
         private ShopId shopId;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
             useCase_openShop = new UseCase_OpenShop(SystemContext, ShopOwnerUser);
             useCase_openShop.Setup();
             shopId = useCase_openShop.Success_Normal(ShopInfo);
@@ -49,9 +50,10 @@ namespace AcceptanceTests.Tests.Market.Shop
         }
 
         [TearDown]
-        public void Teardown()
+        public override void Teardown()
         {
             useCase_openShop.Teardown();
+            base.Teardown();
         }
 
        /* [TestCase]

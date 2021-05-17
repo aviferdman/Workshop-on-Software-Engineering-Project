@@ -16,7 +16,7 @@ namespace TradingSystemTests.UnitTests
         public DiscountCalculatorTests()
         {
             User u = new User();
-            IStore store = new Store("teststore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            IStore store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 

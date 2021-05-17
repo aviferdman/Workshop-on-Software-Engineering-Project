@@ -69,13 +69,22 @@ namespace AcceptanceTests.Tests.Market.Shop
             new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             Assert.IsNull(MarketBridge.OpenShop(new ShopInfo(
                 name: "non existing shop",
-                bankAccount: new BankAccount(branch: 3, accountNumber: 2),
+                creditCard: new CreditCard
+                (
+                    cardNumber: "6666123456780000",
+                    month: "05",
+                    year: "23",
+                    holderName: User_ShopOwner1.Username,
+                    cvv: "565",
+                    holderId: "789641238"
+                ),
                 new Address
                 {
                     State = "Victoria Island",
                     City = "Henesys",
                     Street = "Free Market",
                     ApartmentNum = "52",
+                    ZipCode = "1111111",
                 }
             )));
         }

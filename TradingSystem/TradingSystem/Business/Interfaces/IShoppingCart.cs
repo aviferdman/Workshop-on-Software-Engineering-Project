@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Business.Market
@@ -9,7 +10,7 @@ namespace TradingSystem.Business.Market
     {
         public IShoppingBasket GetShoppingBasket(IStore store);
         public bool CheckPolicy();
-        public BuyStatus Purchase(PaymentMethod method, string clientPhone, Address clientAddress);
+        public Task<BuyStatus> Purchase(PaymentMethod method, string clientPhone, Address clientAddress);
         public double CalcPaySum();
         public void removeBasket(IStore store);
 

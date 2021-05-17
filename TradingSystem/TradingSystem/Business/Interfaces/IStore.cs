@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
@@ -11,7 +13,8 @@ namespace TradingSystem.Business.Market
     {
         public Guid GetId();
         public bool isStaff(string username);
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method);
+        
+        public Task<PurchaseStatus> Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method);
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity);
 
@@ -60,10 +63,17 @@ namespace TradingSystem.Business.Market
         public IRule GetRuleById(Guid ruleId);
 
         public Discount GetDiscountById(Guid discountId);
+        
         public IRule GetDiscountRuleById(Guid ruleId);
 
         public Founder GetFounder();
 
+        public ConcurrentDictionary<string, Owner> GetOwners();
+
         public void SetFounder(Founder f);
+        
+        Result<bool> AcceptBid(string ownerUsername, string username, Guid productId, double newBidPrice);
+        
+        public double CalcPrice(string username, IShoppingBasket shoppingBasket);
     }
 }

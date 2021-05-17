@@ -6,6 +6,11 @@ namespace TradingSystem.Business.Market
 {
     public interface PaymentMethod
     {
-        public String GeneratePaymentDetails();
+        public String GetCardNumber();
+        public String GetMonth();
+        public String GetYear();
+        public String GetHolderName();
+        public String GetCVV(); 
+        public String GetHolderId();
     }
 }

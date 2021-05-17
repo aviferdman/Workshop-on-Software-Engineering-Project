@@ -35,17 +35,17 @@ namespace TradingSystemTests.IntegrationTests
 
             this.user = new User("UserTests");
             user.ChangeState(new MemberState(user.Username));
-            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
 
-            this.store = new Store("Founder", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("Founder", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             founderUser = new User("Founder");
             founderUser.ChangeState(new MemberState(founderUser.Username));
             this.founder = Founder.makeFounder((MemberState)founderUser.State, store);
             store.Founder = founder;
-            dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(founder.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(founder.Username, founderUser);
@@ -63,7 +63,7 @@ namespace TradingSystemTests.IntegrationTests
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(founder.Username, EventType.PurchaseEvent);
             PublisherManagement.Instance.FindPublisher(founder.Username).LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
-            marketUsers.PurchaseShoppingCart(user.Username, new BankAccount(1, 1), "054444444", new Address("1", "1", "1", "1"));
+            marketUsers.PurchaseShoppingCart(user.Username, new CreditCard("1", "1", "1", "1", "1", "1"), "054444444", new Address("1", "1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
         }
 
@@ -71,7 +71,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public void CheckNotLoggedInUserStoreNotificationsPurchase()
         {
-            var dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            var dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = false;
             UserManagement.Instance.DataUsers[founder.Username] = dataUser;
             Product p = new Product(100, 100, 100);
@@ -81,7 +81,7 @@ namespace TradingSystemTests.IntegrationTests
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(founder.Username, EventType.PurchaseEvent);
             Assert.AreEqual(0, subscriber.Messages.Count);
             Assert.AreEqual(0, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting.Count);
-            marketUsers.PurchaseShoppingCart(user.Username, new BankAccount(1, 1), "054444444", new Address("1", "1", "1", "1"));
+            marketUsers.PurchaseShoppingCart(user.Username, new CreditCard("1", "1", "1", "1", "1", "1"), "054444444", new Address("1", "1", "1", "1", "1"));
             Assert.AreEqual(0, subscriber.Messages.Count);
             Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting.Count);
         }
@@ -97,7 +97,7 @@ namespace TradingSystemTests.IntegrationTests
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(user.Username, EventType.OpenStoreEvent);
             PublisherManagement.Instance.FindPublisher(user.Username).LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
-            marketStores.CreateStore("TestStore", user.Username, new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            marketStores.CreateStore("TestStore", user.Username, new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
         }
 
@@ -105,7 +105,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public void CheckNotLoggedInUserStoreNotificationsCreateShop()
         {
-            var dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            var dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = false;
             UserManagement.Instance.DataUsers[user.Username] = dataUser;
             MarketStores marketStores = MarketStores.Instance;
@@ -114,7 +114,7 @@ namespace TradingSystemTests.IntegrationTests
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(user.Username, EventType.OpenStoreEvent);
             Assert.AreEqual(0, subscriber.Messages.Count);
             Assert.AreEqual(0, PublisherManagement.Instance.FindPublisher(user.Username).Waiting.Count);
-            marketStores.CreateStore("TestStore", user.Username, new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            marketStores.CreateStore("TestStore", user.Username, new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             Assert.AreEqual(0, subscriber.Messages.Count);
             Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(user.Username).Waiting.Count);
         }
@@ -132,18 +132,18 @@ namespace TradingSystemTests.IntegrationTests
 
             this.user = new User("UserTests");
             user.ChangeState(new MemberState(user.Username));
-            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
 
-            this.store = new Store("Founder", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            this.store = new Store("Founder", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
 
             founderUser = new User("Founder");
             founderUser.ChangeState(new MemberState(founderUser.Username));
             this.founder = Founder.makeFounder((MemberState)founderUser.State, store);
             store.Founder = founder;
-            dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1"), "054444444");
+            dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(founder.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(founder.Username, founderUser);

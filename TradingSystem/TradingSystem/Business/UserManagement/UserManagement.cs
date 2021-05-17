@@ -29,7 +29,7 @@ namespace TradingSystem.Business.UserManagement
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
             admins = new ConcurrentDictionary<string, RegisteredAdmin>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5"), "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             admin.IsAdmin = true;
             dataUsers.TryAdd("DEFULT_ADMIN",admin);
             admins.TryAdd("DEFULT_ADMIN", admin);
@@ -39,7 +39,7 @@ namespace TradingSystem.Business.UserManagement
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
             admins = new ConcurrentDictionary<string, RegisteredAdmin>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5"), "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             admin.IsAdmin = true;
             dataUsers.TryAdd("DEFULT_ADMIN", admin);
             admins.TryAdd("DEFULT_ADMIN", admin);

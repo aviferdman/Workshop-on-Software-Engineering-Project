@@ -23,13 +23,14 @@ namespace TradingSystem.Business.Market
         private Founder founder;
         private ConcurrentDictionary<string, IManager> managers;
         private ConcurrentDictionary<string, Owner> owners;
-        private BankAccount _bank;
+        private CreditCard _bank;
         private Guid _id;
         private string name;
         private ICollection<Discount> _discounts;
         private Policy _policy;
         private Address _address;
         private ICollection<IHistory> history;
+        private ICollection<Bid> bids;
         private object _lock;
         private object prem_lock;
 
@@ -39,7 +40,7 @@ namespace TradingSystem.Business.Market
         internal ICollection<TransactionStatus> TransactionsHistory { get => _transactionsHistory; set => _transactionsHistory = value; }
         public Guid Id { get => _id; set => _id = value; }
         public string Name { get => name; set => name = value; }
-        internal BankAccount Bank { get => _bank; set => _bank = value; }
+        internal CreditCard Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public ICollection<IHistory> History { get => history; set => history = value; }
         public ConcurrentDictionary<string, IManager> Managers { get => managers; set => managers = value; }
@@ -48,7 +49,7 @@ namespace TradingSystem.Business.Market
         public object Prem_lock { get => prem_lock; set => prem_lock = value; }
         public string Name1 { get => name; set => name = value; }
 
-        public Store(string name, BankAccount bank, Address address)
+        public Store(string name, CreditCard bank, Address address)
         {
             this.name = name;
             this._products = new ConcurrentDictionary<Guid, Product>();
@@ -63,6 +64,7 @@ namespace TradingSystem.Business.Market
             this.managers = new ConcurrentDictionary<string, IManager>();
             this.owners = new ConcurrentDictionary<string, Owner>();
             this.History = new HashSet<IHistory>();
+            this.bids = new HashSet<Bid>();
         }
 
         public Guid GetId()
@@ -85,14 +87,19 @@ namespace TradingSystem.Business.Market
         {
             return (founder!=null&&founder.Username.Equals(username)) || managers.ContainsKey(username) || owners.ContainsKey(username);
         }
-        public PurchaseStatus Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
+
+        public ConcurrentDictionary<string, Owner> GetOwners()
+        {
+            return owners;
+        }
+        public async Task<PurchaseStatus> Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
             Dictionary<Product, int> product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             string username = shoppingBasket.GetShoppingCart().GetUser().Username;
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
-            double paySum = CalcPaySum(shoppingBasket);
+            double paySum = CalcPrice(username, shoppingBasket);
             lock (_lock)
             {
                 if (!CheckPolicy(shoppingBasket)) return new PurchaseStatus(false, null, _id);
@@ -102,7 +109,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paySum, shoppingBasket);
+            transactionStatus = await Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, _id, _bank, paySum, shoppingBasket);
             //transaction failed
             if (!transactionStatus.Status)
             {
@@ -115,6 +122,35 @@ namespace TradingSystem.Business.Market
                 NotifyOwners();
             }
             return new PurchaseStatus(true, transactionStatus, _id);
+        }
+
+        public double CalcPrice(string username, IShoppingBasket shoppingBasket)
+        {
+            double paySum = CalcPaySum(shoppingBasket);
+            return paySum - CalcBidNewSum(username, shoppingBasket);
+        }
+
+        private double CalcBidNewSum(string username, IShoppingBasket shoppingBasket)
+        {
+            double sum = 0;
+            foreach (var p_q in shoppingBasket.GetDictionaryProductQuantity())
+            {
+                sum += GetProductBid(username, p_q.Key) * p_q.Value;
+            }
+            return sum;
+        }
+
+        private double GetProductBid(string username, Product p)
+        {
+            double sum = 0;
+            foreach (var bid in bids)
+            {
+                if (bid.Username.Equals(username) && bid.ProductId.Equals(p.Id))
+                {
+                    sum += bid.Price < p.Price ? p.Price - bid.Price : 0;
+                }
+            }
+            return sum;
         }
 
         private void AddToHistory(TransactionStatus transactionStatus)
@@ -440,7 +476,6 @@ namespace TradingSystem.Business.Market
             }
 
             _products.TryAdd(product.Id, product); //add the new product
-
         }
 
         public void RemoveProduct(Product product)
@@ -452,7 +487,6 @@ namespace TradingSystem.Business.Market
                 _products.TryRemove(product.Id, out useless);
             }
         }
-
 
         public Guid AddDiscount(string userID, Discount discount)
         {
@@ -587,5 +621,14 @@ namespace TradingSystem.Business.Market
             this.founder = f;
         }
 
+        public Result<bool> AcceptBid(string ownerUsername, string username, Guid productId, double newBidPrice)
+        {
+            if (!CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            this.bids.Add(new Bid(username, productId, newBidPrice));
+            return new Result<bool>(true, false, "");
+        }
     }
 }

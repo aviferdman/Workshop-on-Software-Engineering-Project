@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using AcceptanceTests.AppInterface.Data;
 
 using Moq;
@@ -77,19 +77,24 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             (
                 shopInfo.Name,
                 Username,
-                shopInfo.BankAccount.AccountNumber,
-                shopInfo.BankAccount.Branch,
+                shopInfo.CreditCard.CardNumber,
+                shopInfo.CreditCard.Month,
+                shopInfo.CreditCard.Year,
+                shopInfo.CreditCard.HolderName,
+                shopInfo.CreditCard.Cvv,
+                shopInfo.CreditCard.HolderId,
                 shopInfo.Address.State,
                 shopInfo.Address.City,
                 shopInfo.Address.Street,
-                shopInfo.Address.ApartmentNum
+                shopInfo.Address.ApartmentNum,
+                shopInfo.Address.ZipCode
             );
             return storeData == null ? (ShopId?)null : new ShopId(storeData.Id, shopInfo.Name);
         }
 
         public ShopId? AssureOpenShop(ShopInfo shopInfo)
         {
-            throw new InvalidOperationException($"Should not call this method, use {nameof(OpenShop)} method instead.");
+            throw new NotImplementedException($"Should not call this method, use {nameof(OpenShop)} method instead.");
         }
 
         public ShopInfo? GetShopDetails(ShopId shopId)
@@ -197,18 +202,28 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return result != null && !result.IsErr;
         }
 
-        public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        public Task<bool> PurchaseShoppingCart(BuyerUserInfo buyerUserInfo)
         {
-            Result<bool> result = marketShoppingCartService.PurchaseShoppingCart
+            throw new NotImplementedException($"Should not call this method, use {nameof(PurchaseShoppingCart)}({nameof(PurchaseInfo)}) method instead.");
+        }
+
+        public async Task<bool> PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        {
+            Result<bool> result = await marketShoppingCartService.PurchaseShoppingCart
             (
                 SystemContext.TokenUsername,
-                purchaseInfo.BankAccount.AccountNumber,
-                purchaseInfo.BankAccount.Branch,
+                purchaseInfo.CreditCard.CardNumber,
+                purchaseInfo.CreditCard.Month,
+                purchaseInfo.CreditCard.Year,
+                purchaseInfo.CreditCard.HolderName,
+                purchaseInfo.CreditCard.Cvv,
+                purchaseInfo.CreditCard.HolderId,
                 purchaseInfo.PhoneNumber,
                 purchaseInfo.Address.State,
                 purchaseInfo.Address.City,
                 purchaseInfo.Address.Street,
-                purchaseInfo.Address.ApartmentNum
+                purchaseInfo.Address.ApartmentNum,
+                purchaseInfo.Address.ZipCode
             );
             return !result.IsErr && result.Ret;
         }

@@ -1,0 +1,59 @@
+.grid-container{
+    display: grid;
+    grid-template-areas:
+       "header"
+       "search"
+       "main"
+       "footer";
+    grid-template-rows: 5rem 6rem 1fr 5rem;
+    grid-template-columns: 1fr;
+    height: 100%;
+    padding: 0.5rem;
+
+}
+
+.header-container{
+    display: grid;
+    grid-template-columns: 15% 75% 5% 5%;
+}
+
+.icons {
+
+    border: 0;
+    background: none;
+    box-shadow: none;
+    border-radius: 0px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Stores */
+.stores{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.formStyle{
+    box-sizing: border-box;
+    color: #282c34;
+}
+
+.stores li{
+    flex:0 1 29rem;
+    height: 15rem;
+    border: 1px solid #ddd;
+    padding: 1rem;
+
+}
+
+.store{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}

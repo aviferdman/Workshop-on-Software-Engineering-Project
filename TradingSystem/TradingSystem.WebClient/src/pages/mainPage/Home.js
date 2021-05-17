@@ -4,16 +4,96 @@ import data from './productData.json';
 import Products from "../../components/Products";
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
+import MenuIcon from '@material-ui/icons/Menu';
+import Navbar from "../../components/Navbar/Navbar";
+import * as HiIcons from "react-icons/hi";
+import {IconContext} from "react-icons";
+import Cart from "../../components/Cart";
+import axios from "axios";
+import {username} from "../../App";
 
     export class Home extends React.Component {
         constructor(props) {
             super(props);
             this.state = {
-                products: data.products,
+                products: [],
+                cartItems: [],
                 category: "",
-                ordered: ""
+                ordered: "",
+                searchKeywords: "",
+                searchCategory: "",
+                searchPriceMin: "",
+                searchPriceMax: "",
             };
         }
+
+        onSearchInputChange = e => {
+            this.setState({
+                searchKeywords: e.target.value
+            });
+        };
+
+        onSearchCategoryChange = e => {
+            this.setState({
+                searchCategory: e.target.value
+            });
+        };
+
+        onSearchPriceMinChange = e => {
+            this.setState({
+                searchPriceMin: e.target.value
+            });
+        };
+
+        onSearchPriceMaxChange = e => {
+            this.setState({
+                searchPriceMax: e.target.value
+            });
+        };
+
+        onSearch = async () => {
+            try {
+                let response = await axios.get('/Products/Search', {
+                    params: {
+                        keywords: this.state.searchKeywords,
+                        category: this.state.searchCategory,
+                        priceRange_Low: this.state.searchPriceMin === "" ? -1 : this.state.searchPriceMin,
+                        priceRange_High: this.state.searchPriceMax === "" ? -1 : this.state.searchPriceMax,
+                    }
+                });
+                this.setState({
+                    products: response.data
+                });
+            }
+            catch (e) {
+                console.error("search error occurred: ", e);
+            }
+        };
+
+        removeFromCart = (product) => {
+            const cartItems = this.state.cartItems.slice();
+            this.setState({
+                cartItems: cartItems.filter(x => x.id !== product.id),
+            });
+        };
+
+        addToCart = (product) => {
+            let alreadyInCart = false;
+            const cartItems = this.state.cartItems.slice()
+            cartItems.forEach( (item) => {
+                if(item.id === product.id){
+                    //console.log(this.state.cartItems.length);
+                    item.count++;
+                    alreadyInCart = true;
+                }
+            });
+
+            if(!alreadyInCart){
+                cartItems.push({...product, count: 1})
+            }
+            this.setState({cartItems: cartItems});
+        };
+
         sortProducts = (event) =>{
           //impl
             const sort = event.target.value;
@@ -48,13 +128,66 @@ import Filter from "../../components/Filter";
         render() {
             return (
                 <div className="grid-container">
-                    <header>
+                    <header className="header-container">
                         <a href="/">E - commerce Application</a>
+                        <div>
+                            <h3> User Name </h3>
+                        </div>
+
+
+                        <button className="icons">
+                            <HiIcons.HiShoppingCart />
+                        </button>
+
+                        <Navbar></Navbar>
 
                     </header>
-                    <search>
-                        <SearchBar></SearchBar>
-                    </search>
+
+                    <div>
+
+                    </div>
+                    <div className="search-grid search-block">
+
+
+                        <SearchBar onChange={this.onSearchInputChange} value={this.state.searchKeywords} onSearch={this.onSearch}/>
+                        {" "}
+
+                        <div className="filter-category">
+                            Category{" "}
+                            <select value={this.state.searchCategory} onChange={this.onSearchCategoryChange}>
+                                <option value="">ALL</option>
+                                <option value="Dairy">Dairy</option>
+                                <option value="Pastries">Pastries</option>
+                                <option value="Beverage">Beverage</option>
+
+                            </select>
+                        </div>
+
+                        <div className="rangeinput">
+                            <input
+                                type="number"
+                                placeholder="Min"
+                                className="sizeInput"
+                                value={this.state.searchPriceMin}
+                                onChange={this.onSearchPriceMinChange}
+                            />
+
+                        </div>
+
+                        {"  "}
+
+                        <div className="rangeinput" >
+                            <input
+                                type="number"
+                                placeholder="Max"
+                                className="sizeInput"
+                                value={this.state.searchPriceMax}
+                                onChange={this.onSearchPriceMaxChange}
+                            />
+
+                        </div>
+
+                    </div>
                     <main>
                         <div className="content">
                             <div className="main">
@@ -65,14 +198,15 @@ import Filter from "../../components/Filter";
                                     filterProducts={this.filterProducts}
                                     sortProducts={this.sortProducts} >
                                 </Filter>
-                                <Products products={this.state.products}></Products>
+                                <Products products={this.state.products} addToCart={this.addToCart}></Products>
                             </div>
-                            <div className="sidebar">Cart Items</div>
+                            <div className="sidebar">
+                                <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+                            </div>
                         </div>
 
                     </main>
                     <footer> End of products</footer>
-
                 </div>
             )
         }

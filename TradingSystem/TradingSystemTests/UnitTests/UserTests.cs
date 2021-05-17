@@ -16,17 +16,17 @@ namespace TradingSystemTests.MarketTests
         private static readonly int QUANTITY2 = 200;
         private User testUser;
         private Store testStore;
-        private BankAccount testStoreBankAccount;
+        private CreditCard testStoreCreditCard;
         private Address testStoreAddress;
         private Product product;
 
         public UserTests()
         {
             product = new Product(QUANTITY1, WEIGHT1, PRICE1);
-            testStoreAddress = new Address("2", "2", "2", "2");
-            testStoreBankAccount = new BankAccount(2, 2);
+            testStoreAddress = new Address("2", "2", "2", "2", "2");
+            testStoreCreditCard = new CreditCard("1", "1", "1", "1", "1", "1");
             testUser = new User("testUser");
-            testStore = new Store("testStore", testStoreBankAccount, testStoreAddress);
+            testStore = new Store("testStore", testStoreCreditCard, testStoreAddress);
         }
 
         //START UNIT TESTS

@@ -13,13 +13,18 @@ namespace AcceptanceTests
             string username,
             string password,
             string phoneNumber,
-            BankAccount bankAccount,
+            CreditCard creditCard,
             Address address
         ) : base(username, password, phoneNumber, address)
         {
-            BankAccount = bankAccount;
+            if (creditCard is null)
+            {
+                throw new ArgumentNullException(nameof(creditCard));
+            }
+
+            CreditCard = creditCard;
         }
 
-        public BankAccount BankAccount { get; }
+        public CreditCard CreditCard { get; }
     }
 }

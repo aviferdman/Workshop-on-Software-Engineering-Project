@@ -1,10 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Configuration;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Service
 {
+    public enum Answer
+    {
+        Accept, 
+        Deny,
+        Bid
+    }
     public class MarketShoppingCartService
     {
         private static readonly Lazy<MarketShoppingCartService> instanceLazy = new Lazy<MarketShoppingCartService>(() => new MarketShoppingCartService(), true);
@@ -66,21 +75,64 @@ namespace TradingSystem.Service
             return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(dataCart, false, null);
         }
 
-        public Result<bool> PurchaseShoppingCart
+        public async Task<Result<bool>> PurchaseShoppingCart
         (
             string username,
-            int accountNumber,
-            int branch,
+            string cardNumber, 
+            string month, 
+            string year, 
+            string holderName, 
+            string cvv, 
+            string holderId,
             string phone,
             string state,
             string city,
             string street,
-            string apartmentNum
+            string apartmentNum,
+            string zip
         )
         {
-            var bankAccount = new BankAccount(accountNumber, branch);
-            var address = new Address(state, city, street, apartmentNum);
-            return marketUsers.PurchaseShoppingCart(username, bankAccount, phone, address);
+            var card = new CreditCard(cardNumber, month, year, holderName, cvv, holderId);
+            var address = new Address(state, city, street, apartmentNum, zip);
+            return await marketUsers.PurchaseShoppingCart(username, card, phone, address);
+        }
+
+        public Result<bool> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
+        {
+            switch (answer)
+            {
+                //accept bid
+                case Answer.Accept:
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
+                    return MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
+
+                //request new bid
+                case Answer.Bid:
+                    var message = $"{username} {storeId} {productId} {newBidPrice}";
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, message);
+                    return new Result<bool>(true, false, "");
+
+                //deny new bid
+                default:
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestDenyMessage"]);
+                    return new Result<bool>(true, false, "");
+            }
+        }
+
+        public Result<bool> CustomerAnswerBid(Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
+        {
+            switch (answer)
+            {
+                //request new bid
+                case Answer.Bid:
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
+                    return MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
+                
+                //accept / deny bid
+                default:
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestDenyMessage"]);
+                    return new Result<bool>(true, false, "");
+            }
         }
     }
 }

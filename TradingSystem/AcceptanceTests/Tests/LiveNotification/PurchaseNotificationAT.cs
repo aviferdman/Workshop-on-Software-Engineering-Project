@@ -13,6 +13,7 @@ using TradingSystem.PublisherComponent;
 using TradingSystem.Notifications;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Payment;
+using System.Threading.Tasks;
 
 namespace AcceptanceTests.Tests.LiveNotification
 {
@@ -27,6 +28,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         Address a = new Address
@@ -35,6 +37,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 3",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         };
 
         UserInfo buyer1 = new UserInfo("buyer1", "123", null, new Address
@@ -43,6 +46,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo buyer2 = new UserInfo("buyer2", "123", null, new Address
@@ -51,6 +55,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
         UserInfo owner1 = new UserInfo("owner1", "123", null, new Address
         {
@@ -58,6 +63,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         ProductInfo p = new ProductInfo("potato", 5, 5.0, "veggies", 0.5);
@@ -78,13 +84,27 @@ namespace AcceptanceTests.Tests.LiveNotification
             Bridge.Logout();
             Bridge.SignUp(founder);
             Bridge.Login(founder);
-            store = marketBridge.OpenShop(new ShopInfo("whyy", new BankAccount(), new Address
-            {
-                State = "Israel",
-                City = "City 2",
-                Street = "Hello",
-                ApartmentNum = "5",
-            }));
+            store = marketBridge.OpenShop(new ShopInfo
+            (
+                "whyy",
+                new CreditCard
+                (
+                    cardNumber: "1452369878887888",
+                    month: "09",
+                    year: "26",
+                    holderName: "Nunu Willamp",
+                    cvv: "000",
+                    holderId: "030301777"
+                ),
+                new Address
+                {
+                    State = "Israel",
+                    City = "City 2",
+                    Street = "Hello",
+                    ApartmentNum = "5",
+                    ZipCode = "55555",
+                })
+            );
             pid =marketBridge.AddProductToShop(store.Value, p);
             Bridge.Logout();
             Bridge.SignUp(buyer1);
@@ -99,30 +119,44 @@ namespace AcceptanceTests.Tests.LiveNotification
               (
                   It.IsAny<string>(),
                   It.IsAny<string>(),
-                  It.IsAny<double>(),
+                  It.IsAny<string>(),
                   It.IsAny<string>(),
                   It.IsAny<string>()
-              )).Returns(packageId);
+              )).Returns(new Task<string>( () => packageId.ToString()));
             var paymentId = Guid.NewGuid();
             var paymenySystemMock = new Mock<ExternalPaymentSystem>();
-            _ = paymenySystemMock.Setup(ps => ps.CreatePayment
+            _ = paymenySystemMock.Setup(ps => ps.CreatePaymentAsync
               (
                   It.IsAny<string>(),
                   It.IsAny<string>(),
-                  It.IsAny<int>(),
-                  It.IsAny<int>(),
-                  It.IsAny<double>()
-              )).Returns(paymentId);
+                  It.IsAny<string>(),
+                  It.IsAny<string>(),
+                  It.IsAny<string>(),
+                  It.IsAny<string>()
+              )).Returns(new Task<string>( () => paymentId.ToString()));
 
         }
 
         [Test]
-        public void CheckValidPurchaseFounderNotified()
+        public async Task CheckValidPurchaseFounderNotified()
         {
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
             marketBridge.AddProductToUserCart(new ProductInCart(pid.Value, 3));
-            Assert.IsTrue(marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677" , new BankAccount(), a)));
+            Assert.IsTrue(await marketBridge.PurchaseShoppingCart(new PurchaseInfo
+            (
+                "0501345677",
+                new CreditCard
+                (
+                    cardNumber: "5555000011113333",
+                    month: "01",
+                    year: "23",
+                    holderName: "Forsen",
+                    cvv: "999",
+                    holderId: "302301007"
+                ),
+                a
+            )));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -131,7 +165,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         }
 
         [Test]
-        public void CheckValidPurchaseAllOwnersNotified()
+        public async Task CheckValidPurchaseAllOwnersNotified()
         {
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
@@ -140,7 +174,20 @@ namespace AcceptanceTests.Tests.LiveNotification
             publisherManagement.Subscribe("owner1", s1, EventType.PurchaseEvent);
             Bridge.Login(buyer1);
             marketBridge.AddProductToUserCart(new ProductInCart(pid.Value, 3));
-            Assert.IsTrue(marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
+            Assert.IsTrue(await marketBridge.PurchaseShoppingCart(new PurchaseInfo
+            (
+                "0501345677",
+                new CreditCard
+                (
+                    cardNumber: "5555000011113333",
+                    month: "01",
+                    year: "23",
+                    holderName: "Forsen",
+                    cvv: "999",
+                    holderId: "302301007"
+                ),
+                a
+            )));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -165,7 +212,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         }
 
         [Test]
-        public void CheckInvalidPurchaseAllOwnerNotNotified()
+        public async Task CheckInvalidPurchaseAllOwnerNotNotified()
         {
             ATSubscriber s = new ATSubscriber("founder");
             publisherManagement.Subscribe("founder", s, EventType.PurchaseEvent);
@@ -180,7 +227,20 @@ namespace AcceptanceTests.Tests.LiveNotification
             marketBridge.EditProductInShop(store.Value, pid.Value, p);
             Bridge.Logout();
             Bridge.Login(buyer1);
-            Assert.IsFalse(marketBridge.PurchaseShoppingCart(new PurchaseInfo("0501345677", new BankAccount(), a)));
+            Assert.IsFalse(await marketBridge.PurchaseShoppingCart(new PurchaseInfo
+            (
+                "0501345677",
+                new CreditCard
+                (
+                    cardNumber: "5555000011113333",
+                    month: "01",
+                    year: "23",
+                    holderName: "Forsen",
+                    cvv: "999",
+                    holderId: "302301007"
+                ),
+                a
+            )));
             Assert.AreEqual(s.EventsReceived.Count, 0);
             Bridge.Logout();
             Bridge.Login(founder);
@@ -191,10 +251,6 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s1.EventsReceived.Count, 0);
             p.Quantity = 5;
         }
-
-        
-       
-
 
         [TearDown]
         public void DeleteAll()

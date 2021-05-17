@@ -12,7 +12,7 @@ namespace TradingSystemTests
         
         private string signup()
         {
-           return UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala","lala","la"), "0501234733");
+           return UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala","lala","la", "1111111"), "0501234733");
         }
 
         private bool delete()

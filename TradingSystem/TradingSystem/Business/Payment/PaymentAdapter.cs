@@ -8,7 +8,7 @@ namespace TradingSystem.Business.Payment
     public interface PaymentAdapter
     {
         public bool SetPaymentSystem(ExternalPaymentSystem externalPaymentSystem);
-        public PaymentStatus CreatePayment(PaymentDetails paymentDetails);
-        public PaymentStatus CancelPayment(PaymentStatus paymentStatus);
+        public Task<PaymentStatus> CreatePayment(PaymentDetails paymentDetails);
+        public Task<PaymentStatus> CancelPayment(PaymentStatus paymentStatus);
     }
 }

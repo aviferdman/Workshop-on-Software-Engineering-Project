@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using AcceptanceTests.AppInterface.Data;
 
 using Moq;
@@ -127,6 +127,16 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             return RealBridge != null && RealBridge.EditUserCart(productsAdd, productsRemove, productsEdit);
         }
 
+        public Task<bool> PurchaseShoppingCart(BuyerUserInfo buyerUserInfo)
+        {
+            return PurchaseShoppingCart(new PurchaseInfo(buyerUserInfo.PhoneNumber, buyerUserInfo.CreditCard, buyerUserInfo.Address));
+        }
+
+        public async Task<bool> PurchaseShoppingCart(PurchaseInfo purchaseInfo)
+        {
+            return RealBridge != null && await RealBridge.PurchaseShoppingCart(purchaseInfo);
+        }
+
         public bool MakeOwner(string assignee, Guid storeID, string assigner)
         {
             return RealBridge != null && RealBridge.MakeOwner(assignee, storeID, assigner);
@@ -146,11 +156,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         public bool RemoveManager(String managerName, Guid storeID, String assignerName)
         {
             return RealBridge != null && RealBridge.RemoveManager(managerName, storeID, assignerName);
-        }
-
-        public bool PurchaseShoppingCart(PurchaseInfo purchaseInfo)
-        {
-            return RealBridge != null && RealBridge.PurchaseShoppingCart(purchaseInfo);
         }
 
         public void tearDown()

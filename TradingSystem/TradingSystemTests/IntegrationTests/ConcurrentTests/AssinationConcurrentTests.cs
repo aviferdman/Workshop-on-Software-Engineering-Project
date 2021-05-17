@@ -44,9 +44,9 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             guestName = marketUsers.AddGuest();
             userManagement.SignUp("owner_test_conc", "123", null, null);
             marketUsers.AddMember("owner_test_conc", "123", guestName);
-            Address address = new Address("1", "1", "1", "1");
-            BankAccount bankAccount = new BankAccount(1000, 1000);
-            store = market.CreateStore("testStore", "founder_test_conc", bankAccount, address);
+            Address address = new Address("1", "1", "1", "1", "1");
+            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
+            store = market.CreateStore("testStore", "founder_test_conc", card, address);
             
             MarketStores.Instance.makeOwner("owner_test_conc", store.Id, "founder_test_conc");
         }

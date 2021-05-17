@@ -24,6 +24,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner1 = new UserInfo("owner1", "123", null, new Address
@@ -32,6 +33,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner2 = new UserInfo("owner2", "123", null, new Address
@@ -40,6 +42,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
 
         UserInfo owner3 = new UserInfo("owner3", "123", null, new Address
@@ -48,6 +51,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             City = "City 2",
             Street = "Hello",
             ApartmentNum = "5",
+            ZipCode = "55555",
         });
         ShopId? store;
 
@@ -58,13 +62,27 @@ namespace AcceptanceTests.Tests.LiveNotification
             Bridge.Connect();
             Bridge.SignUp(founder);
             Bridge.Login(founder);
-            store = marketBridge.OpenShop(new ShopInfo("whyy", new BankAccount(), new Address
-            {
-                State = "Israel",
-                City = "City 2",
-                Street = "Hello",
-                ApartmentNum = "5",
-            }));
+            store = marketBridge.OpenShop(new ShopInfo
+            (
+                "whyy",
+                new CreditCard
+                (
+                    cardNumber: "1452369878887888",
+                    month: "09",
+                    year: "26",
+                    holderName: "Nunu Willamp",
+                    cvv: "000",
+                    holderId: "030301777"
+                ),
+                new Address
+                {
+                    State = "Israel",
+                    City = "City 2",
+                    Street = "Hello",
+                    ApartmentNum = "5",
+                    ZipCode = "55555",
+                })
+            );
             Bridge.Logout();
             Bridge.SignUp(owner1);
             Bridge.Login(owner1);

@@ -30,7 +30,7 @@ namespace TradingSystemTests
             this.product2 = new Product(QUANTITY2, WEIGHT2, PRICE2);
             this.product_quantity = new Dictionary<Product, int>();
             User u = new User();
-            IStore store = new Store("teststore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            IStore store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 
@@ -295,7 +295,7 @@ namespace TradingSystemTests
         {
             Transaction.Instance.DeleteAllTests();
             User u = new User();
-            IStore store = new Store("teststore", new BankAccount(1, 1), new Address("1", "1", "1", "1"));
+            IStore store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 

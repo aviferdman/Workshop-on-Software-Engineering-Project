@@ -49,10 +49,10 @@ namespace TradingSystem.Business.Market
             shoppingBasket.UpdateProduct(product, quantity);
         }
 
-        public Result<bool> PurchaseShoppingCart(PaymentMethod method, string phone, Address address)
+        public async Task<Result<bool>> PurchaseShoppingCart(PaymentMethod method, string phone, Address address)
         {
 
-            BuyStatus buyStatus = ShoppingCart.Purchase(method, phone, address);
+            BuyStatus buyStatus = await ShoppingCart.Purchase(method, phone, address);
             //add information to history
             //empty the shopping cart after a successful purchase
             if (buyStatus.Status)
@@ -77,7 +77,5 @@ namespace TradingSystem.Business.Market
         {
             return _state.GetUserHistory(username);
         }
-
-
     }
 }
