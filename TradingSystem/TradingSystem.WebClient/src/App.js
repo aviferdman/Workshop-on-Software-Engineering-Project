@@ -29,17 +29,19 @@ class App extends React.Component {
       globalContext: {
         username: '',
         setUsername: this.setUsername,
+        isLoggedIn: false,
         webSocket: null,
         setWebSocket: this.setWebSocket
       }
     };
   }
 
-  setUsername = username => {
+  setUsername = (username, loggedIn) => {
     this.setState({
       globalContext: {
         ...this.state.globalContext,
         username: username,
+        isLoggedIn: !!loggedIn
       }
     });
   }
@@ -83,12 +85,10 @@ class App extends React.Component {
   }
 
   render() {
-    if (this.state.showErrorDialog) {
-      return <SimpleAlertDialog message={this.state.errorMessage} isShown={true} onClose={this.handleCloseErrorDialog} />;
-    }
     return (
       <GlobalContext.Provider value={this.state.globalContext}>
-        <Routes />;
+        <Routes />
+        <SimpleAlertDialog message={this.state.errorMessage} isShown={this.state.showErrorDialog} onClose={this.handleCloseErrorDialog} />
       </GlobalContext.Provider>
     );
   }
@@ -99,19 +99,11 @@ class App extends React.Component {
       this.setState({
         showErrorDialog: false,
         errorMessage: null,
-        globalContext: {
-          ...this.state.globalContext,
-          username: response.data,
-        }
       });
+      this.setUsername(response.data, false);
     }
     catch (e) {
-      this.setState({
-        globalContext: {
-          ...this.state.globalContext,
-          username: '',
-        }
-      });
+      this.setUsername('', false);
       if (e.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx

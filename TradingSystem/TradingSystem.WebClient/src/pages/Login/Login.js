@@ -118,7 +118,7 @@ export default function LoginPage() {
                     password: state.password.value,
                 });
                 if (response.data === "success") {
-                    context.setUsername(state.username.value);
+                    context.setUsername(state.username.value, true);
                     context.setWebSocket(state.username.value);
                     history.push('/home');
                 }
