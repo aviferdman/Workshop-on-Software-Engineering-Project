@@ -11,6 +11,5 @@ namespace TradingSystem.Business.Interfaces
     {
         public bool GetPermission(Permission permission);
         public bool removePermission(Store store);
-        public MemberState getM();
     }
 }

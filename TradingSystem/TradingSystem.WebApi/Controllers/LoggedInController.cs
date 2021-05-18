@@ -35,17 +35,13 @@ namespace TradingSystem.WebApi.Controllers
             PublisherManagement.Instance.Subscribe(username, subAddAppointmentEvent, EventType.AddAppointmentEvent);
             Subscriber subRemoveAppointment = new Subscriber(username, socket, false);
             PublisherManagement.Instance.Subscribe(username, subRemoveAppointment, EventType.RemoveAppointment);
-            Subscriber subRequestPurchaseEvent = new Subscriber(username, socket, false);
-            PublisherManagement.Instance.Subscribe(username, subRequestPurchaseEvent, EventType.RequestPurchaseEvent);
 
             List<Subscriber> subscribers = new List<Subscriber>();
             subscribers.Add(subOpenStore);
             subscribers.Add(subPurchaseEvent);
             subscribers.Add(subAddAppointmentEvent);
             subscribers.Add(subRemoveAppointment);
-            subscribers.Add(subRequestPurchaseEvent);
         }
-        
 
         public void RemoveClient(String username)
         {

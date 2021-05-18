@@ -17,8 +17,6 @@ namespace TradingSystem.Business.Market.StoreStates
         public ICollection<Permission> Store_permission { get => store_permission; set => store_permission = value; }
         public MemberState M { get => m; set => m = value; }
 
-        public MemberState getM() { return m; }
-
         public enum Permission
         {
             AddProduct,

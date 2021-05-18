@@ -9,7 +9,7 @@ namespace TradingSystem.Business.UserManagement
     {
         public RegisteredAdmin(string username, string password, Address address, string phone) : base(username, password, address, phone)
         {
-            IsAdmin = true;
+            isAdmin = true;
         }
     }
 }
