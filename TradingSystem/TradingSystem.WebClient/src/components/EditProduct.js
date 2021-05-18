@@ -1,6 +1,7 @@
 
 import React, { Component } from "react";
 import './AddProduct.css';
+import * as AiIcons from "react-icons/ai";
 
 class AddProduct extends React.Component {
     state = { show: false }
@@ -15,7 +16,7 @@ class AddProduct extends React.Component {
 
     render() {
         return (
-            <main className="items">
+            <main className="items-edit">
                 <Modal show={this.state.show} handleClose={this.hideModal} >
                     <div className= "col-grd">
 
@@ -90,7 +91,9 @@ class AddProduct extends React.Component {
 
                 </Modal>
 
-                <button className= "store-products-button-view" onClick={this.showModal}> Add Product </button>
+                <button className= "store-products-button-view-edit" onClick={this.showModal}>
+                    <AiIcons.AiFillEdit />
+                </button>
             </main>
         )
     }
@@ -109,10 +112,10 @@ const Modal = ({ handleClose, show, children }) => {
                 </div>
 
 
-                    <div className="modal-buttons">
-                        <button className="modal-buttons-props" onClick={handleClose} > Close </button>
-                        <button className="modal-buttons-props" onClick={handleClose} > Add </button>
-                    </div>
+                <div className="modal-buttons">
+                    <button className="modal-buttons-props" onClick={handleClose} > Close </button>
+                    <button className="modal-buttons-props" onClick={handleClose} > Edit </button>
+                </div>
 
 
             </section>

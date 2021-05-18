@@ -125,7 +125,7 @@ footer{
 
 .products li{
     flex:0 1 29rem;
-    height: 15rem;
+    height: 25rem;
     border: 1px solid #ddd;
     padding: 1rem;
 
@@ -168,6 +168,18 @@ footer{
 
 .button.primary{
     background-color: #ECCC77FF;
+    margin-bottom: 5rem;
+}
+
+.control-buttons{
+    display: grid;
+    grid-template-columns: 4rem 4rem;
+    position: relative;
+
+}
+
+.exit-button{
+    cursor: pointer;
 }
 
 /* Filter */
