@@ -21,8 +21,6 @@ namespace TradingSystem.Business.Market
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
         private ConcurrentDictionary<string, User> activeUsers;
-        private ConcurrentDictionary<string, IShoppingCart> membersShoppingCarts;
-        private ConcurrentDictionary<string, MemberState> memberStates;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketUsers>
@@ -33,14 +31,11 @@ namespace TradingSystem.Business.Market
         public static MarketUsers Instance { get { return _lazy.Value; } }
 
         public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
-        public ConcurrentDictionary<string, MemberState> MemberStates { get => memberStates; set => memberStates = value; }
 
         private MarketUsers()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
-            memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
         
@@ -48,9 +43,7 @@ namespace TradingSystem.Business.Market
         public void tearDown()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
-            memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
         public ICollection<Store> getUserStores(string usrname)
@@ -108,9 +101,7 @@ namespace TradingSystem.Business.Market
         public void DeleteAll()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
-            memberStates = new ConcurrentDictionary<string, MemberState>();
         }
 
         //functional requirement 2.2: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/13
@@ -400,9 +391,7 @@ namespace TradingSystem.Business.Market
         public void CleanMarketUsers()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            membersShoppingCarts = new ConcurrentDictionary<string, IShoppingCart>();
             historyManager = HistoryManager.Instance;
-            memberStates = new ConcurrentDictionary<string, MemberState>();
         }
     }
 }
