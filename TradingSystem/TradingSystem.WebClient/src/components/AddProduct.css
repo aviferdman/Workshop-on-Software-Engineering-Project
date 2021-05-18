@@ -9,20 +9,43 @@
 
 .items{
     display: grid;
-    grid-template-columns: 15% 15% 15%;
+    grid-template-columns: 15%;
     position: relative;
     justify-content: space-between;
     right: 50%;
 }
 
+.items-edit{
+
+}
+
 .modal-main {
     position:fixed;
     background: white;
-    width: 80%;
-    height: auto;
+    width: 60%;
+    height: 55%;
     top:50%;
     left:50%;
     transform: translate(-50%,-50%);
+}
+
+.modal-buttons{
+
+    display: grid;
+    grid-template-columns: 45% 45%;
+    position: relative;
+    justify-content: space-between;
+    margin-top: 3rem;
+    margin-left: 40%;
+    width: 20rem;
+    height: 5rem;
+
+}
+
+.modal-buttons-props{
+    cursor: pointer;
+    background-color: #ECCC77FF;
+
 }
 
 .display-block {
@@ -40,11 +63,33 @@
     height: 5rem;
     background-color: #ECCC77FF;
 }
-.DsizeInput {
+
+.store-products-button-view-edit{
+    cursor: pointer;
+}
+
+.lines-props{
+    margin-top: 5rem;
+}
+
+.input-props {
     width: 8rem;
+    height: 3rem;
+    margin-left: 6rem;
+    margin-top: 2rem;
 }
 
 .col-grd{
     display: grid;
     grid-template-columns: 5% 5%
+}
+
+.text-props{
+    font-size: 2rem;
+    margin-top: 2rem;
+    margin-left: 2rem;
+}
+
+.center-text{
+    margin-left: 45%
 }
