@@ -1,0 +1,44 @@
+.store-creation-dialog-close-button {
+  margin-right: 24px;
+}
+
+.store-creation-dialog-margin {
+  margin: 8px;
+}
+
+.store-creation-form-row {
+  margin-top: 12px;
+  align-self: flex-start;
+}
+
+.store-creation-btn-block {
+  margin-top: 8px;
+  align-self: flex-end;
+}
+
+.store-creation-margin-right {
+  margin-right: 8px;
+}
+
+.store-creation-margin-right.MuiFormControl-root {
+  margin-right: 8px;
+}
+
+.store-creation-sub-form-title {
+  margin-top: 0px;
+  margin-bottom: 16px;
+  align-self: flex-start;
+}
+
+.store-creation-width-div {
+  width: 85%;
+}
+
+.store-creation-complex-fields-grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.credit-card-small-field {
+  width: 85px;
+}

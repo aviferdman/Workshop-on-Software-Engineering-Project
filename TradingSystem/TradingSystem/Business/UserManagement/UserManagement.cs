@@ -27,22 +27,22 @@ namespace TradingSystem.Business.UserManagement
 
         private UserManagement()
         {
-            dataUsers = new ConcurrentDictionary<string, DataUser>();
-            admins = new ConcurrentDictionary<string, RegisteredAdmin>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            admin.IsAdmin = true;
-            dataUsers.TryAdd("DEFULT_ADMIN",admin);
-            admins.TryAdd("DEFULT_ADMIN", admin);
+            Init();
         }
 
         public void tearDown()
         {
+            Init();
+        }
+
+        private void Init()
+        {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
             admins = new ConcurrentDictionary<string, RegisteredAdmin>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             admin.IsAdmin = true;
-            dataUsers.TryAdd("DEFULT_ADMIN", admin);
-            admins.TryAdd("DEFULT_ADMIN", admin);
+            dataUsers.TryAdd(admin.Username, admin);
+            admins.TryAdd(admin.Username, admin);
         }
 
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11

@@ -20,7 +20,6 @@ namespace TradingSystem.WebApi
         public override void OnError(Exception e)
         {
             byte[] buffer = Encoding.ASCII.GetBytes(e.Message);
-
             socket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 

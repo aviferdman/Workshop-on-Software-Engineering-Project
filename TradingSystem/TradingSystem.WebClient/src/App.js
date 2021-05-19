@@ -4,6 +4,7 @@ import Routes from "./routes";
 import axios from "axios";
 import SimpleAlertDialog from "./components/simpleAlertDialog";
 import {GlobalContext} from "./globalContext";
+import './App.css'
 
 export function useTitle(title) {
   useEffect(() => {
@@ -21,6 +22,7 @@ class App extends React.Component {
 
     this.handleCloseErrorDialog = this.handleCloseErrorDialog.bind(this);
     this.setUsername = this.setUsername.bind(this);
+    this.setWebSocket = this.setWebSocket.bind(this);
 
     this.state = {
       showErrorDialog: false,
@@ -28,19 +30,38 @@ class App extends React.Component {
       globalContext: {
         username: '',
         setUsername: this.setUsername,
+        isLoggedIn: false,
         webSocket: null,
-        setWebSocket: () => {}
+        setWebSocket: this.setWebSocket
       }
     };
   }
 
-  setUsername = username => {
+  setUsername = (username, loggedIn) => {
     this.setState({
       globalContext: {
+        ...this.state.globalContext,
         username: username,
-        setUsername: this.state.globalContext.setUsername,
-        webSocket: this.state.globalContext.webSocket,
-        setWebSocket: this.state.globalContext.setWebSocket,
+        isLoggedIn: !!loggedIn
+      }
+    });
+  }
+
+  setWebSocket = username => {
+    // Create WebSocket connection.
+    const socket = new WebSocket('wss://localhost:5001/login');
+
+    // Connection opened
+    socket.addEventListener('open', function (event) {
+      console.log('web socket connection opened');
+      socket.send(username);
+      console.log('sent username');
+    });
+
+    this.setState({
+      globalContext: {
+        ...this.state.globalContext,
+        webSocket: socket
       }
     });
   }
@@ -58,21 +79,17 @@ class App extends React.Component {
   componentWillUnmount() {
     this.setState({
       globalContext: {
+        ...this.state.globalContext,
         username: '',
-        setUsername: this.state.globalContext.setUsername,
-        webSocket: this.state.globalContext.webSocket,
-        setWebSocket: this.state.globalContext.setWebSocket,
       }
     });
   }
 
   render() {
-    if (this.state.showErrorDialog) {
-      return <SimpleAlertDialog message={this.state.errorMessage} isShown={true} onClose={this.handleCloseErrorDialog} />;
-    }
     return (
       <GlobalContext.Provider value={this.state.globalContext}>
-        <Routes />;
+        <Routes />
+        <SimpleAlertDialog message={this.state.errorMessage} isShown={this.state.showErrorDialog} onClose={this.handleCloseErrorDialog} />
       </GlobalContext.Provider>
     );
   }
@@ -83,23 +100,11 @@ class App extends React.Component {
       this.setState({
         showErrorDialog: false,
         errorMessage: null,
-        globalContext: {
-          username: response.data,
-          setUsername: this.state.globalContext.setUsername,
-          webSocket: this.state.globalContext.webSocket,
-          setWebSocket: this.state.globalContext.setWebSocket,
-        }
       });
+      this.setUsername(response.data, false);
     }
     catch (e) {
-      this.setState({
-        globalContext: {
-          username: '',
-          setUsername: this.state.globalContext.setUsername,
-          webSocket: this.state.globalContext.webSocket,
-          setWebSocket: this.state.globalContext.setWebSocket,
-        }
-      });
+      this.setUsername('', false);
       if (e.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
