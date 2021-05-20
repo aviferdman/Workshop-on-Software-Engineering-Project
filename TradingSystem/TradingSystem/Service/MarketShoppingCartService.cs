@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 
@@ -36,21 +37,21 @@ namespace TradingSystem.Service
             }
 
             var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
-            foreach (IShoppingBasket basket in cart.ShoppingBaskets)
+            foreach (ShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
-                foreach (KeyValuePair<Product, int> p in basket.GetDictionaryProductQuantity())
+                foreach (ProductInCart p in basket.GetDictionaryProductQuantity())
                 {
-                    products.Add(new ProductData(p.Key), p.Value);
+                    products.Add(new ProductData(p.product), p.quantity);
                 }
                 dataCart.Add(basket.GetStore().GetId(), products);
             }
             return dataCart;
         }
 
-        public Result<Dictionary<Guid, Dictionary<ProductData, int>>> EditShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
+        public async Task<Result<Dictionary<Guid, Dictionary<ProductData, int>>>> EditShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
-            Result<IShoppingCart> res = marketUsers.editShoppingCart(username, products_removed, products_added, products_quan);
+            Result<ShoppingCart> res = await marketUsers.editShoppingCart(username, products_removed, products_added, products_quan);
             if (res.IsErr)
             {
                 return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(null, true, res.Mess);
@@ -63,12 +64,12 @@ namespace TradingSystem.Service
             }
 
             var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
-            foreach (IShoppingBasket basket in cart.ShoppingBaskets)
+            foreach (ShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
-                foreach (KeyValuePair<Product, int> p in basket.GetDictionaryProductQuantity())
+                foreach (ProductInCart p in basket.GetDictionaryProductQuantity())
                 {
-                    products.Add(new ProductData(p.Key), p.Value);
+                    products.Add(new ProductData(p.product), p.quantity);
                 }
                 dataCart.Add(basket.GetStore().GetId(), products);
             }

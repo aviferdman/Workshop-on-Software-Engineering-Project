@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.Histories;
+using TradingSystem.DAL;
 
 namespace TradingSystem.Business.Market
 {
     class HistoryManager
     {
-        private ICollection<IHistory> histories;
         private static readonly Lazy<HistoryManager>
         _lazy =
         new Lazy<HistoryManager>
@@ -16,23 +18,46 @@ namespace TradingSystem.Business.Market
 
         public HistoryManager()
         {
-            histories = new HashSet<IHistory>();
         }
         public static HistoryManager Instance { get { return _lazy.Value; } }
 
-        public void AddUserHistory(IHistory history)
+        public async void AddHistory(TransactionStatus history)
         {
-            histories.Add(history);
+            await MarketDAL.Instance.AddHistory(history);
         }
 
-        public ICollection<IHistory> GetAllHistories()
+        public async Task<ICollection<IHistory>> GetAllHistories()
         {
+            ICollection<TransactionStatus> transactionStatuses = await MarketDAL.Instance.getAllHistories();
+            List<IHistory> histories = new List<IHistory>();
+            foreach(TransactionStatus t in transactionStatuses)
+            {
+                histories.Add(new UserHistory(t));
+                histories.Add(new StoreHistory(t));
+            }
             return histories;
         }
 
-        public ICollection<IHistory> GetUserHistory(string username)
+        public async Task<ICollection<IHistory>> GetUserHistory(string username)
         {
-            return histories.Where(h => h.GetPaymentStatus().Username.Equals(username)).ToList();
+            ICollection<TransactionStatus> transactionStatuses = await MarketDAL.Instance.getUserHistories(username);
+            List<IHistory> histories = new List<IHistory>();
+            foreach (TransactionStatus t in transactionStatuses)
+            {
+                histories.Add(new UserHistory(t));
+            }
+            return histories;
+        }
+
+        public async Task<ICollection<IHistory>> GetStoreHistory(Guid storeId)
+        {
+            ICollection<TransactionStatus> transactionStatuses = await MarketDAL.Instance.getStoreHistories(storeId);
+            List<IHistory> histories = new List<IHistory>();
+            foreach (TransactionStatus t in transactionStatuses)
+            {
+                histories.Add(new StoreHistory(t));
+            }
+            return histories;
         }
     }
 }

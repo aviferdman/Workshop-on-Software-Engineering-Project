@@ -13,7 +13,7 @@ namespace TradingSystem.Business.Market.RulesPackage
 
         public Rule CreateUserAgeRule(string username, int ageLessThan = int.MaxValue, int ageGreaterEQThan = 0)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 UserAgeLessThan(username, ageLessThan) && !UserAgeLessThan(username, ageGreaterEQThan)
             ));
         }
@@ -25,18 +25,18 @@ namespace TradingSystem.Business.Market.RulesPackage
 
         public Rule CreateProductWeightRule(Guid productId, double weightLessThan = int.MaxValue, double weightGreaterEQThan = 0)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 ProductWeightLessThan(basket, productId, weightLessThan) && !ProductWeightLessThan(basket, productId, weightGreaterEQThan)
             ));
         }
 
-        private bool ProductWeightLessThan(IShoppingBasket basket, Guid productId, double quantityLessThan)
+        private bool ProductWeightLessThan(ShoppingBasket basket, Guid productId, double quantityLessThan)
         {
             double counter = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 if (product.Id.Equals(productId))
                 {
                     counter += product.Weight * quantity;
@@ -46,18 +46,18 @@ namespace TradingSystem.Business.Market.RulesPackage
         }
         public Rule CreateProductRule(Guid productId, int quantityLessThan = int.MaxValue, int quantityGreaterEQThan = 0)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 ProductLessThan(basket, productId, quantityLessThan) && !ProductLessThan(basket, productId, quantityGreaterEQThan)
             ));
         }
 
-        private bool ProductLessThan(IShoppingBasket basket, Guid productId, int quantityLessThan)
+        private bool ProductLessThan(ShoppingBasket basket, Guid productId, int quantityLessThan)
         {
             int counter = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 if (product.Id.Equals(productId))
                 {
                     counter += quantity;
@@ -68,18 +68,18 @@ namespace TradingSystem.Business.Market.RulesPackage
 
         public Rule CreateCategoryRule(string category, int quantityLessThan = int.MaxValue, int quantityGreaterEQThan = 0)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 CategoryLessThan(basket, category, quantityLessThan) && !CategoryLessThan(basket, category, quantityGreaterEQThan)
             ));
         }
 
-        private bool CategoryLessThan(IShoppingBasket basket, string category, int quantityLessThan)
+        private bool CategoryLessThan(ShoppingBasket basket, string category, int quantityLessThan)
         {
             int counter = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 if (product.Category.Equals(category))
                 {
                     counter += quantity;
@@ -89,36 +89,36 @@ namespace TradingSystem.Business.Market.RulesPackage
         }
         public Rule CreateStorePriceRule(double priceLessThan = int.MaxValue, double priceGreaterEQThan = 0)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 StorePriceLessThan(basket, priceLessThan) && !StorePriceLessThan(basket, priceGreaterEQThan)
             ));
         }
 
-        private bool StorePriceLessThan(IShoppingBasket basket, double priceLessThan)
+        private bool StorePriceLessThan(ShoppingBasket basket, double priceLessThan)
         {
             double counter = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 counter += product.Price * quantity;
             }
             return counter < priceLessThan;
         }
         public Rule CreateStoreRule(int quantityLessThan = int.MaxValue, int quantityGreaterEQThan = 0)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 StoreLessThan(basket, quantityLessThan) && !StoreLessThan(basket, quantityGreaterEQThan)
             ));
         }
 
-        private bool StoreLessThan(IShoppingBasket basket, int quantityLessThan)
+        private bool StoreLessThan(ShoppingBasket basket, int quantityLessThan)
         {
             int counter = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 counter += quantity;
             }
             return counter < quantityLessThan;
@@ -126,7 +126,7 @@ namespace TradingSystem.Business.Market.RulesPackage
 
         public Rule CreateTimeRule(DateTime BeforeDate, DateTime AfterDate)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) =>
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
                 DateLessThan(BeforeDate) && !DateLessThan(AfterDate)
             ));
         }

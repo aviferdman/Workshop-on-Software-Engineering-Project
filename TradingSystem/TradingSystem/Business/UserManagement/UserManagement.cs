@@ -44,7 +44,12 @@ namespace TradingSystem.Business.UserManagement
             if (username == null)
                 return "username cannot be null";
             if (await usersDAL.AddDataUser(new DataUser(username, password, address, phone)))
+            {
+                await usersDAL.AddNewMemberState(username);
+                await usersDAL.AddNewShoppingCart(username);
                 return "success";
+            }
+                
             return "username: "+username+" is already taken please choose a different one";
         }
 

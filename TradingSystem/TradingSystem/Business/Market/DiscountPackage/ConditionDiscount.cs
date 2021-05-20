@@ -25,7 +25,7 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         {
             _rule = null;
         }
-        public override double ApplyDiscounts(IShoppingBasket shoppingBasket)
+        public override double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             if (Available(shoppingBasket))
             {
@@ -34,11 +34,11 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
             return 0;
         }
 
-        public bool Available(IShoppingBasket shoppingBasket)
+        public bool Available(ShoppingBasket shoppingBasket)
         {
             return _rule == null || _rule.Check(shoppingBasket);
         }
-        public double XorHelper(IShoppingBasket shoppingBasket, ConditionDiscount d1, ConditionDiscount d2, bool decide)
+        public double XorHelper(ShoppingBasket shoppingBasket, ConditionDiscount d1, ConditionDiscount d2, bool decide)
         {
             bool available1 = d1.Available(shoppingBasket);
             bool available2 = d2.Available(shoppingBasket);
@@ -66,8 +66,8 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 
         public ConditionDiscount Xor(ConditionDiscount d, bool decide)
         {
-            Func<IShoppingBasket, double> f = new Func<IShoppingBasket, double>
-                ((IShoppingBasket shoppingBasket) => XorHelper(shoppingBasket, this, d, decide)
+            Func<ShoppingBasket, double> f = new Func<ShoppingBasket, double>
+                ((ShoppingBasket shoppingBasket) => XorHelper(shoppingBasket, this, d, decide)
                 );
 
             return new ConditionDiscount(new DiscountCalculator(f));

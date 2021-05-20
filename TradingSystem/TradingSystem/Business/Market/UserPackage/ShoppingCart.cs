@@ -1,32 +1,47 @@
 ﻿using NSubstitute.ReceivedExtensions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TradingSystem.Business.Market.UserPackage;
+using TradingSystem.DAL;
 
 namespace TradingSystem.Business.Market
 {
-    public class ShoppingCart :IShoppingCart
+    public class ShoppingCart 
     {
-        private SortedSet<IShoppingBasket> shoppingBaskets;
-
+        public SortedSet<ShoppingBasket> shoppingBaskets { get; set; }
+        public string username { get; set; }
+        [NotMapped]
         private User _user;
 
-        public SortedSet<IShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
+        public SortedSet<ShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
         public User User1 { get => _user; set => _user = value; }
 
         public ShoppingCart(User user)
         {
-            this.shoppingBaskets = new SortedSet<IShoppingBasket>();
+            this.shoppingBaskets = new SortedSet<ShoppingBasket>();
             _user = user;
+            username = user.Username;
+        }
+
+        public ShoppingCart(string username)
+        {
+            this.shoppingBaskets = new SortedSet<ShoppingBasket>();
+            this.username = username;
+        }
+        public ShoppingCart()
+        {
+            this.shoppingBaskets = new SortedSet<ShoppingBasket>();
         }
 
         public ShoppingCart(ShoppingCart c)
         {
             _user = c.User1;
-            this.shoppingBaskets = new SortedSet<IShoppingBasket>();
-            foreach(IShoppingBasket s in c.ShoppingBaskets)
+            this.shoppingBaskets = new SortedSet<ShoppingBasket>();
+            foreach(ShoppingBasket s in c.ShoppingBaskets)
             {
                 this.shoppingBaskets.Add(new ShoppingBasket((ShoppingBasket)s, this));
             }
@@ -37,17 +52,18 @@ namespace TradingSystem.Business.Market
             var notEmptyBaskets = shoppingBaskets.Where(shoppingBasket => !shoppingBasket.IsEmpty());
             return !notEmptyBaskets.Any();
         }
-        public IShoppingBasket GetShoppingBasket(IStore store)
+        public async virtual Task<ShoppingBasket> GetShoppingBasket(Store store)
         {
             //create if not exists
             if (!shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
             {
                 shoppingBaskets.Add(new ShoppingBasket(this, store));
+                await ProxyMarketContext.Instance.saveChanges();
             }
             return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
         }
 
-        public void removeBasket(IStore store)
+        public void removeBasket(Store store)
         {
             if (shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
             {
@@ -55,7 +71,7 @@ namespace TradingSystem.Business.Market
             }
         }
 
-        public IShoppingBasket TryGetShoppingBasket(IStore store)
+        public ShoppingBasket TryGetShoppingBasket(Store store)
         {
             //create if not exists
             if (!shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
@@ -68,7 +84,7 @@ namespace TradingSystem.Business.Market
         public bool CheckPolicy()
         {
             bool isLegal = true;
-            foreach (IShoppingBasket basket in shoppingBaskets)
+            foreach (ShoppingBasket basket in shoppingBaskets)
             {
                 isLegal = isLegal && basket.GetStore().CheckPolicy(basket);
             }
@@ -81,7 +97,7 @@ namespace TradingSystem.Business.Market
             if (IsEmpty()) return new BuyStatus(false, null);
             bool allStatusesOk = true;
             ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
-            foreach (IShoppingBasket basket in shoppingBaskets)
+            foreach (ShoppingBasket basket in shoppingBaskets)
             {
                 PurchaseStatus purchaseStatus = await basket.GetStore().Purchase(basket, clientPhone, clientAddress, method);
                 purchases.Add(purchaseStatus);
@@ -114,13 +130,16 @@ namespace TradingSystem.Business.Market
         public IDictionary<Guid, IDictionary<Guid , int >> GetShopingCartProducts()
         {
             IDictionary<Guid, IDictionary<Guid, int>> ret = new Dictionary<Guid, IDictionary<Guid, int>>();
-            foreach (IShoppingBasket basket in shoppingBaskets)
+            foreach (ShoppingBasket basket in shoppingBaskets)
             {
-                IDictionary<Product, int> dict = basket.GetDictionaryProductQuantity();
-                IDictionary<Guid, int> dictToAdd = FilterDictionary(dict);
+                HashSet<ProductInCart> dict = basket.GetDictionaryProductQuantity();
+                IDictionary<Guid, int> dictToAdd = new Dictionary<Guid, int>();
+                foreach(ProductInCart p in basket.Product_quantity)
+                {
+                    dictToAdd.Add(p.product.Id, p.quantity);
+                }
                 ret.Add(basket.GetStore().GetId(), dictToAdd);
             }
-
             return ret;
         }
 

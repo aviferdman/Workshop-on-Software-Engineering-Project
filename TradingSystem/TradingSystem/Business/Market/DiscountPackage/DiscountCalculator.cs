@@ -7,20 +7,20 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 {
     public class DiscountCalculator : IDiscountCalculator
     {
-        private Func<IShoppingBasket, double> _f;
-        public DiscountCalculator(Func<IShoppingBasket, double> f)
+        private Func<ShoppingBasket, double> _f;
+        public DiscountCalculator(Func<ShoppingBasket, double> f)
         {
             F = f;
         }
 
         public DiscountCalculator(IDiscountCalculator calc)
         {
-            this.F = new Func<IShoppingBasket, double>(calc.GetFunction());
+            this.F = new Func<ShoppingBasket, double>(calc.GetFunction());
         }
 
-        public Func<IShoppingBasket, double> F { get => _f; set => _f = value; }
+        public Func<ShoppingBasket, double> F { get => _f; set => _f = value; }
 
-        public double CalcDiscount(IShoppingBasket shoppingBasket)
+        public double CalcDiscount(ShoppingBasket shoppingBasket)
         {
             return F(shoppingBasket);
         }
@@ -33,19 +33,19 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 
         public IDiscountCalculator Max(IDiscountCalculator otherDiscountCalc)
         {
-            Func<IShoppingBasket, double> newF = new Func<IShoppingBasket, double>((IShoppingBasket shoppingBasket) => 
+            Func<ShoppingBasket, double> newF = new Func<ShoppingBasket, double>((ShoppingBasket shoppingBasket) => 
                                                     CompositeHelper(this.CalcDiscount(shoppingBasket), otherDiscountCalc.CalcDiscount(shoppingBasket), (double d1, double d2) => Math.Max(d1, d2)));
             return new DiscountCalculator(newF);
         }
 
         public IDiscountCalculator Add(IDiscountCalculator otherDiscountCalc)
         {
-            Func<IShoppingBasket, double> newF = new Func<IShoppingBasket, double>((IShoppingBasket shoppingBasket) =>
+            Func<ShoppingBasket, double> newF = new Func<ShoppingBasket, double>((ShoppingBasket shoppingBasket) =>
                                                     CompositeHelper(this.CalcDiscount(shoppingBasket), otherDiscountCalc.CalcDiscount(shoppingBasket), (double d1, double d2) => d1 + d2));
             return new DiscountCalculator(newF);
         }
 
-        public Func<IShoppingBasket, double> GetFunction()
+        public Func<ShoppingBasket, double> GetFunction()
         {
             return F;
         }

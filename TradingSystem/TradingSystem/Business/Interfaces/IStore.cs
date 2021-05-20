@@ -14,15 +14,15 @@ namespace TradingSystem.Business.Market
         public Guid GetId();
         public bool isStaff(string username);
         
-        public Task<PurchaseStatus> Purchase(IShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method);
+        public Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method);
 
         public void CancelTransaction(Dictionary<Product, int> product_quantity);
 
-        public double CalcPaySum(IShoppingBasket shoppingBasket);
+        public double CalcPaySum(ShoppingBasket shoppingBasket);
 
-        public double ApplyDiscounts(IShoppingBasket shoppingBasket);
+        public double ApplyDiscounts(ShoppingBasket shoppingBasket);
 
-        public bool CheckPolicy(IShoppingBasket shoppingBasket);
+        public bool CheckPolicy(ShoppingBasket shoppingBasket);
 
         public void SetPolicy(string username, Policy policy);
 
@@ -74,6 +74,6 @@ namespace TradingSystem.Business.Market
         
         Result<bool> AcceptBid(string ownerUsername, string username, Guid productId, double newBidPrice);
         
-        public double CalcPrice(string username, IShoppingBasket shoppingBasket);
+        public double CalcPrice(string username, ShoppingBasket shoppingBasket);
     }
 }

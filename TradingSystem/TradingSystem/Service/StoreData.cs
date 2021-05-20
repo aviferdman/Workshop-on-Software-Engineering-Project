@@ -12,7 +12,7 @@ namespace TradingSystem.Service
             this.Id = store.Id;
             this.Name = store.Name;
             products = new List<ProductData>();
-            foreach(Product p in store.Products.Values)
+            foreach(Product p in store.Products)
             {
                 products.Add(new ProductData(p));
             }

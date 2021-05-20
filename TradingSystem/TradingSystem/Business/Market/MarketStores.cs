@@ -20,8 +20,6 @@ namespace TradingSystem.Business.Market
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
 
-        private ConcurrentDictionary<Guid, IStore> _stores;
-        private ConcurrentDictionary<string, Category> categories;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketStores>
@@ -31,22 +29,15 @@ namespace TradingSystem.Business.Market
 
         public static MarketStores Instance { get { return _lazy.Value; } }
 
-        public ConcurrentDictionary<Guid, IStore> Stores { get => _stores; set => _stores = value; }
 
         private MarketStores()
         {
-            _stores = new ConcurrentDictionary<Guid, IStore>();
-
             historyManager = HistoryManager.Instance;
-            categories = new ConcurrentDictionary<string, Category>();
         }
 
         public void tearDown()
         {
-            _stores = new ConcurrentDictionary<Guid, IStore>();
-
             historyManager = HistoryManager.Instance;
-            categories = new ConcurrentDictionary<string, Category>();
         }
 
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)

@@ -14,16 +14,19 @@ namespace TradingSystem.DAL
        _lazy =
        new Lazy<UsersDAL>
            (() => new UsersDAL());
+        //returns null if not exist
         public async Task<DataUser> GetDataUser(string username)
         {
             return await proxyMarketContext.GetDataUser(username);
         }
 
+        //returns false if not successfull
         public async Task<bool> AddDataUser(DataUser u)
         {
             return await proxyMarketContext.AddDataUser(u);
         }
 
+        //returns false if not successfull
         public async Task<bool> RemoveDataUser(string username)
         {
             return await proxyMarketContext.RemoveDataUser(username);
@@ -32,6 +35,16 @@ namespace TradingSystem.DAL
         public void TearDown()
         {
             proxyMarketContext.UserTearDown();
+        }
+
+        public async Task AddNewMemberState(string username)
+        {
+            await proxyMarketContext.AddNewMemberState(username);
+        }
+
+        public async Task AddNewShoppingCart(string username)
+        {
+            await proxyMarketContext.AddNewShoppingCart(username);
         }
     }
 }

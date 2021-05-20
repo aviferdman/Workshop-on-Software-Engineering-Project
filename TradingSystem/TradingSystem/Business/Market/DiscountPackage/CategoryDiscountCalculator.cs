@@ -10,17 +10,17 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         IDiscountCalculator discountCalculator;
         public CategoryDiscountCalculator(string category, double percent)
         {
-            Func<IShoppingBasket, double> f = new Func<IShoppingBasket, double>((IShoppingBasket basket) => Calc(basket, category, percent));
+            Func<ShoppingBasket, double> f = new Func<ShoppingBasket, double>((ShoppingBasket basket) => Calc(basket, category, percent));
             discountCalculator = new DiscountCalculator(f);
         }
 
-        private double Calc(IShoppingBasket basket, string category, double percent)
+        private double Calc(ShoppingBasket basket, string category, double percent)
         {
             double discount = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 if (product.Category.Equals(category))
                 {
                     discount += quantity * product.Price * percent;
@@ -34,12 +34,12 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
             return discountCalculator.Add(otherDiscountCalc);
         }
 
-        public double CalcDiscount(IShoppingBasket shoppingBasket)
+        public double CalcDiscount(ShoppingBasket shoppingBasket)
         {
             return discountCalculator.CalcDiscount(shoppingBasket);
         }
 
-        public Func<IShoppingBasket, double> GetFunction()
+        public Func<ShoppingBasket, double> GetFunction()
         {
             return discountCalculator.GetFunction();
         }

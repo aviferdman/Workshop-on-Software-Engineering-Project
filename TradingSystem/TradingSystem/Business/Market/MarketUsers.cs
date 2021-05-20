@@ -9,17 +9,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Payment;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Business.Market
 {
-    public class MarketUsers : IMarketUsers
+    public class MarketUsers 
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
-
+        private MarketDAL marketUsersDAL = MarketDAL.Instance;
         private ConcurrentDictionary<string, User> activeUsers;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
@@ -44,27 +46,12 @@ namespace TradingSystem.Business.Market
         {
             activeUsers = new ConcurrentDictionary<string, User>();
             historyManager = HistoryManager.Instance;
+            marketUsersDAL.teardown();
         }
 
-        public ICollection<Store> getUserStores(string usrname)
+        public async Task<ICollection<Store>> getUserStores(string usrname)
         {
-            List < Store> s = new List<Store>();
-            MemberState m;
-            if (!memberStates.TryGetValue(usrname, out m))
-                return s;
-            foreach(Store st in m.FounderPrems.Keys)
-            {
-                s.Add(st);
-            }
-            foreach (Store st in m.OwnerPrems.Keys)
-            {
-                s.Add(st);
-            }
-            foreach (Store st in m.ManagerPrems.Keys)
-            {
-                s.Add(st);
-            }
-            return s;
+            return await marketUsersDAL.getMemberStores(usrname);
         }
 
         public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
@@ -114,38 +101,33 @@ namespace TradingSystem.Business.Market
 
         //use case 2 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/21
         ///using login to check password - <see cref="UserManagement.UserManagement.LogIn(string, string, string)"/> 
-        public string AddMember(String usrname, string password, string guestusername)
+        public async Task<string> AddMember(String usrname, string password, string guestusername)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddMember));
-            string loginmang = UserManagement.UserManagement.Instance.LogIn(usrname, password);
+            string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
                 return loginmang;
             }
             User u;
             User guest;
-            IShoppingCart s;
+            ShoppingCart s;
             if (!activeUsers.TryRemove(guestusername, out u))
                 return "user not found in market";
             string GuidString;
-            MemberState m;
-            if (!memberStates.TryGetValue(usrname, out m))
+            MemberState m= await marketUsersDAL.getMemberState(usrname);
+            if (m==null)
             {
-                DataUser du;
-                UserManagement.UserManagement.Instance.DataUsers.TryGetValue(usrname, out du);
-                if (du.isAdmin)
-                    m = new AdministratorState(usrname);
-                else
-                    m = new MemberState(usrname);
-                memberStates.TryAdd(usrname, m);
+                 return "user not found in market";
             }
             u.State = m;
             u.Username = usrname;
             u.IsLoggedIn = true;
-            if (membersShoppingCarts.TryGetValue(usrname, out s))
-                u.ShoppingCart = s;
-            else
-                membersShoppingCarts.TryAdd(usrname, u.ShoppingCart);
+            u.ShoppingCart= await marketUsersDAL.getShoppingCart(usrname);
+            if (u.ShoppingCart == null)
+            {
+                return "user not found in market";
+            }
             ((ShoppingCart)u.ShoppingCart).User1 = u;
             while (!activeUsers.TryAdd(usrname, u))
             {
@@ -168,10 +150,10 @@ namespace TradingSystem.Business.Market
         }
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
         ///before logout checks  - <see cref="UserManagement.UserManagement.Logout(string)"/> 
-        public string logout(string username)
+        public async Task<string> logout(string username)
         {
             User u;
-            bool loginmang = UserManagement.UserManagement.Instance.Logout(username);
+            bool loginmang = await UserManagement.UserManagement.Instance.Logout(username);
             if (!loginmang)
             {
                 return null;
@@ -196,7 +178,7 @@ namespace TradingSystem.Business.Market
 
 
         //USER FUNCTIONALITY
-
+        //TODO Add all chain to db
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
         public async Task<Result<bool>> PurchaseShoppingCart(string username, CreditCard bank, string phone, Address address)
         {
@@ -207,7 +189,7 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 39 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/65
-        public ICollection<IHistory> GetAllHistory(string username)
+        public Task<ICollection<IHistory>> GetAllHistory(string username)
         {
 
             User user = GetUserByUserName(username);
@@ -215,12 +197,12 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 10 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/70
-        public ICollection<IHistory> GetUserHistory(string username)
+        public async Task<ICollection<IHistory>> GetUserHistory(string username)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetUserHistory));
             User user = GetUserByUserName(username);
             string userId = user.Username;
-            return user.GetUserHistory(username);
+            return await user.GetUserHistory(username);
         }
 
 
@@ -235,28 +217,11 @@ namespace TradingSystem.Business.Market
             return u;
         }
 
-        public User GetMemberByUserName(string username)
-        {
-            User u = null;
-            MemberState m;
-            if (!activeUsers.TryGetValue(username, out u))
-            {
-                if (memberStates.TryGetValue(username, out m))
-                {
-                    u = new User(username);
-                    u.ChangeState(m);
-
-                }
-                else
-                    return null;
-            }
-            return u;
-        }
 
 
 
         //use case 5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/53
-        public string AddProductToCart(string username, Guid pid, int quantity)
+        public async  Task<string> AddProductToCart(string username, Guid pid, int quantity)
         {
             User u;
             if (!activeUsers.TryGetValue(username, out u))
@@ -268,8 +233,8 @@ namespace TradingSystem.Business.Market
                 return "product doesn't exist";
             if (p.Quantity <= quantity || quantity < 1)
                 return "product's quantity is insufficient";
-            IShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
-            return basket.addProduct(p, quantity);
+            ShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
+            return await basket.addProduct(p, quantity);
 
         }
 
@@ -281,7 +246,7 @@ namespace TradingSystem.Business.Market
             return user.GetShopingCartProducts();
         }
         //use case 6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/54
-        public IShoppingCart viewShoppingCart(string username)
+        public ShoppingCart viewShoppingCart(string username)
         {
             User u = GetUserByUserName(username);
             if (u == null)
@@ -299,7 +264,7 @@ namespace TradingSystem.Business.Market
             MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
-            IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
+            ShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
             if (basket == null)
                 return "product isn't in basket";
             if (basket.RemoveProduct(p))
@@ -326,7 +291,7 @@ namespace TradingSystem.Business.Market
                 return "product doesn't exist";
             if (p.Quantity <= quantity || quantity < 1)
                 return "product's quantity is insufficient";
-            IShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
+            ShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
             if (basket == null)
                 return "product isn't in basket";
             if (!basket.TryUpdateProduct(p, quantity))
@@ -336,24 +301,24 @@ namespace TradingSystem.Business.Market
         }
 
         //use case 7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/59
-        public Result<IShoppingCart> editShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
+        public async Task<Result<ShoppingCart>> editShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
             User u = GetUserByUserName(username);
             string ans;
             if (u == null)
-                return new Result<IShoppingCart>(null, true, "user doesn't exist");
+                return new Result<ShoppingCart>(null, true, "user doesn't exist");
             if (products_removed.Intersect<Guid>(products_added.Keys).Count() != 0 ||
                products_removed.Intersect<Guid>(products_quan.Keys).Count() != 0 ||
                 products_added.Keys.Intersect<Guid>(products_quan.Keys).Count() != 0)
-                return new Result<IShoppingCart>(u.ShoppingCart, true, "lists are not disjoint");
-            ShoppingCart c = new ShoppingCart((ShoppingCart)u.ShoppingCart);
+                return new Result<ShoppingCart>(u.ShoppingCart, true, "lists are not disjoint");
+            ShoppingCart c = new ShoppingCart(u.ShoppingCart);
             foreach (KeyValuePair<Guid, int> p in products_added)
             {
                 ans = AddProductToCart(username, p.Key, p.Value);
                 if (!ans.Equals("product added to shopping basket"))
                 {
-                    recover_cart(username, u, c);
-                    return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
+                    u.ShoppingCart = c;
+                    return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                 }
             }
             foreach (Guid p in products_removed)
@@ -361,8 +326,8 @@ namespace TradingSystem.Business.Market
                 ans = RemoveProductFromCart(username, p);
                 if (!ans.Equals("product removed from shopping basket"))
                 {
-                    recover_cart(username, u, c);
-                    return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
+                    u.ShoppingCart = c;
+                    return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                 }
 
             }
@@ -371,22 +336,15 @@ namespace TradingSystem.Business.Market
                 ans = ChangeProductQuanInCart(username, p.Key, p.Value);
                 if (!ans.Equals("product updated"))
                 {
-                    recover_cart(username, u, c);
-                    return new Result<IShoppingCart>(u.ShoppingCart, true, ans);
+                    u.ShoppingCart = c;
+                    return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                 }
             }
-            return new Result<IShoppingCart>(u.ShoppingCart, false, null);
+            await ProxyMarketContext.Instance.saveChanges();
+            return new Result<ShoppingCart>(u.ShoppingCart, false, null);
         }
 
-        private void recover_cart(string username, User u, ShoppingCart c)
-        {
-            u.ShoppingCart = c;
-            if (membersShoppingCarts.ContainsKey(u.Username))
-            {
-                membersShoppingCarts.TryRemove(u.Username, out _);
-                membersShoppingCarts.TryAdd(username, c);
-            }
-        }
+        
 
         public void CleanMarketUsers()
         {
