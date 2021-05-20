@@ -1,7 +1,9 @@
+
+
 import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
-import './StoreStaff.css';
+import './StoreHistory.css';
 import data from "../../data/staffData.json";
 import AddProduct from "../../components/AddProduct";
 import Users from "../../components/Users";
@@ -9,7 +11,7 @@ import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
 import SetPermission from "../../components/SetPermission";
 
-class StoreStaff extends Component {
+class StoreHistory extends Component {
 
     constructor(props) {
         super(props);
@@ -59,4 +61,4 @@ class StoreStaff extends Component {
     }
 }
 
-export default StoreStaff;
+export default StoreHistory;

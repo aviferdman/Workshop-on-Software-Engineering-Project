@@ -1,6 +1,6 @@
 import React from "react";
 import './Home.css';
-import data from './productData.json';
+import data from '../../data/productData.json';
 import Products from "../../components/Products";
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
