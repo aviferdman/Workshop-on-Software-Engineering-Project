@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -18,21 +17,18 @@ namespace TradingSystem.WebApi.Controllers
         public StoresController
         (
             MarketUserService marketUserService,
-            MarketStoreGeneralService marketStoreGeneralService,
-            IFileProvider fileProvider
+            MarketStoreGeneralService marketStoreGeneralService
         )
         {
             MarketUserService = marketUserService;
             MarketStoreGeneralService = marketStoreGeneralService;
-            FileProvider = fileProvider;
         }
 
         public MarketUserService MarketUserService { get; }
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
-        public IFileProvider FileProvider { get; }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<StoreInfoDTO>>> MyStores([FromBody] string username)
+        public ActionResult<IEnumerable<StoreInfoDTO>> MyStores([FromBody] string username)
         {
             ICollection<StoreData>? stores = MarketUserService.getUserStores(username);
             if (stores is null)
