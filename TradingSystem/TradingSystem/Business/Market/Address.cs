@@ -1,15 +1,19 @@
-﻿namespace TradingSystem.Business.Market
+﻿using System;
+
+namespace TradingSystem.Business.Market
 {
     public class Address
     {
-        private string _state;
-        private string _city;
-        private string _street;
-        private string _apartmentNum;
-        private string _zip;
+        public Guid id;
+        public string _state { get; set; }
+        private string _city { get; set; }
+        private string _street { get; set; }
+        private string _apartmentNum { get; set; }
+        private string _zip { get; set; }
 
         public Address(string state, string city, string street, string apartmentNum, string zip)
         {
+            id = Guid.NewGuid();
             this._state = state;
             this._city = city;
             this._street = street;

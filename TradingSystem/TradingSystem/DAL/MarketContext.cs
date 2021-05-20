@@ -39,13 +39,15 @@ namespace TradingSystem.DAL
         public DbSet<Manager> managers { get; set; }
         public DbSet<TransactionStatus> transactionStatuses { get; set; }
         public DbSet<DeliveryStatus> deliveryStatuses { get; set; }
-        public DbSet<ProductHistoryData> historyDatas { get; set; }
         public DbSet<PurchasedProduct> purchasedProducts { get; set; }
         public DbSet<ProductInCart> productInCarts { get; set; }
         public DbSet<ProductHistoryData> productHistoryDatas { get; set; }
 
         public DbSet<PaymentStatus> paymentStatuses { get; set; }
+        public DbSet<Address> addresses { get; set; }
 
+        public DbSet<CreditCard> creditCards { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder options)
            => options.UseSqlite(@"Data Source=marketDB.db");
 
@@ -59,6 +61,9 @@ namespace TradingSystem.DAL
         {
             modelBuilder.Entity<DataUser>()
                 .HasKey(d => d.username);
+            modelBuilder.Entity<DataUser>()
+            .HasOne(b => b.address)
+            .WithMany();
             modelBuilder.Entity<MemberState>()
                 .HasKey(d => d.username);
             modelBuilder.Entity<ShoppingCart>()
@@ -80,6 +85,12 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Store>()
             .HasMany(b => b.managers)
             .WithOne();
+            modelBuilder.Entity<Store>()
+            .HasOne(b => b._bank)
+            .WithOne();
+            modelBuilder.Entity<Store>()
+            .HasOne(b => b._address)
+            .WithMany();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.owners)
             .WithOne();
@@ -107,6 +118,12 @@ namespace TradingSystem.DAL
             .WithMany()
             .HasForeignKey(pt => pt.username);
 
+        }
+
+        public async Task AddStore(Store store)
+        {
+            await stores.AddAsync(store);
+            await SaveChangesAsync();
         }
 
         public void removeProductFromCart(ProductInCart productInCart)
@@ -234,14 +251,18 @@ namespace TradingSystem.DAL
             Store sc = await stores.SingleAsync(s => s.sid == storeId);
             await Entry(sc).Reference(s => s.founder).LoadAsync();
             await Entry(sc.founder).Reference(s => s.m).LoadAsync();
-            foreach (ShoppingBasket sb in sc.shoppingBaskets)
+            await Entry(sc).Reference(s => s._address).LoadAsync();
+            await Entry(sc).Reference(s => s._bank).LoadAsync();
+            await Entry(sc).Collection(s => s._products).LoadAsync();
+            await Entry(sc).Collection(s => s.managers).LoadAsync();
+            await Entry(sc).Collection(s => s.owners).LoadAsync();
+            foreach(Manager m in sc.managers)
             {
-                await Entry(sb).Collection(s => s._product_quantity).LoadAsync();
-                await Entry(sb).Reference(s => s.store).LoadAsync();
-                foreach (ProductInCart pr in sb._product_quantity)
-                {
-                    Entry(pr).Reference(p => p.product).Load();
-                }
+                await Entry(m).Reference(s => s.m).LoadAsync();
+            }
+            foreach (Owner m in sc.owners)
+            {
+                await Entry(m).Reference(s => s.m).LoadAsync();
             }
             return sc;
         }

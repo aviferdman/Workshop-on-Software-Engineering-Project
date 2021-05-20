@@ -72,5 +72,15 @@ namespace TradingSystem.DAL
         {
             proxyMarketContext.removeProductFromCart(productInCart);
         }
+
+        public async Task AddStore(Store store)
+        {
+            await proxyMarketContext.AddStore(store);
+        }
+
+        public async Task<Store> getStore(Guid storeId)
+        {
+            return await proxyMarketContext.getStore(storeId);
+        }
     }
 }

@@ -29,8 +29,6 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public static Founder makeFounder(MemberState m, Store s)
         {
-            if ( s.isStaff(m.UserId))
-                throw new InvalidOperationException();
             return new Founder(m, s);
         }
 

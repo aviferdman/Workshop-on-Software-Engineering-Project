@@ -234,6 +234,7 @@ namespace TradingSystem.Business.Market
             if (p.Quantity <= quantity || quantity < 1)
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
+
             return basket.addProduct(p, quantity);
 
         }
@@ -269,6 +270,7 @@ namespace TradingSystem.Business.Market
                 return "product isn't in basket";
             if (basket.RemoveProduct(p))
             {
+                ProxyMarketContext.Instance.saveChanges();
                 return "product removed from shopping basket";
             }
 
@@ -292,6 +294,7 @@ namespace TradingSystem.Business.Market
                 return "product isn't in basket";
             if (!basket.TryUpdateProduct(p, quantity))
                 return "product not in cart";
+            ProxyMarketContext.Instance.saveChanges();
             return "product updated";
 
         }

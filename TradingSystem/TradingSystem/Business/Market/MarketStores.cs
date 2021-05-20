@@ -6,21 +6,23 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Business.Payment;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market
 {
-    public class MarketStores : IMarketStores
+    public class MarketStores 
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
-
+        private ConcurrentDictionary<Guid, Store> loadedStores;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketStores>
@@ -34,11 +36,13 @@ namespace TradingSystem.Business.Market
         private MarketStores()
         {
             historyManager = HistoryManager.Instance;
+            loadedStores = new ConcurrentDictionary<Guid, Store>();
         }
 
         public void tearDown()
         {
             historyManager = HistoryManager.Instance;
+            loadedStores = new ConcurrentDictionary<Guid, Store>();
         }
 
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
@@ -49,7 +53,7 @@ namespace TradingSystem.Business.Market
         //USER FUNCTIONALITY
 
         //use case 22 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/80
-        public Store CreateStore(string name, string username, CreditCard bank, Address address)
+        public async Task<Store> CreateStore(string name, string username, CreditCard bank, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
             User user = MarketUsers.Instance.GetUserByUserName(username);
@@ -57,8 +61,9 @@ namespace TradingSystem.Business.Market
                 return null;
             Store store = new Store(name, bank, address);
             store.Founder = Founder.makeFounder((MemberState)user.State, store);
-            if (!_stores.TryAdd(store.Id, store))
+            if (!loadedStores.TryAdd(store.Id, store))
                 return null;
+            await MarketDAL.Instance.AddStore(store);
             PublisherManagement.Instance.EventNotification(username, EventType.OpenStoreEvent, ConfigurationManager.AppSettings["OpenedStoreMessage"]);
 
             return store;
@@ -83,10 +88,9 @@ namespace TradingSystem.Business.Market
 
         public void DeleteAll()
         {
-            _stores = new ConcurrentDictionary<Guid, IStore>();
+            loadedStores = new ConcurrentDictionary<Guid, Store>();
 
             historyManager = HistoryManager.Instance;
-            categories = new ConcurrentDictionary<string, Category>();
         }
 
 
@@ -101,7 +105,7 @@ namespace TradingSystem.Business.Market
 
         public Result<bool> OwnerAcceptBid(string ownerUsername, string username, Guid storeId, Guid productId, double newBidPrice)
         {
-            IStore store = null;
+            Store store = null;
             User u = MarketUsers.Instance.GetUserByUserName(username);
             if (!_stores.TryGetValue(storeId, out store))
             {
@@ -110,10 +114,13 @@ namespace TradingSystem.Business.Market
             return store.AcceptBid(ownerUsername, username, productId, newBidPrice);
         }
 
-        public IStore GetStoreById(Guid storeId)
+        public async Task<Store> GetStoreById(Guid storeId)
         {
-            IStore s = null;
-            _stores.TryGetValue(storeId, out s);
+            Store s = null;
+            if(!loadedStores.TryGetValue(storeId, out s))
+            {
+                return await MarketDAL.Instance.getStore(storeId);
+            }
             return s;
         }
 

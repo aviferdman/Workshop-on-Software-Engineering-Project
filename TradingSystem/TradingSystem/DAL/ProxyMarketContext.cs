@@ -85,6 +85,24 @@ namespace TradingSystem.DAL
             }
         }
 
+        public async Task AddStore(Store store)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                    await marketContext.AddStore(store);
+                }
+                catch (Exception e)
+                {
+                }
+            }
+            else
+            {
+                stores.TryAdd(store.Id, store);
+            }
+        }
+
         public void removeProductFromCart(ProductInCart productInCart)
         {
             if(!isDebug)
