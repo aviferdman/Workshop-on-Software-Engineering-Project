@@ -45,7 +45,6 @@ namespace TradingSystem.WebApi.Controllers
             subscribers.Add(subRemoveAppointment);
             subscribers.Add(subRequestPurchaseEvent);
         }
-        
 
         public void RemoveClient(String username)
         {

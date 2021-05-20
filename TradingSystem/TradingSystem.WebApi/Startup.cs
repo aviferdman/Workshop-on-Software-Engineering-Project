@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 
 using TradingSystem.Service;
 using TradingSystem.WebApi.Controllers;
+using TradingSystem.WebApi.Notifications;
 
 namespace TradingSystem.WebApi
 {
@@ -90,28 +91,7 @@ namespace TradingSystem.WebApi
 
             app.UseWebSockets();
 
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path == "/login")
-                {
-                    if (context.WebSockets.IsWebSocketRequest)
-                    {
-                        WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-                        var username = new byte[1024 * 4];
-                        WebSocketReceiveResult result = await ws.ReceiveAsync(new ArraySegment<byte>(username), CancellationToken.None);
-                        LoggedInController.Instance.addClient(BitConverter.ToString(username), ws);
-                        //in logout
-                        //await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-                        //LoggedInController.Instance.RemoveClient(BitConverter.ToString(username));
-                    }
-                    else { context.Response.StatusCode = 400; }
-                }
-                
-                else
-                {
-                    await next();
-                }
-            });
+            app.UseWebSocketNotifications();
         }
     }
 

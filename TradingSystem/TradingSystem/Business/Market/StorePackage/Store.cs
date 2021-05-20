@@ -428,43 +428,41 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.9 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/60
-        public String getInfo(String username)
+        public List<WorkerDetails> GetInfo(String username)
         {
-            String ret;
+            List<WorkerDetails> ret = new List<WorkerDetails>();
             if ((!founder.Username.Equals(username)) && !(owners.ContainsKey(username)) && !(managers.ContainsKey(username)))
-                return "Invalid user";
+                return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
-                return "No permission";
-            ret = "Founder - " + founder.Username + "\n";
+                return ret;
+            ret.Add(new WorkerDetails(founder));
             foreach (Owner owner in owners.Values)
             {
-                ret = ret + "Owner - " + owner.Username + "\n";
+                ret.Add(new WorkerDetails(owner));
             }
             foreach (Manager manager in managers.Values)
             {
-                WorkerDetails details = new WorkerDetails(manager);
-                ret = ret + details.toString() + "\n";
+                ret.Add(new WorkerDetails(manager));
             }
             return ret;
         }
 
-        public String getInfoSpecific(String workerName, String username)
+        public WorkerDetails GetInfoSpecific(String workerName, String username)
         {
-            String ret;
+            WorkerDetails ret = null;
             if ((!founder.Username.Equals(username)) && !(owners.ContainsKey(username)) && !(managers.ContainsKey(username)))
-                return "Invalid user";
+                return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
-                return "No permission";
+                return ret;
             if (founder.Username.Equals(workerName))
-                return "Founder - " + founder.Username;
+                return new WorkerDetails(founder);
             else if (owners.TryGetValue(workerName, out Owner owner))
-                return "Owner - " + workerName;
-            else if (managers.TryGetValue(workerName, out IManager manager))
+                return new WorkerDetails(owner);
+            else if (managers.TryGetValue(workerName, out Manager manager))
             {
-                WorkerDetails details = new WorkerDetails((Manager)manager);
-                return details.toString();
+                return new WorkerDetails(manager);
             }
-            return "Worker not found";
+            return null;
         }
 
         public void UpdateProduct(Product product)

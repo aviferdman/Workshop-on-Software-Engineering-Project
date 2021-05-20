@@ -24,8 +24,8 @@ namespace TradingSystem.Business.Market
         public String makeManager(String assignee, Guid storeID, String assigner);
         public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions);
         public String RemoveManager(String managerName, Guid storeID, String assignerName);
-        public String getInfo(Guid storeID, String username);
-        public String getInfoSpecific(Guid storeID, String workerName, String username);
+        public String GetInfo(Guid storeID, String username);
+        public String GetInfoSpecific(Guid storeID, String workerName, String username);
         public String RemoveOwner(String ownerName, Guid storeID, String assignerName);
     }
 }
