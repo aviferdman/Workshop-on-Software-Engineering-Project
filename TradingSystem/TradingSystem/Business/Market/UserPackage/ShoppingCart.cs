@@ -63,13 +63,6 @@ namespace TradingSystem.Business.Market
             return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
         }
 
-        public void removeBasket(Store store)
-        {
-            if (shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())
-            {
-                shoppingBaskets.Remove(shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault());
-            }
-        }
 
         public ShoppingBasket TryGetShoppingBasket(Store store)
         {

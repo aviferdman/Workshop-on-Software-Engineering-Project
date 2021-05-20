@@ -68,6 +68,12 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Appointer>()
                 .HasKey(a => new { a.s, a.m });
             modelBuilder.Entity<Manager>().HasKey(a => new { a.s, a.m });
+            modelBuilder.Entity<ShoppingBasket>()
+            .HasMany(b => b.Product_quantity)
+            .WithOne();
+            modelBuilder.Entity<ProductInCart>()
+            .HasOne(b => b.product)
+            .WithMany();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.Products)
             .WithOne();
@@ -102,6 +108,18 @@ namespace TradingSystem.DAL
             .HasForeignKey(pt => pt.username);
 
         }
+
+        public void removeProductFromCart(ProductInCart productInCart)
+        {
+            try
+            {
+                productInCarts.Remove(productInCart);
+            }
+            catch
+            {
+            }
+        }
+
         public async Task<ICollection<TransactionStatus>> getAllHistories()
         {
             return await transactionStatuses
@@ -256,6 +274,16 @@ namespace TradingSystem.DAL
             }
         }
 
-
+        public async Task removeManager(Manager manager)
+        {
+            try
+            {
+                managers.Remove(manager);
+                await SaveChangesAsync();
+            }
+            catch
+            {
+            }
+        }
     }
 }

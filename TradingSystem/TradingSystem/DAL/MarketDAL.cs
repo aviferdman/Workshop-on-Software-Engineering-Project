@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.DAL
 {
@@ -61,5 +63,14 @@ namespace TradingSystem.DAL
              await proxyMarketContext.RemoveProduct(p);
         }
 
+        public async Task removeManager(Manager manager)
+        {
+            await proxyMarketContext.removeManager(manager);
         }
+
+        public void removeProductFromCart(ProductInCart productInCart)
+        {
+            proxyMarketContext.removeProductFromCart(productInCart);
+        }
+    }
 }

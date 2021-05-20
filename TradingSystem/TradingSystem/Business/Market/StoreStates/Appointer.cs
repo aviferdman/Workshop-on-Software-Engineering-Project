@@ -58,8 +58,10 @@ namespace TradingSystem.Business.Market.StoreStates
             await ProxyMarketContext.Instance.saveChanges();
         }
 
+      
 
-        
+
+
 
     }
 }

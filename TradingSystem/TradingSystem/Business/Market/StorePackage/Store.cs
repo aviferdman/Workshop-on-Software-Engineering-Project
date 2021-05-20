@@ -270,6 +270,7 @@ namespace TradingSystem.Business.Market
                     return "Product doesn't exist";
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
+                _products.Remove(toRem);
                 RemoveProduct(toRem);
             }
             return "Product removed";
@@ -352,7 +353,6 @@ namespace TradingSystem.Business.Market
             if (!managers.Where(m=>m.username==managerID).Any())
                 return "Manager doesn't exist";
             manager = managers.Where(m => m.username == managerID).First();
-            Owner assignerOwner;
             Appointer a;
             if (!managers.Where(m => m.username == assignerID).Any())
                 return "Invalid assigner";
@@ -382,22 +382,23 @@ namespace TradingSystem.Business.Market
         public String RemoveManager(String managerName, String assigner)
         {
             Appointer a;
-            Owner owner;
             String ret;
-            if (!managers.TryGetValue(managerName, out Manager manager))
-            {
+            Manager manager;
+            if (!managers.Where(m => m.username == managerName).Any())
                 return "Manager doesn't exist";
-            }
+            manager = managers.Where(m => m.username == managerName).First();
             if (founder.Username.Equals(assigner))
                 a = founder;
-            else if (owners.TryGetValue(assigner, out owner))
-                a = owner;
-            else return "Invalid Assigner";
-            if(!a.canRemoveAppointment(managerName))
+            else if (owners.Where(p => p.username.Equals(assigner)).Any())
+                a = owners.Where(p => p.username.Equals(assigner)).First();
+            else
+                return "Invalid assigner";
+            if (!a.canRemoveAppointment(managerName))
                 return "Invalid Assigner";
             lock (this)
             {
-                managers.TryRemove(managerName, out _);
+                manager.removePermission(this);
+                MarketDAL.Instance.removeManager(manager);
                 ret = "success";
                 PublisherManagement.Instance.EventNotification(managerName, EventType.RemoveAppointment, assigner + " has revoked your appointment as a manager for store " + name);
 
@@ -484,24 +485,24 @@ namespace TradingSystem.Business.Market
             return "Worker not found";
         }
 
+        //for tests
         public void UpdateProduct(Product product)
         {
             Product p = GetProductById(product.Id);
             if (p!=null){    //remove old product if exists
-                Product useless;
-                _products.TryRemove(product.Id, out useless);
+                _products.Remove(_products.Where(p=> p.Id.Equals(product.Id)).Single());
             }
 
-            _products.TryAdd(product.Id, product); //add the new product
+            _products.Add(product); //add the new product
         }
 
+        //for tests
         public void RemoveProduct(Product product)
         {
             Product p = GetProductById(product.Id);
             if (p != null)
             {    //remove old product if exists
-                Product useless;
-                _products.TryRemove(product.Id, out useless);
+                _products.Remove(p);
             }
         }
 
@@ -514,10 +515,11 @@ namespace TradingSystem.Business.Market
             return discount.Id;
         }
 
+        //TODO
         public Guid RemoveDiscount(string userID, Guid discountId)
         {
             //Have no permission to do the action
-            if (((!founder.Username.Equals(userID)) && !(owners.ContainsKey(userID)) && !(managers.ContainsKey(userID))) || !hasPremssion(userID, Permission.EditDiscount))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
             Discount d = GetDiscountById(discountId);
             if (d != null)
@@ -527,7 +529,7 @@ namespace TradingSystem.Business.Market
             return discountId;
         }
 
-
+        //TODO
         private void UpdateQuantities(HashSet<ProductInCart> product_quantity, bool subOrAdd = true)
         {
             foreach (ProductInCart p_q in product_quantity)
@@ -543,7 +545,7 @@ namespace TradingSystem.Business.Market
                 }
             }
         }
-
+        //TODO
         private bool EnoughQuantity(HashSet<ProductInCart> product_quantity)
         {
             bool enoughtQuantity = true;
@@ -561,7 +563,7 @@ namespace TradingSystem.Business.Market
             IEnumerable<Product> products = Products.Where(product => product.Id.Equals(productId));
             return products.FirstOrDefault();
         }
-
+        //TODO
         public Discount GetDiscountById(Guid discountId)
         {
             IEnumerable<Discount> discounts = Discounts.Where(discount => discount.Id.Equals(discountId));
@@ -589,27 +591,7 @@ namespace TradingSystem.Business.Market
             return obj.GetHashCode() - GetHashCode();
         }
 
-        public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
-        {
-            List<Product> products = new List<Product>();
-            foreach(Product p in _products)
-            {
-                if((p.Name!=null&&p.Name.Contains(keyword))||(p.Category!=null&& category!=null&& p.Category.Contains(keyword)))
-                {
-                    if (category != null&& !category.Equals(p.Category))
-                        continue;
-                    if (price_range_low != -1 && price_range_low > p.Price)
-                        continue;
-                    if (price_range_high != -1 && price_range_high < p.Price)
-                        continue;
-                    if (rating != -1 && rating != p.Rating)
-                        continue;
-                    products.Add(p);
-                }
-            }
-            return products;
-        }
-
+        //TODO
         public IRule GetRuleById(Guid ruleId)
         {
             if (this.Policy.Rule.GetId().Equals(ruleId))
@@ -618,7 +600,7 @@ namespace TradingSystem.Business.Market
             }
             return null;
         }
-
+        //TODO
         public IRule GetDiscountRuleById(Guid ruleId)
         {
             return Discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
@@ -633,7 +615,7 @@ namespace TradingSystem.Business.Market
         {
             this.founder = f;
         }
-
+        //TODO
         public Result<bool> AcceptBid(string ownerUsername, string username, Guid productId, double newBidPrice)
         {
             if (!CheckPermission(ownerUsername, Permission.BidRequests))

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using System.Linq;
+using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.DAL
 {
@@ -66,6 +67,8 @@ namespace TradingSystem.DAL
             }
         }
 
+       
+
         public async Task<ICollection<TransactionStatus>> getUserHistories(string username)
         {
             if (isDebug)
@@ -79,6 +82,20 @@ namespace TradingSystem.DAL
             catch (Exception e)
             {
                 return null;
+            }
+        }
+
+        public void removeProductFromCart(ProductInCart productInCart)
+        {
+            if(!isDebug)
+            {
+                try
+                {
+                    marketContext.removeProductFromCart(productInCart);
+                }
+                catch (Exception e)
+                {
+                }
             }
         }
 
@@ -321,7 +338,22 @@ namespace TradingSystem.DAL
                 {
                 }
             }
-            
+        }
+
+        public async Task removeManager(Manager manager)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                    await marketContext.removeManager( manager);
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
+
 
 
     }

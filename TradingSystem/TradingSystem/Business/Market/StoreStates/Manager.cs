@@ -59,5 +59,15 @@ namespace TradingSystem.Business.Market.StoreStates
             return store_permission.Contains(permission.ToString());
         }
 
+        public bool removePermission(Store store)
+        {
+            bool ret;
+            lock (m.managerPrems)
+            {
+                ret = m.managerPrems.Remove(this)||s.managers.Remove(this)|| appointer.managerAppointments.Remove(this);
+            }
+            return ret;
+        }
+
     }
 }

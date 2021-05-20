@@ -17,19 +17,19 @@ namespace TradingSystem.Business.Market
     {
 
         public string username { get; set; }
-        private ConcurrentDictionary<Store, Founder> founderPrems { get; set; }
-        private ConcurrentDictionary<Store, Owner> ownerPrems { get; set; }
-        private ConcurrentDictionary<Store, Manager> managerPrems { get; set; }
-        private ConcurrentDictionary<string, Manager> managerAppointments { get; set; }
-        private ConcurrentDictionary<string, Owner> ownerAppointments { get; set; }
+        public HashSet<Founder> founderPrems { get; set; }
+        public HashSet<Owner> ownerPrems { get; set; }
+        public HashSet<Manager> managerPrems { get; set; }
+        public HashSet<Manager> managerAppointments { get; set; }
+        public HashSet<Owner> ownerAppointments { get; set; }
         public MemberState(string userId) : base()
         {
             this.username = userId;
-            founderPrems = new ConcurrentDictionary<Store, Founder>();
-            ownerPrems = new ConcurrentDictionary<Store, Owner>();
-            managerPrems = new ConcurrentDictionary<Store, Manager>();
-            managerAppointments = new ConcurrentDictionary<string, Manager>();
-            ownerAppointments = new ConcurrentDictionary<string, Owner>();
+            founderPrems = new HashSet<Founder>();
+            ownerPrems = new HashSet<Owner>();
+            managerPrems = new HashSet<Manager>();
+            managerAppointments = new HashSet<Manager>();
+            ownerAppointments = new HashSet<Owner>();
         }
 
         public string UserId { get => username; set => username = value; }

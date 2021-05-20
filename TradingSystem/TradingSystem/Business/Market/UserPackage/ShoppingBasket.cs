@@ -42,18 +42,24 @@ namespace TradingSystem.Business.Market
             return !possitiveQuantities.Any();
         }
 
-        public async Task<string> addProduct(Product p, int q)
+        public string addProduct(Product p, int q)
         {
             if (!_product_quantity.Where(p=> p.product.Equals(p)).Any())
                 return "product is already in shopping basket";
             _product_quantity.Add(new ProductInCart(p, q));
-            await ProxyMarketContext.Instance.saveChanges();
             return "product added to shopping basket";
         }
 
         public bool RemoveProduct(Product product)
         {
-            return _product_quantity.RemoveWhere(p => p.product.Equals(product))!=0;
+            if(_product_quantity.Where(p => p.product.Equals(product)).Any())
+            {
+                MarketDAL.Instance.removeProductFromCart(_product_quantity.Where(p => p.product.Equals(product)).Single());
+                _product_quantity.RemoveWhere(p => p.product.Equals(product));
+                return true;
+            }
+               
+            return false;
         }
 
         public void UpdateProduct(Product product, int quantity)

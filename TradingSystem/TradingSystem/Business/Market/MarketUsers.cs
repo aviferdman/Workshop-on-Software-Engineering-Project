@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using Moq;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -201,7 +202,6 @@ namespace TradingSystem.Business.Market
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(GetUserHistory));
             User user = GetUserByUserName(username);
-            string userId = user.Username;
             return await user.GetUserHistory(username);
         }
 
@@ -233,8 +233,8 @@ namespace TradingSystem.Business.Market
                 return "product doesn't exist";
             if (p.Quantity <= quantity || quantity < 1)
                 return "product's quantity is insufficient";
-            ShoppingBasket basket = u.ShoppingCart.GetShoppingBasket(found);
-            return await basket.addProduct(p, quantity);
+            ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
+            return basket.addProduct(p, quantity);
 
         }
 
@@ -269,10 +269,6 @@ namespace TradingSystem.Business.Market
                 return "product isn't in basket";
             if (basket.RemoveProduct(p))
             {
-                if (basket.IsEmpty())
-                {
-                    u.ShoppingCart.removeBasket(found);
-                }
                 return "product removed from shopping basket";
             }
 
@@ -304,7 +300,7 @@ namespace TradingSystem.Business.Market
         public async Task<Result<ShoppingCart>> editShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
             User u = GetUserByUserName(username);
-            string ans;
+            string ans=null;
             if (u == null)
                 return new Result<ShoppingCart>(null, true, "user doesn't exist");
             if (products_removed.Intersect<Guid>(products_added.Keys).Count() != 0 ||
@@ -312,37 +308,66 @@ namespace TradingSystem.Business.Market
                 products_added.Keys.Intersect<Guid>(products_quan.Keys).Count() != 0)
                 return new Result<ShoppingCart>(u.ShoppingCart, true, "lists are not disjoint");
             ShoppingCart c = new ShoppingCart(u.ShoppingCart);
-            foreach (KeyValuePair<Guid, int> p in products_added)
+            IDbContextTransaction transaction=null;
+            if (!ProxyMarketContext.Instance.IsDebug)
+                transaction = MarketContext.Instance.Database.BeginTransaction();
+            try
             {
-                ans = AddProductToCart(username, p.Key, p.Value);
-                if (!ans.Equals("product added to shopping basket"))
+                foreach (KeyValuePair<Guid, int> p in products_added)
                 {
-                    u.ShoppingCart = c;
-                    return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
-                }
-            }
-            foreach (Guid p in products_removed)
-            {
-                ans = RemoveProductFromCart(username, p);
-                if (!ans.Equals("product removed from shopping basket"))
-                {
-                    u.ShoppingCart = c;
-                    return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
-                }
+                    ans = await AddProductToCart(username, p.Key, p.Value);
+                    if (!ans.Equals("product added to shopping basket"))
+                    {
+                        if (ProxyMarketContext.Instance.IsDebug)
+                        {
+                            u.ShoppingCart = c;
+                            return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
+                        }
+                        throw new Exception();
 
-            }
-            foreach (KeyValuePair<Guid, int> p in products_quan)
-            {
-                ans = ChangeProductQuanInCart(username, p.Key, p.Value);
-                if (!ans.Equals("product updated"))
-                {
-                    u.ShoppingCart = c;
-                    return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
+                    }
                 }
+                foreach (Guid p in products_removed)
+                {
+                    ans = RemoveProductFromCart(username, p);
+                    if (!ans.Equals("product removed from shopping basket"))
+                    {
+                        if (ProxyMarketContext.Instance.IsDebug)
+                        {
+                            u.ShoppingCart = c;
+                            return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
+                        }
+                        throw new Exception();
+                    }
+
+                }
+                foreach (KeyValuePair<Guid, int> p in products_quan)
+                {
+                    ans = ChangeProductQuanInCart(username, p.Key, p.Value);
+                    if (!ans.Equals("product updated"))
+                    {
+                        if (ProxyMarketContext.Instance.IsDebug)
+                        {
+                            u.ShoppingCart = c;
+                            return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
+                        }
+                        throw new Exception();
+                    }
+                }
+                await ProxyMarketContext.Instance.saveChanges();
+                if (!ProxyMarketContext.Instance.IsDebug)
+                    transaction.Commit();
             }
-            await ProxyMarketContext.Instance.saveChanges();
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
+            }
+            
             return new Result<ShoppingCart>(u.ShoppingCart, false, null);
         }
+
+       
 
         
 

@@ -9,6 +9,7 @@ using System.Threading;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Business.Payment;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
@@ -62,6 +63,8 @@ namespace TradingSystem.Business.Market
 
             return store;
         }
+
+        
 
         //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
         public ICollection<Store> GetStoresByName(string name)
