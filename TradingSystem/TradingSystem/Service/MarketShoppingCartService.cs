@@ -98,14 +98,14 @@ namespace TradingSystem.Service
             return await marketUsers.PurchaseShoppingCart(username, card, phone, address);
         }
 
-        public Result<bool> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
+        public async Task<Result<bool>> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
         {
             switch (answer)
             {
                 //accept bid
                 case Answer.Accept:
                     PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
-                    return MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
+                    return await MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
 
                 //request new bid
                 case Answer.Bid:
@@ -120,14 +120,14 @@ namespace TradingSystem.Service
             }
         }
 
-        public Result<bool> CustomerAnswerBid(Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
+        public async Task<Result<bool>> CustomerAnswerBid(Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
         {
             switch (answer)
             {
                 //request new bid
                 case Answer.Bid:
                     PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
-                    return MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
+                    return await MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
                 
                 //accept / deny bid
                 default:

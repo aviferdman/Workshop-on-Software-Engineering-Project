@@ -108,7 +108,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Bridge.Logout();
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemoveOwner()
         {
@@ -123,7 +123,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s.EventsReceived.Dequeue().EventProviderName, "RemoveAppointment");
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwnerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemoveOwnerChain()
         {
@@ -151,7 +151,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s3.EventsReceived.Dequeue().EventProviderName, "RemoveAppointment");
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwnerAsync(string, Guid, string)"/>
         [Test]
         public void checkRemoveOwnerInvalidAssigner()
         {

@@ -85,7 +85,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
         }
 
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemoveManager()
         {
@@ -93,7 +93,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.RemoveManager("manager", store.Value, "founder"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkRemoveManagerNoManager()
         {
@@ -101,7 +101,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsTrue(marketBridge.RemoveManager("manager", store.Value, "founder"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkRemoveManagerBadAppointer()
         {

@@ -73,7 +73,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public ShopId? OpenShop(ShopInfo shopInfo)
         {
-            StoreData storeData = marketStoreGeneralService.CreateStore
+            StoreData storeData = marketStoreGeneralService.CreateStoreAsync
             (
                 shopInfo.Name,
                 Username,
@@ -133,13 +133,13 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool RemoveProductFromShop(ShopId shopId, ProductId productId)
         {
-            string result = marketProductsService.RemoveProduct(productId, shopId, Username);
+            string result = marketProductsService.RemoveProductAsync(productId, shopId, Username);
             return result == "Product removed";
         }
 
         public bool EditProductInShop(ShopId shopId, ProductId productId, ProductInfo newProductDetails)
         {
-            string result = marketProductsService.EditProduct
+            string result = marketProductsService.EditProductAsync
             (
                 productId,
                 ProductInfo.ToProductData(newProductDetails),
@@ -230,23 +230,23 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool MakeOwner(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeOwner(assignee, storeID, assigner).Equals("Success");
+            return marketStorePermissionsManagementService.MakeOwnerAsync(assignee, storeID, assigner).Equals("Success");
         }
         public bool MakeManager(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeManager(assignee, storeID, assigner).Equals("Success");
+            return marketStorePermissionsManagementService.MakeManagerAsync(assignee, storeID, assigner).Equals("Success");
         }
         public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
-            return marketStorePermissionsManagementService.RemoveOwner(ownerName, storeID, assignerName).Equals("success");
+            return marketStorePermissionsManagementService.RemoveOwnerAsync(ownerName, storeID, assignerName).Equals("success");
         }
         public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
         {
-            return marketStorePermissionsManagementService.DefineManagerPermissions(manager, storeID, assigner, permissions).Equals("Success");
+            return marketStorePermissionsManagementService.DefineManagerPermissionsAsync(manager, storeID, assigner, permissions).Equals("Success");
         }
         public bool RemoveManager(String managerName, Guid storeID, String assignerName)
         {
-            return marketStorePermissionsManagementService.RemoveManager(managerName, storeID, assignerName).Equals("success");
+            return marketStorePermissionsManagementService.RemoveManagerAsync(managerName, storeID, assignerName).Equals("success");
         }
 
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)

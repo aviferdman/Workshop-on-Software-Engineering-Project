@@ -55,11 +55,11 @@ namespace TradingSystem.Business.Market
             return await marketUsersDAL.getMemberStores(usrname);
         }
 
-        public bool UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
+        public async Task<bool> UpdateProductInShoppingBasket(string userId, Guid storeId, Product product, int quantity)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(UpdateProductInShoppingBasket));
             User user = GetUserById(userId);
-            IStore store = MarketStores.Instance.GetStoreById(storeId);
+            Store store = await MarketStores.Instance.GetStoreById(storeId);
             user.UpdateProductInShoppingBasket(store, product, quantity);
             return true;
         }

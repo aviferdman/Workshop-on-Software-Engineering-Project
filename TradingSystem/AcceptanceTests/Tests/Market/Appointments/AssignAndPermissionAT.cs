@@ -94,14 +94,14 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Bridge.Login(founder);
             marketBridge.MakeManager("manager", store.Value, "founder");
         }
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckValidMakeOwner()
         {
             Assert.IsTrue(marketBridge.MakeOwner("owner", store.Value, "founder"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckMakeOwnerAlreadyAssigned()
         {
@@ -109,7 +109,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.MakeOwner("owner", store.Value, "founder"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckMakeOwnerInvalidAssigner()
         {
@@ -121,7 +121,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsTrue(marketBridge.MakeOwner("owner", store.Value, "founder"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckMakeOwnerNotMember()
         {
@@ -155,7 +155,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsTrue(marketBridge.MakeManager("manager2", store.Value, "founder"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.DefineManagerPermissions(string, Guid, string, List{TradingSystem.Business.Market.StoreStates.Manager.Permission})"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.DefineManagerPermissionsAsync(string, Guid, string, List{TradingSystem.Business.Market.StoreStates.Manager.Permission})"/>
         [Test]
         public void CheckValidDefinePermissions()
         {
@@ -164,7 +164,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsTrue(marketBridge.DefineManagerPermissions("manager", store.Value, "founder", permissions));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.DefineManagerPermissions(string, Guid, string, List{TradingSystem.Business.Market.StoreStates.Manager.Permission})"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.DefineManagerPermissionsAsync(string, Guid, string, List{TradingSystem.Business.Market.StoreStates.Manager.Permission})"/>
         [Test]
         public void CheckDefinePermissionsInvalidAssigner()
         {
@@ -176,7 +176,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.DefineManagerPermissions("manager", store.Value, "owner", permissions));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.DefineManagerPermissions(string, Guid, string, List{TradingSystem.Business.Market.StoreStates.Manager.Permission})"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.DefineManagerPermissionsAsync(string, Guid, string, List{TradingSystem.Business.Market.StoreStates.Manager.Permission})"/>
         [Test]
         public void CheckDefinePermissionsNoManager()
         {

@@ -34,9 +34,9 @@ namespace TradingSystem.Service
             marketStores.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
         }
 
-        public ICollection<HistoryData> GetAllHistory(string username)
+        public async System.Threading.Tasks.Task<ICollection<HistoryData>> GetAllHistoryAsync(string username)
         {
-            ICollection<IHistory> histories = marketUsers.GetAllHistory(username);
+            ICollection<IHistory> histories = await marketUsers.GetAllHistory(username);
             ICollection<HistoryData> ret = new HashSet<HistoryData>();
             foreach (IHistory his in histories)
             {

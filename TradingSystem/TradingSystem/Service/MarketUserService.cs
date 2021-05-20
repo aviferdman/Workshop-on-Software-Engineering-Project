@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
@@ -29,9 +30,9 @@ namespace TradingSystem.Service
             marketUsers.RemoveGuest(username);
         }
 
-        public ICollection<HistoryData> GetUserHistory(string username)
+        public async Task<ICollection<HistoryData>> GetUserHistory(string username)
         {
-            ICollection<IHistory> history = marketUsers.GetUserHistory(username);
+            ICollection<IHistory> history = await  marketUsers.GetUserHistory(username);
             ICollection<HistoryData> ret = new HashSet<HistoryData>();
             foreach (var h in history)
             {
@@ -40,19 +41,19 @@ namespace TradingSystem.Service
             return ret;
         }
 
-        public string login(string usrname, string password, string guestusername)
+        public async Task<string> loginAsync(string usrname, string password, string guestusername)
         {
-            return marketUsers.AddMember(usrname, password, guestusername);
+            return await marketUsers.AddMember(usrname, password, guestusername);
         }
 
-        public string logout(string usrname)
+        public async Task<string> logoutAsync(string usrname)
         {
-            return marketUsers.logout(usrname);
+            return await marketUsers.logout(usrname);
         }
 
-        public ICollection<StoreData> getUserStores(string usrname)
+        public async Task<ICollection<StoreData>> getUserStores(string usrname)
         {
-            ICollection<Store> stores = marketUsers.getUserStores(usrname);
+            ICollection<Store> stores = await marketUsers.getUserStores(usrname);
             ICollection<StoreData> dataStores = new LinkedList<StoreData>();
             foreach (Store s in stores)
             {

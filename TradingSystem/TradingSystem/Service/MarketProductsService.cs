@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Service
@@ -19,20 +19,20 @@ namespace TradingSystem.Service
         public static MarketProductsService Instance => instanceLazy.Value;
 
         //"Product added"
-        public Result<Product> AddProduct(ProductData product, Guid storeID, string username)
+        public async Task<Result<Product>> AddProduct(ProductData product, Guid storeID, string username)
         {
-            return marketStores.AddProduct(product, storeID, username);
+            return await marketStores.AddProduct(product, storeID, username);
         }
 
         //"Product removed"
-        public string RemoveProduct(Guid productID, Guid storeID, string username)
+        public async Task<string> RemoveProductAsync(Guid productID, Guid storeID, string username)
         {
-            return marketStores.RemoveProduct(productID, storeID, username);
+            return await marketStores.RemoveProduct(productID, storeID, username);
         }
         //"Product edited"
-        public string EditProduct(Guid productID, ProductData details, Guid storeID, string username)
+        public async Task<string> EditProductAsync(Guid productID, ProductData details, Guid storeID, string username)
         {
-            return marketStores.EditProduct(productID, details, storeID, username);
+            return await marketStores.EditProduct(productID, details, storeID, username);
         }
 
         public ICollection<ProductData> FindProductsByStores(string name)

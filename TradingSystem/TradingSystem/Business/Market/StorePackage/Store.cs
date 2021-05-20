@@ -406,7 +406,7 @@ namespace TradingSystem.Business.Market
 
             return ret;
         }
-
+        //TODO
         //functional requirement 4.4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/136
         public String RemoveOwner(String ownerName, String assigner)
         {
@@ -434,7 +434,7 @@ namespace TradingSystem.Business.Market
                 }
             }
             ownerToRemove.removeManagers();
-            lock (prem_lock)
+            lock (this)
             {
                 ownerToRemove.removePermission(this);
                 owners.TryRemove(ownerName, out _);

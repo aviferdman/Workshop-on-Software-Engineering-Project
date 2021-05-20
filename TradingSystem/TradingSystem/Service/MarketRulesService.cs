@@ -33,22 +33,22 @@ namespace TradingSystem.Service
         //Add New / Complex Discounts
         public Guid AddSimpleDiscount(string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
         {
-            return marketRules.CreateSimpleDiscount(username, storeId, discountType, precent, category, productId);
+            return marketRules.CreateSimpleDiscountAsync(username, storeId, discountType, precent, category, productId);
         }
         public Guid AddConditionalDiscount(string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(), string ruleUsername = "",
                                         double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
-            return marketRules.CreateConditionalDiscount(username, storeId, discountType, ruleType, precent, category, productId, ruleUsername, valueLessThan, valueGreaterEQThan, d1, d2);
+            return marketRules.CreateConditionalDiscountAsync(username, storeId, discountType, ruleType, precent, category, productId, ruleUsername, valueLessThan, valueGreaterEQThan, d1, d2);
         }
 
         public Guid AddDiscountRule(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId, Guid discountId2 = new Guid(), bool decide = false)
         {
-            return marketRules.GenerateConditionalDiscounts(username, discountRuleRelation, storeId, ruleId1, ruleId2, discountId, discountId2, decide);
+            return marketRules.GenerateConditionalDiscountsAsync(username, discountRuleRelation, storeId, ruleId1, ruleId2, discountId, discountId2, decide);
         }
 
         public Guid RemoveDiscount(string username, Guid storeId, Guid discountId)
         {
-            return marketRules.RemoveDiscount(username, storeId, discountId);
+            return marketRules.RemoveDiscountAsync(username, storeId, discountId);
         }
 
         //Add New / Complex Policy
@@ -59,7 +59,7 @@ namespace TradingSystem.Service
         }
         public void RemovePolicyRule(string username, Guid storeId)
         {
-            marketRules.RemovePolicyRule(username, storeId);
+            marketRules.RemovePolicyRuleAsync(username, storeId);
         }
 
     }

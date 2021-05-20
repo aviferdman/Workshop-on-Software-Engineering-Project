@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 
@@ -18,7 +19,7 @@ namespace TradingSystem.Service
 
         public static MarketStoreGeneralService Instance => instanceLazy.Value;
 
-        public StoreData CreateStore
+        public async Task<StoreData> CreateStoreAsync
         (
             string name,
             string username,
@@ -37,15 +38,15 @@ namespace TradingSystem.Service
         {
             var card = new CreditCard(cardNumber, month, year, holderName, cvv, holderId);
             var address = new Address(state, city, street, apartmentNum, zip);
-            Store store = marketStores.CreateStore(name, username, card, address);
+            Store store = await marketStores.CreateStore(name, username, card, address);
             if (store == null)
                 return null;
             return new StoreData(store);
         }
 
-        public ICollection<HistoryData> GetStoreHistory(string username, Guid storeId)
+        public async Task<ICollection<HistoryData>> GetStoreHistory(string username, Guid storeId)
         {
-            ICollection<IHistory> history = marketStores.GetStoreHistory(username, storeId);
+            ICollection<IHistory> history = await marketStores.GetStoreHistory(username, storeId);
             ICollection<HistoryData> ret = new HashSet<HistoryData>(); 
             foreach (var h in history)
             {
@@ -67,7 +68,7 @@ namespace TradingSystem.Service
 
         public StoreData getStoreById(Guid pid)
         {
-            IStore s;
+            Store s;
             if (marketStores.Stores.TryGetValue(pid,out s))
                 return new StoreData((Store)s);
             return null;

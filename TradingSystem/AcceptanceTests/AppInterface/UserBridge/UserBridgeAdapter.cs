@@ -57,7 +57,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         public bool SignUp(UserInfo signupInfo)
         {
-            string result = userService.Signup
+            string result = userService.SignupAsync
             (
                 Username,
                 signupInfo.Username,
@@ -79,7 +79,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private bool LoginCore(UserInfo loginInfo)
         {
-            bool success = marketUserService.login(loginInfo.Username, loginInfo.Password, Username) == "success";
+            bool success = marketUserService.loginAsync(loginInfo.Username, loginInfo.Password, Username) == "success";
             if (success)
             {
                 Username = loginInfo.Username;
@@ -107,7 +107,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private string LogoutCore()
         {
-            return marketUserService.logout(Username);
+            return marketUserService.logoutAsync(Username);
         }
         
 

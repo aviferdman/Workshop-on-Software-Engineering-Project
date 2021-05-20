@@ -43,9 +43,9 @@ namespace TradingSystem.Business.Market
             State = state;
         }
 
-        public void UpdateProductInShoppingBasket(IStore store, Product product, int quantity)
+        public async Task UpdateProductInShoppingBasket(Store store, Product product, int quantity)
         {
-            ShoppingBasket shoppingBasket = ShoppingCart.GetShoppingBasket(store);
+            ShoppingBasket shoppingBasket = await ShoppingCart.GetShoppingBasket(store);
             shoppingBasket.UpdateProduct(product, quantity);
         }
 

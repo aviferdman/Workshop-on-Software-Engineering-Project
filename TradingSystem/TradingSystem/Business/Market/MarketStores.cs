@@ -95,19 +95,19 @@ namespace TradingSystem.Business.Market
 
 
         //use case 38 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/64
-        public ICollection<IHistory> GetStoreHistory(string username, Guid storeId)
+        public async Task<ICollection<IHistory>> GetStoreHistory(string username, Guid storeId)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoreHistory));
             User user = MarketUsers.Instance.GetUserByUserName(username);
-            IStore store = GetStoreById(storeId);
-            return store.GetStoreHistory(username);
+            Store store = await GetStoreById(storeId);
+            return await store.GetStoreHistory(username);
         }
 
-        public Result<bool> OwnerAcceptBid(string ownerUsername, string username, Guid storeId, Guid productId, double newBidPrice)
+        public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, string username, Guid storeId, Guid productId, double newBidPrice)
         {
-            Store store = null;
+            Store store = await GetStoreById(storeId);
             User u = MarketUsers.Instance.GetUserByUserName(username);
-            if (!_stores.TryGetValue(storeId, out store))
+            if (store==null)
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
             }
@@ -140,11 +140,11 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public Result<Product> AddProduct(ProductData productData, Guid storeID, String username)
+        public async Task<Result<Product>> AddProduct(ProductData productData, Guid storeID, String username)
         {
             Product product = new Product(productData);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
+            Store store=await GetStoreById(storeID);
+            if (store==null)
                 return new Result<Product>(product, true, "Store doesn't exist");
             String res = store.AddProduct(product, username);
             if (res.Equals("Product added"))
@@ -152,11 +152,11 @@ namespace TradingSystem.Business.Market
             return new Result<Product>(product, true, res);
         }
 
-        public Result<bool> CustomerRequestBid(string username, Guid storeId, Guid productId, double newBidPrice)
+        public async  Task<Result<bool>> CustomerRequestBid(string username, Guid storeId, Guid productId, double newBidPrice)
         {
-            IStore store = null;
             User u = MarketUsers.Instance.GetUserByUserName(username);
-            if (!_stores.TryGetValue(storeId, out store))
+            Store store = await GetStoreById(storeId);
+            if (store == null)
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
             }
@@ -171,76 +171,78 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String RemoveProduct(Guid productID, Guid storeID, String username)
+        public async Task<String> RemoveProduct(Guid productID, Guid storeID, String username)
         {
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
+            Store store = await GetStoreById(storeID);
+            if (store == null)
                 return "Store doesn't exist";
             return store.RemoveProduct(productID, username);
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(Guid productID, ProductData details, Guid storeID, String username)
+        public async Task<String> EditProduct(Guid productID, ProductData details, Guid storeID, String username)
         {
             Product editedProduct = new Product(details);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
+            Store store = await GetStoreById(storeID);
+            if (store == null)
                 return "Store doesn't exist";
             return store.EditProduct(productID, editedProduct, username);
         }
 
 
         //functional requirement 4.3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/47
-        public String makeOwner(String assigneeName, Guid storeID, String assignerName)
+        public async Task<String> makeOwner(String assigneeName, Guid storeID, String assignerName)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(makeOwner));
-            return AssignMember(assigneeName, storeID, assignerName, "owner");
+            return await AssignMember(assigneeName, storeID, assignerName, "owner");
         }
 
         //functional requirement 4.5 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/55
-        public String makeManager(String assigneeName, Guid storeID, String assignerName)
+        public async Task<String> makeManager(String assigneeName, Guid storeID, String assignerName)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(makeManager));
-            return AssignMember(assigneeName, storeID, assignerName, "manager");
+            return await AssignMember(assigneeName, storeID, assignerName, "manager");
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
+        public async Task<String> DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
+            Store store = await GetStoreById(storeID);
+            if (store == null)
                 return "Store doesn't exist";
             return store.DefineManagerPermissions(managerName, assignerName, permissions);
         }
 
-        public String AssignMember(String assigneeName, Guid storeID, String assignerName, string type)
+        public async Task<String> AssignMember(String assigneeName, Guid storeID, String assignerName, string type)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(AssignMember));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
-            IStore store;
-            if (!_stores.TryGetValue(storeID, out store))
+            Store store = await GetStoreById(storeID);
+            if (store == null)
                 return "Store doesn't exist";
-            return store.AssignMember(assigneeName, assigner, type);
+            return await store.AssignMember(assigneeName, assigner, type);
         }
 
         //functional requirement 4.7 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/57
-        public String RemoveManager(String managerName, Guid storeID, String assignerName)
+        public async Task<String> RemoveManager(String managerName, Guid storeID, String assignerName)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(RemoveManager));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
-            if (!_stores.TryGetValue(storeID, out IStore store))
+            Store store = await GetStoreById(storeID);
+            if (store == null)
                 return "Store doesn't exist";
             return store.RemoveManager(managerName, assignerName);
         }
 
         //functional requirement 4.4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/136
-        public String RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        public async Task<String> RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(RemoveOwner));
             User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
-            if (!_stores.TryGetValue(storeID, out IStore store))
+            Store store = await GetStoreById(storeID);
+            if (store == null)
                 return "Store doesn't exist";
             return store.RemoveOwner(ownerName, assignerName);
         }
@@ -299,7 +301,7 @@ namespace TradingSystem.Business.Market
         public String getInfo(Guid storeID, String username)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfo));
-            if (!_stores.TryGetValue(storeID, out IStore store))
+            if (!_stores.TryGetValue(storeID, out Store store))
                 return "Store doesn't exist";
             return store.getInfo(username);
         }
@@ -307,7 +309,7 @@ namespace TradingSystem.Business.Market
         public String getInfoSpecific(Guid storeID, String workerName, String username)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfoSpecific));
-            if (!_stores.TryGetValue(storeID, out IStore store))
+            if (!_stores.TryGetValue(storeID, out Store store))
                 return "Store doesn't exist";
             return store.getInfoSpecific(workerName, username);
         }
