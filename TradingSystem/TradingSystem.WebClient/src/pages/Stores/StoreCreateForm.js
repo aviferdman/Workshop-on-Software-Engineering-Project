@@ -12,6 +12,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
 import FormFieldCustomValidation from "../../formsUtil/formFieldCustomValidation";
+import axios from "axios";
 
 export default class StoreCreateForm extends React.Component {
     constructor(props) {
@@ -25,13 +26,33 @@ export default class StoreCreateForm extends React.Component {
         };
     }
 
-    onSubmit = e => {
+    onSubmit = async e => {
         e.preventDefault();
         if (!this.validateFields()) {
             this.setState({
                 ...this.state
             });
             return;
+        }
+
+        try {
+            await axios.post('/Stores/Create', {
+                username: this.context.username,
+                storeName: this.state.storeName.value,
+                address: this.state.address.valuesObject(),
+                creditCard: this.state.creditCard.valuesObject({
+                    number: "cardNumber"
+                }),
+            });
+            this.props.history.push('/myStores');
+        }
+        catch (e) {
+            let msg = (e.response && e.response.data) || e.message;
+            if (msg) {
+                msg = ': ' + msg;
+            }
+            alert('An error occurred' + msg);
+            console.error("search error occurred: ", e);
         }
     };
 

@@ -7,6 +7,17 @@ export default class FormFields {
         throw new Error('abstract method');
     }
 
+    valuesObject(remap) {
+        let o = {};
+        let keys = Object.keys(this.fields);
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i];
+            let destKey = (remap && remap[key]) || key;
+            o[destKey] = this.fields[key].value;
+        }
+        return o;
+    }
+
     containsError() {
         let keys = Object.keys(this.fields);
         for (let i = 0; i < keys.length; i++) {
