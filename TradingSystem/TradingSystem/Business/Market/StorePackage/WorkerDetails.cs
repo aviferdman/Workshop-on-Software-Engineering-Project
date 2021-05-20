@@ -6,26 +6,30 @@ using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
-    class WorkerDetails
+    public class WorkerDetails
     {
         String username;
+        String position;
         ICollection<Permission> permissions;
 
 
         public WorkerDetails(Manager manager)
         {
             username = manager.Username;
+            position = "manager";
             permissions = manager.Store_permission;
         }
-
-        public String toString()
+        public WorkerDetails(Owner owner)
         {
-            String ret = "Manager - " + username + "\n\tPermissions: ";
-            foreach (Permission permission in permissions)
-            {
-                ret += permission.ToString() + ", ";
-            }
-            return ret;
+            username = owner.Username;
+            position = "owner";
+            permissions = new LinkedList<Permission>();
+        }
+        public WorkerDetails(Founder founder)
+        {
+            username = founder.Username;
+            position = "founder";
+            permissions = new LinkedList<Permission>();
         }
     }
 }

@@ -45,14 +45,14 @@ namespace TradingSystem.Service
             return marketStores.RemoveOwner(ownerName, storeID, assignerName);
         }
 
-        public String getInfo(Guid storeID, String username)
+        public String GetInfo(Guid storeID, String username)
         {
-            return marketStores.getInfo(storeID, username);
+            return marketStores.GetInfo(storeID, username);
         }
 
-        public String getInfoSpecific(Guid storeID, String workerName, String username)
+        public String GetInfoSpecific(Guid storeID, String workerName, String username)
         {
-            return marketStores.getInfoSpecific(storeID, workerName, username);
+            return marketStores.GetInfoSpecific(storeID, workerName, username);
         }
     }
 }

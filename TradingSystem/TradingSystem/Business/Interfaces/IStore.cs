@@ -56,9 +56,9 @@ namespace TradingSystem.Business.Market
 
         public String RemoveOwner(String ownerName, String assigner);
 
-        public String getInfo(String username);
+        public String GetInfo(String username);
 
-        public String getInfoSpecific(String workerName, String username);
+        public String GetInfoSpecific(String workerName, String username);
 
         public IRule GetRuleById(Guid ruleId);
 
