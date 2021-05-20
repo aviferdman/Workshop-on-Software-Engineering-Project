@@ -13,6 +13,8 @@ export class MyStores extends React.Component {
             name: "",
             stores: []
         };
+
+        this.onCreateStoreButtonClick = this.onCreateStoreButtonClick.bind(this);
     }
 
     async componentDidMount() {
@@ -35,6 +37,10 @@ export class MyStores extends React.Component {
         }
     }
 
+    onCreateStoreButtonClick = e => {
+        this.props.history.push('/storeCreate');
+    };
+
     render() {
         return (
             <div className="grid-container">
@@ -51,12 +57,12 @@ export class MyStores extends React.Component {
                     (!this.state.stores || !this.state.stores.length) ? (
                         <div className='center-screen my-stores-no-stores-block'>
                             <div className='my-stores-no-stores-participation-text-block'>You don't participate in any stores</div>
-                            <button className='button primary my-stores-create-first-store-button'>Create my first store</button>
+                            <button className='button primary my-stores-create-first-store-button' onClick={this.onCreateStoreButtonClick}>Create my first store</button>
                         </div>
                     ) : (
                         <div>
                             <div className='my-stores-create-store-top-block'>
-                                <button className='button primary'>Create store</button>
+                                <button className='button primary' onClick={this.onCreateStoreButtonClick}>Create store</button>
                             </div>
                             <Store stores={this.state.stores}/>
                         </div>

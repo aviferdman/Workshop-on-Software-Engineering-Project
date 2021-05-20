@@ -35,6 +35,10 @@ export default class StoreCreateForm extends React.Component {
         }
     };
 
+    onCancelClick = e => {
+        this.props.history.goBack();
+    }
+
     handleChange = prop => e => {
         let newState = {
             ...this.state
@@ -154,7 +158,7 @@ export default class StoreCreateForm extends React.Component {
                                 </div>
                             </div>
                             <div className='store-creation-btn-block'>
-                                <button onClick={this.props.onClose} className='button primary store-creation-dialog-close-button'>Cancel</button>
+                                <button onClick={this.onCancelClick} className='button primary store-creation-dialog-close-button'>Cancel</button>
                                 <button onClick={this.onSubmit} className='button primary'>Submit</button>
                             </div>
                         </form>
