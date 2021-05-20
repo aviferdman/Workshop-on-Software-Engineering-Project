@@ -16,6 +16,10 @@ export class MyStores extends React.Component {
     }
 
     async componentDidMount() {
+        await this.fetchStores();
+    }
+
+    async fetchStores() {
         try {
             let response = await axios.post('/Stores/MyStores', '"' + this.context.username + '"', {
                 headers: {
@@ -43,10 +47,21 @@ export class MyStores extends React.Component {
                     <Navbar></Navbar>
                 </header>
 
-                <main>
-                    <Store stores={this.state.stores}>  </Store>
-
-                </main>
+                <main>{
+                    (!this.state.stores || !this.state.stores.length) ? (
+                        <div className='center-screen my-stores-no-stores-block'>
+                            <div className='my-stores-no-stores-participation-text-block'>You don't participate in any stores</div>
+                            <button className='button primary my-stores-create-first-store-button'>Create my first store</button>
+                        </div>
+                    ) : (
+                        <div>
+                            <div className='my-stores-create-store-top-block'>
+                                <button className='button primary'>Create store</button>
+                            </div>
+                            <Store stores={this.state.stores}/>
+                        </div>
+                    )
+                }</main>
                 <footer> End of Stores</footer>
             </div>
         )

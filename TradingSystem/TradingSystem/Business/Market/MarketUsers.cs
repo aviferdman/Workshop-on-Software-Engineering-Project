@@ -18,8 +18,6 @@ namespace TradingSystem.Business.Market
 {
     public class MarketUsers : IMarketUsers
     {
-        private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
-
         private ConcurrentDictionary<string, User> activeUsers;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
