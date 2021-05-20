@@ -9,7 +9,7 @@ import {
 import './Login.scss'
 import {useTitle} from "../../App";
 import PasswordField from "../../components/passwordFields";
-import FormFieldInfo from "../../formFieldInfo";
+import FormFieldInfo from "../../formsUtil/formFieldInfo";
 import axios from "axios";
 import useFormsStyles from "../../style/forms";
 import SimpleAlertDialog from "../../components/simpleAlertDialog";
@@ -17,7 +17,10 @@ import {GlobalContext} from "../../globalContext";
 
 const useStyles = makeStyles((theme) => ({
     form: {
-      width: '300px'
+      width: '300px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     margin: {
         margin: theme.spacing(1)
@@ -118,7 +121,8 @@ export default function LoginPage() {
                     password: state.password.value,
                 });
                 if (response.data === "success") {
-                    context.setUsername(state.username.value);
+                    context.setUsername(state.username.value, true);
+                    context.setWebSocket(state.username.value);
                     history.push('/home');
                 }
                 else {
@@ -132,7 +136,7 @@ export default function LoginPage() {
             catch (e) {
                 let errMsg = '';
                 let showErrDialog = false;
-                if (e.response.status === 400) {
+                if (e.response && e.response.status === 400) {
                     if (e.response.data.startsWith('user is already logged in')) {
                         errMsg = 'Already logged-in';
                     }
@@ -144,7 +148,20 @@ export default function LoginPage() {
                     }
                 }
                 if (!errMsg) {
-                    errMsg = 'Unknown error occurred: ' + e.message + ' \n ' + e.response.data;
+                    let errMsgBuilder = '';
+                    if (e.response && e.response.data) {
+                        errMsgBuilder += e.response.data;
+                    }
+                    if (e.message) {
+                        if (errMsgBuilder) {
+                            errMsgBuilder += ', ';
+                        }
+                        errMsgBuilder += e.message;
+                    }
+                    errMsg = 'Unknown error occurred';
+                    if (errMsgBuilder) {
+                        errMsg += ': ' + errMsgBuilder;
+                    }
                     showErrDialog = true;
                 }
                 setState({

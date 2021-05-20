@@ -6,6 +6,7 @@ import {Home} from "./pages/mainPage/Home";
 import {MyStores} from "./pages/Stores/MyStores";
 import Store from "./pages/Stores/Store";
 import StoreProducts from "./pages/Stores/StoreProducts";
+import StoreCreateForm from "./pages/Stores/StoreCreateForm";
 
 
 
@@ -33,7 +34,9 @@ export default function Routes() {
             <Route path={"/storeProducts"}>
                 <StoreProducts />
             </Route>
-
+            <Route path={"/storeCreate"}>
+                <StoreCreateForm />
+            </Route>
         </Switch>
     );
 }

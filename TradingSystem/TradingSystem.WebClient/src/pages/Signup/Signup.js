@@ -5,7 +5,7 @@ import {useHistory} from "react-router-dom";
 import {Button, makeStyles, TextField} from "@material-ui/core";
 import PasswordField from "../../components/passwordFields";
 import clsx from "clsx";
-import FormFieldInfo from "../../formFieldInfo";
+import FormFieldInfo from "../../formsUtil/formFieldInfo";
 import axios from "axios";
 import useFormsStyles from "../../style/forms";
 import SimpleAlertDialog from "../../components/simpleAlertDialog";
