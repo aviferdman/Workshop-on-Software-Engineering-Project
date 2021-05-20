@@ -19,8 +19,8 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
             double discount = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
-                var product = p_q.Key;
-                var quantity = p_q.Value;
+                var product = p_q.product;
+                var quantity = p_q.quantity;
                 discount += quantity * product.Price * percent;
             }
             return discount;
