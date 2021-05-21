@@ -4,7 +4,6 @@ import Navbar from "../../components/Navbar/Navbar";
 import './StoreProducts.css';
 import data from "../../data/productData.json";
 import Products from "../../components/Products";
-import DashBoard from "../../components/AddProduct";
 import AddProduct from "../../components/AddProduct";
 
 class StoreProducts extends Component {
@@ -21,22 +20,22 @@ class StoreProducts extends Component {
             <div className="grid-container">
                 <header className="header-container">
                     <a href="/">E - commerce Application</a>
-                    <div></div>
+                    <div/>
                     <button className="icons">
                         <HiIcons.HiShoppingCart />
                     </button>
-                    <Navbar></Navbar>
+                    <Navbar/>
                 </header>
 
                 <main className="store-products-main-conatiner">
 
                     <div>
-                        <Products products={this.state.products} ></Products>
+                        <Products products={this.state.products} />
 
                     </div>
 
                     <div className="bottom-row">
-                        <AddProduct></AddProduct>
+                        <AddProduct/>
                     </div>
 
                 </main>

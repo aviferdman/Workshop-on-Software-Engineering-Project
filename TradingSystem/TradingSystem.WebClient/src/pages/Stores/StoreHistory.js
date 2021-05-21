@@ -5,11 +5,12 @@ import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './StoreHistory.css';
 import data from "../../data/historyData.json";
-import AddProduct from "../../components/AddProduct";
-import Users from "../../components/Users";
-import AddManager from "../../components/AddManager";
-import AddOwner from "../../components/AddOwner";
-import SetPermission from "../../components/SetPermission";
+// TODO: ask gil
+//import AddProduct from "../../components/AddProduct";
+//import Users from "../../components/Users";
+//import AddManager from "../../components/AddManager";
+//import AddOwner from "../../components/AddOwner";
+//import SetPermission from "../../components/SetPermission";
 import History from "../../components/History";
 
 class StoreHistory extends Component {
@@ -26,17 +27,17 @@ class StoreHistory extends Component {
             <div className="grid-container">
                 <header className="header-container">
                     <a href="/">E - commerce Application</a>
-                    <div></div>
+                    <div/>
                     <button className="icons">
                         <HiIcons.HiShoppingCart />
                     </button>
-                    <Navbar></Navbar>
+                    <Navbar/>
                 </header>
 
                 <main className="store-products-main-conatiner">
 
                     <div>
-                        <History history={this.state.history} ></History>
+                        <History history={this.state.history} />
                     </div>
 
                     <div className="bottom-row">

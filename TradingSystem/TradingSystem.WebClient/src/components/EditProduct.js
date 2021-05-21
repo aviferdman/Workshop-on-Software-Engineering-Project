@@ -1,5 +1,5 @@
 
-import React, { Component } from "react";
+import React from "react";
 import './AddProduct.css';
 import * as AiIcons from "react-icons/ai";
 

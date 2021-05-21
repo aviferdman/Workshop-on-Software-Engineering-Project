@@ -138,7 +138,7 @@ export class Home extends React.Component {
                         <HiIcons.HiShoppingCart />
                     </button>
 
-                    <Navbar></Navbar>
+                    <Navbar/>
 
                 </header>
 
@@ -197,7 +197,7 @@ export class Home extends React.Component {
                                 filterProducts={this.filterProducts}
                                 sortProducts={this.sortProducts} >
                             </Filter>
-                            <Products products={this.state.products} addToCart={this.addToCart}></Products>
+                            <Products products={this.state.products} addToCart={this.addToCart}/>
                         </div>
                         <div className="sidebar">
                             <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
