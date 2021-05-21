@@ -31,6 +31,20 @@ namespace TradingSystem.Business.Market
                 ProductHistories.Add(p_q.product, p_q.quantity);
             }
         }
+
+        public TransactionStatus(  PaymentStatus paymentStatus, DeliveryStatus deliveryStatus, ShoppingBasket shoppingBasket, bool status)
+        {
+            this._paymentStatus = paymentStatus;
+            this._deliveryStatus = deliveryStatus;
+            this.Status = status;
+            this._id = Guid.NewGuid();
+            this.ProductHistories = new ProductHistoryData();
+            var tmpDict = shoppingBasket?.GetDictionaryProductQuantity() ?? new HashSet<UserPackage.ProductInCart>();
+            foreach (var p_q in tmpDict)
+            {
+                ProductHistories.Add(p_q.product, p_q.quantity);
+            }
+        }
         public Guid Id { get => _id; set => _id = value; }
         public bool Status { get => _status; set => _status = value; }
         public DeliveryStatus DeliveryStatus { get => _deliveryStatus; set => _deliveryStatus = value; }
