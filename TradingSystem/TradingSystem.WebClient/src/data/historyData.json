@@ -1,0 +1,45 @@
+{
+    "history": [
+        {
+            "id": "xyz1",
+            "reception_ID": "11111",
+            "delivery_ID": "11111",
+            "products": []
+
+        },{
+            "id": "xyz2",
+            "reception_ID": "22222",
+            "delivery_ID": "22222",
+            "products": []
+
+        },
+        {
+            "id": "xyz3",
+            "reception_ID": "33333",
+            "delivery_ID": "33333",
+            "products": []
+
+        },
+        {
+            "id": "xyz4",
+            "reception_ID": "44444",
+            "delivery_ID": "44444",
+            "products": []
+
+        },
+        {
+            "id": "xyz5",
+            "reception_ID": "55555",
+            "delivery_ID": "55555",
+            "products": []
+
+        },
+        {
+            "id": "xyz6",
+            "reception_ID": "66666",
+            "delivery_ID": "66666",
+            "products": []
+
+        }
+    ]
+}

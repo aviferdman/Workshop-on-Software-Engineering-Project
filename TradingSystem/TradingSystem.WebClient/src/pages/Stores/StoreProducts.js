@@ -2,9 +2,10 @@ import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './StoreProducts.css';
-import data from "../../pages/mainPage/productData.json";
+import data from "../../data/productData.json";
 import Products from "../../components/Products";
 import DashBoard from "../../components/AddProduct";
+import AddProduct from "../../components/AddProduct";
 
 class StoreProducts extends Component {
 
@@ -35,9 +36,7 @@ class StoreProducts extends Component {
                     </div>
 
                     <div className="bottom-row">
-                        <DashBoard></DashBoard>
-                        <DashBoard></DashBoard>
-                        <DashBoard></DashBoard>
+                        <AddProduct></AddProduct>
                     </div>
 
                 </main>

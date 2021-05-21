@@ -1,21 +1,24 @@
+
+
 import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
-import './StoreStaff.css';
-import data from "../../data/staffData.json";
+import './StoreHistory.css';
+import data from "../../data/historyData.json";
 import AddProduct from "../../components/AddProduct";
 import Users from "../../components/Users";
 import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
 import SetPermission from "../../components/SetPermission";
+import History from "../../components/History";
 
-class StoreStaff extends Component {
+class StoreHistory extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            staff: data.staff
+            history: data.history
         };
     }
     render() {
@@ -33,21 +36,10 @@ class StoreStaff extends Component {
                 <main className="store-products-main-conatiner">
 
                     <div>
-                        <Users staff={this.state.staff} ></Users>
+                        <History history={this.state.history} ></History>
                     </div>
 
                     <div className="bottom-row">
-                        <div>
-                            <AddManager></AddManager>
-                        </div>
-
-                        <div>
-                            <AddOwner></AddOwner>
-                        </div>
-
-                        <div>
-                            <SetPermission></SetPermission>
-                        </div>
 
 
                     </div>
@@ -59,4 +51,4 @@ class StoreStaff extends Component {
     }
 }
 
-export default StoreStaff;
+export default StoreHistory;

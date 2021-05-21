@@ -25,7 +25,7 @@ class SearchBar extends Component {
                         onKeyUp={this.onKeyUp}
                         value={this.props.value}
                     />
-                    <button className="searchButton primary" onClick={this.props.onSearch}>Search</button>
+                    <button className="searchButton Sprimary" onClick={this.props.onSearch}>Search</button>
                 </div>
 
             </div>
