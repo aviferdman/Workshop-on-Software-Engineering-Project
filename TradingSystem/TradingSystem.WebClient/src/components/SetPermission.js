@@ -21,7 +21,7 @@ class SetPermission extends React.Component {
                         <div>
                             <div className= "col-grd">
                                 <div className="text-props">
-                                    <text >Name</text>
+                                    <label>Name</label>
                                 </div>
 
                                 <div >
@@ -39,7 +39,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Add Product</text>
+                                        <label >Add Product</label>
                                     </div>
 
                                     <div >
@@ -54,7 +54,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Appoint Manager</text>
+                                        <label>Appoint Manager</label>
                                     </div>
 
                                     <div >
@@ -69,7 +69,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Remove Product</text>
+                                        <label>Remove Product</label>
                                     </div>
 
                                     <div >
@@ -84,23 +84,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Get Personell Info</text>
-                                    </div>
-
-                                    <div >
-                                        <input
-                                            type="checkbox"
-                                            className="input-props"
-                                        />
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div>
-                                <div className= "col-grd-perm">
-                                    <div className="text-props">
-                                        <text >Edit Product</text>
+                                        <label>Get Personell Info</label>
                                     </div>
 
                                     <div >
@@ -116,7 +100,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Get Shop History</text>
+                                        <label>Edit Product</label>
                                     </div>
 
                                     <div >
@@ -132,7 +116,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Edit Permissions</text>
+                                        <label>Get Shop History</label>
                                     </div>
 
                                     <div >
@@ -148,7 +132,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Close Shop</text>
+                                        <label>Edit Permissions</label>
                                     </div>
 
                                     <div >
@@ -164,7 +148,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Edit Discount</text>
+                                        <label>Close Shop</label>
                                     </div>
 
                                     <div >
@@ -180,7 +164,7 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Edit Policy</text>
+                                        <label>Edit Discount</label>
                                     </div>
 
                                     <div >
@@ -196,7 +180,23 @@ class SetPermission extends React.Component {
                             <div>
                                 <div className= "col-grd-perm">
                                     <div className="text-props">
-                                        <text >Bid Request</text>
+                                        <label>Edit Policy</label>
+                                    </div>
+
+                                    <div >
+                                        <input
+                                            type="checkbox"
+                                            className="input-props"
+                                        />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div>
+                                <div className= "col-grd-perm">
+                                    <div className="text-props">
+                                        <label>Bid Request</label>
                                     </div>
 
                                     <div >

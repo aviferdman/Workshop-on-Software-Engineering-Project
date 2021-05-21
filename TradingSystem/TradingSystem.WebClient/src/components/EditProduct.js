@@ -21,7 +21,7 @@ class AddProduct extends React.Component {
                     <div className= "col-grd">
 
                         <div className="text-props">
-                            <text >Name</text>
+                            <label>Name</label>
                         </div>
 
                         <div >
@@ -35,7 +35,7 @@ class AddProduct extends React.Component {
 
                     <div className= "col-grd">
                         <div className="text-props">
-                            <text >Quantity</text>
+                            <label>Quantity</label>
                         </div>
 
                         <div >
@@ -48,7 +48,7 @@ class AddProduct extends React.Component {
                     </div>
                     <div className= "col-grd">
                         <div className="text-props">
-                            <text >Price</text>
+                            <label>Price</label>
                         </div>
 
                         <div >
@@ -63,7 +63,7 @@ class AddProduct extends React.Component {
 
                     <div className= "col-grd">
                         <div className="text-props">
-                            <text >Weight</text>
+                            <label>Weight</label>
                         </div>
 
                         <div >
@@ -77,7 +77,7 @@ class AddProduct extends React.Component {
                     </div>
                     <div className= "col-grd">
                         <div className="text-props">
-                            <text >Category</text>
+                            <label>Category</label>
                         </div>
 
                         <div >
