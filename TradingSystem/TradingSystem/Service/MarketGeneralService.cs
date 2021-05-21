@@ -6,6 +6,7 @@ using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Payment;
+using TradingSystem.DAL;
 
 namespace TradingSystem.Service
 {
@@ -32,6 +33,11 @@ namespace TradingSystem.Service
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode = false)
         {
             marketStores.ActivateDebugMode(deliverySystem, paymentSystem, debugMode);
+        }
+
+        public void SetDbDebugMode(bool debugMode = true)
+        {
+            ProxyMarketContext.Instance.IsDebug = debugMode;
         }
 
         public async System.Threading.Tasks.Task<ICollection<HistoryData>> GetAllHistoryAsync(string username)

@@ -28,9 +28,9 @@ namespace TradingSystem.WebApi.Controllers
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
 
         [HttpPost]
-        public ActionResult<IEnumerable<StoreInfoDTO>> MyStores([FromBody] string username)
+        public async Task<ActionResult<IEnumerable<StoreInfoDTO>>> MyStores([FromBody] string username)
         {
-            ICollection<StoreData>? stores = MarketUserService.getUserStores(username);
+            ICollection<StoreData>? stores = await MarketUserService.getUserStores(username);
             if (stores is null)
             {
                 return InternalServerError();
@@ -44,7 +44,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<StoreRefDTO> Create([FromBody] StoreCreationDTO storeCreationDTO)
+        public async Task<ActionResult<StoreRefDTO>> CreateAsync([FromBody] StoreCreationDTO storeCreationDTO)
         {
             object?[] values =
             {
@@ -67,7 +67,7 @@ namespace TradingSystem.WebApi.Controllers
                 return BadRequest("Missing parameter values");
             }
 
-            StoreData storeData = MarketStoreGeneralService.CreateStore
+            StoreData storeData = await MarketStoreGeneralService.CreateStoreAsync
             (
                 storeCreationDTO.StoreName,
                 storeCreationDTO.Username,

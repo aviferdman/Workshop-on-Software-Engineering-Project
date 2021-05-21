@@ -184,5 +184,10 @@ namespace AcceptanceTests.AppInterface.MarketBridge
         {
             return RealBridge?.GetUserPurchaseHistory();
         }
+
+        public void SetDbDebugMode(bool debugMode)
+        {
+            RealBridge?.SetDbDebugMode(debugMode);
+        }
     }
 }
