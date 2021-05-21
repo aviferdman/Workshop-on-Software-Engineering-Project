@@ -47,6 +47,7 @@ namespace TradingSystem.DAL
         public DbSet<Address> addresses { get; set; }
 
         public DbSet<CreditCard> creditCards { get; set; }
+        public DbSet<Category> categories { get; set; }
         
         protected override void OnConfiguring(DbContextOptionsBuilder options)
            => options.UseSqlite(@"Data Source=marketDB.db");
@@ -118,6 +119,76 @@ namespace TradingSystem.DAL
             .WithMany()
             .HasForeignKey(pt => pt.username);
 
+        }
+
+        public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
+        {
+            return await products.Where(p =>
+                                    (p.Name.Contains(keyword) || p.category.Contains(keyword))
+                                    &&(price_range_low==-1||price_range_low<=p.Price)
+                                    &&(price_range_high == -1 || price_range_high >= p.Price)
+                                    &&(rating == -1 || rating == p.Price)
+                                    &&(category != null || category.Equals(p.category))).ToListAsync();
+        }
+
+        public async Task<Category> AddNewCategory(string category)
+        {
+            Category c;
+            if (categories.Where(c => c.Name.Equals(category)).Any())
+            {
+                c = categories.Single(c => c.Name.Equals(category));
+            }
+            else
+            {
+                c = new Category(category);
+                await categories.AddAsync(c);
+            }
+            return c;
+        }
+
+        public void findStoreProduct(out Store found, out Product p, Guid pid)
+        {
+            Store sc =  stores.Include(s=> s._products)
+                .Single(s => s._products.Where(p=>p.Id.Equals(pid)).Any());
+            Entry(sc).Reference(s => s.founder).Load();
+            Entry(sc.founder).Reference(s => s.m).Load();
+            Entry(sc).Reference(s => s._address).Load();
+            Entry(sc).Reference(s => s._bank).Load();
+            Entry(sc).Collection(s => s.managers).Load();
+            Entry(sc).Collection(s => s.owners).Load();
+            foreach (Manager m in sc.managers)
+            {
+                Entry(m).Reference(s => s.m).Load();
+            }
+            foreach (Owner m in sc.owners)
+            {
+                Entry(m).Reference(s => s.m).Load();
+            }
+            found = sc;
+            p = sc.Products.Single(p => p.Id.Equals(pid));
+        }
+
+        public async Task<ICollection<Store>> GetStoresByName(string name)
+        {
+            ICollection<Store>  sc =  stores.Where(s => s.name.Equals(name)).ToList();
+            
+            foreach (Store s in sc)
+            {
+                await Entry(s).Collection(s => s._products).LoadAsync();
+            }
+            return sc;
+        }
+
+        public async Task removeOwner(Owner ownerToRemove)
+        {
+            try
+            {
+                owners.Remove(ownerToRemove);
+                await SaveChangesAsync();
+            }
+            catch
+            {
+            }
         }
 
         public async Task AddStore(Store store)
@@ -248,7 +319,7 @@ namespace TradingSystem.DAL
 
         public async Task<Store> getStore(Guid storeId)
         {
-            Store sc = await stores.SingleAsync(s => s.sid == storeId);
+            Store sc = await stores.SingleAsync(s => s.sid.Equals(storeId));
             await Entry(sc).Reference(s => s.founder).LoadAsync();
             await Entry(sc.founder).Reference(s => s.m).LoadAsync();
             await Entry(sc).Reference(s => s._address).LoadAsync();

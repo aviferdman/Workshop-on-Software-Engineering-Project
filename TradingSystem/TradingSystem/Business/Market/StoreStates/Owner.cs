@@ -45,19 +45,19 @@ namespace TradingSystem.Business.Market.StoreStates
             bool ret;
             lock (m)
             {
-                ret = m.ownerPrems.TryRemove(store, out _) | appointer.ownerAppointments.TryRemove(username, out _);
+                ret = m.ownerPrems.Remove(this) | appointer.ownerAppointments.Remove(this);
             }
             return ret;
         }
 
         public bool hasAppointees()
         {
-            return !m.ownerAppointments.IsEmpty;
+            return m.ownerAppointments.Count!=0;
         }
 
         public void removeManagers()
         {
-            foreach (Manager manager in m.ManagerAppointments.Values)
+            foreach (Manager manager in s.managers.Where(m=> m.appointer.username.Equals(this.username)))
             {
                 s.RemoveManager(manager.Username, Username);
             }
@@ -65,7 +65,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public ICollection<String> getAppointees()
         {
-            return m.OwnerAppointments.Keys;
+            return s.owners.Where(m => m.appointer.username.Equals(this.username)).Select(o=> o.username).ToList();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace TradingSystem.DAL
         private ConcurrentDictionary<string, DataUser> dataUsers;
         private ConcurrentDictionary<string, RegisteredAdmin> admins;
         private ConcurrentDictionary<string, MemberState> memberStates;
+        private ConcurrentDictionary<string, Category> categories;
         private ConcurrentDictionary<Guid, Store> stores;
         private ConcurrentDictionary<string, ShoppingCart> shoppingCarts;
         private HashSet<TransactionStatus> transactionStatuses;
@@ -103,6 +104,111 @@ namespace TradingSystem.DAL
             }
         }
 
+        public void findStoreProduct(out Store found, out Product p, Guid pid)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                    marketContext.findStoreProduct(out found, out p, pid);
+                }
+                catch (Exception e)
+                {
+                    found = null;
+                    p = null;
+                }
+            }
+            else
+            {
+                found = null;
+                p = null;
+            }
+        }
+
+        public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
+        {
+            if (isDebug)
+            {
+                List<Product> products = new List<Product>();
+                Category cat;
+                if (category != null)
+                {
+                    if (categories.TryGetValue(category, out cat))
+                    {
+                        return cat.getAllProducts(keyword, price_range_low, price_range_high, rating);
+                    }
+                    else
+                        return products;
+                }
+                foreach (Category c in categories.Values)
+                {
+                    products.AddRange(c.getAllProducts(keyword, price_range_low, price_range_high, rating));
+                }
+                return products;
+            }
+            else
+            {
+                return await marketContext.findProducts(keyword, price_range_low, price_range_high, rating, category);
+            }
+            
+
+        }
+
+        public async Task<Category> AddNewCategory(string category)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                    return await marketContext.AddNewCategory(category);
+                }
+                catch (Exception e)
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                Category c;
+                if (!categories.TryGetValue(category, out c))
+                    c = new Category(category);
+                return c;
+            }
+        }
+
+        public async Task<ICollection<Store>> GetStoresByName(string name)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                    return await marketContext.GetStoresByName(name);
+                }
+                catch (Exception e)
+                {
+                    return new LinkedList<Store>();
+                }
+            }
+            else
+            {
+                return stores.Values.Where(s=>s.name.Equals(name)).ToList();
+            }
+        }
+
+        public async Task removeOwner(Owner ownerToRemove)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                    await marketContext.removeOwner(ownerToRemove);
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
+
         public void removeProductFromCart(ProductInCart productInCart)
         {
             if(!isDebug)
@@ -141,6 +247,7 @@ namespace TradingSystem.DAL
             shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
+            categories = new ConcurrentDictionary<string, Category>();
             RegisteredAdmin admin = new RegisteredAdmin("DEFUALT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             dataUsers.TryAdd("DEFUALT_ADMIN", admin);
             admins.TryAdd("DEFUALT_ADMIN", admin);
@@ -198,6 +305,7 @@ namespace TradingSystem.DAL
             shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
+            categories = new ConcurrentDictionary<string, Category>();
             RegisteredAdmin admin = new RegisteredAdmin("DEFUALT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             dataUsers.TryAdd("DEFUALT_ADMIN", admin);
             admins.TryAdd("DEFUALT_ADMIN", admin);

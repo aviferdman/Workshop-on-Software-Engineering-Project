@@ -19,9 +19,9 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<String> Login([FromBody] LoginInfo info)
+        public async Task<ActionResult<string>> Login([FromBody] LoginInfo info)
         {
-            string res = MarketUserService.Instance.loginAsync(info.username, info.password, info.guestusername);
+            string res = await MarketUserService.Instance.loginAsync(info.username, info.password, info.guestusername);
             if (!res.Equals("success"))
                 return BadRequest(res);
             
@@ -29,9 +29,9 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<String> SignUp([FromBody] SignUpInfo info)
+        public async Task<ActionResult<String>> SignUp([FromBody] SignUpInfo info)
         {
-            string res = UserService.Instance.SignupAsync(info.guestusername, info.username, info.password, info._state, info._city, info._street, info._apartmentNum, info.zip, info.phone);
+            string res = await UserService.Instance.SignupAsync(info.guestusername, info.username, info.password, info._state, info._city, info._street, info._apartmentNum, info.zip, info.phone);
             if (!res.Equals("success"))
                 return BadRequest(res);
             return Ok(res);

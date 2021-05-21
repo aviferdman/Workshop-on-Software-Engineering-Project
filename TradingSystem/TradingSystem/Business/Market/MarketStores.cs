@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Business.Payment;
@@ -43,6 +44,7 @@ namespace TradingSystem.Business.Market
         {
             historyManager = HistoryManager.Instance;
             loadedStores = new ConcurrentDictionary<Guid, Store>();
+            MarketDAL.Instance.teardown();
         }
 
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
@@ -72,25 +74,18 @@ namespace TradingSystem.Business.Market
         
 
         //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
-        public ICollection<Store> GetStoresByName(string name)
+        public async Task<ICollection<Store>> GetStoresByName(string name)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoresByName));
-            LinkedList<Store> stores = new LinkedList<Store>();
-            foreach (Store s in _stores.Values)
-            {
-                if (s.Name.Equals(name))
-                {
-                    stores.AddLast(s);
-                }
-            }
+            ICollection<Store> stores = await MarketDAL.Instance.GetStoresByName(name);
             return stores;
         }
 
         public void DeleteAll()
         {
             loadedStores = new ConcurrentDictionary<Guid, Store>();
-
             historyManager = HistoryManager.Instance;
+            MarketDAL.Instance.teardown();
         }
 
 
@@ -103,6 +98,7 @@ namespace TradingSystem.Business.Market
             return await store.GetStoreHistory(username);
         }
 
+        //TODO
         public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, string username, Guid storeId, Guid productId, double newBidPrice)
         {
             Store store = await GetStoreById(storeId);
@@ -128,15 +124,19 @@ namespace TradingSystem.Business.Market
         {
             p = null;
             found = null;
-            foreach (Store s in _stores.Values)
+            foreach (Store s in loadedStores.Values)
             {
-                if (s.Products.TryGetValue(pid, out p))
+                if (s.Products.Where(p=> p.Id.Equals(pid)).Any())
                 {
+                    p = s.Products.Where(p => p.Id.Equals(pid)).First();
                     found = s;
-                    break;
+                    return;
                 }
-
             }
+            MarketDAL.Instance.findStoreProduct(out found, out  p,  pid);
+            if(found!=null)
+                loadedStores.TryAdd(found.Id, found);
+
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -151,7 +151,7 @@ namespace TradingSystem.Business.Market
                 return new Result<Product>(product, false, res);
             return new Result<Product>(product, true, res);
         }
-
+        //TODO
         public async  Task<Result<bool>> CustomerRequestBid(string username, Guid storeId, Guid productId, double newBidPrice)
         {
             User u = MarketUsers.Instance.GetUserByUserName(username);
@@ -162,7 +162,7 @@ namespace TradingSystem.Business.Market
             }
             foreach (var owner in store.GetOwners())
             {
-                var ownerUsername = owner.Key;
+                var ownerUsername = owner.username;
                 var message = $"{username} {storeId} {productId} {newBidPrice}";
                 PublisherManagement.Instance.EventNotification(ownerUsername, EventType.RequestPurchaseEvent, message);
             }
@@ -247,70 +247,46 @@ namespace TradingSystem.Business.Market
             return store.RemoveOwner(ownerName, assignerName);
         }
 
-        public void addToCategory(Product p, string category)
+        public async  Task addToCategory(Product p, string category)
         {
-            Category cat;
-            if (categories.TryGetValue(category, out cat))
-            {
-                cat.addProduct(p);
-            }
-            else
-            {
-                cat = new Category(category);
-                cat.addProduct(p);
-                if (!categories.TryAdd(category, cat))
-                    addToCategory(p, category);
-            }
+            Category cat=await MarketDAL.Instance.AddNewCategory(category);
+            cat.addProduct(p);
+            await ProxyMarketContext.Instance.saveChanges();
         }
 
-        public void removeFromCategory(Product p, string category)
+        public async void removeFromCategory(Product p, string category)
         {
-            Category cat;
-            if (categories.TryGetValue(category, out cat))
-            {
-                if (cat.Products.Contains(p))
-                    cat.Products.Remove(p);
-            }
+            Category cat = await MarketDAL.Instance.AddNewCategory(category);
+            cat.Products.Remove(p);
+            await ProxyMarketContext.Instance.saveChanges();
 
         }
 
 
 
         //use case 4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/52
-        public ICollection<Product> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
+        public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
-            List<Product> products = new List<Product>();
-            Category cat;
-            if (category != null)
-            {
-                if (categories.TryGetValue(category, out cat))
-                {
-                    return cat.getAllProducts(keyword, price_range_low, price_range_high, rating);
-                }
-                else
-                    return products;
-            }
-            foreach (Category c in categories.Values)
-            {
-                products.AddRange(c.getAllProducts(keyword, price_range_low, price_range_high, rating));
-            }
-            return products;
+            
+            return await MarketDAL.Instance.findProducts(keyword,price_range_low,price_range_high,rating, category);
         }
 
         //functional requirement 4.9 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/60
-        public String GetInfo(Guid storeID, String username)
+        public async Task<List<WorkerDetails>> GetInfo(Guid storeID, String username)
         {
-            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfo));
-            if (!_stores.TryGetValue(storeID, out Store store))
-                return "Store doesn't exist";
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetInfo));
+            Store store = await GetStoreById(storeID);
+            if (store == null)
+                return new List<WorkerDetails>(); ;
             return store.GetInfo(username);
         }
 
-        public String GetInfoSpecific(Guid storeID, String workerName, String username)
+        public async Task<WorkerDetails> GetInfoSpecific(Guid storeID, String workerName, String username)
         {
-            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfoSpecific));
-            if (!_stores.TryGetValue(storeID, out Store store))
-                return "Store doesn't exist";
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetInfoSpecific));
+            Store store = await GetStoreById(storeID);
+            if (store == null)
+                return null;
             return store.GetInfoSpecific(workerName, username);
         }
     }

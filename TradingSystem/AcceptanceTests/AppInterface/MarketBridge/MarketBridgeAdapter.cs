@@ -116,7 +116,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
         {
-            ICollection<ProductData>? products = marketProductsService.FindProductsByStores(shopId.ShopName);
+            ICollection<ProductData>? products = marketProductsService.FindProductsByStoresAsync(shopId.ShopName);
             return products?.Select(ProductIdentifiable.FromProductData);
         }
 

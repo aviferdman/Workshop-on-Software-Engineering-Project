@@ -61,7 +61,7 @@ namespace TradingSystem.Business.Market
                 {
                     var h = new UserHistory(p);
                     _state.AddHistory(h);
-                    HistoryManager.Instance.AddUserHistory(h);
+                    HistoryManager.Instance.AddHistory(h._transactionStatus);
                 }
                 this.ShoppingCart = new ShoppingCart(this);
             }

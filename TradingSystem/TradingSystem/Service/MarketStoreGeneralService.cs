@@ -55,9 +55,9 @@ namespace TradingSystem.Service
             return ret;
         }
 
-        public ICollection<StoreData> FindStoresByName(string name)
+        public async Task<ICollection<StoreData>> FindStoresByName(string name)
         {
-            ICollection<Store> stores = marketStores.GetStoresByName(name);
+            ICollection<Store> stores = await marketStores.GetStoresByName(name);
             ICollection<StoreData> dataStores = new LinkedList<StoreData>();
             foreach (Store s in stores)
             {
@@ -66,10 +66,10 @@ namespace TradingSystem.Service
             return dataStores;
         }
 
-        public StoreData getStoreById(Guid pid)
+        public async Task<StoreData> getStoreById(Guid pid)
         {
-            Store s;
-            if (marketStores.Stores.TryGetValue(pid,out s))
+            Store s=await marketStores.GetStoreById(pid);
+            if (s!=null)
                 return new StoreData((Store)s);
             return null;
         }

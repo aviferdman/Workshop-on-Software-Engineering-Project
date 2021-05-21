@@ -82,5 +82,30 @@ namespace TradingSystem.DAL
         {
             return await proxyMarketContext.getStore(storeId);
         }
+
+        public async Task removeOwner(Owner ownerToRemove)
+        {
+            await proxyMarketContext.removeOwner(ownerToRemove);
+        }
+
+        public async Task<ICollection<Store>> GetStoresByName(string name)
+        {
+            return await proxyMarketContext.GetStoresByName( name);
+        }
+
+        public void findStoreProduct(out Store found, out Product p, Guid pid)
+        {
+           proxyMarketContext.findStoreProduct(out  found, out  p,  pid);
+        }
+
+        public async Task<Category> AddNewCategory(string category)
+        {
+            return await proxyMarketContext.AddNewCategory(category);
+        }
+
+        public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
+        {
+            return await proxyMarketContext.findProducts( keyword,  price_range_low,  price_range_high,  rating,  category);
+        }
     }
 }

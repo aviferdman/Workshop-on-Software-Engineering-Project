@@ -271,7 +271,7 @@ namespace TradingSystem.Business.Market
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
                 _products.Remove(toRem);
-                RemoveProduct(toRem);
+                MarketDAL.Instance.RemoveProduct(toRem);
             }
             return "Product removed";
         }
@@ -406,21 +406,23 @@ namespace TradingSystem.Business.Market
 
             return ret;
         }
-        //TODO
         //functional requirement 4.4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/136
         public String RemoveOwner(String ownerName, String assigner)
         {
             Appointer a;
             String ret;
-            if (!owners.TryGetValue(ownerName, out Owner ownerToRemove))
+            Owner ownerToRemove;
+            if (!owners.Where(o=>o.username.Equals(ownerName)).Any())
             {
                 return "Owner doesn't exist";
             }
+            ownerToRemove = owners.Where(o => o.username.Equals(ownerName)).Single();
             if (founder.Username.Equals(assigner))
                 a = founder;
-            else if (owners.TryGetValue(assigner, out Owner owner))
-                a = owner;
-            else return "Invalid Assigner";
+            else if (owners.Where(p => p.username.Equals(assigner)).Any())
+                a = owners.Where(p => p.username.Equals(assigner)).First();
+            else
+                return "Invalid assigner";
             if (!a.canRemoveAppointment(ownerName))
                 return "Invalid Assigner";
             
@@ -437,7 +439,8 @@ namespace TradingSystem.Business.Market
             lock (this)
             {
                 ownerToRemove.removePermission(this);
-                owners.TryRemove(ownerName, out _);
+                owners.Remove(ownerToRemove);
+                MarketDAL.Instance.removeOwner(ownerToRemove);
                 ret = "success";
                 PublisherManagement.Instance.EventNotification(ownerName, EventType.RemoveAppointment, assigner + " has revoked your appointment as an owner for store " + name);
             }
@@ -449,16 +452,16 @@ namespace TradingSystem.Business.Market
         public List<WorkerDetails> GetInfo(String username)
         {
             List<WorkerDetails> ret = new List<WorkerDetails>();
-            if ((!founder.Username.Equals(username)) && !(owners.ContainsKey(username)) && !(managers.ContainsKey(username)))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any()))
                 return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
                 return ret;
             ret.Add(new WorkerDetails(founder));
-            foreach (Owner owner in owners.Values)
+            foreach (Owner owner in owners)
             {
                 ret.Add(new WorkerDetails(owner));
             }
-            foreach (Manager manager in managers.Values)
+            foreach (Manager manager in managers)
             {
                 ret.Add(new WorkerDetails(manager));
             }
@@ -468,17 +471,17 @@ namespace TradingSystem.Business.Market
         public WorkerDetails GetInfoSpecific(String workerName, String username)
         {
             WorkerDetails ret = null;
-            if ((!founder.Username.Equals(username)) && !(owners.ContainsKey(username)) && !(managers.ContainsKey(username)))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any()))
                 return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
                 return ret;
             if (founder.Username.Equals(workerName))
                 return new WorkerDetails(founder);
-            else if (owners.TryGetValue(workerName, out Owner owner))
-                return new WorkerDetails(owner);
-            else if (managers.TryGetValue(workerName, out Manager manager))
+            else if (owners.Where(o => o.username == workerName).Any())
+                return new WorkerDetails(owners.Where(o => o.username == workerName).Single());
+            else if (managers.Where(o => o.username == workerName).Any())
             {
-                return new WorkerDetails(manager);
+                return new WorkerDetails(managers.Where(o => o.username == workerName).Single());
             }
             return null;
         }

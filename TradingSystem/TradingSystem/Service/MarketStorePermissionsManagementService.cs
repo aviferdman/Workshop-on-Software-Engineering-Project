@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Service
@@ -45,14 +46,14 @@ namespace TradingSystem.Service
             return await marketStores.RemoveOwner(ownerName, storeID, assignerName);
         }
 
-        public String GetInfo(Guid storeID, String username)
+        public async Task<ICollection<WorkerDetails>> GetInfo(Guid storeID, String username)
         {
-            return marketStores.GetInfo(storeID, username);
+            return await marketStores.GetInfo(storeID, username);
         }
 
-        public String GetInfoSpecific(Guid storeID, String workerName, String username)
+        public async Task<WorkerDetails> GetInfoSpecific(Guid storeID, String workerName, String username)
         {
-            return marketStores.GetInfoSpecific(storeID, workerName, username);
+            return await marketStores.GetInfoSpecific(storeID, workerName, username);
         }
     }
 }
