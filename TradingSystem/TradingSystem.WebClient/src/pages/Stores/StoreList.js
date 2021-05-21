@@ -2,6 +2,17 @@ import React, {Component} from "react";
 
 
 class Stores extends Component {
+    constructor(props) {
+        super(props);
+        this.onStoreLinkClick = this.onStoreLinkClick.bind(this);
+    }
+
+    onStoreLinkClick = id => e => {
+        e.preventDefault();
+        this.props.history.push(`/store/${id}`);
+        return false;
+    }
+
     render() {
         return (
             <div>
@@ -9,7 +20,7 @@ class Stores extends Component {
                     {this.props.stores.map((store) => (
                         <li key={store.id}>
                             <div className = "store">
-                                <a href={"#" + store.id}>
+                                <a onClick={this.onStoreLinkClick(store.id)} href={"#"}>
                                     <p className= "productName">{store.name}</p>
                                 </a>
                                 <button className="button primary">Manage Store</button>
