@@ -11,7 +11,7 @@ using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.DAL
 {
-    class ProxyMarketContext
+    public class ProxyMarketContext
     {
         private bool isDebug;
 

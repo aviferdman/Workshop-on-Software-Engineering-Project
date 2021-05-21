@@ -8,6 +8,7 @@ using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystemTests.IntegrationTests
@@ -19,64 +20,52 @@ namespace TradingSystemTests.IntegrationTests
         MarketUsers marketUsers = MarketUsers.Instance;
         UserManagement userManagement = UserManagement.Instance;
         Store store;
-        Founder founder;
-        Owner owner;
-        Manager manager;
 
         [TestInitialize]
-        public void Initialize()
+        public async void Initialize()
         {
+            ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null);
-            marketUsers.AddMember("founder", "123", guestName);
+            await userManagement.SignUp("founder", "123", null, null);
+            await marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null);
-            marketUsers.AddMember("manager", "123", guestName);
+            await userManagement.SignUp("manager", "123", null, null);
+            await marketUsers.AddMember("manager", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner", "123", null, null);
-            marketUsers.AddMember("owner", "123", guestName);
+            await userManagement.SignUp("owner", "123", null, null);
+            await marketUsers.AddMember("owner", "123", guestName);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            store = market.CreateStore("testStore", "founder", card, address);
-            founder = store.Founder;
-            market.makeManager("manager", store.Id, "founder");
-            market.makeOwner("owner", store.Id, "founder");
-            store.Owners.TryGetValue("owner", out owner);
-            store.Managers.TryGetValue("manager", out IManager imanager);
-            manager = (Manager)imanager;
+            store = await market.CreateStore("testStore", "founder", card, address);
+            await market.makeManager("manager", store.Id, "founder");
+            await market.makeOwner("owner", store.Id, "founder");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkValidRemoveManager()
+        public void CheckValidRemoveManager()
         {
             Assert.AreEqual(market.RemoveManager("manager", store.Id, "founder"), "success");
-            Assert.IsFalse(store.Managers.ContainsKey("manager"));
-            Assert.IsFalse(founder.getM().ManagerAppointments.ContainsKey("manager"));
-            Assert.IsFalse(manager.M.ManagerPrems.ContainsKey(store));
+            Assert.IsFalse(store.Contains("manager", "Managers"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkRemoveManagerWrongStore()
+        public void CheckRemoveManagerWrongStore()
         {
             Assert.AreEqual(market.RemoveManager("manager2", store.Id, "founder"), "Manager doesn't exist");
-            Assert.IsTrue(store.Managers.ContainsKey("manager"));
-            Assert.IsTrue(founder.getM().ManagerAppointments.ContainsKey("manager"));
-            Assert.IsTrue(manager.M.ManagerPrems.ContainsKey(store));
+            Assert.IsTrue(store.Contains("manager", "Managers"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkRemoveManagerBadAppointer()
+        public void CheckRemoveManagerBadAppointer()
         {
             Assert.AreEqual(market.RemoveManager("manager", store.Id, "owner"), "Invalid Assigner");
-            Assert.IsTrue(store.Managers.ContainsKey("manager"));
-            Assert.IsTrue(founder.getM().ManagerAppointments.ContainsKey("manager"));
-            Assert.IsTrue(manager.M.ManagerPrems.ContainsKey(store));
+            Assert.IsTrue(store.Contains("manager", "Managers"));
         }
 
         [TestCleanup]

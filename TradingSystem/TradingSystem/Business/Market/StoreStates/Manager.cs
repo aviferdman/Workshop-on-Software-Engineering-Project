@@ -35,6 +35,8 @@ namespace TradingSystem.Business.Market.StoreStates
             BidRequests
         }
 
+        private Manager() { }
+
         private Manager(MemberState m, Store s, MemberState appointer) 
         {
             this.username = m.UserId;
@@ -54,7 +56,7 @@ namespace TradingSystem.Business.Market.StoreStates
             return man;
         }
 
-        public bool GetPermission(Permission permission)
+        public virtual bool GetPermission(Permission permission)
         {
             return store_permission.Contains(permission.ToString());
         }
