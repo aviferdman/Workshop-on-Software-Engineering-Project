@@ -32,6 +32,10 @@ namespace TradingSystem.Business.Market
             }
         }
 
+        public ShoppingBasket()
+        {
+        }
+
         public HashSet<ProductInCart> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
         public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
         public Store Store { get => store; set => store = value; }
@@ -42,7 +46,7 @@ namespace TradingSystem.Business.Market
             return !possitiveQuantities.Any();
         }
 
-        public string addProduct(Product p, int q)
+        public virtual string addProduct(Product p, int q)
         {
             if (!_product_quantity.Where(p=> p.product.Equals(p)).Any())
                 return "product is already in shopping basket";
@@ -51,7 +55,7 @@ namespace TradingSystem.Business.Market
             return "product added to shopping basket";
         }
 
-        public bool RemoveProduct(Product product)
+        public virtual bool RemoveProduct(Product product)
         {
             if(_product_quantity.Where(p => p.product.Equals(product)).Any())
             {
@@ -75,7 +79,7 @@ namespace TradingSystem.Business.Market
             }
         }
 
-        public bool TryUpdateProduct(Product product, int quantity)
+        public virtual bool TryUpdateProduct(Product product, int quantity)
         {
             if (!_product_quantity.Where(p => p.product.Equals(p)).Any())
             {

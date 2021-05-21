@@ -33,6 +33,7 @@ namespace TradingSystem.Business.Market
 
         public static MarketStores Instance { get { return _lazy.Value; } }
 
+        public ConcurrentDictionary<Guid, Store> LoadedStores { get => loadedStores; set => loadedStores = value; }
 
         private MarketStores()
         {

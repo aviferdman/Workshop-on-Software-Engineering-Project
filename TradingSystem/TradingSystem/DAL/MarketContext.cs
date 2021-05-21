@@ -219,7 +219,7 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<TransactionStatus>> getUserHistories(string username)
         {
-            return await transactionStatuses.Where(s=> s.username==username)
+            return await transactionStatuses.Where(s=> s.username.Equals(username))
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
@@ -228,7 +228,7 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<TransactionStatus>> getStoreHistories(Guid storeId)
         {
-            return await transactionStatuses.Where(s => s.storeID == storeId)
+            return await transactionStatuses.Where(s => s.storeID.Equals(storeId))
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
@@ -243,9 +243,9 @@ namespace TradingSystem.DAL
                                 .Include(s => s.owners)
                                 .Include(s => s.managers)
                                 .Include(s => s.founder)
-                                .Where(s=> s.founder.username==usrname||
-                                            s.managers.Where(m=>m.username==usrname).Any()||
-                                            s.owners.Where(m => m.username == usrname).Any())
+                                .Where(s=> s.founder.username.Equals(usrname)||
+                                            s.managers.Where(m=>m.username.Equals(usrname)).Any()||
+                                            s.owners.Where(m => m.username.Equals(usrname)).Any())
                                 .ToListAsync();
         }
 
@@ -253,7 +253,7 @@ namespace TradingSystem.DAL
 
         public async Task<DataUser> GetDataUser(string username)
         {
-           return await dataUsers.SingleAsync(u => u.username == username);
+           return await dataUsers.SingleAsync(u => u.username.Equals(username));
             
         }
 
@@ -285,13 +285,13 @@ namespace TradingSystem.DAL
 
         public async Task<MemberState> getMemberState(string usrname)
         {
-            MemberState mem=await memberStates.SingleAsync(m => m.username == usrname);
+            MemberState mem=await memberStates.SingleAsync(m => m.username.Equals(usrname));
             return mem;
         }
 
         public async Task<ShoppingCart> getShoppingCart(string usrname)
         {
-            ShoppingCart sc= await membersShoppingCarts.SingleAsync(s => s.username == usrname);
+            ShoppingCart sc= await membersShoppingCarts.SingleAsync(s => s.username.Equals(usrname));
             await Entry(sc).Collection(s => s.shoppingBaskets).LoadAsync();
             foreach(ShoppingBasket sb in sc.shoppingBaskets)
             {

@@ -40,7 +40,7 @@ namespace TradingSystem.Business.Market.StoreStates
         ///use locks for store premmissions
         public bool canRemoveAppointment(string userToRemove)
         {
-            return s.managers.Where(m => m.appointer.username == userToRemove && m.username == userToRemove).Any() || s.owners.Where(m => m.appointer.username == userToRemove && m.username == userToRemove).Any();
+            return s.managers.Where(m => m.appointer.username.Equals(userToRemove) && m.username.Equals( userToRemove)).Any() || s.owners.Where(m => m.appointer.username.Equals(userToRemove) && m.username.Equals(userToRemove)).Any();
         }
 
 

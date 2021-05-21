@@ -65,13 +65,13 @@ namespace TradingSystem.Business.Market
         }
         public bool hasPremssion(string username, Permission p)
         {
-            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()))
             {
 
-                if (!managers.Where(m => m.username == username).Any())
+                if (!managers.Where(m => m.username.Equals(username)).Any())
                     return false;
                 else {
-                    Manager m = managers.Where(m => m.username == username).First();
+                    Manager m = managers.Where(m => m.username.Equals(username)).First();
                     if (!m.GetPermission(p))
                         return false;
                 }
@@ -80,7 +80,7 @@ namespace TradingSystem.Business.Market
         }
         public bool isStaff(string username)
         {
-            return ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any())) ;
+            return ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()) && !(managers.Where(m => m.username.Equals(username)).Any())) ;
         }
 
         public HashSet<Owner> GetOwners()
@@ -207,7 +207,7 @@ namespace TradingSystem.Business.Market
         //TODO
         public void SetPolicy(string userID, Policy policy)
         {
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return;
             this.Policy = policy;
         }
@@ -221,7 +221,7 @@ namespace TradingSystem.Business.Market
         public Guid AddRule(string userID, IRule rule)
         {
             //Have no permission to do the action
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return new Guid();
             _policy.AddRule(rule);
             return rule.GetId();
@@ -231,7 +231,7 @@ namespace TradingSystem.Business.Market
         public void RemoveRule(string userID)
         {
             //Have no permission to do the action
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return;
             _policy.RemoveRule();
         }
@@ -239,7 +239,7 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public  String AddProduct(Product product, string userID)
         {
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.AddProduct))
                 return "No permission";
@@ -260,7 +260,7 @@ namespace TradingSystem.Business.Market
         public String RemoveProduct(Guid productID, string userID)
         {
             Product toRem;
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.AddProduct))
                 return "No permission";
@@ -280,7 +280,7 @@ namespace TradingSystem.Business.Market
         public String EditProduct(Guid productID, Product editedProduct, string userID)
         {
             Product prev;
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.EditProduct))
                 return "No permission";
@@ -312,7 +312,7 @@ namespace TradingSystem.Business.Market
             string ret;
             if (assigner == null)
                 return "invalid assiner";
-            if (!managers.Where(m=> m.username==assigner.Username).Any())
+            if (!managers.Where(m=> m.username.Equals(assigner.Username)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assigner.Username))
                 a = founder;
@@ -350,11 +350,11 @@ namespace TradingSystem.Business.Market
         public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> newPermissions)
         {
             Manager manager;
-            if (!managers.Where(m=>m.username==managerID).Any())
+            if (!managers.Where(m=>m.username.Equals(managerID)).Any())
                 return "Manager doesn't exist";
-            manager = managers.Where(m => m.username == managerID).First();
+            manager = managers.Where(m => m.username.Equals(managerID)).First();
             Appointer a;
-            if (!managers.Where(m => m.username == assignerID).Any())
+            if (!managers.Where(m => m.username.Equals(assignerID)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assignerID))
                 a = founder;
@@ -384,9 +384,9 @@ namespace TradingSystem.Business.Market
             Appointer a;
             String ret;
             Manager manager;
-            if (!managers.Where(m => m.username == managerName).Any())
+            if (!managers.Where(m => m.username.Equals(managerName)).Any())
                 return "Manager doesn't exist";
-            manager = managers.Where(m => m.username == managerName).First();
+            manager = managers.Where(m => m.username.Equals(managerName)).First();
             if (founder.Username.Equals(assigner))
                 a = founder;
             else if (owners.Where(p => p.username.Equals(assigner)).Any())
@@ -452,7 +452,7 @@ namespace TradingSystem.Business.Market
         public List<WorkerDetails> GetInfo(String username)
         {
             List<WorkerDetails> ret = new List<WorkerDetails>();
-            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any()))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()) && !(managers.Where(m => m.username.Equals(username)).Any()))
                 return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
                 return ret;
@@ -471,17 +471,17 @@ namespace TradingSystem.Business.Market
         public WorkerDetails GetInfoSpecific(String workerName, String username)
         {
             WorkerDetails ret = null;
-            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any()))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()) && !(managers.Where(m => m.username.Equals(username)).Any()))
                 return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
                 return ret;
             if (founder.Username.Equals(workerName))
                 return new WorkerDetails(founder);
-            else if (owners.Where(o => o.username == workerName).Any())
-                return new WorkerDetails(owners.Where(o => o.username == workerName).Single());
-            else if (managers.Where(o => o.username == workerName).Any())
+            else if (owners.Where(o => o.username.Equals(workerName)).Any())
+                return new WorkerDetails(owners.Where(o => o.username.Equals(workerName)).Single());
+            else if (managers.Where(o => o.username.Equals(workerName)).Any())
             {
-                return new WorkerDetails(managers.Where(o => o.username == workerName).Single());
+                return new WorkerDetails(managers.Where(o => o.username.Equals(workerName)).Single());
             }
             return null;
         }
@@ -510,7 +510,7 @@ namespace TradingSystem.Business.Market
         public Guid AddDiscount(string userID, Discount discount)
         {
             //Have no permission to do the action
-            if((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()) || !hasPremssion(userID, Permission.EditDiscount))
+            if((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
             Discounts.Add(discount);
             return discount.Id;
@@ -520,7 +520,7 @@ namespace TradingSystem.Business.Market
         public Guid RemoveDiscount(string userID, Guid discountId)
         {
             //Have no permission to do the action
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()) || !hasPremssion(userID, Permission.EditDiscount))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
             Discount d = GetDiscountById(discountId);
             if (d != null)
@@ -584,7 +584,7 @@ namespace TradingSystem.Business.Market
 
         private bool CheckPermission(string username, Permission permission)
         {
-            return ((managers.Where(m => m.username == username&& m.GetPermission(permission)).Any() || owners.Where(o=> o.username==username).Any()|| founder.Username.Equals(username)));
+            return ((managers.Where(m => m.username.Equals(username) && m.GetPermission(permission)).Any() || owners.Where(o=> o.username.Equals(username)).Any()|| founder.Username.Equals(username)));
         }
 
         public int CompareTo(object obj)
