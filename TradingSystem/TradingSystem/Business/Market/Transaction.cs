@@ -63,7 +63,7 @@ namespace TradingSystem.Business.Market
             }
             return connectExternalSystems;
         }
-
+        //TODO fixs
         public async Task<TransactionStatus> ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, CreditCard recieverBankAccountId, double paymentSum, ShoppingBasket shoppingBasket)
         {
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
@@ -74,18 +74,19 @@ namespace TradingSystem.Business.Market
             //handshake
             if (!handshake)
             {
-                return new TransactionStatus(null, null, shoppingBasket, false);
+                //return new TransactionStatus(null, null, shoppingBasket, false);
             }
             //payment
             var paymentStatus = await PaymentAdapter.CreatePayment(paymentDetails);
             if (!paymentStatus.Status)
             {
-                return new TransactionStatus(paymentStatus, null, shoppingBasket, false);
+                //return new TransactionStatus(paymentStatus, null, shoppingBasket, false);
             }
             //deliver
             var deliveryStatus = await DeliveryAdapter.CreateDelivery(deliveryDetails);
 
-            return new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
+            //return new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
+            return null;
         }
 
         public async Task<bool> CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
