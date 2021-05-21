@@ -11,7 +11,7 @@ using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.DAL
 {
-    class ProxyMarketContext
+    public class ProxyMarketContext
     {
         private bool isDebug;
 
@@ -74,7 +74,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                return transactionStatuses.Where(t=> t.username==username).ToList();
+                return transactionStatuses.Where(t=> t.username.Equals(username)).ToList();
             }
             try
             {
@@ -227,7 +227,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                return transactionStatuses.Where(t => t.storeID == storeId).ToList();
+                return transactionStatuses.Where(t => t.storeID.Equals(storeId)).ToList();
             }
             try
             {
