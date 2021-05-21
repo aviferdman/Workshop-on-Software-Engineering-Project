@@ -1,9 +1,28 @@
 
 import React from "react";
 import './AddProduct.css';
+import FormFields from "../formsUtil/formFields";
+import axios from "axios";
+import {alertRequestError_default} from "../utils";
+import {GlobalContext} from "../globalContext";
+import NumberFormField from "../formsUtil/NumberFormField";
 
 class AddProduct extends React.Component {
-    state = { show: false }
+    constructor(props) {
+        super(props);
+        this.state = {
+            show: false,
+            product: new FormFields({
+                name: "",
+                quantity: new NumberFormField(''),
+                price: new NumberFormField(''),
+                category: "",
+                weight: new NumberFormField(''),
+            }),
+        };
+
+        this.onConfirmAddProduct = this.onConfirmAddProduct.bind(this);
+    }
 
     showModal = () => {
         this.setState({ show: true });
@@ -13,10 +32,37 @@ class AddProduct extends React.Component {
         this.setState({ show: false });
     }
 
+    onInputChange = field => e => {
+        e.preventDefault();
+        if (!this.state.product.getField(field).trySetValueFromEvent(e)) {
+            return;
+        }
+        this.setState({
+           ...this.state
+        });
+    }
+
+    onConfirmAddProduct(e) {
+        e.preventDefault();
+        if (!this.state.product.validate()) {
+            alert('Please fill all fields');
+            return;
+        }
+
+        axios.post('/Stores/AddProduct', {
+            username: this.context.username,
+            storeId: this.props.storeId,
+            product: this.state.product.valuesObject(),
+        }).then(response => {
+            // TODO: fill URL
+            this.props.history.push('/store/' + this.props.storeId);
+        }).catch(alertRequestError_default);
+    }
+
     render() {
         return (
             <main className="items">
-                <Modal show={this.state.show} handleClose={this.hideModal} >
+                <Modal show={this.state.show} handleClose={this.hideModal} handleAdd={this.onConfirmAddProduct}>
                     <div className= "col-grd">
 
                         <div className="text-props">
@@ -28,6 +74,9 @@ class AddProduct extends React.Component {
                                 type="text"
                                 placeholder="Name"
                                 className="input-props"
+                                required
+                                value={this.state.product.getValue('name')}
+                                onChange={this.onInputChange('name')}
                             />
                         </div>
                     </div>
@@ -42,6 +91,9 @@ class AddProduct extends React.Component {
                                 type="number"
                                 placeholder="Quantity"
                                 className="input-props"
+                                required
+                                value={this.state.product.getValue('quantity')}
+                                onChange={this.onInputChange('quantity')}
                             />
                         </div>
                     </div>
@@ -56,6 +108,9 @@ class AddProduct extends React.Component {
                                 step="0.01"
                                 placeholder="Price"
                                 className="input-props"
+                                required
+                                value={this.state.product.getValue('price')}
+                                onChange={this.onInputChange('price')}
                             />
                         </div>
                     </div>
@@ -71,6 +126,9 @@ class AddProduct extends React.Component {
                                 step="0.01"
                                 placeholder="Weight"
                                 className="input-props"
+                                required
+                                value={this.state.product.getValue('weight')}
+                                onChange={this.onInputChange('weight')}
                             />
                         </div>
                     </div>
@@ -84,6 +142,9 @@ class AddProduct extends React.Component {
                                 type="text"
                                 placeholder="Name"
                                 className="input-props"
+                                required
+                                value={this.state.product.getValue('category')}
+                                onChange={this.onInputChange('category')}
                             />
                         </div>
                     </div>
@@ -96,7 +157,7 @@ class AddProduct extends React.Component {
     }
 }
 
-const Modal = ({ handleClose, show, children }) => {
+const Modal = ({ handleClose, handleAdd, show, children }) => {
     const showHideClassName = show ? 'modal display-block' : 'modal display-none';
 
     return (
@@ -111,7 +172,7 @@ const Modal = ({ handleClose, show, children }) => {
 
                     <div className="modal-buttons">
                         <button className="modal-buttons-props" onClick={handleClose} > Close </button>
-                        <button className="modal-buttons-props" onClick={handleClose} > Add </button>
+                        <button className="modal-buttons-props" onClick={handleAdd} > Add </button>
                     </div>
 
 
@@ -120,5 +181,6 @@ const Modal = ({ handleClose, show, children }) => {
     );
 };
 
+AddProduct.contextType = GlobalContext;
 
-export default AddProduct
+export default AddProduct;

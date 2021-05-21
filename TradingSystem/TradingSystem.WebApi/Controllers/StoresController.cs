@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 
+using TradingSystem.Business.Market;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
 
@@ -17,15 +18,18 @@ namespace TradingSystem.WebApi.Controllers
         public StoresController
         (
             MarketUserService marketUserService,
-            MarketStoreGeneralService marketStoreGeneralService
+            MarketStoreGeneralService marketStoreGeneralService,
+            MarketProductsService marketProductsService
         )
         {
             MarketUserService = marketUserService;
             MarketStoreGeneralService = marketStoreGeneralService;
+            MarketProductsService = marketProductsService;
         }
 
         public MarketUserService MarketUserService { get; }
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
+        public MarketProductsService MarketProductsService { get; }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<StoreInfoDTO>>> MyStores([FromBody] string username)
@@ -44,7 +48,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<StoreRefDTO>> CreateAsync([FromBody] StoreCreationDTO storeCreationDTO)
+        public async Task<ActionResult<StoreRefDTO>> Create([FromBody] StoreCreationDTO storeCreationDTO)
         {
             object?[] values =
             {
@@ -93,6 +97,51 @@ namespace TradingSystem.WebApi.Controllers
                 Id = storeData.Id,
                 Name = storeData.Name,
             });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductRefDTO>> AddProduct([FromBody] ProductCreationDTO productCreationDTO)
+        {
+            object?[] values =
+            {
+                productCreationDTO.Username,
+                productCreationDTO.Product?.Name,
+                productCreationDTO.Product?.Category,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+            Result<Product> productResult = await MarketProductsService.AddProduct
+            (
+                new ProductData
+                (
+                    productCreationDTO.Product!.Name,
+                    productCreationDTO.Product!.Quantity,
+                    productCreationDTO.Product!.Weight,
+                    productCreationDTO.Product!.Price,
+                    productCreationDTO.Product!.Category
+                ),
+                productCreationDTO.StoreId,
+                productCreationDTO.Username
+            );
+
+            if (productResult == null)
+            {
+                return InternalServerError();
+            }
+            if (productResult.IsErr)
+            {
+                return InternalServerError(string.IsNullOrWhiteSpace(productResult.Mess) ? null : productResult.Mess);
+            }
+
+            Product product = productResult.Ret;
+            return new ProductRefDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+            };
         }
     }
 }
