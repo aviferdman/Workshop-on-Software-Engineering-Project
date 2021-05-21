@@ -7,14 +7,14 @@ namespace TradingSystem.Business.Market
     public class Category
     {
         List<Product> products;
-        string name;
+        string nameId;
 
         public List<Product> Products { get => products; set => products = value; }
-        public string Name { get => name; set => name = value; }
+        public string Name { get => nameId; set => nameId = value; }
 
         public Category(string name)
         {
-            this.name = name;
+            this.nameId = name;
             products = new List<Product>();
         }
         
@@ -28,7 +28,7 @@ namespace TradingSystem.Business.Market
             List<Product> pros = new List<Product>();
             foreach (Product p in products)
             {
-                if ((p.Name != null && p.Name.Contains(keyword)) || (name.Contains(keyword)))
+                if ((p.Name != null && p.Name.Contains(keyword)) || (nameId.Contains(keyword)))
                 {
                     if (price_range_low != -1 && price_range_low > p.Price)
                         continue;

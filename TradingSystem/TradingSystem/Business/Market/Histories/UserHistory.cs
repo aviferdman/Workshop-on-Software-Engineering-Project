@@ -9,7 +9,7 @@ namespace TradingSystem.Business.Market.Histories
 {
     public class UserHistory : IHistory
     {
-        private TransactionStatus _transactionStatus;
+        public TransactionStatus _transactionStatus { get; set; }
         public UserHistory(TransactionStatus transactionStatus)
         {
             _transactionStatus = transactionStatus;

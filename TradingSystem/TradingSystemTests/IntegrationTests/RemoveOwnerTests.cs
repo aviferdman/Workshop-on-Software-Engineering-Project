@@ -8,6 +8,7 @@ using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 namespace TradingSystemTests.IntegrationTests
 {
@@ -24,30 +25,31 @@ namespace TradingSystemTests.IntegrationTests
         Owner owner3;
 
         [TestInitialize]
-        public void Initialize()
+        public async void Initialize()
         {
+            ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null);
-            marketUsers.AddMember("founder", "123", guestName);
+            await userManagement.SignUp("founder", "123", null, null);
+            await marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner1", "123", null, null);
-            marketUsers.AddMember("owner1", "123", guestName);
+            await userManagement.SignUp("owner1", "123", null, null);
+            await marketUsers.AddMember("owner1", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner2", "123", null, null);
-            marketUsers.AddMember("owner2", "123", guestName);
+            await userManagement.SignUp("owner2", "123", null, null);
+            await marketUsers.AddMember("owner2", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner3", "123", null, null);
-            marketUsers.AddMember("owner3", "123", guestName);
+            await userManagement.SignUp("owner3", "123", null, null);
+            await marketUsers.AddMember("owner3", "123", guestName);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            store = market.CreateStore("testStore", "founder", card, address);
-            market.makeOwner("owner1", store.Id, "founder");
-            market.makeOwner("owner2", store.Id, "owner1");
-            market.makeOwner("owner3", store.Id, "owner1");
+            store = await market.CreateStore("testStore", "founder", card, address);
+            await market.makeOwner("owner1", store.Id, "founder");
+            await market.makeOwner("owner2", store.Id, "owner1");
+            await market.makeOwner("owner3", store.Id, "owner1");
             founder = store.Founder;
-            store.Owners.TryGetValue("owner1", out owner1);
-            store.Owners.TryGetValue("owner2", out owner2);
-            store.Owners.TryGetValue("owner3", out owner3);
+            owner1 = store.GetOwner("owner1");
+            owner2 = store.GetOwner("owner2"); 
+            owner3 = store.GetOwner("owner3"); 
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
@@ -56,9 +58,7 @@ namespace TradingSystemTests.IntegrationTests
         public void checkValidRemoveOwner()
         {
             Assert.AreEqual(market.RemoveOwner("owner2", store.Id, "owner1"), "success");
-            Assert.IsFalse(store.Owners.ContainsKey("owner2"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner2"));
-            Assert.IsFalse(owner2.getM().OwnerPrems.ContainsKey(store));
+            Assert.IsFalse(store.Contains("owner2", "Owners"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
@@ -67,66 +67,9 @@ namespace TradingSystemTests.IntegrationTests
         public void checkValidRemoveOwnerChain()
         {
             Assert.AreEqual(market.RemoveOwner("owner1", store.Id, "founder"), "success");
-            Assert.IsFalse(store.Owners.ContainsKey("owner1"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner2"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner3"));
-            Assert.IsFalse(founder.getM().OwnerAppointments.ContainsKey("owner1"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner2"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner3"));
-            Assert.IsFalse(owner1.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner2.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner3.getM().OwnerPrems.ContainsKey(store));
-        }
-
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
-        [TestMethod]
-        [TestCategory("uc34")]
-        public void checkValidRemoveOwnerChainGen3()
-        {
-            String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner4", "123", null, null);
-            marketUsers.AddMember("owner4", "123", guestName);
-            market.makeOwner("owner4", store.Id, "owner2");
-            store.Owners.TryGetValue("owner4", out Owner owner4);
-
-            Assert.AreEqual(market.RemoveOwner("owner1", store.Id, "founder"), "success");
-            Assert.IsFalse(store.Owners.ContainsKey("owner1"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner2"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner3"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner4"));
-            Assert.IsFalse(founder.getM().OwnerAppointments.ContainsKey("owner1"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner2"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner3"));
-            Assert.IsFalse(owner2.getM().OwnerAppointments.ContainsKey("owner4"));
-            Assert.IsFalse(owner1.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner2.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner3.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner4.getM().OwnerPrems.ContainsKey(store));
-        }
-
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
-        [TestMethod]
-        [TestCategory("uc34")]
-        public void checkValidRemoveOwnerManagerChain()
-        {
-            String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null);
-            marketUsers.AddMember("manager", "123", guestName);
-            market.makeManager("manager", store.Id, "owner1");
-            store.Managers.TryGetValue("manager", out IManager manager);
-            Assert.AreEqual(market.RemoveOwner("owner1", store.Id, "founder"), "success");
-            Assert.IsFalse(store.Owners.ContainsKey("owner1"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner2"));
-            Assert.IsFalse(store.Owners.ContainsKey("owner3"));
-            Assert.IsFalse(store.Managers.ContainsKey("manager"));
-            Assert.IsFalse(founder.getM().OwnerAppointments.ContainsKey("owner1"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner2"));
-            Assert.IsFalse(owner1.getM().OwnerAppointments.ContainsKey("owner3"));
-            Assert.IsFalse(owner1.getM().ManagerAppointments.ContainsKey("manager"));
-            Assert.IsFalse(owner1.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner2.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(owner3.getM().OwnerPrems.ContainsKey(store));
-            Assert.IsFalse(manager.getM().ManagerPrems.ContainsKey(store));
+            Assert.IsFalse(store.Contains("owner1", "Owners"));
+            Assert.IsFalse(store.Contains("owner2", "Owners"));
+            Assert.IsFalse(store.Contains("owner3", "Owners"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
@@ -143,9 +86,7 @@ namespace TradingSystemTests.IntegrationTests
         public void checkRemoveOwnerInvalidAssigner()
         {
             Assert.AreEqual(market.RemoveOwner("owner2", store.Id, "founder"), "Invalid Assigner");
-            Assert.IsTrue(store.Owners.ContainsKey("owner2"));
-            Assert.IsTrue(owner1.getM().OwnerAppointments.ContainsKey("owner2"));
-            Assert.IsTrue(owner2.getM().OwnerPrems.ContainsKey(store));
+            Assert.IsTrue(store.Contains("owner2", "Owners"));
         }
 
         [TestCleanup]

@@ -113,7 +113,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Bridge.Logout();
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemoveOwner()
         {
@@ -122,7 +122,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemovemanager()
         {
@@ -132,7 +132,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.RemoveManager("manager", store.Value, "owner3"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwnerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemoveOwnerChain()
         {
@@ -143,7 +143,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.RemoveManager("manager", store.Value, "owner3"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwnerAsync(string, Guid, string)"/>
         [Test]
         public void checkRemoveOwnerDoesntExist()
         {
@@ -151,7 +151,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.RemoveOwner("no one", store.Value, "owner1"));
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwnerAsync(string, Guid, string)"/>
         [Test]
         public void checkRemoveOwnerInvalidAssigner()
         {

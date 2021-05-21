@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 
@@ -36,21 +37,21 @@ namespace TradingSystem.Service
             }
 
             var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
-            foreach (IShoppingBasket basket in cart.ShoppingBaskets)
+            foreach (ShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
-                foreach (KeyValuePair<Product, int> p in basket.GetDictionaryProductQuantity())
+                foreach (ProductInCart p in basket.GetDictionaryProductQuantity())
                 {
-                    products.Add(new ProductData(p.Key), p.Value);
+                    products.Add(new ProductData(p.product), p.quantity);
                 }
                 dataCart.Add(basket.GetStore().GetId(), products);
             }
             return dataCart;
         }
 
-        public Result<Dictionary<Guid, Dictionary<ProductData, int>>> EditShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
+        public async Task<Result<Dictionary<Guid, Dictionary<ProductData, int>>>> EditShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
-            Result<IShoppingCart> res = marketUsers.editShoppingCart(username, products_removed, products_added, products_quan);
+            Result<ShoppingCart> res = await marketUsers.editShoppingCart(username, products_removed, products_added, products_quan);
             if (res.IsErr)
             {
                 return new Result<Dictionary<Guid, Dictionary<ProductData, int>>>(null, true, res.Mess);
@@ -63,12 +64,12 @@ namespace TradingSystem.Service
             }
 
             var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
-            foreach (IShoppingBasket basket in cart.ShoppingBaskets)
+            foreach (ShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
-                foreach (KeyValuePair<Product, int> p in basket.GetDictionaryProductQuantity())
+                foreach (ProductInCart p in basket.GetDictionaryProductQuantity())
                 {
-                    products.Add(new ProductData(p.Key), p.Value);
+                    products.Add(new ProductData(p.product), p.quantity);
                 }
                 dataCart.Add(basket.GetStore().GetId(), products);
             }
@@ -97,14 +98,14 @@ namespace TradingSystem.Service
             return await marketUsers.PurchaseShoppingCart(username, card, phone, address);
         }
 
-        public Result<bool> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
+        public async Task<Result<bool>> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
         {
             switch (answer)
             {
                 //accept bid
                 case Answer.Accept:
                     PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
-                    return MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
+                    return await MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
 
                 //request new bid
                 case Answer.Bid:
@@ -119,14 +120,14 @@ namespace TradingSystem.Service
             }
         }
 
-        public Result<bool> CustomerAnswerBid(Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
+        public async Task<Result<bool>> CustomerAnswerBid(Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
         {
             switch (answer)
             {
                 //request new bid
                 case Answer.Bid:
                     PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
-                    return MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
+                    return await MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
                 
                 //accept / deny bid
                 default:

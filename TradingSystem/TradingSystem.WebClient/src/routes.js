@@ -17,38 +17,17 @@ export default function Routes() {
             <Route exact path="/">
                 <Redirect exact from="/" to="/login" />
             </Route>
-            <Route path={"/login"}>
-                <LoginPage />
-            </Route>
-            <Route path={"/signup"}>
-                <Signup />
-            </Route>
-            <Route path={"/home"}>
-                <Home />
-            </Route>
-            <Route path={"/myStores"}>
-                <MyStores />
-            </Route>
-            <Route path={"/store"}>
-                <Store />
-            </Route>
-            <Route path={"/storeProducts"}>
-                <StoreProducts />
-            </Route>
-            <Route path={"/storeStaff"}>
-                <StoreStaff />
-            </Route>
-
-            <Route path={"/storeHistory"}>
-                <StoreHistory/>
-            </Route>
-            <Route path={"/storeCreate"}>
-                <StoreCreateForm />
-            </Route>
-            <Route path={"/ShoppingCart"}>
-                <ShoppingCart />
-            </Route>
-
+ ui-cont
+            <Route path={"/login"} component={LoginPage} />
+            <Route path={"/signup"} component={Signup} />
+            <Route path={"/home"} component={Home} />
+            <Route path={"/myStores"} component={MyStores} />
+            <Route path={"/store"} component={Store} />
+            <Route path={"/storeProducts"} component={StoreProducts} />
+            <Route path={"/storeStaff"} component={StoreStaff} />
+            <Route path={"/storeHistory"} component={StoreHistory} />
+            <Route path={"/storeCreate"} component={StoreCreateForm} />
+ main
         </Switch>
     );
 }

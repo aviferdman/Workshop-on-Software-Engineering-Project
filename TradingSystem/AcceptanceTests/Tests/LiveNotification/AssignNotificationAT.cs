@@ -99,7 +99,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             marketBridge.MakeManager("manager", store.Value, "founder");
 
         }
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckValidMakeOwner()
         {
@@ -113,7 +113,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s.EventsReceived.Dequeue().EventProviderName, "AddAppointmentEvent");
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckMakeOwnerAlreadyAssigned()
         {
@@ -130,7 +130,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s.EventsReceived.Count, 0);
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwner(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.MakeOwnerAsync(string, Guid, string)"/>
         [Test]
         public void CheckMakeOwnerInvalidAssigner()
         {

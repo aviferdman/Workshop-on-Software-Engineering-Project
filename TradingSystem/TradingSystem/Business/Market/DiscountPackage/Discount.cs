@@ -21,7 +21,7 @@ namespace TradingSystem.Business.Market
         public Guid Id { get => _id; set => _id = value; }
         public IDiscountCalculator Calc { get => _calc; set => _calc = value; }
 
-        public virtual double ApplyDiscounts(IShoppingBasket shoppingBasket)
+        public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             return _calc.CalcDiscount(shoppingBasket);
         }

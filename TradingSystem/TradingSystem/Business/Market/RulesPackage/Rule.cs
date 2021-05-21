@@ -8,10 +8,10 @@ namespace TradingSystem.Business.Market
     public class Rule : IRule
     {
         //Function gets a products and it's quantities and return legal or not
-        Func<IShoppingBasket, bool> _r;
+        Func<ShoppingBasket, bool> _r;
         Guid id;
 
-        public Rule(Func<IShoppingBasket, bool> r)
+        public Rule(Func<ShoppingBasket, bool> r)
         {
             this._r = r;
             this.id = Guid.NewGuid();
@@ -19,16 +19,16 @@ namespace TradingSystem.Business.Market
 
         public Rule AndRules(IRule additionalRule)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => Check(basket) && additionalRule.Check(basket)));
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => Check(basket) && additionalRule.Check(basket)));
         }
 
         public Rule OrRules(IRule additionalRule)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => Check(basket) && additionalRule.Check(basket)));
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => Check(basket) && additionalRule.Check(basket)));
         }
 
         //All products and it's quantities needs to pass the rule, otherwise its illegal
-        virtual public bool Check(IShoppingBasket shoppingBasket)
+        virtual public bool Check(ShoppingBasket shoppingBasket)
         {
             return _r(shoppingBasket);
         }
@@ -40,15 +40,15 @@ namespace TradingSystem.Business.Market
 
         public static Rule AddTwoRules(IRule rule1, IRule rule2)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => rule1.Check(basket) && rule2.Check(basket)));
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => rule1.Check(basket) && rule2.Check(basket)));
         }
         public static Rule OrTwoRules(IRule rule1, IRule rule2)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => rule1.Check(basket) || rule2.Check(basket)));
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => rule1.Check(basket) || rule2.Check(basket)));
         }
         public static Rule CompositeTwoRules(IRule rule1, IRule rule2)
         {
-            return new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket basket) => rule1.Check(basket) ? rule2.Check(basket) : true));
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => rule1.Check(basket) ? rule2.Check(basket) : true));
         }
 
 

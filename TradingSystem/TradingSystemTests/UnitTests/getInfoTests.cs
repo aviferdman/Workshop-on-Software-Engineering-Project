@@ -7,6 +7,7 @@ using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystemTests.UnitTests
@@ -20,6 +21,7 @@ namespace TradingSystemTests.UnitTests
 
         public getInfoTests()
         {
+            ProxyMarketContext.Instance.IsDebug = true;
             address = new Address("1", "1", "1", "1", "1");
             card = new CreditCard("1", "1", "1", "1", "1", "1");
             store = new Store("testStore", card, address);
@@ -49,11 +51,11 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckGetInfoNoPermission()
         {
-            IManager manager;
-            Mock<IManager> imanager = new Mock<IManager>();
+            Manager manager;
+            Mock<Manager> imanager = new Mock<Manager>();
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);
             manager = imanager.Object;
-            store.Managers.TryAdd("manager", manager);
+            store.Managers.Add(manager);
             Assert.AreEqual(store.GetInfo("manager"), null);
         }
 
@@ -78,11 +80,11 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckGetInfoSpecificNoPermission()
         {
-            IManager manager;
-            Mock<IManager> imanager = new Mock<IManager>();
+            Manager manager;
+            Mock<Manager> imanager = new Mock<Manager>();
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);
             manager = imanager.Object;
-            store.Managers.TryAdd("manager", manager);
+            store.Managers.Add(manager);
             Assert.AreEqual(store.GetInfoSpecific("manager", "founder"), null);
         }
 

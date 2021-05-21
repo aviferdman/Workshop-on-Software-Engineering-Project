@@ -6,13 +6,13 @@ namespace TradingSystem.Business.Market
 {
     public class Product
     {
-        private Guid _id;
-        private String _name;
-        private int _quantity;
-        private double _weight;
-        private double _price;
-        private String category;
-        private int rating;
+        public Guid _id { get; set; }
+        public String _name { get; set; }
+        public int _quantity { get; set; }
+        public double _weight { get; set; }
+        public double _price { get; set; }
+        public String category { get; set; }
+        public int rating { get; set; }
 
         public Product(String name, int quantity, double weight, double price, String category)
         {

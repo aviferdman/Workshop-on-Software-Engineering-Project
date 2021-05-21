@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Service
@@ -20,39 +21,39 @@ namespace TradingSystem.Service
 
         public static MarketStorePermissionsManagementService Instance => instanceLazy.Value;
 
-        public string MakeOwner(string assignee, Guid storeID, string assigner)
+        public async Task<string> MakeOwnerAsync(string assignee, Guid storeID, string assigner)
         {
-            return marketStores.makeOwner(assignee, storeID, assigner);
+            return await marketStores.makeOwner(assignee, storeID, assigner);
         }
 
-        public string MakeManager(string assignee, Guid storeID, string assigner)
+        public async Task<string> MakeManagerAsync(string assignee, Guid storeID, string assigner)
         {
-            return marketStores.makeManager(assignee, storeID, assigner);
+            return await marketStores.makeManager(assignee, storeID, assigner);
         }
 
-        public string DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
+        public async Task<string> DefineManagerPermissionsAsync(string manager, Guid storeID, string assigner, List<Permission> permissions)
         {
-            return marketStores.DefineManagerPermissions(manager, storeID, assigner, permissions);
+            return await marketStores.DefineManagerPermissions(manager, storeID, assigner, permissions);
         }
 
-        public String RemoveManager(String managerName, Guid storeID, String assignerName)
+        public async Task<string> RemoveManagerAsync(String managerName, Guid storeID, String assignerName)
         {
-            return marketStores.RemoveManager(managerName, storeID, assignerName);
+            return await marketStores.RemoveManager(managerName, storeID, assignerName);
         }
 
-        public String RemoveOwner(String ownerName, Guid storeID, String assignerName)
+        public async Task<string> RemoveOwnerAsync(String ownerName, Guid storeID, String assignerName)
         {
-            return marketStores.RemoveOwner(ownerName, storeID, assignerName);
+            return await marketStores.RemoveOwner(ownerName, storeID, assignerName);
         }
 
-        public String GetInfo(Guid storeID, String username)
+        public async Task<ICollection<WorkerDetails>> GetInfo(Guid storeID, String username)
         {
-            return marketStores.GetInfo(storeID, username);
+            return await marketStores.GetInfo(storeID, username);
         }
 
-        public String GetInfoSpecific(Guid storeID, String workerName, String username)
+        public async Task<WorkerDetails> GetInfoSpecific(Guid storeID, String workerName, String username)
         {
-            return marketStores.GetInfoSpecific(storeID, workerName, username);
+            return await marketStores.GetInfoSpecific(storeID, workerName, username);
         }
     }
 }

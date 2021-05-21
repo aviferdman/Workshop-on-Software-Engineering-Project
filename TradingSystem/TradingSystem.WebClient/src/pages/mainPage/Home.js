@@ -66,6 +66,7 @@ export class Home extends React.Component {
             });
         }
         catch (e) {
+            alert('An error occurred: ' + (e.response && e.response.data) || e.message);
             console.error("search error occurred: ", e);
         }
     };

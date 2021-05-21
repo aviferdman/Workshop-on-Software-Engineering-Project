@@ -2,101 +2,117 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using TradingSystem.Business.Market.UserPackage;
+using TradingSystem.DAL;
 
 namespace TradingSystem.Business.Market
 {
-    public class ShoppingBasket : IShoppingBasket
+    public class ShoppingBasket 
     {
-        Dictionary<Product, int> _product_quantity;
-        private ShoppingCart shoppingCart;
-        private IStore store;
+        public HashSet<ProductInCart> _product_quantity { get; set; }
+        public  ShoppingCart shoppingCart { get; set; }
+        public Store store { get; set; }
 
-        public ShoppingBasket(ShoppingCart shoppingCart, IStore store)
+        public ShoppingBasket(ShoppingCart shoppingCart, Store store)
         {
             this.ShoppingCart = shoppingCart;
             this.Store = store;
-            this._product_quantity = new Dictionary<Product, int>();
+            this._product_quantity = new HashSet<ProductInCart>();
         }
 
         public ShoppingBasket(ShoppingBasket s, ShoppingCart shoppingCart)
         {
             this.store = s.store;
             this.shoppingCart = shoppingCart;
-            this._product_quantity = new Dictionary<Product, int>();
-            foreach(KeyValuePair<Product,int> p in s.Product_quantity)
+            this._product_quantity =new  HashSet<ProductInCart>();
+            foreach(ProductInCart p in s.Product_quantity)
             {
-                this.Product_quantity.Add(p.Key, p.Value);
+                this.Product_quantity.Add(new ProductInCart(p.product, p.quantity));
             }
         }
 
-        public Dictionary<Product, int> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
+        public HashSet<ProductInCart> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
         public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
-        public IStore Store { get => store; set => store = value; }
+        public Store Store { get => store; set => store = value; }
 
         public bool IsEmpty()
         {
-            var possitiveQuantities = _product_quantity.Where(p_q => p_q.Value > 0);
+            var possitiveQuantities = _product_quantity.Where(p_q => p_q.quantity > 0);
             return !possitiveQuantities.Any();
         }
 
         public string addProduct(Product p, int q)
         {
-            if (_product_quantity.ContainsKey(p))
+            if (!_product_quantity.Where(p=> p.product.Equals(p)).Any())
                 return "product is already in shopping basket";
-            _product_quantity.Add(p, q);
+            _product_quantity.Add(new ProductInCart(p, q));
+            ProxyMarketContext.Instance.saveChanges();
             return "product added to shopping basket";
         }
 
         public bool RemoveProduct(Product product)
         {
-            return _product_quantity.Remove(product);
+            if(_product_quantity.Where(p => p.product.Equals(product)).Any())
+            {
+                MarketDAL.Instance.removeProductFromCart(_product_quantity.Where(p => p.product.Equals(product)).Single());
+                _product_quantity.RemoveWhere(p => p.product.Equals(product));
+                return true;
+            }
+               
+            return false;
         }
 
         public void UpdateProduct(Product product, int quantity)
         {
-            if (!_product_quantity.ContainsKey(product))
+            if (!_product_quantity.Where(p => p.product.Equals(p)).Any())
             {
-                _product_quantity.Add(product, quantity);
+                _product_quantity.Add(new ProductInCart(product, quantity));
             }
             else
             {
-                _product_quantity[product] = quantity;
+                _product_quantity.Where(p => p.product.Equals(p)).First().quantity = quantity;
             }
         }
 
         public bool TryUpdateProduct(Product product, int quantity)
         {
-            if (!_product_quantity.ContainsKey(product))
+            if (!_product_quantity.Where(p => p.product.Equals(p)).Any())
             {
                 return false;
             }
             else
             {
-                _product_quantity[product] = quantity;
+                _product_quantity.Where(p => p.product.Equals(p)).First().quantity = quantity;
                 return true;
             }
         }
 
         public double CalcCost()
         {
-            return _product_quantity.Aggregate(0.0, (total, next) => total + next.Key.Price * next.Value);
+            return _product_quantity.Aggregate(0.0, (total, next) => total + next.product.Price * next.quantity);
         }
 
         public ICollection<Product> GetProducts()
         {
-            return _product_quantity.Keys.Where(k => _product_quantity[k] > 0).ToList();
+            List<Product> products = new List<Product>();
+            foreach(ProductInCart p in _product_quantity)
+            {
+                products.Add(p.product);
+            }
+            return products;
         }
 
         public int GetProductQuantity(Product product)
         {
-            if (_product_quantity.ContainsKey(product))
+            if (_product_quantity.Where(p => p.product.Equals(p)).Any())
             {
-                return _product_quantity[product];
+                return _product_quantity.Where(p => p.product.Equals(p)).First().quantity;
             }
             return 0;
         }
 
-        public Dictionary<Product, int> GetDictionaryProductQuantity()
+        public HashSet<ProductInCart> GetDictionaryProductQuantity()
         {
             return _product_quantity;
         }
@@ -106,12 +122,12 @@ namespace TradingSystem.Business.Market
             return obj.GetHashCode() - GetHashCode();
         }
 
-        public IStore GetStore()
+        public Store GetStore()
         {
             return store;
         }
 
-        public IShoppingCart GetShoppingCart()
+        public ShoppingCart GetShoppingCart()
         {
             return this.ShoppingCart;
         }
