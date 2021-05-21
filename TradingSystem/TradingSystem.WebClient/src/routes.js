@@ -7,8 +7,8 @@ import {MyStores} from "./pages/Stores/MyStores";
 import Store from "./pages/Stores/Store";
 import StoreProducts from "./pages/Stores/StoreProducts";
 import StoreCreateForm from "./pages/Stores/StoreCreateForm";
-
-
+import StoreStaff from "./pages/Stores/StoreStaff";
+import StoreHistory from "./pages/Stores/StoreHistory";
 
 export default function Routes() {
     return (
@@ -22,6 +22,8 @@ export default function Routes() {
             <Route path={"/myStores"} component={MyStores} />
             <Route path={"/store"} component={Store} />
             <Route path={"/storeProducts"} component={StoreProducts} />
+            <Route path={"/storeStaff"} component={StoreStaff} />
+            <Route path={"/storeHistory"} component={StoreHistory} />
             <Route path={"/storeCreate"} component={StoreCreateForm} />
         </Switch>
     );
