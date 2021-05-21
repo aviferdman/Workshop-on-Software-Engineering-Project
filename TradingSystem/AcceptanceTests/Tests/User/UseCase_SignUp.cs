@@ -29,6 +29,7 @@ namespace AcceptanceTests.Tests.User
         public override void Setup()
         {
             base.Setup();
+            SystemContext.MarketBridge.SetDbDebugMode(true);
             Assert.IsTrue(Bridge.Connect());
         }
 
