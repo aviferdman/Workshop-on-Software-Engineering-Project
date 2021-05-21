@@ -13,7 +13,7 @@ export const SidebarData = [
     },
     {
         title: 'Shopping Cart',
-        path: '/reports',
+        path: '/ShoppingCart',
         icon: <HiIcons.HiShoppingCart />,
         cName: 'nav-text'
     },

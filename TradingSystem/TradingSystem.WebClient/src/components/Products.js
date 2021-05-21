@@ -21,7 +21,6 @@ class Products extends Component {
                                 <EditProduct></EditProduct>
                             </div>
 
-
                         </div>
                         <div className = "product">
                             <a href={"#" + product.id}>

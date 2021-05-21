@@ -9,6 +9,7 @@ import StoreProducts from "./pages/Stores/StoreProducts";
 import StoreCreateForm from "./pages/Stores/StoreCreateForm";
 import StoreStaff from "./pages/Stores/StoreStaff";
 import StoreHistory from "./pages/Stores/StoreHistory";
+import ShoppingCart from "./pages/ShoppingCart/ShoppingCart";
 
 export default function Routes() {
     return (
@@ -43,6 +44,9 @@ export default function Routes() {
             </Route>
             <Route path={"/storeCreate"}>
                 <StoreCreateForm />
+            </Route>
+            <Route path={"/ShoppingCart"}>
+                <ShoppingCart />
             </Route>
 
         </Switch>

@@ -9,6 +9,8 @@ import * as HiIcons from "react-icons/hi";
 import Cart from "../../components/Cart";
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
+import {Link} from "react-router-dom";
+import HomeProducts from "../../components/HomeProducts";
 
 export class Home extends React.Component {
     constructor(props) {
@@ -124,18 +126,26 @@ export class Home extends React.Component {
     };
 
     render() {
+
         return (
+
             <div className="grid-container">
-                <header className="header-container">
+                <header className="header-container" >
                     <a href="/">E - commerce Application</a>
                     <div>
                         <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
                     </div>
 
 
-                    <button className="icons">
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
 
                     <Navbar></Navbar>
 
@@ -196,10 +206,11 @@ export class Home extends React.Component {
                                 filterProducts={this.filterProducts}
                                 sortProducts={this.sortProducts} >
                             </Filter>
-                            <Products products={this.state.products} addToCart={this.addToCart}></Products>
+                            <HomeProducts products={this.state.products} addToCart={this.addToCart}></HomeProducts>
                         </div>
                         <div className="sidebar">
                             <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+
                         </div>
                     </div>
 

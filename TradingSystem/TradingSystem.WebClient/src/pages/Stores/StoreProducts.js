@@ -4,7 +4,6 @@ import Navbar from "../../components/Navbar/Navbar";
 import './StoreProducts.css';
 import data from "../../data/productData.json";
 import Products from "../../components/Products";
-import DashBoard from "../../components/AddProduct";
 import AddProduct from "../../components/AddProduct";
 
 class StoreProducts extends Component {
