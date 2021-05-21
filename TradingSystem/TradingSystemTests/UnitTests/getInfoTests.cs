@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
@@ -32,7 +33,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckValidGetInfo()
         {
-            Assert.AreEqual(store.getInfo("founder"), "Founder - founder\n");
+            Assert.AreEqual(store.GetInfo("founder"), new WorkerDetails(founder));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfo(string)"/>
@@ -40,7 +41,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckGetInfoInvalidUser()
         {
-            Assert.AreEqual(store.getInfo("no one"), "Invalid user");
+            Assert.AreEqual(store.GetInfo("no one"), null);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfo(string)"/>
@@ -53,7 +54,7 @@ namespace TradingSystemTests.UnitTests
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);
             manager = imanager.Object;
             store.Managers.TryAdd("manager", manager);
-            Assert.AreEqual(store.getInfo("manager"), "No permission");
+            Assert.AreEqual(store.GetInfo("manager"), null);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfoSpecific(string, string)"/>
@@ -61,7 +62,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckValidGetInfoSpecific()
         {
-            Assert.AreEqual(store.getInfoSpecific("founder", "founder"), "Founder - founder\n");
+            Assert.AreEqual(store.GetInfoSpecific("founder", "founder"), new WorkerDetails(founder));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfoSpecific(string, string)"/>
@@ -69,7 +70,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckGetInfoSpecificInvalidUser()
         {
-            Assert.AreEqual(store.getInfoSpecific("no one", "founder"), "Invalid user");
+            Assert.AreEqual(store.GetInfoSpecific("no one", "founder"), null);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfoSpecific(string, string)"/>
@@ -82,7 +83,7 @@ namespace TradingSystemTests.UnitTests
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);
             manager = imanager.Object;
             store.Managers.TryAdd("manager", manager);
-            Assert.AreEqual(store.getInfoSpecific("manager", "founder"), "No permission");
+            Assert.AreEqual(store.GetInfoSpecific("manager", "founder"), null);
         }
 
         [TestCleanup]
