@@ -12,6 +12,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
 import FormFieldCustomValidation from "../../formsUtil/formFieldCustomValidation";
+import axios from "axios";
 
 export default class StoreCreateForm extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ export default class StoreCreateForm extends React.Component {
         };
     }
 
-    onSubmit = e => {
+    onSubmit = async e => {
         e.preventDefault();
         if (!this.validateFields()) {
             this.setState({
@@ -33,7 +34,31 @@ export default class StoreCreateForm extends React.Component {
             });
             return;
         }
+
+        try {
+            await axios.post('/Stores/Create', {
+                username: this.context.username,
+                storeName: this.state.storeName.value,
+                address: this.state.address.valuesObject(),
+                creditCard: this.state.creditCard.valuesObject({
+                    number: "cardNumber"
+                }),
+            });
+            this.props.history.push('/myStores');
+        }
+        catch (e) {
+            let msg = (e.response && e.response.data) || e.message;
+            if (msg) {
+                msg = ': ' + msg;
+            }
+            alert('An error occurred' + msg);
+            console.error("search error occurred: ", e);
+        }
     };
+
+    onCancelClick = e => {
+        this.props.history.goBack();
+    }
 
     handleChange = prop => e => {
         let newState = {
@@ -154,7 +179,7 @@ export default class StoreCreateForm extends React.Component {
                                 </div>
                             </div>
                             <div className='store-creation-btn-block'>
-                                <button onClick={this.props.onClose} className='button primary store-creation-dialog-close-button'>Cancel</button>
+                                <button onClick={this.onCancelClick} className='button primary store-creation-dialog-close-button'>Cancel</button>
                                 <button onClick={this.onSubmit} className='button primary'>Submit</button>
                             </div>
                         </form>
