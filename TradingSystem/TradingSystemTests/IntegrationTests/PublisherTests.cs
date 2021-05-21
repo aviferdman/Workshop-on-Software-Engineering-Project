@@ -144,7 +144,7 @@ namespace TradingSystemTests.IntegrationTests
             this.founder = Founder.makeFounder((MemberState)founderUser.State, store);
             store.Founder = founder;
             dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
-            dataUser.IsLoggedin = true;
+            dataUser.isLoggedin = true;
             UserManagement.Instance.DataUsers.TryAdd(founder.Username, dataUser);
             marketUsers.ActiveUsers.TryAdd(founder.Username, founderUser);
         }

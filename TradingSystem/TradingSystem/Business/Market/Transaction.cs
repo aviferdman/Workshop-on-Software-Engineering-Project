@@ -74,19 +74,18 @@ namespace TradingSystem.Business.Market
             //handshake
             if (!handshake)
             {
-                //return new TransactionStatus(null, null, shoppingBasket, false);
+                return new TransactionStatus(null, null, shoppingBasket, false);
             }
             //payment
             var paymentStatus = await PaymentAdapter.CreatePayment(paymentDetails);
             if (!paymentStatus.Status)
             {
-                //return new TransactionStatus(paymentStatus, null, shoppingBasket, false);
+                return new TransactionStatus(paymentStatus, null, shoppingBasket, false);
             }
             //deliver
             var deliveryStatus = await DeliveryAdapter.CreateDelivery(deliveryDetails);
 
-            //return new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
-            return null;
+            return new TransactionStatus(paymentStatus, deliveryStatus, shoppingBasket, deliveryStatus.Status);
         }
 
         public async Task<bool> CancelTransaction(TransactionStatus transactionStatus, bool cancelPayments, bool cancelDeliveries)
