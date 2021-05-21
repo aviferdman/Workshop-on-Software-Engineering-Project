@@ -298,20 +298,20 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.9 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/60
-        public String getInfo(Guid storeID, String username)
+        public String GetInfo(Guid storeID, String username)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfo));
             if (!_stores.TryGetValue(storeID, out Store store))
                 return "Store doesn't exist";
-            return store.getInfo(username);
+            return store.GetInfo(username);
         }
 
-        public String getInfoSpecific(Guid storeID, String workerName, String username)
+        public String GetInfoSpecific(Guid storeID, String workerName, String username)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(getInfoSpecific));
             if (!_stores.TryGetValue(storeID, out Store store))
                 return "Store doesn't exist";
-            return store.getInfoSpecific(workerName, username);
+            return store.GetInfoSpecific(workerName, username);
         }
     }
 }
