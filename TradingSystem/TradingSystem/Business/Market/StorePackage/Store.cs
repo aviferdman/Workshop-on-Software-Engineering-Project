@@ -626,5 +626,49 @@ namespace TradingSystem.Business.Market
             this.bids.Add(new Bid(username, productId, newBidPrice));
             return new Result<bool>(true, false, "");
         }
+
+        public bool Contains(String comparator, String list)
+        {
+            switch (list)
+            {
+                case "Owners":
+                    return Owners.Where(o => o.Username.Equals(comparator)).Any();
+                case "Managers":
+                    return Managers.Where(m => m.Username.Equals(comparator)).Any();
+                case "Products":
+                    return Products.Where(p => p.Id.Equals(comparator)).Any();
+                default: return false;
+            }
+        }
+
+        public Manager GetManager(String name)
+        {
+            foreach (Manager manager in Managers)
+            {
+                if (manager.Username.Equals(name))
+                    return manager;
+            }
+            return null;
+        }
+
+        public Owner GetOwner(String name)
+        {
+            foreach (Owner owner in Owners)
+            {
+                if (owner.Username.Equals(name))
+                    return owner;
+            }
+            return null;
+        }
+
+        public Product GetProduct(Guid id)
+        {
+            foreach (Product product in Products)
+            {
+                if (product.Id.Equals(id))
+                    return product;
+            }
+            return null;
+        }
     }
 }
