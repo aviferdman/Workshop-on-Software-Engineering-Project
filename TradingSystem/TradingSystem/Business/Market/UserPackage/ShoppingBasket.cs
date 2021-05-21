@@ -48,7 +48,7 @@ namespace TradingSystem.Business.Market
 
         public virtual string addProduct(Product p, int q)
         {
-            if (!_product_quantity.Where(p=> p.product.Equals(p)).Any())
+            if (_product_quantity.Where(p=> p.product.Equals(p)).Any())
                 return "product is already in shopping basket";
             _product_quantity.Add(new ProductInCart(p, q));
             ProxyMarketContext.Instance.saveChanges();
