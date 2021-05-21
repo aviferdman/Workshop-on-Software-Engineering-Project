@@ -97,7 +97,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         }
 
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkValidRemoveManager()
         {
@@ -111,7 +111,7 @@ namespace AcceptanceTests.Tests.LiveNotification
             Assert.AreEqual(s.EventsReceived.Dequeue().EventProviderName, "RemoveAppointment");
         }
 
-        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManager(string, Guid, string)"/>
+        /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveManagerAsync(string, Guid, string)"/>
         [Test]
         public void checkRemoveManagerBadAppointer()
         {

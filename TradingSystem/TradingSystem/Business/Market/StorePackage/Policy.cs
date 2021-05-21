@@ -30,26 +30,26 @@ namespace TradingSystem.Business.Market
             _rule = null;
         }
 
-        public bool Check(IShoppingBasket shoppingBasket)
+        public bool Check(ShoppingBasket shoppingBasket)
         {
             return _rule == null || _rule.Check(shoppingBasket);
         }
 
         public Policy And(IRule additionalPolicy)
         {
-            IRule and = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) && additionalPolicy.Check(shoppingBasket)));
+            IRule and = new Rule(new Func<ShoppingBasket, bool>(shoppingBasket => Check(shoppingBasket) && additionalPolicy.Check(shoppingBasket)));
             return new Policy(and);
         }
 
         public Policy Or(IRule orPolicy)
         {
-            IRule or = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) || orPolicy.Check(shoppingBasket)));
+            IRule or = new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket shoppingBasket) => Check(shoppingBasket) || orPolicy.Check(shoppingBasket)));
             return new Policy(or);
         }
 
         public Policy Condition(IRule orPolicy)
         {
-            IRule condition = new Rule(new Func<IShoppingBasket, bool>((IShoppingBasket shoppingBasket) => Check(shoppingBasket) ? orPolicy.Check(shoppingBasket) : true));
+            IRule condition = new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket shoppingBasket) => Check(shoppingBasket) ? orPolicy.Check(shoppingBasket) : true));
             return new Policy(condition);
         }
     }

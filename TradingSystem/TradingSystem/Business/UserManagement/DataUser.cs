@@ -1,5 +1,5 @@
 ﻿using TradingSystem.Business.Market;
-
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,12 +8,12 @@ namespace TradingSystem.Business.UserManagement
 {
     public class DataUser
     {
-        private string username;
-        private string password;
-        private bool isLoggedin;
-        private Address address;
-        private string phone;
-        private bool isAdmin;
+        public string username { get; set; }
+        public string password { get; set; }
+        public bool isLoggedin { get; set; }
+        public Address address { get; set; }
+        public string phone { get; set; }
+        public bool isAdmin { get; set; }
 
         public DataUser(string username, string password, Address address, string phone)
         {
@@ -24,12 +24,9 @@ namespace TradingSystem.Business.UserManagement
             this.phone = phone;
         }
 
-        public string Username { get => username; set => username = value; }
-        public string Password { get => password; set => password = value; }
-        public Address Address { get => address; set => address = value; }
-        public bool IsLoggedin { get => isLoggedin; set => isLoggedin = value; }
-        public string Phone { get => phone; set => phone = value; }
-        public bool IsAdmin { get => isAdmin; set => isAdmin = value; }
+        public DataUser()
+        {
+        }
 
         public override bool Equals(object obj)
         {

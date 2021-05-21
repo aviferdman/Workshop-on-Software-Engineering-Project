@@ -3,14 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
-
+using TradingSystem.DAL;
+using System.Threading.Tasks;
 namespace TradingSystem.Business.UserManagement
 {
     //this class tests are in UserMangmentTests
     public class UserManagement
     {
-        private ConcurrentDictionary<string, DataUser> dataUsers;
-        private ConcurrentDictionary<string, RegisteredAdmin> admins;
+        private UsersDAL usersDAL= UsersDAL.Instance;
         private static readonly Lazy<UserManagement>
         lazy =
         new Lazy<UserManagement>
@@ -18,58 +18,54 @@ namespace TradingSystem.Business.UserManagement
 
         public static UserManagement Instance { get { return lazy.Value; } }
 
-        public ConcurrentDictionary<string, DataUser> DataUsers { get => dataUsers; set => dataUsers = value; }
 
         internal int GetUserAge(string username)
         {
             throw new NotImplementedException();
         }
 
-        private UserManagement()
-        {
-            Init();
-        }
-
         public void tearDown()
         {
-            Init();
+            usersDAL.TearDown();
         }
 
-        private void Init()
+        private UserManagement()
         {
-            dataUsers = new ConcurrentDictionary<string, DataUser>();
-            admins = new ConcurrentDictionary<string, RegisteredAdmin>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            admin.IsAdmin = true;
-            dataUsers.TryAdd(admin.Username, admin);
-            admins.TryAdd(admin.Username, admin);
+            
         }
+
+       
 
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
         //using concurrent dictionary try add if usename already exist
         //than fail and return error message otherwise return success
-        public string SignUp( string username, string password, Address address, string phone)
+        public async Task<string> SignUp( string username, string password, Address address, string phone)
         {
             if (username == null)
                 return "username cannot be null";
-            if (dataUsers.TryAdd(username, new DataUser(username, password, address, phone)))
+            if (await usersDAL.AddDataUser(new DataUser(username, password, address, phone)))
+            {
+                await usersDAL.AddNewMemberState(username);
+                await usersDAL.AddNewShoppingCart(username);
                 return "success";
+            }
+                
             return "username: "+username+" is already taken please choose a different one";
         }
 
         
-        public string LogIn(string username, string password)
+        public async Task<string> LogIn(string username, string password)
         {
-            DataUser u = null;
-            if (dataUsers.TryGetValue(username, out u))
+            DataUser u = await usersDAL.GetDataUser(username);
+            if (u!=null)
             {
-                if (u.Password.Equals(password))
+                if (u.password.Equals(password))
                 {
-                    if (u.IsLoggedin)
+                    if (u.isLoggedin)
                         return "user is already logged in";
                     else
                     {
-                        u.IsLoggedin = true;
+                        u.isLoggedin = true;
                         return "success";
                     }
                         
@@ -83,59 +79,59 @@ namespace TradingSystem.Business.UserManagement
         }
 
         //for unit test
-        public bool DeleteUser(string username)
+        public async Task<bool> DeleteUser(string username)
         {
             DataUser u=null;
-            return dataUsers.TryRemove(username, out u);
+            return await usersDAL.RemoveDataUser(username);
         }
 
-        private Result<String> getUserPhone(string username)
+        private async Task<Result<String>> getUserPhone(string username)
         {
-            DataUser u = null;
-            if (dataUsers.TryGetValue(username, out u))
+            DataUser u = await usersDAL.GetDataUser(username);
+            if (u != null)
             {
-                return new Result<string>(u.Phone, false, "");
+                return new Result<string>(u.phone, false, "");
             }
             return new Result<string>(null , true, "username doesn't exist");
         }
 
-        private Result<Address> getUserAddress(string username)
+        private async Task<Result<Address>> getUserAddress(string username)
         {
-            DataUser u = null;
-            if (dataUsers.TryGetValue(username, out u))
+            DataUser u = await usersDAL.GetDataUser(username);
+            if (u != null)
             {
-                return new Result<Address>(u.Address, false, "");
+                return new Result<Address>(u.address, false, "");
             }
             return new Result<Address>(null, true, "username doesn't exist");
         }
 
         
-        public bool Logout(string username)
+        public async  Task<bool> Logout(string username)
         {
             if (username == null)
                 return false;
-            DataUser u = null;
-            if (dataUsers.TryGetValue(username, out u))
+            DataUser u = await usersDAL.GetDataUser(username);
+            if (u != null)
             {
-                if (u.IsLoggedin == false)
+                if (u.isLoggedin == false)
                     return false;
-                u.IsLoggedin = false;
+                u.isLoggedin = false;
                 return true;
             }
             return false;
         }
 
-        public bool isMember(string username)
+        public async Task<bool> isMember(string username)
         {
-            return dataUsers.ContainsKey(username);
+            return (await usersDAL.GetDataUser(username))!=null;
         }
 
-        public bool isLoggedIn(string username)
+        public async Task<bool> isLoggedIn(string username)
         {
-            DataUser u;
-            if (!dataUsers.TryGetValue(username, out u))
+            DataUser u = await usersDAL.GetDataUser(username);
+            if (u != null)
                 return false;
-            return u.IsLoggedin;
+            return u.isLoggedin;
         }
 
 

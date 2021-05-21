@@ -19,7 +19,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username=m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock <IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock <ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
@@ -37,7 +37,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
@@ -61,7 +61,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.GetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
@@ -80,7 +80,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.TryGetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(true);
@@ -98,7 +98,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.TryGetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(true);
@@ -124,7 +124,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.TryGetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.RemoveProduct(It.IsAny<Product>())).Returns(false);
@@ -143,7 +143,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.TryGetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.TryUpdateProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns(true);
@@ -161,7 +161,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.TryGetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");
@@ -185,7 +185,7 @@ namespace TradingSystemTests.MarketTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Mock<IShoppingCart> cart = new Mock<IShoppingCart>();
+            Mock<ShoppingCart> cart = new Mock<ShoppingCart>();
             Mock<IShoppingBasket> bask = new Mock<IShoppingBasket>();
             cart.Setup(c => c.TryGetShoppingBasket(It.IsAny<Store>())).Returns(bask.Object);
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns("product added to shopping basket");

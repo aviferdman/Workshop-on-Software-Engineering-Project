@@ -5,19 +5,20 @@ using TradingSystem.Business.Interfaces;
 
 namespace TradingSystem.Business.Market.StoreStates
 {
-    public class Manager : IManager
+    public class Manager 
     {
-        private MemberState appointer;
-        private MemberState m;
-        private Store s;
-        private string username;
-        private ICollection<Permission> store_permission;
+        public MemberState appointer { get; set; }
+        public MemberState m { get; set; }
+        public Store s { get; set; }
+        public string username { get; set; }
+        public Guid sid { get; set; }
+        public ICollection<string> store_permission { get; set; }
 
         public string Username { get => username; set => username = value; }
-        public ICollection<Permission> Store_permission { get => store_permission; set => store_permission = value; }
+        public ICollection<string> Store_permission { get => store_permission; set => store_permission = value; }
         public MemberState M { get => m; set => m = value; }
+        public Store S { get => s; set => s = value; }
 
-        public MemberState getM() { return m; }
 
         public enum Permission
         {
@@ -39,33 +40,34 @@ namespace TradingSystem.Business.Market.StoreStates
             this.username = m.UserId;
             this.m = m;
             this.s = s;
+            this.sid = sid;
             this.appointer = appointer;
-            store_permission = new LinkedList<Permission>();
-            store_permission.Add(Permission.GetPersonnelInfo);
+            store_permission = new LinkedList<string>();
+            store_permission.Add(Permission.GetPersonnelInfo.ToString());
         }
         public static Manager makeManager(MemberState m, Store s, Appointer appointer)
         {
-            if (m.isStaff(s) || s.isStaff(m.UserId))
+            if ( s.isStaff(m.UserId))
                 throw new InvalidOperationException();
             Manager man = new Manager(m, s, appointer.getM());
-            m.ManagerPrems.TryAdd(s, man);
-            s.Managers.TryAdd(m.UserId, man);
+            s.Managers.Add(man);
             return man;
         }
 
         public bool GetPermission(Permission permission)
         {
-            return store_permission.Contains(permission);
+            return store_permission.Contains(permission.ToString());
         }
 
         public bool removePermission(Store store)
         {
             bool ret;
-            lock (m.Prem_lock)
+            lock (m.managerPrems)
             {
-                ret = m.ManagerPrems.TryRemove(store, out _);
+                ret = m.managerPrems.Remove(this)||s.managers.Remove(this)|| appointer.managerAppointments.Remove(this);
             }
             return ret;
         }
+
     }
 }

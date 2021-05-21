@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.Business.Market
 {
@@ -9,14 +10,14 @@ namespace TradingSystem.Business.Market
         private Guid storeId;
         private ProductHistoryData productHistories;
 
-        public ProductsStatus(string username, Guid storeId, Dictionary<Product, int> product_quantity)
+        public ProductsStatus(string username, Guid storeId, HashSet<ProductInCart> product_quantity)
         {
             this.Username = username;
             this.StoreId = storeId;
             ProductHistories = new ProductHistoryData();
             foreach (var p_q in product_quantity)
             {
-                ProductHistories.Add(p_q.Key, p_q.Value);
+                ProductHistories.Add(p_q.product, p_q.quantity);
             }
         }
 

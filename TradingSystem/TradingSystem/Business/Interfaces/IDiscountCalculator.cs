@@ -7,11 +7,11 @@ namespace TradingSystem.Business.Interfaces
 {
     public interface IDiscountCalculator
     {
-        public double CalcDiscount(IShoppingBasket shoppingBasket);
+        public double CalcDiscount(ShoppingBasket shoppingBasket);
 
         public IDiscountCalculator Max(IDiscountCalculator otherDiscountCalc);
 
         public IDiscountCalculator Add(IDiscountCalculator otherDiscountCalc);
-        Func<IShoppingBasket, double> GetFunction();
+        Func<ShoppingBasket, double> GetFunction();
     }
 }

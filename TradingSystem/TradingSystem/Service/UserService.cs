@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.UserManagement;
 using TradingSystem.Notifications;
@@ -25,20 +26,20 @@ namespace TradingSystem.Service
             userManagement.tearDown();
         }
 
-        public string Signup(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string zip, string phone)
+        public async Task<string> SignupAsync(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string zip, string phone)
         {
-            string ans= userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum, zip), phone);
+            string ans= await userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum, zip), phone);
             return ans;
                 
         }
 
-        public bool isMember(string username)
+        public async Task<bool> isMember(string username)
         {
-            return userManagement.isMember(username);
+            return await userManagement.isMember(username);
         }
-        public bool isLoggedIn(string username)
+        public async Task<bool> isLoggedIn(string username)
         {
-            return userManagement.isLoggedIn(username);
+            return await userManagement .isLoggedIn(username);
         }
 
 

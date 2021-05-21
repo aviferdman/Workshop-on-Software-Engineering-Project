@@ -14,7 +14,7 @@ namespace TradingSystem.Business.Market
     public class User
     {
         private State _state;
-        private IShoppingCart _shoppingCart;
+        private ShoppingCart _shoppingCart;
         private string username;
         private bool isLoggedIn;
 
@@ -35,7 +35,7 @@ namespace TradingSystem.Business.Market
 
         public State State { get => _state; set => _state = value; }
         public string Username { get => username; set => username = value; }
-        public IShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
+        public ShoppingCart ShoppingCart { get => _shoppingCart; set => _shoppingCart = value; }
         public bool IsLoggedIn { get => isLoggedIn; set => isLoggedIn = value; }
 
         public void ChangeState(State state)
@@ -43,9 +43,9 @@ namespace TradingSystem.Business.Market
             State = state;
         }
 
-        public void UpdateProductInShoppingBasket(IStore store, Product product, int quantity)
+        public async Task UpdateProductInShoppingBasket(Store store, Product product, int quantity)
         {
-            IShoppingBasket shoppingBasket = ShoppingCart.GetShoppingBasket(store);
+            ShoppingBasket shoppingBasket = await ShoppingCart.GetShoppingBasket(store);
             shoppingBasket.UpdateProduct(product, quantity);
         }
 
@@ -61,7 +61,7 @@ namespace TradingSystem.Business.Market
                 {
                     var h = new UserHistory(p);
                     _state.AddHistory(h);
-                    HistoryManager.Instance.AddUserHistory(h);
+                    HistoryManager.Instance.AddHistory(h._transactionStatus);
                 }
                 this.ShoppingCart = new ShoppingCart(this);
             }
@@ -73,9 +73,9 @@ namespace TradingSystem.Business.Market
             return _shoppingCart.GetShopingCartProducts();
         }
 
-        public ICollection<IHistory> GetUserHistory(string username)
+        public async Task<ICollection<IHistory>> GetUserHistory(string username)
         {
-            return _state.GetUserHistory(username);
+            return await _state.GetUserHistory(username);
         }
     }
 }
