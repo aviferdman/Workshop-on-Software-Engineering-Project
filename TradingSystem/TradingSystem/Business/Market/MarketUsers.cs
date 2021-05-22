@@ -105,6 +105,8 @@ namespace TradingSystem.Business.Market
         public async Task<string> AddMember(String usrname, string password, string guestusername)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddMember));
+            if (!activeUsers.TryRemove(guestusername, out u))
+                return "user not found in market";
             string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
@@ -113,8 +115,6 @@ namespace TradingSystem.Business.Market
             User u;
             User guest;
             ShoppingCart s;
-            if (!activeUsers.TryRemove(guestusername, out u))
-                return "user not found in market";
             string GuidString;
             MemberState m= await marketUsersDAL.getMemberState(usrname);
             if (m==null)
