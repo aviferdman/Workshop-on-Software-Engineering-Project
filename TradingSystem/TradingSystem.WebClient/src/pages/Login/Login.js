@@ -1,11 +1,7 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import clsx from 'clsx';
-import {
-    Button,
-    makeStyles,
-    TextField
-} from "@material-ui/core";
+import {Button, makeStyles, TextField} from "@material-ui/core";
 import './Login.scss'
 import {useTitle} from "../../App";
 import PasswordField from "../../components/passwordFields";
