@@ -43,7 +43,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddMember(string, string, string)"/>
         [TestMethod]
         [TestCategory("uc2")]
-        public async void TestIntegLoginSuccess()
+        public async Task TestIntegLoginSuccess()
         {
             string user=await signupAsync();
             User u;
@@ -58,7 +58,7 @@ namespace TradingSystemTests.IntegrationTests
         /// already logged in
         [TestMethod]
         [TestCategory("uc2")]
-        public async void TestIntegLoginFailed1()
+        public async Task TestIntegLoginFailed1()
         {
             string user = await signupAsync();
             await MarketUsers.Instance.AddMember("inbi2001", "123456", user);
@@ -71,7 +71,7 @@ namespace TradingSystemTests.IntegrationTests
         /// password doesn't match username
         [TestMethod]
         [TestCategory("uc2")]
-        public async void TestIntegLoginFailed2()
+        public async Task TestIntegLoginFailed2()
         {
             string user =await signupAsync();
             Assert.AreEqual("the password doesn't match username: " + "inbi2001", MarketUsers.Instance.AddMember("inbi2001", "12345d6", user));
@@ -93,7 +93,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.logout(string)"/>
         [TestMethod]
         [TestCategory("uc3")]
-        public async void TestIntegLogoutSuccess()
+        public async Task TestIntegLogoutSuccess()
         {
             string user = await signupAsync();
             await MarketUsers.Instance.AddMember("inbi2001", "123456", user);
@@ -107,7 +107,7 @@ namespace TradingSystemTests.IntegrationTests
         /// not logged in
         [TestMethod]
         [TestCategory("uc3")]
-        public async void TestIntegLogoutFail1()
+        public async Task TestIntegLogoutFail1()
         {
             string user = await signupAsync();
             Assert.AreEqual(null, MarketUsers.Instance.logout("inbi2001"));
