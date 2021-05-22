@@ -23,7 +23,7 @@ class Stores extends Component {
                                 <a onClick={this.onStoreLinkClick(store.id)} href={`#${store.id}`}>
                                     <p className= "productName">{store.name}</p>
                                 </a>
-                                <button className="button primary">Manage Store</button>
+                                <button className="button primary" onClick={this.onStoreLinkClick(store.id)}>Manage Store</button>
                             </div>
                         </li>
                     ))}

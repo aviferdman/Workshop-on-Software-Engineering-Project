@@ -1,4 +1,3 @@
-
 import React from "react";
 import './AddProduct.css';
 import axios from "axios";
@@ -46,7 +45,12 @@ class AddProduct extends React.Component {
             username: this.context.username,
             storeId: this.props.storeId,
             productDetails: this.state.product.valuesObject(),
-        }).catch(alertRequestError_default);
+        }).then(response => {
+            this.setState({
+                show: false
+            });
+        })
+        .catch(alertRequestError_default);
     }
 
     render() {
