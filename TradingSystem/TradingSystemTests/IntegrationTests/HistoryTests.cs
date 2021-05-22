@@ -35,10 +35,13 @@ namespace TradingSystemTests.IntegrationTests
             user.ChangeState(memberState);
             store.UpdateProduct(product);
             await user.UpdateProductInShoppingBasket(store, product, 5);
+            ICollection<IHistory> userHistory = await user.GetUserHistory(user.Username);
+            Assert.IsNotNull(userHistory);
+            int originCount = userHistory.Count;
             var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
             Assert.IsTrue(!v1.IsErr);
-            ICollection<IHistory> userHistory = await user.GetUserHistory(user.Username);
-            Assert.AreEqual(1, userHistory.Count);
+            userHistory = await user.GetUserHistory(user.Username);
+            Assert.AreEqual(originCount + 1, userHistory.Count);
 
         }
 
