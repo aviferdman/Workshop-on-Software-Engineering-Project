@@ -252,9 +252,9 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFUALT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            dataUsers.TryAdd("DEFUALT_ADMIN", admin);
-            admins.TryAdd("DEFUALT_ADMIN", admin);
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            admins.TryAdd("DEFAULT_ADMIN", admin);
         }
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
@@ -311,7 +311,6 @@ namespace TradingSystem.DAL
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
             AddDataUser(admin);
         }
@@ -349,6 +348,16 @@ namespace TradingSystem.DAL
         public void UserTearDown()
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
+            dataUsers = new ConcurrentDictionary<string, DataUser>();
+            admins = new ConcurrentDictionary<string, RegisteredAdmin>();
+            memberStates = new ConcurrentDictionary<string, MemberState>();
+            shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
+            stores = new ConcurrentDictionary<Guid, Store>();
+            transactionStatuses = new HashSet<TransactionStatus>();
+            categories = new ConcurrentDictionary<string, Category>();
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            admins.TryAdd("DEFAULT_ADMIN", admin);
         }
 
 
