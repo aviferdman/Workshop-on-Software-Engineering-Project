@@ -235,7 +235,7 @@ namespace TradingSystem.Business.Market
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
 
-            return await basket.addProductAsync(p, quantity);
+            return await basket.addProduct(p, quantity);
 
         }
 

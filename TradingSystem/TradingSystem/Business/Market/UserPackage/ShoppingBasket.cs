@@ -46,7 +46,7 @@ namespace TradingSystem.Business.Market
             return !possitiveQuantities.Any();
         }
 
-        public virtual async Task<string> addProductAsync(Product p, int q)
+        public virtual async Task<string> addProduct(Product p, int q)
         {
             if (_product_quantity.Where(pr=> pr.product.Id.Equals(p.Id)).Any())
                 return "product is already in shopping basket";
