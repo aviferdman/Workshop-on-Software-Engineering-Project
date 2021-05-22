@@ -10,6 +10,10 @@ namespace TradingSystemTests
     [TestClass]
     public class UserManagmentTests
     {
+        public UserManagmentTests()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
         
         private async System.Threading.Tasks.Task<string> signupAsync()
         {

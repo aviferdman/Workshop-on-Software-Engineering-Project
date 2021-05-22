@@ -7,12 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
     public class UserMangementIntegrationTest
     {
+        public UserMangementIntegrationTest()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
         private async Task<string> signupAsync()
         {
             await UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la", "1111111"), "0501234733");

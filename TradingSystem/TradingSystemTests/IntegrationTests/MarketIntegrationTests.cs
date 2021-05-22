@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -12,7 +13,10 @@ namespace TradingSystemTests.IntegrationTests
     {
         private MarketUsers m = MarketUsers.Instance;
         private MarketStores marketStores = MarketStores.Instance;
-
+        public MarketIntegrationTests()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
