@@ -31,7 +31,7 @@ namespace TradingSystemTests
         [TestCategory("uc1")]
         public async Task TestSignUpSuccess()
         {
-            Assert.AreEqual("success", signupAsync());
+            Assert.AreEqual("success", await signupAsync());
             await deleteAsync();
         }
 
@@ -41,7 +41,7 @@ namespace TradingSystemTests
         public async Task TestSignUpFail()
         {
             await signupAsync();
-            Assert.AreNotEqual("success", signupAsync());
+            Assert.AreNotEqual("success", await signupAsync());
             Assert.IsNotNull(await ProxyMarketContext.Instance.GetDataUser("inbi2001"));
             await deleteAsync();
             
@@ -54,7 +54,7 @@ namespace TradingSystemTests
         {
             await signupAsync();
             DataUser d;
-            Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456"));
+            Assert.AreEqual("success",await UserManagement.Instance.LogIn("inbi2001", "123456"));
             d=await ProxyMarketContext.Instance.GetDataUser("inbi2001");
             Assert.IsTrue(d.IsLoggedin);
             await deleteAsync();
@@ -69,7 +69,7 @@ namespace TradingSystemTests
         {
             await signupAsync();
             await UserManagement.Instance.LogIn("inbi2001", "123456");
-            Assert.AreEqual("user is already logged in", UserManagement.Instance.LogIn("inbi2001", "123456"));
+            Assert.AreEqual("user is already logged in", await UserManagement .Instance.LogIn("inbi2001", "123456"));
             await deleteAsync();
 
         }
@@ -81,7 +81,7 @@ namespace TradingSystemTests
         public async Task TestLoginFailed2Async()
         {
             await signupAsync();
-            Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
+            Assert.AreEqual("the password doesn't match username: " + "inbi2001", await UserManagement .Instance.LogIn("inbi2001", "12345d6"));
             DataUser d;
             d = await ProxyMarketContext.Instance.GetDataUser("inbi2001");
             Assert.IsFalse(d.IsLoggedin);
@@ -95,7 +95,7 @@ namespace TradingSystemTests
         [TestCategory("uc2")]
         public async Task TestLoginFailed3()
         {
-            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
+            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system",await UserManagement.Instance.LogIn("inbi2001", "12345d6"));
             await deleteAsync();
 
         }
@@ -107,7 +107,7 @@ namespace TradingSystemTests
         {
             await signupAsync();
             await UserManagement.Instance.LogIn("inbi2001", "123456");
-            Assert.AreNotEqual(null, UserManagement.Instance.Logout("inbi2001"));
+            Assert.AreNotEqual(null, await UserManagement.Instance.Logout("inbi2001"));
             DataUser d;
             d = await ProxyMarketContext.Instance.GetDataUser("inbi2001");
             Assert.IsFalse(d.IsLoggedin);
