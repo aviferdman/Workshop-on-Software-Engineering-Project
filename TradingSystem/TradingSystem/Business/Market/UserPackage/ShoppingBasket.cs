@@ -40,7 +40,7 @@ namespace TradingSystem.Business.Market
         public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
         public Store Store { get => store; set => store = value; }
 
-        public bool IsEmpty()
+        public virtual bool IsEmpty()
         {
             var possitiveQuantities = _product_quantity.Where(p_q => p_q.quantity > 0);
             return !possitiveQuantities.Any();
@@ -67,7 +67,7 @@ namespace TradingSystem.Business.Market
             return false;
         }
 
-        public void UpdateProduct(Product product, int quantity)
+        public virtual void UpdateProduct(Product product, int quantity)
         {
             if (!_product_quantity.Where(p => p.product.Equals(product)).Any())
             {
@@ -92,12 +92,12 @@ namespace TradingSystem.Business.Market
             }
         }
 
-        public double CalcCost()
+        public virtual double CalcCost()
         {
             return _product_quantity.Aggregate(0.0, (total, next) => total + next.product.Price * next.quantity);
         }
 
-        public ICollection<Product> GetProducts()
+        public virtual ICollection<Product> GetProducts()
         {
             List<Product> products = new List<Product>();
             foreach(ProductInCart p in _product_quantity)
@@ -107,7 +107,7 @@ namespace TradingSystem.Business.Market
             return products;
         }
 
-        public int GetProductQuantity(Product product)
+        public virtual int GetProductQuantity(Product product)
         {
             if (_product_quantity.Where(p => p.product.Equals(product)).Any())
             {
@@ -116,7 +116,7 @@ namespace TradingSystem.Business.Market
             return 0;
         }
 
-        public HashSet<ProductInCart> GetDictionaryProductQuantity()
+        public virtual HashSet<ProductInCart> GetDictionaryProductQuantity()
         {
             return _product_quantity;
         }
@@ -126,7 +126,7 @@ namespace TradingSystem.Business.Market
             return obj.GetHashCode() - GetHashCode();
         }
 
-        public Store GetStore()
+        public virtual Store GetStore()
         {
             return store;
         }

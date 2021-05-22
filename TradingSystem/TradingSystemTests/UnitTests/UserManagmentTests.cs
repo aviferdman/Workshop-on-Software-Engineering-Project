@@ -56,7 +56,7 @@ namespace TradingSystemTests
             DataUser d;
             Assert.AreEqual("success", UserManagement.Instance.LogIn("inbi2001", "123456"));
             d=await ProxyMarketContext.Instance.GetDataUser("inbi2001");
-            Assert.IsTrue(d.isLoggedin);
+            Assert.IsTrue(d.IsLoggedin);
             await deleteAsync();
 
         }
@@ -84,7 +84,7 @@ namespace TradingSystemTests
             Assert.AreEqual("the password doesn't match username: " + "inbi2001", UserManagement.Instance.LogIn("inbi2001", "12345d6"));
             DataUser d;
             d = await ProxyMarketContext.Instance.GetDataUser("inbi2001");
-            Assert.IsFalse(d.isLoggedin);
+            Assert.IsFalse(d.IsLoggedin);
             await deleteAsync();
 
         }
@@ -110,7 +110,7 @@ namespace TradingSystemTests
             Assert.AreNotEqual(null, UserManagement.Instance.Logout("inbi2001"));
             DataUser d;
             d = await ProxyMarketContext.Instance.GetDataUser("inbi2001");
-            Assert.IsFalse(d.isLoggedin);
+            Assert.IsFalse(d.IsLoggedin);
             await deleteAsync();
 
         }

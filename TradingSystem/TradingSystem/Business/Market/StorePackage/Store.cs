@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -45,6 +45,11 @@ namespace TradingSystem.Business.Market
         public Founder Founder { get => founder; set => founder = value; }
         public string Name1 { get => name; set => name = value; }
 
+        public Store()
+        {
+
+        }
+
         public Store(string name, CreditCard bank, Address address)
         {
             this.name = name;
@@ -59,7 +64,7 @@ namespace TradingSystem.Business.Market
             this.bids = new HashSet<Bid>();
         }
 
-        public Guid GetId()
+        public virtual Guid GetId()
         {
             return sid;
         }
@@ -89,7 +94,7 @@ namespace TradingSystem.Business.Market
         }
 
         //TODO
-        public async Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
+        public virtual async Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
@@ -122,7 +127,7 @@ namespace TradingSystem.Business.Market
         }
 
         //TODO
-        public double CalcPrice(string username, ShoppingBasket shoppingBasket)
+        public virtual double CalcPrice(string username, ShoppingBasket shoppingBasket)
         {
             double paySum = CalcPaySum(shoppingBasket);
             return paySum - CalcBidNewSum(username, shoppingBasket);
@@ -185,7 +190,7 @@ namespace TradingSystem.Business.Market
         }
         //TODO
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
-        public double ApplyDiscounts(ShoppingBasket shoppingBasket)
+        public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket));
             //chose the max value of an available discount
@@ -200,7 +205,7 @@ namespace TradingSystem.Business.Market
         }
         //TODO
         //use case 12 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/75
-        public bool CheckPolicy(ShoppingBasket shoppingBasket)
+        public virtual bool CheckPolicy(ShoppingBasket shoppingBasket)
         {
             return Policy.Check(shoppingBasket);
         }

@@ -5,13 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
     public class DeliveryTests
     {
-
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
         /// test for function :<see cref="TradingSystem.Business.Delivery.DeliveryAdapter.CreateDelivery(DeliveryDetails)"/>
         [TestMethod]
         public async Task LegalDelivery()
