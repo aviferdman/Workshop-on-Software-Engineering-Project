@@ -41,6 +41,14 @@ namespace AcceptanceTests.Tests.Market.Appointments
             ApartmentNum = "5",
             ZipCode = "55555",
         });
+        UserInfo admin = new UserInfo("DEFAULT_ADMIN", "ADMIN", null, new Address
+        {
+            State = "Israel",
+            City = "City 2",
+            Street = "Hello",
+            ApartmentNum = "5",
+            ZipCode = "55555",
+        });
 
         UserInfo owner3 = new UserInfo("owner3", "123", null, new Address
         {
@@ -132,6 +140,8 @@ namespace AcceptanceTests.Tests.Market.Appointments
             Assert.IsFalse(marketBridge.RemoveOwner("owner3", store.Value, "owner2"));
             Assert.IsFalse(marketBridge.RemoveManager("manager", store.Value, "owner3"));
         }
+
+        
 
         /// test for function :<see cref="TradingSystem.Service.MarketStorePermissionsManagementService.RemoveOwnerAsync(string, Guid, string)"/>
         [Test]
