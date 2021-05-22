@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
@@ -9,10 +10,11 @@ namespace TradingSystem.Business.Market
 {
     public abstract class State
     {
-        protected static readonly Transaction _transaction = Transaction.Instance;
-
-        public State()
+        public static readonly Transaction _transaction = Transaction.Instance;
+    public string username { get; set; }
+        public State(string username)
         {
+            this.username = username;
         }
         public abstract void AddHistory(IHistory history);
 

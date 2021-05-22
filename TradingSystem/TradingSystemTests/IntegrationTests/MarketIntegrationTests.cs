@@ -31,7 +31,7 @@ namespace TradingSystemTests.IntegrationTests
             Store s = new Store("lalali", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id, 5));
+            Assert.AreEqual("product added to shopping basket", await m.AddProductToCart(username, p.Id, 5));
             ShoppingBasket b = await cart.GetShoppingBasket(s);
             Assert.IsTrue(b.GetProducts().Contains(p));
             Assert.AreEqual(b.GetProductQuantity(p), 5);
@@ -39,14 +39,14 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public void AddProductFail1()
+        public async Task AddProductFail1Async()
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
             ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
             Product p = new Product("llll", 8, 50, 500,"category");
-            Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
+            Assert.AreEqual("product doesn't exist", await m.AddProductToCart(username, p.Id, 5));
             foreach(ShoppingBasket b in cart.ShoppingBaskets)
             {
                 Assert.IsFalse(b.GetProducts().Contains(p));
@@ -56,9 +56,9 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public void AddProductFail2()
+        public async Task AddProductFail2Async()
         {
-            Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(), 5));
+            Assert.AreEqual("user doesn't exist", await m.AddProductToCart("lala", Guid.NewGuid(), 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
@@ -74,7 +74,7 @@ namespace TradingSystemTests.IntegrationTests
             Store s = new Store("lalali2", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, 500000));
+            Assert.AreEqual("product's quantity is insufficient", await m.AddProductToCart(username, p.Id, 500000));
             ShoppingBasket b = await cart.GetShoppingBasket(s);
             Assert.IsFalse(b.GetProducts().Contains(p));
         }

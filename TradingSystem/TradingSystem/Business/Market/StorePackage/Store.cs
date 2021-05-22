@@ -38,7 +38,7 @@ namespace TradingSystem.Business.Market
         internal Address Address { get => _address; set => _address = value; }
         public Guid Id { get => sid; set => sid = value; }
         public string Name { get => name; set => name = value; }
-        internal CreditCard Bank { get => _bank; set => _bank = value; }
+        public CreditCard Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public HashSet<Manager> Managers { get => managers; set => managers = value; }
         public HashSet<Owner> Owners { get => owners; set => owners = value; }

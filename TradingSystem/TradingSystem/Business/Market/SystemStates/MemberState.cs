@@ -16,15 +16,14 @@ namespace TradingSystem.Business.Market
     public class MemberState : State
     {
 
-        public string username { get; set; }
+        
         public HashSet<Founder> founderPrems { get; set; }
         public HashSet<Owner> ownerPrems { get; set; }
         public HashSet<Manager> managerPrems { get; set; }
         public HashSet<Manager> managerAppointments { get; set; }
         public HashSet<Owner> ownerAppointments { get; set; }
-        public MemberState(string userId) : base()
+        public MemberState(string userId) : base(userId)
         {
-            this.username = userId;
             founderPrems = new HashSet<Founder>();
             ownerPrems = new HashSet<Owner>();
             managerPrems = new HashSet<Manager>();

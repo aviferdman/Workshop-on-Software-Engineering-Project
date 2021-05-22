@@ -23,6 +23,7 @@ namespace TradingSystem.DAL
         public DbSet<ShoppingCart> membersShoppingCarts { get; set; }
         public DbSet<ShoppingBasket> membersShoppingBaskets { get; set; }
         public DbSet<MemberState> memberStates { get; set; }
+        public DbSet<State> states { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<AdministratorState> administratorStates { get; set; }
         public DbSet<Appointer> appointers { get; set; }
@@ -60,26 +61,6 @@ namespace TradingSystem.DAL
            (() => new MarketContext());
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<DataUser>()
-                .HasKey(d => d.username);
-            modelBuilder.Entity<DataUser>()
-            .HasOne(b => b.address)
-            .WithMany();
-            modelBuilder.Entity<MemberState>()
-                .HasKey(d => d.username);
-            modelBuilder.Entity<ShoppingCart>()
-               .HasKey(s => s.username);
-            modelBuilder.Entity<ShoppingBasket>()
-               .HasKey(s => new { s.shoppingCart, s.store } );
-            modelBuilder.Entity<Appointer>()
-                .HasKey(a => new { a.s, a.m });
-            modelBuilder.Entity<Manager>().HasKey(a => new { a.s, a.m });
-            modelBuilder.Entity<ShoppingBasket>()
-            .HasMany(b => b.Product_quantity)
-            .WithOne();
-            modelBuilder.Entity<ProductInCart>()
-            .HasOne(b => b.product)
-            .WithMany();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.Products)
             .WithOne();
@@ -98,22 +79,34 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Store>()
             .HasOne(b => b.founder)
             .WithOne();
-            modelBuilder.Entity<Founder>()
-            .HasOne(b => b.m)
-            .WithMany().HasForeignKey(pt => pt.username);
-            modelBuilder
-                .Entity<Owner>()
-            .HasOne(b => b.m)
-            .WithMany()
-            .HasForeignKey(pt => pt.username);
+            modelBuilder.Entity<DataUser>()
+                .HasKey(d => d.username);
+            modelBuilder.Entity<DataUser>()
+            .HasOne(b => b.address)
+            .WithMany();
+            modelBuilder.Entity<State>()
+                .HasKey(d => d.username);
+            modelBuilder.Entity<ShoppingCart>()
+               .HasKey(s => s.username);
+            modelBuilder.Entity<ShoppingCart>()
+               .Ignore(s=>s.User1);
+            modelBuilder.Entity<ShoppingBasket>()
+               .HasKey(s => new { s.shoppingCart, s.store } );
+            modelBuilder.Entity<Appointer>()
+                .HasKey(a => new { a.s, a.m });
+            modelBuilder.Entity<Manager>().HasKey(a => new { a.s, a.m });
+            modelBuilder.Entity<ShoppingBasket>()
+            .HasMany(b => b.Product_quantity)
+            .WithOne();
+            modelBuilder.Entity<ProductInCart>()
+            .HasOne(b => b.product)
+            .WithMany();
+            
             modelBuilder.Entity<Owner>()
             .HasOne(b => b.appointer)
             .WithMany()
             .HasForeignKey(pt => pt.username);
-            modelBuilder.Entity<Manager>()
-            .HasOne(b => b.m)
-            .WithMany()
-            .HasForeignKey(pt => pt.username);
+           
             modelBuilder.Entity<Manager>()
             .HasOne(b => b.appointer)
             .WithMany()

@@ -14,7 +14,7 @@ namespace TradingSystem.Business.Market
     {
         public SortedSet<ShoppingBasket> shoppingBaskets { get; set; }
         public string username { get; set; }
-        [NotMapped]
+        
         private User _user;
 
         public SortedSet<ShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
@@ -64,7 +64,7 @@ namespace TradingSystem.Business.Market
         }
 
 
-        public ShoppingBasket TryGetShoppingBasket(Store store)
+        public virtual ShoppingBasket TryGetShoppingBasket(Store store)
         {
             //create if not exists
             if (!shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).Any())

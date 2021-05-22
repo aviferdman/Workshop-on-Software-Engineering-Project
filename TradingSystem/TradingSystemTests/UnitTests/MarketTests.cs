@@ -17,7 +17,7 @@ namespace TradingSystemTests.MarketTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public void AddProductInCartSuccess()
+        public async Task AddProductInCartSuccessAsync()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             string username=m.AddGuest();
@@ -31,12 +31,12 @@ namespace TradingSystemTests.MarketTests
             Store s = new Store("lalali", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product added to shopping basket",m.AddProductToCart(username, p.Id, 5));
+            Assert.AreEqual("product added to shopping basket",await m.AddProductToCart(username, p.Id, 5));
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public void AddProductInCartFail1()
+        public async Task AddProductInCartFail1()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             string username = m.AddGuest();
@@ -47,22 +47,22 @@ namespace TradingSystemTests.MarketTests
             bask.Setup(b => b.addProduct(It.IsAny<Product>(), It.IsAny<int>())).Returns(Task.FromResult("product added to shopping basket"));
             u.ShoppingCart = cart.Object;
             Product p = new Product("llll", 8, 50, 500, "category");
-            Assert.AreEqual("product doesn't exist", m.AddProductToCart(username, p.Id, 5));
+            Assert.AreEqual("product doesn't exist", await m.AddProductToCart(username, p.Id, 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public void AddProductInCartFail2()
+        public async Task AddProductInCartFail2Async()
         {
             ProxyMarketContext.Instance.IsDebug = true;
-            Assert.AreEqual("user doesn't exist", m.AddProductToCart("lala", Guid.NewGuid(), 5));
+            Assert.AreEqual("user doesn't exist",await m.AddProductToCart("lala", Guid.NewGuid(), 5));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public void AddProductInCartFail3()
+        public async Task AddProductInCartFail3Async()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             string username = m.AddGuest();
@@ -76,7 +76,7 @@ namespace TradingSystemTests.MarketTests
             Store s = new Store("lalali2", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product's quantity is insufficient", m.AddProductToCart(username, p.Id, 500000));
+            Assert.AreEqual("product's quantity is insufficient", await m.AddProductToCart(username, p.Id, 500000));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
@@ -101,7 +101,7 @@ namespace TradingSystemTests.MarketTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc8")]
-        public void removeProductInCartFail1()
+        public  void removeProductInCartFail1Async()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             string username = m.AddGuest();
@@ -114,7 +114,7 @@ namespace TradingSystemTests.MarketTests
             Product p = new Product("lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id));
+            Assert.AreEqual("product doesn't exist",  m.RemoveProductFromCart(username, p.Id));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
