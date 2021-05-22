@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
@@ -26,7 +27,7 @@ namespace TradingSystemTests.IntegrationTests
         MarketUsers marketUsers;
 
         [TestInitialize]
-        public async void Initialize()
+        public async Task Initialize()
         {
             ProxyMarketContext.Instance.marketTearDown();
             marketStores = MarketStores.Instance;
@@ -87,7 +88,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
         [TestMethod]
-        public async void CheckLoggedInUserNotifyPurchase()
+        public async Task CheckLoggedInUserNotifyPurchase()
         {
             founderUser.IsLoggedIn = true;
             Product p = new Product(100, 100, 100);
@@ -103,7 +104,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
         [TestMethod]
-        public async void CheckNotLoggedInUserStoreNotificationsPurchase()
+        public async Task CheckNotLoggedInUserStoreNotificationsPurchase()
         {
             var dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = false;
@@ -123,7 +124,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
         [TestMethod]
-        public async void CheckLoggedInUserNotifyCreateShop()
+        public async Task CheckLoggedInUserNotifyCreateShop()
         {
             user.IsLoggedIn = true;
             MarketStores marketStores = MarketStores.Instance;
@@ -138,7 +139,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
         [TestMethod]
-        public async void CheckNotLoggedInUserStoreNotificationsCreateShop()
+        public async Task CheckNotLoggedInUserStoreNotificationsCreateShop()
         {
             //var dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             //dataUser.IsLoggedin = false;
@@ -158,7 +159,7 @@ namespace TradingSystemTests.IntegrationTests
 
 
         [TestCleanup]
-        public async void DeleteAll()
+        public async Task DeleteAll()
         {
             ProxyMarketContext.Instance.marketTearDown();
             marketStores = MarketStores.Instance;

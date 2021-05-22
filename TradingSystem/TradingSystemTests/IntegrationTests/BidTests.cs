@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.UserManagement;
@@ -31,8 +32,8 @@ namespace TradingSystemTests.IntegrationTests
         {
         }
 
-            [TestInitialize]
-        public async void Initialize()
+        [TestInitialize]
+        public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
 
@@ -95,7 +96,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.CustomerRequestBid(string, Guid, Guid, double)"/>
         [TestMethod]
-        public async void TestRequestPurcahse()
+        public async Task TestRequestPurcahse()
         {
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(owner.Username, EventType.RequestPurchaseEvent);
             subscriber.TestMode = true;
@@ -107,29 +108,29 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
-        public async void TestOwnerWithPermissionAcceptBid()
+        public async Task TestOwnerWithPermissionAcceptBid()
         {
             double originPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(product.Price * QUANTITY, originPrice);
-            await marketStores .OwnerAcceptBid(owner.Username, customer.Username, store.Id, product.Id, BID_PRICE);
+            await marketStores.OwnerAcceptBid(owner.Username, customer.Username, store.Id, product.Id, BID_PRICE);
             double bidPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(BID_PRICE * QUANTITY, bidPrice);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
-        public async void TestOwnerWithoutPermissionAcceptBid()
+        public async Task TestOwnerWithoutPermissionAcceptBid()
         {
             double originPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(product.Price * QUANTITY, originPrice);
-            await marketStores .OwnerAcceptBid("blahblahblah", customer.Username, store.Id, product.Id, BID_PRICE);
+            await marketStores.OwnerAcceptBid("blahblahblah", customer.Username, store.Id, product.Id, BID_PRICE);
             double bidPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(originPrice, bidPrice);
         }
 
         /// test for function :<see cref="TradingSystem.Service.MarketShoppingCartService.OwnerAnswerBid(string, TradingSystem.Service.Answer, string, Guid, Guid, double)">
         [TestMethod]
-        public async void TestOwnerAnswerDenyBid()
+        public async Task TestOwnerAnswerDenyBid()
         {            
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(customer.Username, EventType.RequestPurchaseEvent);
             subscriber.TestMode = true;
@@ -141,7 +142,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Service.MarketShoppingCartService.OwnerAnswerBid(string, TradingSystem.Service.Answer, string, Guid, Guid, double)">
         [TestMethod]
-        public async void TestOwnerAnswerNewBid()
+        public async Task TestOwnerAnswerNewBid()
         {
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(customer.Username, EventType.RequestPurchaseEvent);
             subscriber.TestMode = true;
@@ -152,7 +153,7 @@ namespace TradingSystemTests.IntegrationTests
         }
 
         [TestCleanup]
-        public async void DeleteAll()
+        public async Task DeleteAll()
         {
             await UserManagement.Instance.DeleteUser("FounderTest1");
             await UserManagement.Instance.DeleteUser("ManagerTest1");

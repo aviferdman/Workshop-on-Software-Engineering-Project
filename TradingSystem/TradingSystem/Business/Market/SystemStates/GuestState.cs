@@ -9,7 +9,7 @@ namespace TradingSystem.Business.Market
 {
     public class GuestState : State
     {
-        public GuestState() : base()
+        public GuestState() : base("")
         {
 
         }

@@ -58,6 +58,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         [SetUp]
         public void Initialize()
         {
+            marketBridge.SetDbDebugMode(true);
             publisherManagement.DeleteAll();
             Bridge.Connect();
             Bridge.SignUp(founder);
@@ -127,6 +128,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         [Test]
         public void checkValidRemoveOwnerChain()
         {
+
             ATSubscriber s1 = new ATSubscriber("owner1");
             publisherManagement.Subscribe("owner1", s1, EventType.RemoveAppointment);
             ATSubscriber s2 = new ATSubscriber("owner2");

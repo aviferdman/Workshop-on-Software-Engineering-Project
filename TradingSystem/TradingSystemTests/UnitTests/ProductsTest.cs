@@ -43,7 +43,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc23")]
         public void CheckValidAddProduct()
         {
-            Assert.AreEqual(store.AddProduct(product1, "founder"), "Product added");
+            Assert.AreEqual(store.AddProductAsync(product1, "founder"), "Product added");
             Assert.IsTrue(store.Products.Contains(product1));
         }
 
@@ -53,7 +53,7 @@ namespace TradingSystemTests.UnitTests
         public void CheckAddProductInvalidName()
         {
             Product product2 = new Product("", 10, 10, 10, "category");
-            Assert.AreEqual(store.AddProduct(product2, "founder"), "Invalid product");
+            Assert.AreEqual(store.AddProductAsync(product2, "founder"), "Invalid product");
             Assert.IsFalse(store.Products.Contains(product2));
         }
 
@@ -63,7 +63,7 @@ namespace TradingSystemTests.UnitTests
         public void CheckAddProductInvalidPrice()
         {
             Product product2 = new Product("2", 10, 10, -10, "category");
-            Assert.AreEqual(store.AddProduct(product2, "founder"), "Invalid product");
+            Assert.AreEqual(store.AddProductAsync(product2, "founder"), "Invalid product");
             Assert.IsFalse(store.Products.Contains(product2));
         }
 
@@ -72,7 +72,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc23")]
         public void CheckAddProductNoPermission()
         {
-            Assert.AreEqual(store.AddProduct(product1, "manager"), "No permission");
+            Assert.AreEqual(store.AddProductAsync(product1, "manager"), "No permission");
             Assert.IsFalse(store.Products.Contains(product1));
         }
 
@@ -81,7 +81,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc23")]
         public void CheckAddProductInvalidUser()
         {
-            Assert.AreEqual(store.AddProduct(product1, "no one"), "Invalid user");
+            Assert.AreEqual(store.AddProductAsync(product1, "no one"), "Invalid user");
             Assert.IsFalse(store.Products.Contains(product1));
         }
 
@@ -122,7 +122,7 @@ namespace TradingSystemTests.UnitTests
         {
             Product product2 = new Product("1", 10, 10, 20, "category");
             store.Products.Add(product1);
-            Assert.AreEqual(store.EditProduct(product1.Id, product2, "founder"), "Product edited");
+            Assert.AreEqual(store.EditProductAsync(product1.Id, product2, "founder"), "Product edited");
             Product product = store.GetProduct(product1.Id);
             Assert.IsTrue(store.Products.Remove(product1));
             Assert.AreEqual(product.Price, 20);
@@ -133,7 +133,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc25")]
         public void CheckEditUnavailablwProduct()
         {
-            Assert.AreEqual(store.EditProduct(product1.Id, product1, "founder"), "Product not in the store");
+            Assert.AreEqual(store.EditProductAsync(product1.Id, product1, "founder"), "Product not in the store");
             Assert.IsFalse(store.Products.Contains(product1));
         }
 

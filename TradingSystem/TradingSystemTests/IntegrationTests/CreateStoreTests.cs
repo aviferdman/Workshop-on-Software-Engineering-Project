@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.DAL;
 using TradingSystem.Service;
@@ -14,7 +15,7 @@ namespace TradingSystemTests.IntegrationTests
     {
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.CreateStore(string, string, CreditCard, Address)"/>
         [TestMethod]
-        public async void CreateStoreAndCheckFounder()
+        public async Task CreateStoreAndCheckFounder()
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
@@ -38,7 +39,7 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market..MarketStores.CreateStore(string, string, BankAccount, Address)"/>
         [TestMethod]
-        public async void NotCreateStoreAndCheckNotFounder()
+        public async Task NotCreateStoreAndCheckNotFounder()
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
