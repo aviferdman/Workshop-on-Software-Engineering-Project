@@ -48,7 +48,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<StoreRefDTO>> Create([FromBody] StoreCreationDTO storeCreationDTO)
+        public async Task<ActionResult<StoreRefDTO>> Create([FromBody] StoreCreateDTO storeCreationDTO)
         {
             object?[] values =
             {
@@ -100,13 +100,13 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductRefDTO>> AddProduct([FromBody] ProductCreationDTO productCreationDTO)
+        public async Task<ActionResult<ProductRefDTO>> AddProduct([FromBody] ProductCreateDTO productCreationDTO)
         {
             object?[] values =
             {
                 productCreationDTO.Username,
-                productCreationDTO.Product?.Name,
-                productCreationDTO.Product?.Category,
+                productCreationDTO.ProductDetails?.Name,
+                productCreationDTO.ProductDetails?.Category,
             };
             if (values.Contains(null))
             {
@@ -115,14 +115,7 @@ namespace TradingSystem.WebApi.Controllers
 
             Result<Product> productResult = await MarketProductsService.AddProduct
             (
-                new ProductData
-                (
-                    productCreationDTO.Product!.Name,
-                    productCreationDTO.Product!.Quantity,
-                    productCreationDTO.Product!.Weight,
-                    productCreationDTO.Product!.Price,
-                    productCreationDTO.Product!.Category
-                ),
+                productCreationDTO.ProductDetails!.ToProductData(),
                 productCreationDTO.StoreId,
                 productCreationDTO.Username
             );
@@ -133,7 +126,9 @@ namespace TradingSystem.WebApi.Controllers
             }
             if (productResult.IsErr)
             {
-                return InternalServerError(string.IsNullOrWhiteSpace(productResult.Mess) ? null : productResult.Mess);
+                return string.IsNullOrWhiteSpace(productResult.Mess) ?
+                    InternalServerError() :
+                    InternalServerError(productResult.Mess);
             }
 
             Product product = productResult.Ret;
@@ -142,6 +137,72 @@ namespace TradingSystem.WebApi.Controllers
                 Id = product.Id,
                 Name = product.Name,
             };
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditProduct([FromBody] ProductEditDTO productEditDTO)
+        {
+            object?[] values =
+            {
+                productEditDTO.Username,
+                productEditDTO.ProductDetails?.Name,
+                productEditDTO.ProductDetails?.Category,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+            string result = await MarketProductsService.EditProductAsync
+            (
+                productEditDTO.ProductId,
+                productEditDTO.ProductDetails!.ToProductData(),
+                productEditDTO.StoreId,
+                productEditDTO.Username
+            );
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return InternalServerError();
+            }
+            if (result != "Product edited")
+            {
+                return InternalServerError(result);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RemoveProduct([FromBody] ProductRemoveDTO productRemoveDTO)
+        {
+            object?[] values =
+            {
+                productRemoveDTO.Username,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+
+            string? result = await MarketProductsService.RemoveProductAsync
+            (
+                productRemoveDTO.ProductId,
+                productRemoveDTO.StoreId,
+                productRemoveDTO.Username
+            );
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return InternalServerError();
+            }
+            if (result != "Product removed")
+            {
+                return InternalServerError(result);
+            }
+
+            return Ok();
         }
     }
 }

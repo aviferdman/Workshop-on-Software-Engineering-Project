@@ -1,24 +1,17 @@
 
 import React from "react";
 import './AddProduct.css';
-import FormFields from "../formsUtil/formFields";
 import axios from "axios";
 import {alertRequestError_default} from "../utils";
 import {GlobalContext} from "../globalContext";
-import NumberFormField from "../formsUtil/NumberFormField";
+import ProductFields from "../formsUtil/productFields";
 
 class AddProduct extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             show: false,
-            product: new FormFields({
-                name: "",
-                quantity: new NumberFormField(''),
-                price: new NumberFormField(''),
-                category: "",
-                weight: new NumberFormField(''),
-            }),
+            product: new ProductFields(),
         };
 
         this.onConfirmAddProduct = this.onConfirmAddProduct.bind(this);
@@ -52,10 +45,7 @@ class AddProduct extends React.Component {
         axios.post('/Stores/AddProduct', {
             username: this.context.username,
             storeId: this.props.storeId,
-            product: this.state.product.valuesObject(),
-        }).then(response => {
-            // TODO: fill URL
-            this.props.history.push('/store/' + this.props.storeId);
+            productDetails: this.state.product.valuesObject(),
         }).catch(alertRequestError_default);
     }
 

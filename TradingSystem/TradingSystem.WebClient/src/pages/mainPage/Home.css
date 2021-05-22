@@ -174,8 +174,8 @@ footer{
 .control-buttons{
     display: grid;
     grid-template-columns: 4rem 4rem;
-    position: relative;
-
+    /* TODO: ask gil */
+    /*position: relative;*/
 }
 
 .exit-button{

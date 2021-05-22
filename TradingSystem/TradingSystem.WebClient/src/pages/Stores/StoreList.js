@@ -20,7 +20,7 @@ class Stores extends Component {
                     {this.props.stores.map((store) => (
                         <li key={store.id}>
                             <div className = "store">
-                                <a onClick={this.onStoreLinkClick(store.id)} href={"#"}>
+                                <a onClick={this.onStoreLinkClick(store.id)} href={`#${store.id}`}>
                                     <p className= "productName">{store.name}</p>
                                 </a>
                                 <button className="button primary">Manage Store</button>

@@ -35,3 +35,13 @@
   margin-bottom: 16px;
   align-self: flex-start;
 }
+
+.link-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline;
+  margin: 0;
+  padding: 0;
+}

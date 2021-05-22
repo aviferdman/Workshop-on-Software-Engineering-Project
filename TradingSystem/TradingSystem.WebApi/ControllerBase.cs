@@ -6,7 +6,11 @@ namespace TradingSystem.WebApi
 {
     public class ControllerBase : Microsoft.AspNetCore.Mvc.ControllerBase
     {
-        public ActionResult InternalServerError(object? value = null)
+        public ActionResult InternalServerError()
+        {
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+        public ActionResult InternalServerError(object? value)
         {
             return StatusCode((int)HttpStatusCode.InternalServerError, value);
         }

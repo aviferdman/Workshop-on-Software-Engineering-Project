@@ -7,13 +7,21 @@ import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
 import {Route, Switch} from "react-router-dom";
 
+// TODO: fetch data from server
 class StoreProductsContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
             products: data.products
         };
+    }
+
+    onProductRemoved = product => {
+        this.setState({
+           products: this.state.products.filter(p2 => {
+               return p2.id !== product.id;
+           })
+        });
     }
 
     render() {
@@ -21,11 +29,13 @@ class StoreProductsContent extends Component {
             <main className="store-products-main-conatiner">
 
                 <div>
-                    <Products products={this.state.products} />
+                    <Products storeId={this.props.match.params.storeId}
+                              products={this.state.products}
+                              onProductRemoved={this.onProductRemoved} />
                 </div>
 
                 <div className="bottom-row">
-                    <AddProduct storeId={this.props.match.params.storeId} history={this.props.history} />
+                    <AddProduct storeId={this.props.match.params.storeId} />
                 </div>
 
             </main>

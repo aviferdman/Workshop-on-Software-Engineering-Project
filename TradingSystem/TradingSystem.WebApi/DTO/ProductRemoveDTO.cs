@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.WebApi.DTO
 {
-    public class ProductCreationDTO
+    public class ProductRemoveDTO
     {
         public string? Username { get; set; }
         public Guid StoreId { get; set; }
-        public ProductDTO? Product { get; set; }
+        public Guid ProductId { get; set; }
     }
 }
