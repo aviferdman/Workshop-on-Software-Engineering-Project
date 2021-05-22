@@ -28,18 +28,14 @@ namespace TradingSystem.Business.Market
         public CreditCard _bank { get; set; }
         public Guid sid { get; set; }
         public string name { get; set; }
-        public ICollection<Discount> _discounts { get; set; }
-        public Policy _policy { get; set; }
         public Address _address { get; set; }
         public ICollection<Bid> bids { get; set; }
 
         public HashSet<Product> Products { get => _products; set => _products = value; }
-        internal Policy Policy { get => _policy; set => _policy = value; }
         internal Address Address { get => _address; set => _address = value; }
         public Guid Id { get => sid; set => sid = value; }
         public string Name { get => name; set => name = value; }
         public CreditCard Bank { get => _bank; set => _bank = value; }
-        public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public HashSet<Manager> Managers { get => managers; set => managers = value; }
         public HashSet<Owner> Owners { get => owners; set => owners = value; }
         public Founder Founder { get => founder; set => founder = value; }
@@ -54,9 +50,7 @@ namespace TradingSystem.Business.Market
         {
             this.name = name;
             this._products = new HashSet<Product>();
-            this.Discounts = new HashSet<Discount>();
             this.sid = Guid.NewGuid();
-            this._policy = new Policy();
             this._bank = bank;
             this._address = address;
             this.managers = new HashSet<Manager>();
@@ -206,7 +200,8 @@ namespace TradingSystem.Business.Market
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
         public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
-            var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket));
+            var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
+            var availableDiscounts = discounts.Select(d=>d.ApplyDiscounts(shoppingBasket));
             //chose the max value of an available discount
             try
             {
@@ -221,38 +216,42 @@ namespace TradingSystem.Business.Market
         //use case 12 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/75
         public virtual bool CheckPolicy(ShoppingBasket shoppingBasket)
         {
-            return Policy.Check(shoppingBasket);
+            var policy = StorePredicatesManager.Instance.GetPolicy(Id);
+            return policy.Check(shoppingBasket);
         }
         //TODO
         public void SetPolicy(string userID, Policy policy)
         {
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return;
-            this.Policy = policy;
+            StorePredicatesManager.Instance.SetPolicy(Id, policy);
         }
 
         public Policy GetPolicy()
         {
-            return Policy;
+            var policy = StorePredicatesManager.Instance.GetPolicy(Id);
+            return policy;
         }
 
         //TODO
         public Guid AddRule(string userID, IRule rule)
         {
+            var policy = StorePredicatesManager.Instance.GetPolicy(Id);
             //Have no permission to do the action
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return new Guid();
-            _policy.AddRule(rule);
+            policy.AddRule(rule);
             return rule.GetId();
         }
 
         //TODO
         public void RemoveRule(string userID)
         {
+            var policy = StorePredicatesManager.Instance.GetPolicy(Id);
             //Have no permission to do the action
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return;
-            _policy.RemoveRule();
+            policy.RemoveRule();
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
@@ -530,23 +529,25 @@ namespace TradingSystem.Business.Market
 
         public Guid AddDiscount(string userID, Discount discount)
         {
+            var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
             //Have no permission to do the action
-            if((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
-            Discounts.Add(discount);
+            discounts.Add(discount);
             return discount.Id;
         }
 
         //TODO
         public Guid RemoveDiscount(string userID, Guid discountId)
         {
+            var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
             //Have no permission to do the action
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
             Discount d = GetDiscountById(discountId);
             if (d != null)
             {    //remove old discount if exists
-                Discounts.Remove(d);
+                discounts.Remove(d);
             }
             return discountId;
         }
@@ -588,8 +589,9 @@ namespace TradingSystem.Business.Market
         //TODO
         public Discount GetDiscountById(Guid discountId)
         {
-            IEnumerable<Discount> discounts = Discounts.Where(discount => discount.Id.Equals(discountId));
-            return discounts.FirstOrDefault();
+            var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
+            IEnumerable<Discount> uniquediscounts = discounts.Where(discount => discount.Id.Equals(discountId));
+            return uniquediscounts.FirstOrDefault();
         }
 
         //Use case 41 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/67
@@ -616,16 +618,19 @@ namespace TradingSystem.Business.Market
         //TODO
         public IRule GetRuleById(Guid ruleId)
         {
-            if (this.Policy.Rule.GetId().Equals(ruleId))
+            var policy = StorePredicatesManager.Instance.GetPolicy(Id);
+
+            if (policy.Rule.GetId().Equals(ruleId))
             {
-                return this.Policy.Rule;
+                return policy.Rule;
             }
             return null;
         }
         //TODO
         public IRule GetDiscountRuleById(Guid ruleId)
         {
-            return Discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
+            var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
+            return discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
         }
 
         public Founder GetFounder()
