@@ -62,7 +62,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string user = await signupAsync();
             await MarketUsers.Instance.AddMember("inbi2001", "123456", user);
-            Assert.AreEqual("user is already logged in", await MarketUsers.Instance.AddMember("inbi2001", "123456", user));
+            Assert.AreEqual("user not found in market", await MarketUsers.Instance.AddMember("inbi2001", "123456", user));
             await deleteAsync ("inbi2001");
 
         }
@@ -86,7 +86,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc2")]
         public async Task TestIntegLoginFailed3Async()
         {
-            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", await MarketUsers.Instance.AddMember("inbi2001", "12345d6","lilk"));
+            Assert.AreEqual("user not found in market", await MarketUsers.Instance.AddMember("inbi2001", "12345d6","lilk"));
 
         }
 
