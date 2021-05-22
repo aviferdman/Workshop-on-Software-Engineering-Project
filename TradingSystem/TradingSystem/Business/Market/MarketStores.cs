@@ -213,7 +213,7 @@ namespace TradingSystem.Business.Market
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
-            return store.DefineManagerPermissions(managerName, assignerName, permissions);
+            return await store.DefineManagerPermissionsAsync(managerName, assignerName, permissions);
         }
 
         public async Task<String> AssignMember(String assigneeName, Guid storeID, String assignerName, string type)

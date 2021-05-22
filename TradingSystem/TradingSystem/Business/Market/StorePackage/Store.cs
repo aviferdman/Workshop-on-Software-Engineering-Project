@@ -80,7 +80,7 @@ namespace TradingSystem.Business.Market
         }
         public bool isStaff(string username)
         {
-            return ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()) && !(managers.Where(m => m.username.Equals(username)).Any())) ;
+            return ((founder.Username.Equals(username)) ||(owners.Where(o => o.username.Equals(username)).Any()) || (managers.Where(m => m.username.Equals(username)).Any())) ;
         }
 
         public HashSet<Owner> GetOwners()
@@ -266,7 +266,7 @@ namespace TradingSystem.Business.Market
                 return "No permission";
             lock (_products)
             {
-                if ((_products.Where(p => p.Id.Equals(productID)).Any()))
+                if (!(_products.Where(p => p.Id.Equals(productID)).Any()))
                     return "Product doesn't exist";
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
@@ -312,7 +312,7 @@ namespace TradingSystem.Business.Market
             string ret;
             if (assigner == null)
                 return "invalid assiner";
-            if (!managers.Where(m=> m.username.Equals(assigner.Username)).Any())
+            if (managers.Where(m=> m.username.Equals(assigner.Username)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assigner.Username))
                 a = founder;
@@ -323,38 +323,35 @@ namespace TradingSystem.Business.Market
             assignee = await MarketDAL.Instance.getMemberState(assigneeID);
             if (assignee==null)
                 return "the assignee isn't a member";
-            lock (this)
+            try
             {
-                try
+                if (type.Equals("owner"))
                 {
-                    if (type.Equals("owner"))
-                    {
-                        a.AddAppointmentOwner(assignee, this);
-                        PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as an owner for store " + name);
-                    }
-                    else
-                    {
-                        a.AddAppointmentManager(assignee, this);
-                        PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as a manager for store "+name);
-                    }
-                    ret = "Success";
-                        
+                    await a.AddAppointmentOwner(assignee, this);
+                    PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as an owner for store " + name);
                 }
-                catch { ret = "this member is already assigned as a store owner or manager"; }
+                else
+                {
+                    await a.AddAppointmentManager(assignee, this);
+                    PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as a manager for store "+name);
+                }
+                ret = "Success";
+                        
             }
+            catch { ret = "this member is already assigned as a store owner or manager"; }
             
             return ret;
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> newPermissions)
+        public async Task<string> DefineManagerPermissionsAsync(string managerID, string assignerID, List<Permission> newPermissions)
         {
             Manager manager;
             if (!managers.Where(m=>m.username.Equals(managerID)).Any())
                 return "Manager doesn't exist";
             manager = managers.Where(m => m.username.Equals(managerID)).First();
             Appointer a;
-            if (!managers.Where(m => m.username.Equals(assignerID)).Any())
+            if (managers.Where(m => m.username.Equals(assignerID)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assignerID))
                 a = founder;
@@ -364,7 +361,7 @@ namespace TradingSystem.Business.Market
                 return "Invalid assigner";
             try
             {
-                a.DefinePermissions(managerID, manager,newPermissions);
+                await a.DefinePermissions(managerID, manager,newPermissions);
             }
             catch {return "Invalid assigner";}
 

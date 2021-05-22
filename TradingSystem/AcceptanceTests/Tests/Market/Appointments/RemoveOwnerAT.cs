@@ -62,6 +62,7 @@ namespace AcceptanceTests.Tests.Market.Appointments
         [SetUp]
         public void Initialize()
         {
+            marketBridge.SetDbDebugMode(true);
             Bridge.Connect();
             Bridge.SignUp(founder);
             Bridge.Login(founder);
