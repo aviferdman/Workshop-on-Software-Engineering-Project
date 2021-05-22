@@ -310,9 +310,10 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFUALT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            dataUsers.TryAdd("DEFUALT_ADMIN", admin);
-            admins.TryAdd("DEFUALT_ADMIN", admin);
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            admins.TryAdd("DEFAULT_ADMIN", admin);
+            AddDataUser(admin);
         }
 
         public async Task AddNewMemberState(string username)
