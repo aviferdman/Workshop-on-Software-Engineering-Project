@@ -22,6 +22,7 @@ namespace TradingSystemTests.IntegrationTests
         Store store;
         ProductData product1;
 
+        [TestInitialize]
         public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
@@ -150,5 +151,13 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(p.Price, 10);
         }
 
+        [TestCleanup]
+        public void DeleteAll()
+        {
+            market.tearDown();
+            marketUsers.tearDown();
+            userManagement.tearDown();
+            store = null;
+        }
     }
 }
