@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,22 +18,25 @@ namespace TradingSystem.WebApi.Controllers
     {
         public StoresController
         (
+            IFileProvider fileProvider,
             MarketUserService marketUserService,
             MarketStoreGeneralService marketStoreGeneralService,
             MarketProductsService marketProductsService
         )
         {
+            FileProvider = fileProvider;
             MarketUserService = marketUserService;
             MarketStoreGeneralService = marketStoreGeneralService;
             MarketProductsService = marketProductsService;
         }
 
+        public IFileProvider FileProvider { get; }
         public MarketUserService MarketUserService { get; }
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
         public MarketProductsService MarketProductsService { get; }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<StoreInfoDTO>>> MyStores([FromBody] string username)
+        public async Task<ActionResult<IEnumerable<StoreRefDTO>>> MyStores([FromBody] string username)
         {
             ICollection<StoreData>? stores = await MarketUserService.getUserStores(username);
             if (stores is null)
@@ -40,11 +44,34 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(stores.Select(store => new StoreInfoDTO
+            return Ok(stores.Select(store => new StoreRefDTO
             {
                 Id = store.Id,
                 Name = store.Name,
             }));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<StoreInfoDTO>> Info([FromQuery] Guid storeId)
+        {
+            System.Text.Json.JsonDocument? json = await ParseJsonFromFile(FileProvider, "productData.json");
+            if (json is null)
+            {
+                return InternalServerError();
+            }
+            return Ok(json.RootElement);
+            //StoreData? store = await MarketStoreGeneralService.getStoreById(storeId);
+            //if (store == null)
+            //{
+            //    return InternalServerError();
+            //}
+
+            //return Ok(new StoreInfoDTO
+            //{
+            //    Id = store.Id,
+            //    Name = store.Name,
+            //    Products = store.Products.Select(ProductDTO.FromProductData)
+            //});
         }
 
         [HttpPost]
@@ -184,7 +211,6 @@ namespace TradingSystem.WebApi.Controllers
             {
                 return BadRequest("Missing parameter values");
             }
-
 
             string? result = await MarketProductsService.RemoveProductAsync
             (

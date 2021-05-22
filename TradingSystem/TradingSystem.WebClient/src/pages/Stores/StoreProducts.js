@@ -2,18 +2,37 @@ import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './StoreProducts.css';
-import data from "../../data/productData.json";
 import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
 import {Route, Switch} from "react-router-dom";
+import axios from "axios";
 
-// TODO: fetch data from server
 class StoreProductsContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: data.products
+            products: []
         };
+    }
+
+    async componentDidMount() {
+        await this.fetchProducts();
+    }
+
+    async fetchProducts() {
+        try {
+            let response = await axios.get('/Stores/Info', {
+               params: {
+                   storeId: this.props.match.params.storeId
+               }
+            });
+            this.setState({
+                products: response.data.products
+            });
+        }
+        catch (e) {
+            console.error("search error occurred: ", e);
+        }
     }
 
     onProductRemoved = product => {

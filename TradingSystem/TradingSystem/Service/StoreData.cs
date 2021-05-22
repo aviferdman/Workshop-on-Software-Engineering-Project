@@ -7,18 +7,18 @@ namespace TradingSystem.Service
 {
     public class StoreData
     {
-        private List<ProductData> products;
-        public StoreData(Store store) { 
+        public StoreData(Store store) {
             this.Id = store.Id;
             this.Name = store.Name;
-            products = new List<ProductData>();
-            foreach(Product p in store.Products)
+            Products = new List<ProductData>();
+            foreach (Product p in store.Products)
             {
-                products.Add(new ProductData(p));
+                Products.Add(new ProductData(p));
             }
         }
 
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public List<ProductData> Products { get; set; }
     }
 }
