@@ -242,7 +242,7 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public async Task<string> AddProductAsync(Product product, string userID)
+        public async Task<string> AddProduct(Product product, string userID)
         {
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
@@ -283,7 +283,7 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public async Task<string> EditProductAsync(Guid productID, Product editedProduct, string userID)
+        public async Task<string> EditProduct(Guid productID, Product editedProduct, string userID)
         {
             Product prev;
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))

@@ -22,6 +22,7 @@ namespace TradingSystemTests.IntegrationTests
         Store store;
         ProductData product1;
 
+        [TestInitialize]
         public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
@@ -82,7 +83,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
-        public async void CheckValidRemoveProduct()
+        public async Task CheckValidRemoveProduct()
         {
             Product p = new Product(product1);
             store.Products.Add(p);
@@ -150,5 +151,13 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(p.Price, 10);
         }
 
+        [TestCleanup]
+        public void DeleteAll()
+        {
+            market.tearDown();
+            marketUsers.tearDown();
+            userManagement.tearDown();
+            store = null;
+        }
     }
 }

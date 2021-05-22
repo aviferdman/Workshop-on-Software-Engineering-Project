@@ -44,9 +44,10 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckValidMakeOwner()
+        public async Task CheckValidMakeOwner()
         {
-            Assert.AreEqual(market.makeOwner("owner", store.Id, "founder"), "Success");
+            String res = await market.makeOwner("owner", store.Id, "founder");
+            Assert.AreEqual(res, "Success");
             Assert.IsTrue(store.Contains("owner", "Owners"));
         }
 
@@ -56,7 +57,8 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckMakeOwnerAlreadyAssigned()
         {
             await market.makeOwner("owner", store.Id, "founder");
-            Assert.AreEqual(market.makeOwner("owner", store.Id, "founder"), "this member is already assigned as a store owner or manager");
+            String res = await market.makeOwner("owner", store.Id, "founder");
+            Assert.AreEqual(res, "this member is already assigned as a store owner or manager");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
@@ -65,16 +67,18 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckMakeOwnerInvalidAssigner()
         {
             await market.makeManager("manager", store.Id, "founder");
-            Assert.AreEqual(market.makeOwner("owner", store.Id, "manager"), "Invalid assigner");
+            String res = await market.makeOwner("owner", store.Id, "manager");
+            Assert.AreEqual(res, "Invalid assigner");
             Assert.IsFalse(store.Contains("owner", "Owners"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckMakeOwnerNotMember()
+        public async Task CheckMakeOwnerNotMember()
         {
-            Assert.AreEqual(market.makeOwner("no one", store.Id, "founder"), "the assignee isn't a member");
+            String res = await market.makeOwner("no one", store.Id, "founder");
+            Assert.AreEqual(res, "the assignee isn't a member");
             Assert.IsFalse(store.Contains("owner", "Owners"));
         }
 
@@ -86,7 +90,8 @@ namespace TradingSystemTests.IntegrationTests
             String guestName2 = marketUsers.AddGuest();
             await userManagement.SignUp("manager2", "123", null, null);
             await marketUsers.AddMember("manager2", "123", guestName2);
-            Assert.AreEqual(market.makeManager("manager2", store.Id, "founder"), "Success");
+            String res = await market.makeManager("manager2", store.Id, "founder");
+            Assert.AreEqual(res, "Success");
             Assert.IsTrue(store.Contains("manager2", "Managers"));
         }
 
@@ -96,7 +101,8 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckMakeManagerAlreadyAssigned()
         {
             await market.makeManager("manager", store.Id, "founder");
-            Assert.AreEqual(market.makeManager("manager", store.Id, "founder"), "this member is already assigned as a store owner or manager");
+            String res = await market.makeManager("manager", store.Id, "founder");
+            Assert.AreEqual(res, "this member is already assigned as a store owner or manager");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
@@ -107,18 +113,20 @@ namespace TradingSystemTests.IntegrationTests
             String guestName = marketUsers.AddGuest();
             await userManagement.SignUp("manager2", "123", null, null);
             await marketUsers.AddMember("manager2", "123", guestName);
-            Assert.AreEqual(market.makeManager("manager2", store.Id, "manager"), "Invalid assigner");
+            String res = await market.makeManager("manager2", store.Id, "manager");
+            Assert.AreEqual(res, "Invalid assigner");
             Assert.IsFalse(store.Contains("manager2", "Managers"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckValidDefinePermissions()
+        public async Task CheckValidDefinePermissions()
         {
             List<Permission> permissions = new List<Permission>();
             permissions.Add(Permission.AddProduct);
-            Assert.AreEqual(market.DefineManagerPermissions("manager", store.Id, "founder", permissions), "Success");
+            String res = await market.DefineManagerPermissions("manager", store.Id, "founder", permissions);
+            Assert.AreEqual(res, "Success");
             Manager manager = store.GetManager("manager");
             Assert.IsTrue(manager.GetPermission(Permission.AddProduct));
         }
@@ -131,7 +139,8 @@ namespace TradingSystemTests.IntegrationTests
             await market.makeOwner("owner", store.Id, "founder");
             List<Permission> permissions = new List<Permission>();
             permissions.Add(Permission.AddProduct);
-            Assert.AreEqual(market.DefineManagerPermissions("manager", store.Id, "owner", permissions), "Invalid assigner");
+            String res = await market.DefineManagerPermissions("manager", store.Id, "owner", permissions);
+            Assert.AreEqual(res, "Invalid assigner");
             Manager manager = store.GetManager("manager");
             Assert.IsFalse(manager.GetPermission(Permission.AddProduct));
         }
@@ -139,11 +148,12 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckDefinePermissionsNoManager()
+        public async Task CheckDefinePermissionsNoManager()
         {
             List<Permission> permissions = new List<Permission>();
             permissions.Add(Permission.AddProduct);
-            Assert.AreEqual(market.DefineManagerPermissions("manager2", store.Id, "founder", permissions), "Manager doesn't exist");
+            String res = await market.DefineManagerPermissions("manager2", store.Id, "founder", permissions);
+            Assert.AreEqual(res, "Manager doesn't exist");
         }
 
         [TestCleanup]

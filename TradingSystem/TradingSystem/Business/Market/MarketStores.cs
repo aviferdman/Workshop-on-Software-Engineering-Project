@@ -147,7 +147,7 @@ namespace TradingSystem.Business.Market
             Store store=await GetStoreById(storeID);
             if (store==null)
                 return new Result<Product>(product, true, "Store doesn't exist");
-            String res = await store.AddProductAsync(product, username);
+            String res = await store.AddProduct(product, username);
             if (res.Equals("Product added"))
                 return new Result<Product>(product, false, res);
             return new Result<Product>(product, true, res);
@@ -187,7 +187,7 @@ namespace TradingSystem.Business.Market
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
-            return await store.EditProductAsync(productID, editedProduct, username);
+            return await store.EditProduct(productID, editedProduct, username);
         }
 
 

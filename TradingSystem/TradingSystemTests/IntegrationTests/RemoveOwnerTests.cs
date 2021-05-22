@@ -56,18 +56,20 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkValidRemoveOwner()
+        public async Task checkValidRemoveOwner()
         {
-            Assert.AreEqual(market.RemoveOwner("owner2", store.Id, "owner1"), "success");
+            String res = await market.RemoveOwner("owner2", store.Id, "owner1");
+            Assert.AreEqual(res, "success");
             Assert.IsFalse(store.Contains("owner2", "Owners"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkValidRemoveOwnerChain()
+        public async Task checkValidRemoveOwnerChain()
         {
-            Assert.AreEqual(market.RemoveOwner("owner1", store.Id, "founder"), "success");
+            String res = await market.RemoveOwner("owner1", store.Id, "founder");
+            Assert.AreEqual(res, "success");
             Assert.IsFalse(store.Contains("owner1", "Owners"));
             Assert.IsFalse(store.Contains("owner2", "Owners"));
             Assert.IsFalse(store.Contains("owner3", "Owners"));
@@ -76,17 +78,19 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkRemoveOwnerDoesntExist()
+        public async Task checkRemoveOwnerDoesntExist()
         {
-            Assert.AreEqual(market.RemoveOwner("no one", store.Id, "owner1"), "Owner doesn't exist");
+            String res = await market.RemoveOwner("no one", store.Id, "owner1");
+            Assert.AreEqual(res, "Owner doesn't exist");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void checkRemoveOwnerInvalidAssigner()
+        public async Task checkRemoveOwnerInvalidAssigner()
         {
-            Assert.AreEqual(market.RemoveOwner("owner2", store.Id, "founder"), "Invalid Assigner");
+            String res = await market.RemoveOwner("owner2", store.Id, "founder");
+            Assert.AreEqual(res, "Invalid Assigner");
             Assert.IsTrue(store.Contains("owner2", "Owners"));
         }
 
