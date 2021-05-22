@@ -271,7 +271,7 @@ namespace TradingSystem.Business.Market
                 return "No permission";
             lock (_products)
             {
-                if ((_products.Where(p => p.Id.Equals(productID)).Any()))
+                if (!_products.Where(p => p.Id.Equals(productID)).Any())
                     return "Product doesn't exist";
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
@@ -317,7 +317,7 @@ namespace TradingSystem.Business.Market
             string ret;
             if (assigner == null)
                 return "invalid assiner";
-            if (!managers.Where(m=> m.username.Equals(assigner.Username)).Any())
+            if (managers.Where(m=> m.username.Equals(assigner.Username)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assigner.Username))
                 a = founder;

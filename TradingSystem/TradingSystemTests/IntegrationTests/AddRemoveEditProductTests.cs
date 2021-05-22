@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
@@ -21,7 +22,7 @@ namespace TradingSystemTests.IntegrationTests
         Store store;
         ProductData product1;
 
-        public async void Initialize()
+        public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
@@ -40,7 +41,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public async void CheckValidAddProduct()
+        public async Task CheckValidAddProduct()
         {
             Result<Product> result = await market.AddProduct(product1, store.Id, "founder");
             Assert.IsFalse(result.IsErr);
@@ -49,7 +50,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public async void CheckAddProductUnauthorizedUser()
+        public async Task CheckAddProductUnauthorizedUser()
         {
             Result<Product> result = await market.AddProduct(product1, store.Id, "no one");
             Assert.IsTrue(result.IsErr);
@@ -59,7 +60,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public async void CheckAddProductInvalidPrice()
+        public async Task CheckAddProductInvalidPrice()
         {
             ProductData product2 = new ProductData("1", 10, 10, -10, "category");
             Result<Product> result = await market.AddProduct(product2, store.Id, "founder");
@@ -70,7 +71,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public async void CheckAddProductInvalidName()
+        public async Task CheckAddProductInvalidName()
         {
             ProductData product2 = new ProductData("", 10, 10, 10, "category");
             Result<Product> result = await market.AddProduct(product2, store.Id, "founder");

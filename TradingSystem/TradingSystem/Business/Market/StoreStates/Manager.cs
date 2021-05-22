@@ -35,7 +35,9 @@ namespace TradingSystem.Business.Market.StoreStates
             BidRequests
         }
 
-        private Manager() { }
+        public Manager() {
+            username = "manager";
+        }
 
         private Manager(MemberState m, Store s, MemberState appointer) 
         {
