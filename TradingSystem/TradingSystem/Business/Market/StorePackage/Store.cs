@@ -83,6 +83,20 @@ namespace TradingSystem.Business.Market
             }
             return true;
         }
+
+        public  Result<WorkerDetails> GetPerms(string username)
+        {
+            if (founder.Username.Equals(username))
+                return new Result<WorkerDetails>(new WorkerDetails(founder) ,false, null);
+            else if (owners.Where(o => o.username.Equals(username)).Any())
+                return new Result<WorkerDetails>(new WorkerDetails(owners.Where(o => o.username.Equals(username)).Single()), false,null);
+            else if (managers.Where(o => o.username.Equals(username)).Any())
+            {
+                return new Result<WorkerDetails>(new WorkerDetails(managers.Where(o => o.username.Equals(username)).Single()), false,null);
+            }
+            return new Result<WorkerDetails>(null,true, "user doesnt exist");
+        }
+
         public bool isStaff(string username)
         {
             return ((founder.Username.Equals(username)) ||(owners.Where(o => o.username.Equals(username)).Any()) || (managers.Where(m => m.username.Equals(username)).Any())) ;
