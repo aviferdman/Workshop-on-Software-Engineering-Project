@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -29,11 +31,17 @@ namespace TradingSystemTests.MarketTests
             testStore = new Store("testStore", testStoreCreditCard, testStoreAddress);
         }
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
         //START UNIT TESTS
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.UpdateProductInShoppingBasket(Store, Product, int)"/>
         [TestMethod]
-        public async void CheckUpdateNotExistingProduct()
+        public async Task CheckUpdateNotExistingProduct()
         {
 
             ShoppingBasket shoppingBasket = await testUser.ShoppingCart.GetShoppingBasket(testStore);
@@ -46,7 +54,7 @@ namespace TradingSystemTests.MarketTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.UpdateProductInShoppingBasket(Store, Product, int)"/>
         [TestMethod]
-        public async void CheckUpdateExistingProduct()
+        public async Task CheckUpdateExistingProduct()
         {
             ShoppingBasket shoppingBasket = await testUser.ShoppingCart.GetShoppingBasket(testStore);
             CheckUpdateNotExistingProduct();

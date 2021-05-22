@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 
 namespace TradingSystemTests.IntegrationTests
@@ -16,7 +17,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public async void AddProductSuccess()
+        public async Task AddProductSuccess()
         {
             string username=m.AddGuest();
             User u = m.GetUserByUserName(username);
@@ -59,7 +60,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
-        public async void AddProductFail3()
+        public async Task AddProductFail3()
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username); 
@@ -77,7 +78,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.RemoveProductFromCart(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc8")]
-        public async void removeProductInCartSuccess()
+        public async Task removeProductInCartSuccess()
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
@@ -128,7 +129,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc9")]
-        public async void updateProductInCartSuccess()
+        public async Task updateProductInCartSuccess()
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
@@ -185,7 +186,7 @@ namespace TradingSystemTests.IntegrationTests
         /// keyword: soy milk
         [TestMethod]
         [TestCategory("uc4")]
-        public async void findProductsuccess()
+        public async Task findProductsuccess()
         {
             Product p = new Product("soy milk", 8, 50, 500, "vegan");
             Store s = new Store("vegan store", null, null);
@@ -206,7 +207,7 @@ namespace TradingSystemTests.IntegrationTests
         /// keyword: tofu
         [TestMethod]
         [TestCategory("uc4")]
-        public async void findProductsuccess2()
+        public async Task findProductsuccess2()
         {
             Product p = new Product("tofu", 8, 50, 500, "vegan");
             Store s = new Store("vegan store3", null, null);
@@ -228,7 +229,7 @@ namespace TradingSystemTests.IntegrationTests
         /// keyword: watermelon
         [TestMethod]
         [TestCategory("uc4")]
-        public async void findProductsuccess3()
+        public async Task findProductsuccess3()
         {
             Product p = new Product("watermelon exp", 8, 50, 500.0, "vegatables");
             Store s = new Store("vegan store5", null, null);
@@ -250,7 +251,7 @@ namespace TradingSystemTests.IntegrationTests
         /// keyword: cucumber
         [TestMethod]
         [TestCategory("uc4")]
-        public async void findProductsuccess4()
+        public async Task findProductsuccess4()
         {
             Product p = new Product("cucumber high rating", 8, 50, 500.0, "vegatables");
             p.Rating = 5;
@@ -271,7 +272,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.findProducts(string, int, int, int, string)"/>
         [TestMethod]
         [TestCategory("uc4")]
-        public async void findProductNoProductFound()
+        public async Task findProductNoProductFound()
         {
             ICollection<Product> ret = await marketStores.findProducts("nothing to see", -1, -1, 5, null);
             Assert.IsTrue( ret.Count==0);

@@ -3,6 +3,7 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Notifications;
 using TradingSystem.Business.UserManagement;
@@ -55,7 +56,7 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.TypedPublisher.EventNotification(String)"/>
         [TestMethod]
-        public async void CheckEventNotification()
+        public async Task CheckEventNotification()
         {
             var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
