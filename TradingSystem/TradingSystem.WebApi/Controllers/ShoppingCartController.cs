@@ -32,7 +32,7 @@ namespace TradingSystem.WebApi.Controllers
                 return BadRequest("Missing parameter values");
             }
 
-            Dictionary<Guid, Dictionary<ProductData, int>>? result = MarketShoppingCartService.ViewShoppingCart(usernameDTO.Username);
+            Dictionary<NamedGuid, Dictionary<ProductData, int>>? result = MarketShoppingCartService.ViewShoppingCart(usernameDTO.Username);
             if (result == null)
             {
                 return InternalServerError();
