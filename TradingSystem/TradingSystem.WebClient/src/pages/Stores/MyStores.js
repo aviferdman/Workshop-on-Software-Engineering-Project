@@ -46,11 +46,11 @@ export class MyStores extends React.Component {
             <div className="grid-container">
                 <header className="header-container">
                     <a href="/">E - commerce Application</a>
-                    <div></div>
+                    <div/>
                     <button className="icons">
                         <HiIcons.HiShoppingCart />
                     </button>
-                    <Navbar></Navbar>
+                    <Navbar/>
                 </header>
 
                 <main>{

@@ -33,7 +33,7 @@ class Products extends Component {
                     </div>
 
                     <div>
-                        <EditProduct storeId={this.props.storeId} productId={product.id} />
+                        <EditProduct storeId={this.props.storeId} productId={product.id} onProductEdited={this.props.onProductEdited} />
                     </div>
 
 

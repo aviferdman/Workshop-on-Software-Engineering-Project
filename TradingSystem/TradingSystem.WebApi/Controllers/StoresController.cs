@@ -18,19 +18,16 @@ namespace TradingSystem.WebApi.Controllers
     {
         public StoresController
         (
-            IFileProvider fileProvider,
             MarketUserService marketUserService,
             MarketStoreGeneralService marketStoreGeneralService,
             MarketProductsService marketProductsService
         )
         {
-            FileProvider = fileProvider;
             MarketUserService = marketUserService;
             MarketStoreGeneralService = marketStoreGeneralService;
             MarketProductsService = marketProductsService;
         }
 
-        public IFileProvider FileProvider { get; }
         public MarketUserService MarketUserService { get; }
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
         public MarketProductsService MarketProductsService { get; }
@@ -54,24 +51,18 @@ namespace TradingSystem.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<StoreInfoDTO>> Info([FromQuery] Guid storeId)
         {
-            System.Text.Json.JsonDocument? json = await ParseJsonFromFile(FileProvider, "productData.json");
-            if (json is null)
+            StoreData? store = await MarketStoreGeneralService.getStoreById(storeId);
+            if (store == null)
             {
                 return InternalServerError();
             }
-            return Ok(json.RootElement);
-            //StoreData? store = await MarketStoreGeneralService.getStoreById(storeId);
-            //if (store == null)
-            //{
-            //    return InternalServerError();
-            //}
 
-            //return Ok(new StoreInfoDTO
-            //{
-            //    Id = store.Id,
-            //    Name = store.Name,
-            //    Products = store.Products.Select(ProductDTO.FromProductData)
-            //});
+            return Ok(new StoreInfoDTO
+            {
+                Id = store.Id,
+                Name = store.Name,
+                Products = store.Products.Select(ProductDTO.FromProductData)
+            });
         }
 
         [HttpPost]

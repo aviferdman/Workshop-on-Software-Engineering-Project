@@ -1,16 +1,8 @@
-
-
 import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './StoreHistory.css';
 import data from "../../data/historyData.json";
-// TODO: ask gil
-//import AddProduct from "../../components/AddProduct";
-//import Users from "../../components/Users";
-//import AddManager from "../../components/AddManager";
-//import AddOwner from "../../components/AddOwner";
-//import SetPermission from "../../components/SetPermission";
 import History from "../../components/History";
 
 class StoreHistory extends Component {

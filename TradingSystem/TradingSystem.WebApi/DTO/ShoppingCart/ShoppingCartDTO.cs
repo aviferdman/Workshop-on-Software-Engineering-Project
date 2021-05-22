@@ -27,8 +27,8 @@ namespace TradingSystem.WebApi.DTO
                     return new ShoppingBasketDTO
                     {
                         Id = shoppingBasket.Key.Id,
-                        Name = null, // TODO: fill - maybe you meant Name = shoppingBasket.Key.Name
-                        Products = shoppingBasket.Value.Select(product => 
+                        Name = shoppingBasket.Key.Name,
+                        Products = shoppingBasket.Value.Select(product =>
                         {
                             return ShoppingBasketProductDTO.FromProductData(product.Key, product.Value);
                         })

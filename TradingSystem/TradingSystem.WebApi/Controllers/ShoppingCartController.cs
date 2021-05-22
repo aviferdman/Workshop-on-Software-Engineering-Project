@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+ 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 
@@ -42,14 +42,37 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddProduct([FromBody] ShoppingCartAddProductDTO addProductDTO)
+        public async Task<ActionResult> AddProduct([FromBody] ShoppingCartEditProductDTO productDTO)
         {
             Result<Dictionary<Guid, Dictionary<ProductData, int>>>? result = await MarketShoppingCartService.EditShoppingCart
             (
-                addProductDTO.Username,
+                productDTO.Username,
                 new List<Guid>(),
-                new Dictionary<Guid, int> { [addProductDTO.ProductId] = addProductDTO.Quantity },
+                new Dictionary<Guid, int> { [productDTO.ProductId] = productDTO.Quantity },
                 new Dictionary<Guid, int>()
+            );
+
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditProduct([FromBody] ShoppingCartEditProductDTO productDTO)
+        {
+            Result<Dictionary<Guid, Dictionary<ProductData, int>>>? result = await MarketShoppingCartService.EditShoppingCart
+            (
+                productDTO.Username,
+                new List<Guid>(),
+                new Dictionary<Guid, int>(),
+                new Dictionary<Guid, int> { [productDTO.ProductId] = productDTO.Quantity }
             );
 
             if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))

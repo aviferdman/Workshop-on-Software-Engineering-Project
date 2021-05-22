@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.WebApi.DTO
 {
-    public class ShoppingCartAddProductDTO
+    public class ShoppingCartEditProductDTO
     {
         public string? Username { get; set; }
         public Guid ProductId { get; set; }
