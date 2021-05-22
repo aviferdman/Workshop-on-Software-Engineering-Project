@@ -86,7 +86,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             Assert.IsTrue(val1 || val2);
             Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
         }
-
+        /*
         [TestMethod]
         public async Task LastProductTwoCustomersLooped()
         {
@@ -108,5 +108,6 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                 Assert.IsFalse(val1 && val2); //should return false because one of the purchases must fail.
             }
         }
+        */
     }
 }
