@@ -312,7 +312,7 @@ namespace TradingSystem.DAL
             categories = new ConcurrentDictionary<string, Category>();
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             admins.TryAdd("DEFAULT_ADMIN", admin);
-            AddDataUser(admin);
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
         }
 
         public async Task AddNewMemberState(string username)
