@@ -72,7 +72,16 @@ namespace TradingSystem.Business.Market
             return store;
         }
 
-        
+        public async Task<Result<WorkerDetails>> GetPerms(Guid storeID, string username)
+        {
+            Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetInfoSpecific));
+            Store store = await GetStoreById(storeID);
+            if (store == null)
+                return null;
+            return store.GetPerms(username);
+        }
+
+
 
         //use case 20 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/78
         public async Task<ICollection<Store>> GetStoresByName(string name)

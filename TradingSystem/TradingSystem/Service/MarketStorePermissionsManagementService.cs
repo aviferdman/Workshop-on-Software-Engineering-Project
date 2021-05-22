@@ -55,5 +55,10 @@ namespace TradingSystem.Service
         {
             return await marketStores.GetInfoSpecific(storeID, workerName, username);
         }
+
+        public async Task<Result<WorkerDetails>> GetPrems(Guid storeID, String username)
+        {
+            return await marketStores.GetPerms(storeID, username);
+        }
     }
 }
