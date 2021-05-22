@@ -47,7 +47,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string user=await signupAsync();
             User u;
-            Assert.AreEqual("success", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
+            Assert.AreEqual("success", await MarketUsers.Instance.AddMember("inbi2001", "123456", user));
             Assert.IsTrue(MarketUsers.Instance.ActiveUsers.TryGetValue("inbi2001", out u));
             Assert.IsInstanceOfType(u.State, typeof(MemberState));
             await deleteAsync("inbi2001");
@@ -62,7 +62,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string user = await signupAsync();
             await MarketUsers.Instance.AddMember("inbi2001", "123456", user);
-            Assert.AreEqual("user is already logged in", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
+            Assert.AreEqual("user is already logged in", await MarketUsers.Instance.AddMember("inbi2001", "123456", user));
             await deleteAsync ("inbi2001");
 
         }
@@ -74,7 +74,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task TestIntegLoginFailed2()
         {
             string user =await signupAsync();
-            Assert.AreEqual("the password doesn't match username: " + "inbi2001", MarketUsers.Instance.AddMember("inbi2001", "12345d6", user));
+            Assert.AreEqual("the password doesn't match username: " + "inbi2001", await MarketUsers.Instance.AddMember("inbi2001", "12345d6", user));
             Assert.IsFalse(MarketUsers.Instance.ActiveUsers.ContainsKey("inbi2001"));
             await deleteAsync ("inbi2001");
 
@@ -84,9 +84,9 @@ namespace TradingSystemTests.IntegrationTests
         /// username doesn't exist
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestIntegLoginFailed3()
+        public async Task TestIntegLoginFailed3Async()
         {
-            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", MarketUsers.Instance.AddMember("inbi2001", "12345d6","lilk"));
+            Assert.AreEqual("username: " + "inbi2001" + " doesn't exist in the system", await MarketUsers.Instance.AddMember("inbi2001", "12345d6","lilk"));
 
         }
 
@@ -110,7 +110,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task TestIntegLogoutFail1()
         {
             string user = await signupAsync();
-            Assert.AreEqual(null, MarketUsers.Instance.logout("inbi2001"));
+            Assert.AreEqual(null, await MarketUsers.Instance.logout("inbi2001"));
             delete2(user);
 
         }
@@ -119,9 +119,9 @@ namespace TradingSystemTests.IntegrationTests
         /// user doesn't exist
         [TestMethod]
         [TestCategory("uc3")]
-        public void TestIntegLogoutFail2()
+        public async Task TestIntegLogoutFail2Async()
         {
-            Assert.AreEqual(null, MarketUsers.Instance.logout("inbi200151"));
+            Assert.AreEqual(null,await MarketUsers.Instance.logout("inbi200151"));
         }
 
     }
