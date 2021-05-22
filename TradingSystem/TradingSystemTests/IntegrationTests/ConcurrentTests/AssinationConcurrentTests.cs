@@ -19,6 +19,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
     [TestClass]
     public class AssinationConcurrentTests
     {
+        /*
 
         MarketStores market = MarketStores.Instance;
         MarketUsers marketUsers = MarketUsers.Instance;
@@ -33,22 +34,22 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
 
 
         [TestInitialize]
-        public void Initialize()
+        public async void Initialize()
         {
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder_test_conc", "123", null, null);
-            marketUsers.AddMember("founder_test_conc", "123", guestName);
+            await userManagement.SignUp("founder_test_conc", "123", null, null);
+            await marketUsers.AddMember("founder_test_conc", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager_test_conc", "123", null, null);
-            marketUsers.AddMember("manager_test_conc", "123", guestName);
+            await userManagement.SignUp("manager_test_conc", "123", null, null);
+            await marketUsers.AddMember("manager_test_conc", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("owner_test_conc", "123", null, null);
-            marketUsers.AddMember("owner_test_conc", "123", guestName);
+            await userManagement.SignUp("owner_test_conc", "123", null, null);
+            await marketUsers.AddMember("owner_test_conc", "123", guestName);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            store = market.CreateStore("testStore", "founder_test_conc", card, address);
+            store = await market.CreateStore("testStore", "founder_test_conc", card, address);
             
-            MarketStores.Instance.makeOwner("owner_test_conc", store.Id, "founder_test_conc");
+            await MarketStores.Instance.makeOwner("owner_test_conc", store.Id, "founder_test_conc");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.AssignMember(Guid, User, AppointmentType)"/>
@@ -84,7 +85,7 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
         }
 
 
-
+        */
 
     }
 }

@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 
 namespace TradingSystemTests.IntegrationTests.ConcurrentTests
 {
+
     [TestClass]
     public class UserManagementConcurrentTests
     {
+        /*
         public UserManagementConcurrentTests()
         {
           
@@ -153,51 +155,6 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
             }
         }
 
-        /*
-        [TestMethod]
-        [TestCategory("uc2")]
-        public void TestConcurrentLoginSuccessLooped2()
-        {
-
-            for (int i = 0; i < 1000; i++)
-            {
-                signupFirstUser();
-                String val1 = "";
-                String val2 = "";
-                DataUser d;
-                Thread thread1 = new Thread(() => {
-                    String guestId = MarketUsers.Instance.AddGuest();
-                    if (val2 != "")
-                        Console.WriteLine("second");
-                    val1 = MarketUsers.Instance.AddMember("inbi2001", "123456", guestId);
-                    //Console.WriteLine("1111");
-                });
-                Thread thread2 = new Thread(() => {
-                    String guestId = MarketUsers.Instance.AddGuest();
-                    if (val1 != "")
-                        Console.WriteLine("first");
-                    val2 = MarketUsers.Instance.AddMember("inbi2001", "123456", guestId);
-
-
-                });
-                thread1.Start();
-                thread2.Start();
-                thread1.Join();
-                thread2.Join();
-                //Console.WriteLine("hehe: " + val1);
-                //Console.WriteLine("haha: " + val2);
-                bool check1 = String.Equals(val1, "success");
-                bool check2 = String.Equals(val2, "success");
-                Assert.IsTrue(check1 || check2);
-                Assert.IsFalse(check1 && check2);
-                delete("inbi2001");
-            }
-
-
-        }
-
-        */
-
         [TestMethod]
         [TestCategory("uc2")]
         public void TestConcurrentAtLeastOneLoginSuccess()
@@ -250,5 +207,51 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
                 delete("inbi2001");
             }
         }
+
+
+        /*
+        [TestMethod]
+        [TestCategory("uc2")]
+        public void TestConcurrentLoginSuccessLooped2()
+        {
+
+            for (int i = 0; i < 1000; i++)
+            {
+                signupFirstUser();
+                String val1 = "";
+                String val2 = "";
+                DataUser d;
+                Thread thread1 = new Thread(() => {
+                    String guestId = MarketUsers.Instance.AddGuest();
+                    if (val2 != "")
+                        Console.WriteLine("second");
+                    val1 = MarketUsers.Instance.AddMember("inbi2001", "123456", guestId);
+                    //Console.WriteLine("1111");
+                });
+                Thread thread2 = new Thread(() => {
+                    String guestId = MarketUsers.Instance.AddGuest();
+                    if (val1 != "")
+                        Console.WriteLine("first");
+                    val2 = MarketUsers.Instance.AddMember("inbi2001", "123456", guestId);
+
+
+                });
+                thread1.Start();
+                thread2.Start();
+                thread1.Join();
+                thread2.Join();
+                //Console.WriteLine("hehe: " + val1);
+                //Console.WriteLine("haha: " + val2);
+                bool check1 = String.Equals(val1, "success");
+                bool check2 = String.Equals(val2, "success");
+                Assert.IsTrue(check1 || check2);
+                Assert.IsFalse(check1 && check2);
+                delete("inbi2001");
+            }
+
+
+        }
+
+        */
     }
 }

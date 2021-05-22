@@ -7,6 +7,7 @@ using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Payment;
+using TradingSystem.DAL;
 using TradingSystem.Service;
 
 namespace TradingSystemTests.IntegrationTests
@@ -22,6 +23,12 @@ namespace TradingSystemTests.IntegrationTests
             logger = Logger.Instance;
             marketUsers = MarketUsers.Instance;
             logger.CleanLogs();
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Logger.MonitorActivity(string)"/>
@@ -47,7 +54,6 @@ namespace TradingSystemTests.IntegrationTests
             marketGeneralService.ActivateDebugMode(new Mock<ExternalDeliverySystem>(), new Mock<ExternalPaymentSystem>(), true);
             Assert.AreEqual(1, logger.Errors.Count);
             Assert.AreEqual("Error: Transaction ActivateDebugMode", logger.Errors[0]);
-
         }
 
 

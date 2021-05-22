@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -15,113 +16,119 @@ namespace TradingSystemTests.IntegrationTests
 
         public Store store;
         public Product product;
-        public IShoppingBasket shoppingBasket;
+        public ShoppingBasket shoppingBasket;
 
         public MarketRulesTests()
         {
             this.store = new Store("TestStore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
-            marketStores.Stores.TryAdd(store.GetId(), store);
+            marketStores.LoadedStores.TryAdd(store.GetId(), store);
             this.product = new Product("ProductName", 100, 100, 100, "CategoryName");
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(new User()), store);
             shoppingBasket.addProduct(product, 10);
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
         }
 
         //DISCOUNTS
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateSimpleDiscount(Guid, RuleContext, double, string, Guid)"/>
         [TestMethod]
-        public void CheckSimpleProductDiscount()
+        public async void CheckSimpleProductDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, 0.2, productId: product.Id);
+            await marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, 0.2, productId: product.Id);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateSimpleDiscount(Guid, RuleContext, double, string, Guid)"/>
         [TestMethod]
-        public void CheckSimpleProductDiscountDifferenrId()
+        public async void CheckSimpleProductDiscountDifferenrId()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, 0.2, productId: Guid.NewGuid());
+            await marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, 0.2, productId: Guid.NewGuid());
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateSimpleDiscount(Guid, RuleContext, double, string, Guid)"/>
         [TestMethod]
-        public void CheckSimpleCategoryDiscount()
+        public async void CheckSimpleCategoryDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, 0.2, category: "CategoryName");
+            await marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, 0.2, category: "CategoryName");
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateSimpleDiscount(Guid, RuleContext, double, string, Guid)"/>
         [TestMethod]
-        public void CheckSimpleCategoryDiscountDifferentCategory()
+        public async void CheckSimpleCategoryDiscountDifferentCategory()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, 0.2, category: "DifferentCategoryName");
+            await marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, 0.2, category: "DifferentCategoryName");
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateSimpleDiscount(Guid, RuleContext, double, string, Guid)"/>
         [TestMethod]
-        public void CheckSimpleStoreDiscount()
+        public async void CheckSimpleStoreDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, 0.2);
+            await marketRules.CreateSimpleDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, 0.2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
-        public void CheckConditionalProductQuantityDiscount()
+        public async void CheckConditionalProductQuantityDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: product.Id, valueGreaterEQThan: 5);
+            await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: product.Id, valueGreaterEQThan: 5);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
-        public void CheckConditionalProductQuantityDiscountDifferentId()
+        public async void CheckConditionalProductQuantityDiscountDifferentId()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: Guid.NewGuid(), valueGreaterEQThan: 5);
+            await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Quantity, 0.2, productId: Guid.NewGuid(), valueGreaterEQThan: 5);
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
-        public void CheckConditionalProductWeightDiscount()
+        public async void CheckConditionalProductWeightDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Weight, 0.2, productId: product.Id, valueGreaterEQThan: 100);
+            await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Product, RuleType.Weight, 0.2, productId: product.Id, valueGreaterEQThan: 100);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
-        public void CheckConditionalCategoryQuantityDiscount()
+        public async void CheckConditionalCategoryQuantityDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
+            await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
         //Price More than 100, and at least 5 products from category
-        public void CheckAndConditionalDiscount()
+        public async void CheckAndConditionalDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            Guid discount1 = marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
-            Guid discount2 = marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
+            Guid discount1 = await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
+            Guid discount2 = await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
             var rule1 = store.GetDiscountById(discount1).GetRule();
             var rule2 = store.GetDiscountById(discount2).GetRule();
             //Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId
-            marketRules.GenerateConditionalDiscountsAsync(store.GetFounder().Username, DiscountRuleRelation.And, store.GetId(), rule1.GetId(), rule2.GetId(), discount1, new Guid(), false);
+            await marketRules.GenerateConditionalDiscountsAsync(store.GetFounder().Username, DiscountRuleRelation.And, store.GetId(), rule1.GetId(), rule2.GetId(), discount1, new Guid(), false);
             store.RemoveDiscount(store.GetFounder().Username, discount2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
@@ -129,13 +136,13 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
         //Price More than 100, Xor at most 5 products from category
-        public void CheckXorConditionalDiscount()
+        public async void CheckXorConditionalDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            Guid discount1 = marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
-            Guid discount2 = marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueLessThan: 5);
+            Guid discount1 = await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
+            Guid discount2 = await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueLessThan: 5);
             //Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId
-            marketRules.GenerateConditionalDiscountsAsync(store.GetFounder().Username, DiscountRuleRelation.Xor, store.GetId(), Guid.NewGuid(), Guid.NewGuid(), discount1, discount2, false);
+            await marketRules.GenerateConditionalDiscountsAsync(store.GetFounder().Username, DiscountRuleRelation.Xor, store.GetId(), Guid.NewGuid(), Guid.NewGuid(), discount1, discount2, false);
             store.RemoveDiscount(store.GetFounder().Username, discount1);
             store.RemoveDiscount(store.GetFounder().Username, discount2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));

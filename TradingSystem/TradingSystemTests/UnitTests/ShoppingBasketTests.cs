@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -10,7 +11,7 @@ namespace TradingSystemTests.MarketTests
     public class ShoppingBasketTests
     {
         private ShoppingCart shoppingCart;
-        private IStore store;
+        private Store store;
         private ShoppingBasket shoppingBasket;
         private User testUser;
 
@@ -20,6 +21,12 @@ namespace TradingSystemTests.MarketTests
             this.shoppingCart = new ShoppingCart(testUser);
             this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
         }
 
         //START UNIT TESTING

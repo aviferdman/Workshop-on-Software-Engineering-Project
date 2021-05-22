@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Business.Market.UserPackage;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -17,7 +19,7 @@ namespace TradingSystemTests.MarketTests
         //START OF UNIT TESTS
 
         private ShoppingCart shoppingCart;
-        private IStore store;
+        private Store store;
         private ShoppingBasket shoppingBasket;
         private User testUser;
 
@@ -30,19 +32,24 @@ namespace TradingSystemTests.MarketTests
             
         }
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
         /// test for function :<see cref="TradingSystem.Business.Market.Store.Purchase(Dictionary{Product, int}, Guid, string, Address, CreditCard, double))"/>
         [TestMethod]
         public async Task CheckLegalPurchaseAsync()
         {
-            Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            
+            HashSet<ProductInCart> product_quantity = new HashSet<ProductInCart>();
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product("1", 10, 10, 10, "category");
             Product product2 = new Product("2", 20, 20, 20, "category");
-            product_quantity.Add(product1, 1);
-            product_quantity.Add(product2, 2);
+            product_quantity.Add(new ProductInCart(product1, 1));
+            product_quantity.Add(new ProductInCart(product2, 2));
             shoppingBasket.Product_quantity = product_quantity;
             Store store = new Store("testStore", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
@@ -57,14 +64,13 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public async Task CheckNotEnoghtProductQuantityPurchase()
         {
-            Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            string clientPhone = "0544444444";
+            HashSet<ProductInCart> product_quantity = new HashSet<ProductInCart>(); string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Product product1 = new Product("1", 10, 10, 10, "category");
             Product product2 = new Product("2", 20, 20, 20, "category");
-            product_quantity.Add(product1, 11);
-            product_quantity.Add(product2, 22);
+            product_quantity.Add(new ProductInCart(product1, 11));
+            product_quantity.Add(new ProductInCart(product2, 22));
             Store store = new Store("testStore", card, address);
             store.UpdateProduct(product1);
             store.UpdateProduct(product2);
@@ -109,24 +115,24 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
         }
 
-        public bool MoreThan10Products(IShoppingBasket shoppingBasket)
+        public bool MoreThan10Products(ShoppingBasket shoppingBasket)
         {
             int count = 0;
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
-            foreach (KeyValuePair<Product, int> p_q in product_quantity)
+            foreach (ProductInCart p_q in product_quantity)
             {
-                count += p_q.Value;
+                count += p_q.quantity;
             }
             return count > 10;
         }
 
-        public bool MoreThan20Products(IShoppingBasket shoppingBasket)
+        public bool MoreThan20Products(ShoppingBasket shoppingBasket)
         {
             int count = 0;
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
-            foreach (KeyValuePair<Product, int> p_q in product_quantity)
+            foreach (ProductInCart p_q in product_quantity)
             {
-                count += p_q.Value;
+                count += p_q.quantity;
             }
             return count > 20;
         }
@@ -152,12 +158,12 @@ namespace TradingSystemTests.MarketTests
             Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
         }
 
-        public double return200(IShoppingBasket shoppingBasket)
+        public double return200(ShoppingBasket shoppingBasket)
         {
             return 200;
         }
 
-        public double return100(IShoppingBasket shoppingBasket)
+        public double return100(ShoppingBasket shoppingBasket)
         {
             return 100;
         }

@@ -31,12 +31,12 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
             return discountCalculator.Add(otherDiscountCalc);
         }
 
-        public double CalcDiscount(ShoppingBasket shoppingBasket)
+        public virtual double CalcDiscount(ShoppingBasket shoppingBasket)
         {
             return discountCalculator.CalcDiscount(shoppingBasket);
         }
 
-        public Func<ShoppingBasket, double> GetFunction()
+        public virtual Func<ShoppingBasket, double> GetFunction()
         {
             return discountCalculator.GetFunction();
         }
