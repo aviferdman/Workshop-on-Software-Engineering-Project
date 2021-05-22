@@ -92,6 +92,9 @@ namespace TradingSystem.WebApi
             app.UseWebSockets();
 
             app.UseWebSocketNotifications();
+
+            // TODO: remove later
+            MarketGeneralService.Instance.SetDbDebugMode(true);
         }
     }
 
