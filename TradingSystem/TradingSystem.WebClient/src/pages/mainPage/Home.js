@@ -134,7 +134,7 @@ export class Home extends React.Component {
                 <header className="header-container" >
                     <a href="/">E - commerce Application</a>
                     <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''} Admin</h3>
                     </div>
 
 

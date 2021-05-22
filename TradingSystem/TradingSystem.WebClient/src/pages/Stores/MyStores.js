@@ -5,6 +5,7 @@ import * as HiIcons from "react-icons/hi";
 import Store from "./StoreList"
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
+import {Link} from "react-router-dom";
 
 export class MyStores extends React.Component {
     constructor(props) {
@@ -44,13 +45,25 @@ export class MyStores extends React.Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
+                <header className="header-container" >
                     <a href="/">E - commerce Application</a>
-                    <div></div>
-                    <button className="icons">
+                    <div>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                    </div>
+
+
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
+
                     <Navbar></Navbar>
+
                 </header>
 
                 <main>{

@@ -14,6 +14,12 @@ class HomeProducts extends Component {
                                 <a href={"#" + product.id}>
                                     <p className= "productName">{product.name}</p>
                                 </a>
+                                <p className= "productName"> store: {product.name}</p>
+                                <input
+                                    type="number"
+                                    placeholder="Quantity"
+                                    style={{width: "8rem", height: "4rem", marginLeft:"10rem", marginBottom:"2rem", textAlign:"center"}}
+                                />
                                 <div className="product-price">
                                     <div>{formatCurrency(product.price)}</div>
                                 </div>

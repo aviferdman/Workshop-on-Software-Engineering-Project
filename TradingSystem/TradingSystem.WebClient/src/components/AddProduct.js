@@ -114,7 +114,6 @@ const Modal = ({ handleClose, show, children }) => {
                         <button className="modal-buttons-props" onClick={handleClose} > Add </button>
                     </div>
 
-
             </section>
         </div>
     );

@@ -1,14 +1,16 @@
 
-
 import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './ShoppingCart.css';
 import data from "../../data/productData.json";
-import Products from "../../components/Products";
 import CartProducts from "../../components/CartProducts";
+import Purchase from "../../components/Purchase";
+import formatCurrency from "../mainPage/currency";
+import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 
-class ShoppingCart extends Component {
+export class ShoppingCart extends Component {
 
     constructor(props) {
         super(props);
@@ -20,25 +22,46 @@ class ShoppingCart extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
+                <header className="header-container" >
                     <a href="/">E - commerce Application</a>
-                    <div></div>
-                    <button className="icons">
+                    <div>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                    </div>
+
+
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
+
                     <Navbar></Navbar>
+
                 </header>
 
-                <main className="store-products-main-conatiner">
+                <main className="store-products-main-conatiner ">
 
                     <div>
                         <CartProducts products={this.state.products} ></CartProducts>
                     </div>
 
+                    <div className="total">
+                        Total: {" "}
+                        {formatCurrency(this.state.products.reduce((a,c) => a + (c.price * c.count), 0))}
+                    </div>
+
                     <div className="bottom-row">
 
+                        <div className="grid-item">
+                            <Purchase></Purchase>
+                        </div>
 
                     </div>
+
 
                 </main>
                 <footer> End of Store</footer>
@@ -47,4 +70,4 @@ class ShoppingCart extends Component {
     }
 }
 
-export default ShoppingCart;
+ShoppingCart.contextType = GlobalContext;

@@ -2,19 +2,33 @@ import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './Store.css';
+import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 
 
-class Store extends Component {
+export class Store extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
+                <header className="header-container" >
                     <a href="/">E - commerce Application</a>
-                    <div></div>
-                    <button className="icons">
+                    <div>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                    </div>
+
+
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
+
                     <Navbar></Navbar>
+
                 </header>
 
                 <main className="main-conatiner">
@@ -35,4 +49,4 @@ class Store extends Component {
     }
 }
 
-export default Store;
+Store.contextType = GlobalContext;

@@ -3,13 +3,14 @@ import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './StoreStaff.css';
 import data from "../../data/staffData.json";
-import AddProduct from "../../components/AddProduct";
 import Users from "../../components/Users";
 import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
 import SetPermission from "../../components/SetPermission";
+import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 
-class StoreStaff extends Component {
+export class StoreStaff extends Component {
 
     constructor(props) {
         super(props);
@@ -21,22 +22,34 @@ class StoreStaff extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
+                <header className="header-container" >
                     <a href="/">E - commerce Application</a>
-                    <div></div>
-                    <button className="icons">
+                    <div>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                    </div>
+
+
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
+
                     <Navbar></Navbar>
+
                 </header>
 
-                <main className="store-products-main-conatiner">
+                <main className="store-products-main-conatiner-staff">
 
                     <div>
                         <Users staff={this.state.staff} ></Users>
                     </div>
 
-                    <div className="bottom-row">
+                    <div className="bottom-row-staff">
                         <div>
                             <AddManager></AddManager>
                         </div>
@@ -59,4 +72,4 @@ class StoreStaff extends Component {
     }
 }
 
-export default StoreStaff;
+StoreStaff.contextType = GlobalContext;

@@ -17,6 +17,7 @@
 
 .items-edit{
 
+
 }
 
 .modal-main {
@@ -29,6 +30,8 @@
     transform: translate(-50%,-50%);
 
 }
+
+
 
 .modal-buttons{
 
@@ -51,6 +54,7 @@
 
 .display-block {
     display: block;
+    z-index: 9999;
 }
 
 .display-none {

@@ -1,9 +1,9 @@
 
 import React, { Component } from "react";
-import './AddProduct.css';
+import './EditProduct.css';
 import * as AiIcons from "react-icons/ai";
 
-class AddProduct extends React.Component {
+class EditProduct extends React.Component {
     state = { show: false }
 
     showModal = () => {
@@ -107,7 +107,7 @@ const Modal = ({ handleClose, show, children }) => {
             <section className='modal-main'>
 
                 <div className="lines-props">
-                    <h2 className="center-text">Add Product</h2>
+                    <h2 className="center-text">Edit Product</h2>
                     {children}
                 </div>
 
@@ -117,11 +117,10 @@ const Modal = ({ handleClose, show, children }) => {
                     <button className="modal-buttons-props" onClick={handleClose} > Edit </button>
                 </div>
 
-
             </section>
         </div>
     );
 };
 
 
-export default AddProduct
+export default EditProduct

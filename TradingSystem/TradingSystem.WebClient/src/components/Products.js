@@ -22,14 +22,14 @@ class Products extends Component {
                             </div>
 
                         </div>
-                        <div className = "product">
+                        <div className = "store-product">
                             <a href={"#" + product.id}>
                                 <p className= "productName">{product.name}</p>
                             </a>
                             <div className="product-price">
                                 <div>{formatCurrency(product.price)}</div>
                             </div>
-                            <button onClick={() => this.props.addToCart(product)} className="button primary">Add To Cart</button>
+
                         </div>
                     </li>
                     ))}
