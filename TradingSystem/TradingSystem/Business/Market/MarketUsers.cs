@@ -147,6 +147,8 @@ namespace TradingSystem.Business.Market
 
             };
             PublisherManagement.Instance.BecomeLoggedIn(u.Username);
+            if (u.Username.Equals(DEFAULT_ADMIN_USERNAME))
+                return "admin";
             return "success";
         }
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
