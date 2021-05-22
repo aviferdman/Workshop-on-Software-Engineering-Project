@@ -64,7 +64,7 @@ export class MyStores extends React.Component {
                             <div className='my-stores-create-store-top-block'>
                                 <button className='button primary' onClick={this.onCreateStoreButtonClick}>Create store</button>
                             </div>
-                            <Store stores={this.state.stores}/>
+                            <Store stores={this.state.stores} history={this.props.history} />
                         </div>
                     )
                 }</main>

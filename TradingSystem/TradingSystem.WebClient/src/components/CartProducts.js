@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import formatCurrency from "../pages/mainPage/currency";
 import * as AiIcons from "react-icons/ai";
-import EditProduct from "./EditProduct";
 
 class CartProducts extends Component {
     render() {
@@ -16,8 +15,8 @@ class CartProducts extends Component {
                                         <AiIcons.AiOutlineClose />
                                     </button>
                                 </div>
-
                             </div>
+
                             <div className = "product">
                                 <a href={"#" + product.id}>
                                     <p className= "productName">{product.name}</p>

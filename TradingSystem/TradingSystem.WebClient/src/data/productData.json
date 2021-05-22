@@ -1,7 +1,7 @@
 {
   "products": [
     {
-      "id": "xyz1",
+      "id": "2763c075-5db5-4c28-90c2-8e9bb5cc2794",
       "name": "Milk",
       "price": 29.9,
       "quantity": 3,
@@ -11,7 +11,7 @@
 
     },
     {
-      "id": "xyz2",
+      "id": "5dfcfc5d-d96c-4fa0-9336-29e00947f050",
       "name": "Bread",
       "price": 5.9,
       "quantity": 3,
@@ -20,7 +20,7 @@
       "rating": 4
     },
     {
-      "id": "xyz3",
+      "id": "fae5f8b1-c2e4-433b-8f08-0ebf0a7cc819",
       "name": "Cheese",
       "price": 29.9,
       "quantity": 3,
@@ -29,7 +29,7 @@
       "rating": 3
     },
     {
-      "id": "xyz4",
+      "id": "38f73c34-5330-434b-ac94-90250385ae53",
       "name": "Croissant",
       "price": 7.5,
       "quantity": 3,
@@ -38,7 +38,7 @@
       "rating": 5
     },
     {
-      "id": "xyz5",
+      "id": "c908eda4-2cbb-4cbd-b1df-3175c2ef4476",
       "name": "Orange Juice",
       "price": 5.8,
       "quantity": 3,
@@ -47,7 +47,7 @@
       "rating": 5
     },
     {
-      "id": "xyz6",
+      "id": "d366bced-f52c-4d78-b0dc-f25b82fae13f",
       "name": "Coca Cola",
       "price": 6.0,
       "quantity": 3,

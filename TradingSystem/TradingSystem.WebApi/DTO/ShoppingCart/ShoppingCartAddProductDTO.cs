@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace TradingSystem.WebApi.DTO
 {
-    public class StoreCreationDTO
+    public class ShoppingCartAddProductDTO
     {
         public string? Username { get; set; }
-        public string? StoreName { get; set; }
-        public Address? Address { get; set; }
-        public CreditCard? CreditCard { get; set; }
+        public Guid ProductId { get; set; }
+        public int Quantity { get; set; }
     }
 }

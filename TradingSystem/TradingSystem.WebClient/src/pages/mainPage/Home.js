@@ -1,7 +1,6 @@
 import React from "react";
 import './Home.css';
 import data from '../../data/productData.json';
-import Products from "../../components/Products";
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
 import Navbar from "../../components/Navbar/Navbar";
@@ -127,16 +126,13 @@ export class Home extends React.Component {
     };
 
     render() {
-
         return (
-
             <div className="grid-container">
-                <header className="header-container" >
+                <header className="header-container">
                     <a href="/">E - commerce Application</a>
                     <div>
                         <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
                     </div>
-
 
                     <Link
                         className="icons"
@@ -148,7 +144,7 @@ export class Home extends React.Component {
                     </Link>
 
 
-                    <Navbar></Navbar>
+                    <Navbar/>
 
                 </header>
 
@@ -193,10 +189,9 @@ export class Home extends React.Component {
                             value={this.state.searchPriceMax}
                             onChange={this.onSearchPriceMaxChange}
                         />
-
                     </div>
-
                 </div>
+
                 <main>
                     <div className="content">
                         <div className="main">
@@ -211,10 +206,8 @@ export class Home extends React.Component {
                         </div>
                         <div className="sidebar">
                             <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
-
                         </div>
                     </div>
-
                 </main>
                 <footer> End of products</footer>
             </div>

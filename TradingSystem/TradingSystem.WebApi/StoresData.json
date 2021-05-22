@@ -1,64 +1,64 @@
 {
-  "stores": [
-    {
-      "id": "xyz1",
-      "name": "Store 1",
-      "products": []
-    },
-    {
-      "id": "xyz2",
-      "name": "Store 2",
-      "products": []
-    },
-    {
-      "id": "xyz3",
-      "name": "Store 3",
-      "products": []
-    },
-    {
-      "id": "xyz4",
-      "name": "Store 4",
-      "products": []
-    },
-    {
-      "id": "xyz5",
-      "name": "Store 5",
-      "products": []
-    },
-    {
-      "id": "xyz6",
-      "name": "Store 6",
-      "products": []
-    },
-    {
-      "id": "xyz7",
-      "name": "Store 7",
-      "products": []
-    },
-    {
-      "id": "xyz8",
-      "name": "Store 8",
-      "products": []
-    },
-    {
-      "id": "xyz9",
-      "name": "Store 9",
-      "products": []
-    },
-    {
-      "id": "xyz10",
-      "name": "Store 10",
-      "products": []
-    },
-    {
-      "id": "xyz11",
-      "name": "Store 11",
-      "products": []
-    },
-    {
-      "id": "xyz12",
-      "name": "Store 12",
-      "products": []
-    }
-  ]
+    "stores": [
+        {
+            "id": "00b82ff6-116c-4856-9bb8-e7940d676281",
+            "name": "Store 1",
+            "products": []
+        },
+        {
+            "id": "d3990d05-2509-4e2d-bc84-dae95187db13",
+            "name": "Store 2",
+            "products": []
+        },
+        {
+            "id": "49ec0a92-4bdd-4b49-aca1-63419afacd84",
+            "name": "Store 3",
+            "products": []
+        },
+        {
+            "id": "69d58584-de29-42a3-8068-e693f9d566b4",
+            "name": "Store 4",
+            "products": []
+        },
+        {
+            "id": "4b58dfb0-9752-4483-adfe-9353a19f61b6",
+            "name": "Store 5",
+            "products": []
+        },
+        {
+            "id": "7c97bff5-6373-4159-8290-5f21e1bbc28a",
+            "name": "Store 6",
+            "products": []
+        },
+        {
+            "id": "5fc64753-c010-49d3-ac2e-636b553b10c0",
+            "name": "Store 7",
+            "products": []
+        },
+        {
+            "id": "72ddf015-fa06-468e-8053-2ca480e5cfc1",
+            "name": "Store 8",
+            "products": []
+        },
+        {
+            "id": "8fb680ef-8f88-420f-87f2-7e3cf25c5c49",
+            "name": "Store 9",
+            "products": []
+        },
+        {
+            "id": "c889daea-75c5-46d5-9464-f291342ff254",
+            "name": "Store 10",
+            "products": []
+        },
+        {
+            "id": "87cac322-3cce-4cc6-ba92-e6e47ae9f89e",
+            "name": "Store 11",
+            "products": []
+        },
+        {
+            "id": "87cac322-3cce-4cc6-ba92-e6e47ae9f89e",
+            "name": "Store 12",
+            "products": []
+        }
+    ]
 }

@@ -9,7 +9,6 @@ import StoreProducts from "./pages/Stores/StoreProducts";
 import StoreCreateForm from "./pages/Stores/StoreCreateForm";
 import StoreStaff from "./pages/Stores/StoreStaff";
 import StoreHistory from "./pages/Stores/StoreHistory";
-import ShoppingCart from "./pages/ShoppingCart/ShoppingCart";
 
 export default function Routes() {
     return (
@@ -17,7 +16,6 @@ export default function Routes() {
             <Route exact path="/">
                 <Redirect exact from="/" to="/login" />
             </Route>
- ui-cont
             <Route path={"/login"} component={LoginPage} />
             <Route path={"/signup"} component={Signup} />
             <Route path={"/home"} component={Home} />
@@ -27,7 +25,6 @@ export default function Routes() {
             <Route path={"/storeStaff"} component={StoreStaff} />
             <Route path={"/storeHistory"} component={StoreHistory} />
             <Route path={"/storeCreate"} component={StoreCreateForm} />
- main
         </Switch>
     );
 }
