@@ -7,12 +7,13 @@ using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystemTests.UnitTests
 {
     [TestClass]
-    class ProductsTest
+    public class ProductsTest
     {
         Product product1;
         static Address address;
@@ -23,6 +24,7 @@ namespace TradingSystemTests.UnitTests
 
         public ProductsTest()
         {
+            ProxyMarketContext.Instance.IsDebug = true;
             product1 = new Product("1", 10, 10, 10, "category");
             address = new Address("1", "1", "1", "1", "1");
             card = new CreditCard("1", "1", "1", "1", "1", "1");
@@ -109,7 +111,7 @@ namespace TradingSystemTests.UnitTests
         public void CheckRemoveProductInvalidPermission()
         {
             store.Products.Add(product1);
-            Assert.AreEqual(store.RemoveProduct(product1.Id, "manager"), "No Permission");
+            Assert.AreEqual(store.RemoveProduct(product1.Id, "manager"), "No permission");
             Assert.IsTrue(store.Products.Remove(product1));
         }
 
@@ -142,7 +144,7 @@ namespace TradingSystemTests.UnitTests
         {
             Product product2 = new Product("1", 10, 10, 20, "category");
             store.Products.Add(product1);
-            Assert.AreEqual(store.EditProductAsync(product1.Id, product2, "manager"), "No Permission");
+            Assert.AreEqual(store.EditProduct(product1.Id, product2, "manager"), "No permission");
             Product product = store.GetProduct(product1.Id);
             Assert.IsTrue(store.Products.Remove(product1));
             Assert.AreEqual(product.Price, 10);

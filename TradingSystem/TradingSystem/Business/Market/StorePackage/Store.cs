@@ -272,7 +272,7 @@ namespace TradingSystem.Business.Market
                 return "No permission";
             lock (_products)
             {
-                if (!(_products.Where(p => p.Id.Equals(productID)).Any()))
+                if (!_products.Where(p => p.Id.Equals(productID)).Any())
                     return "Product doesn't exist";
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);

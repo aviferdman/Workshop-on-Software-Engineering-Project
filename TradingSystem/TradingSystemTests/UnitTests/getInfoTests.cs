@@ -12,7 +12,8 @@ using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystemTests.UnitTests
 {
-    class getInfoTests
+    [TestClass]
+    public class getInfoTests
     {
         static Address address;
         static CreditCard card;
@@ -35,7 +36,11 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckValidGetInfo()
         {
-            Assert.AreEqual(store.GetInfo("founder"), new WorkerDetails(founder));
+            List<WorkerDetails> workers = new List<WorkerDetails>();
+            workers.Add(new WorkerDetails(founder));
+            List<WorkerDetails> res = store.GetInfo("founder");
+            Assert.AreEqual(res.Count, 1);
+            Assert.IsTrue(res[0].Equals(workers[0]));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfo(string)"/>
@@ -43,7 +48,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckGetInfoInvalidUser()
         {
-            Assert.AreEqual(store.GetInfo("no one"), null);
+            Assert.AreEqual(store.GetInfo("no one").Count, 0);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfo(string)"/>
@@ -56,7 +61,7 @@ namespace TradingSystemTests.UnitTests
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);
             manager = imanager.Object;
             store.Managers.Add(manager);
-            Assert.AreEqual(store.GetInfo("manager"), null);
+            Assert.AreEqual(store.GetInfo("manager").Count, 0);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfoSpecific(string, string)"/>
@@ -64,7 +69,9 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc36")]
         public void CheckValidGetInfoSpecific()
         {
-            Assert.AreEqual(store.GetInfoSpecific("founder", "founder"), new WorkerDetails(founder));
+            WorkerDetails worker = new WorkerDetails(founder);
+            WorkerDetails res = store.GetInfoSpecific("founder", "founder");
+            Assert.IsTrue(res.Equals(worker));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Store.getInfoSpecific(string, string)"/>
@@ -85,13 +92,13 @@ namespace TradingSystemTests.UnitTests
             imanager.Setup(m => m.GetPermission(It.IsAny<Permission>())).Returns(false);
             manager = imanager.Object;
             store.Managers.Add(manager);
-            Assert.AreEqual(store.GetInfoSpecific("manager", "founder"), null);
+            Assert.AreEqual(store.GetInfoSpecific("founder", "manager"), null);
         }
 
         [TestCleanup]
         public void DeleteAll()
         {
-            Transaction.Instance.DeleteAllTests();
+            store = null;
         }
     }
 }

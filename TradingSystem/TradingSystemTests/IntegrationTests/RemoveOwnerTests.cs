@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
@@ -25,7 +26,7 @@ namespace TradingSystemTests.IntegrationTests
         Owner owner3;
 
         [TestInitialize]
-        public async void Initialize()
+        public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();

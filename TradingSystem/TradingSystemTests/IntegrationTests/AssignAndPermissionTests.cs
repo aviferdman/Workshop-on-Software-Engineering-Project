@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
@@ -22,7 +23,7 @@ namespace TradingSystemTests.IntegrationTests
         Store store;
 
         [TestInitialize]
-        public async void Initialize()
+        public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
@@ -52,7 +53,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public async void CheckMakeOwnerAlreadyAssigned()
+        public async Task CheckMakeOwnerAlreadyAssigned()
         {
             await market.makeOwner("owner", store.Id, "founder");
             Assert.AreEqual(market.makeOwner("owner", store.Id, "founder"), "this member is already assigned as a store owner or manager");
@@ -61,7 +62,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public async void CheckMakeOwnerInvalidAssigner()
+        public async Task CheckMakeOwnerInvalidAssigner()
         {
             await market.makeManager("manager", store.Id, "founder");
             Assert.AreEqual(market.makeOwner("owner", store.Id, "manager"), "Invalid assigner");
@@ -80,7 +81,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc33")]
-        public async void CheckValidMakeManager()
+        public async Task CheckValidMakeManager()
         {
             String guestName2 = marketUsers.AddGuest();
             await userManagement.SignUp("manager2", "123", null, null);
@@ -92,7 +93,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc33")]
-        public async void CheckMakeManagerAlreadyAssigned()
+        public async Task CheckMakeManagerAlreadyAssigned()
         {
             await market.makeManager("manager", store.Id, "founder");
             Assert.AreEqual(market.makeManager("manager", store.Id, "founder"), "this member is already assigned as a store owner or manager");
@@ -101,7 +102,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AssignMember(Guid, User, AppointmentType)"/>
         [TestMethod]
         [TestCategory("uc33")]
-        public async void CheckMakeManagerInvalidAssigner()
+        public async Task CheckMakeManagerInvalidAssigner()
         {
             String guestName = marketUsers.AddGuest();
             await userManagement.SignUp("manager2", "123", null, null);
@@ -125,7 +126,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.DefineManagerPermissions(Guid, Guid, List{Permission})"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public async void CheckDefinePermissionsInvalidAssigner()
+        public async Task CheckDefinePermissionsInvalidAssigner()
         {
             await market.makeOwner("owner", store.Id, "founder");
             List<Permission> permissions = new List<Permission>();
