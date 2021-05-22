@@ -4,48 +4,53 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
     [TestClass]
     public class UserMangementIntegrationTest
     {
-        private String signup()
+        public UserMangementIntegrationTest()
         {
-            UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la", "1111111"), "0501234733");
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
+        private async Task<string> signupAsync()
+        {
+            await UserManagement.Instance.SignUp("inbi2001", "123456", new Address("lala", "lala", "lala", "la", "1111111"), "0501234733");
             return MarketUsers.Instance.AddGuest();
         }
 
-        private bool delete(string username)
+        private async Task deleteAsync(string username)
         {
             MemberState m;
-            MarketUsers.Instance.logout(username);
+            await MarketUsers.Instance.logout(username);
             MarketUsers.Instance.RemoveGuest(username);
-            MarketUsers.Instance.MemberStates.TryRemove(username, out m);
-            return UserManagement.Instance.DeleteUser("inbi2001");
+            MarketUsers.Instance.tearDown();
         }
-        private bool delete2(string username)
+        private void delete2(string username)
         {
             MemberState m;
             MarketUsers.Instance.RemoveGuest(username);
-            MarketUsers.Instance.MemberStates.TryRemove(username, out m);
-            return UserManagement.Instance.DeleteUser("inbi2001");
+            MarketUsers.Instance.tearDown();
         }
 
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddMember(string, string, string)"/>
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestIntegLoginSuccess()
+        public async Task TestIntegLoginSuccess()
         {
-            string user=signup();
+            string user=await signupAsync();
             User u;
             Assert.AreEqual("success", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
             Assert.IsTrue(MarketUsers.Instance.ActiveUsers.TryGetValue("inbi2001", out u));
             Assert.IsInstanceOfType(u.State, typeof(MemberState));
-            delete("inbi2001");
+            await deleteAsync("inbi2001");
 
         }
 
@@ -53,12 +58,12 @@ namespace TradingSystemTests.IntegrationTests
         /// already logged in
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestIntegLoginFailed1()
+        public async Task TestIntegLoginFailed1()
         {
-            string user = signup();
-            MarketUsers.Instance.AddMember("inbi2001", "123456", user);
+            string user = await signupAsync();
+            await MarketUsers.Instance.AddMember("inbi2001", "123456", user);
             Assert.AreEqual("user is already logged in", MarketUsers.Instance.AddMember("inbi2001", "123456", user));
-            delete("inbi2001");
+            await deleteAsync ("inbi2001");
 
         }
 
@@ -66,12 +71,12 @@ namespace TradingSystemTests.IntegrationTests
         /// password doesn't match username
         [TestMethod]
         [TestCategory("uc2")]
-        public void TestIntegLoginFailed2()
+        public async Task TestIntegLoginFailed2()
         {
-            string user = signup();
+            string user =await signupAsync();
             Assert.AreEqual("the password doesn't match username: " + "inbi2001", MarketUsers.Instance.AddMember("inbi2001", "12345d6", user));
             Assert.IsFalse(MarketUsers.Instance.ActiveUsers.ContainsKey("inbi2001"));
-            delete("inbi2001");
+            await deleteAsync ("inbi2001");
 
         }
 
@@ -88,13 +93,13 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.logout(string)"/>
         [TestMethod]
         [TestCategory("uc3")]
-        public void TestIntegLogoutSuccess()
+        public async Task TestIntegLogoutSuccess()
         {
-            string user = signup();
-            MarketUsers.Instance.AddMember("inbi2001", "123456", user);
+            string user = await signupAsync();
+            await MarketUsers.Instance.AddMember("inbi2001", "123456", user);
             Assert.AreNotEqual(null, MarketUsers.Instance.logout("inbi2001"));
             Assert.IsFalse(MarketUsers.Instance.ActiveUsers.ContainsKey("inbi2001"));
-            delete(user);
+            await deleteAsync(user);
 
         }
 
@@ -102,9 +107,9 @@ namespace TradingSystemTests.IntegrationTests
         /// not logged in
         [TestMethod]
         [TestCategory("uc3")]
-        public void TestIntegLogoutFail1()
+        public async Task TestIntegLogoutFail1()
         {
-            string user = signup();
+            string user = await signupAsync();
             Assert.AreEqual(null, MarketUsers.Instance.logout("inbi2001"));
             delete2(user);
 

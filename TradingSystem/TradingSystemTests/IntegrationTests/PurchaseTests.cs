@@ -11,7 +11,9 @@ using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Business.Payment;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -23,7 +25,7 @@ namespace TradingSystemTests.IntegrationTests
         private static readonly double WEIGHT1 = 100;
         private static readonly double PRICE1 = 100;
         private User testUser;
-        private IStore testStore;
+        private Store testStore;
         private CreditCard testUserCreditCard;
         private CreditCard testStoreCreditCard;
         private Address testUserAddress;
@@ -47,11 +49,17 @@ namespace TradingSystemTests.IntegrationTests
             this.shoppingBasket = new ShoppingBasket(shoppingCart, testStore);
         }
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
         [TestMethod]
         public async Task CheckLegalPurcahseWithDiscount()
         {
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             ConditionDiscount discount = new ConditionDiscount(new DiscountCalculator(return15));
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
@@ -62,7 +70,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(!v1.IsErr);
         }
 
-        private double return15(IShoppingBasket arg)
+        private double return15(ShoppingBasket arg)
         {
             return DISCOUNT_VALUE;
         }
@@ -72,7 +80,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckLegalPurcahseUpdatedQuantityAtStore()
         {
             int originQuantity = product.Quantity;
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             bool successPurchase = !v1.IsErr;
@@ -85,7 +93,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckIllegalPurcahseStoreQuantityRemains()
         {
             int originQuantity = product.Quantity;
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
@@ -102,7 +110,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckIllegalPurcahseUserRefund()
         {
             Logger.Instance.CleanLogs();
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
@@ -120,10 +128,10 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public async Task CheckLegalPurcahsePolicyIsIllegal()
         {
-            Func<IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
+            Func<ShoppingBasket, bool> f = new Func<ShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             testStore.AddRule(testStore.GetFounder().Username, r);
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsFalse(!v1.IsErr);
@@ -186,8 +194,8 @@ namespace TradingSystemTests.IntegrationTests
         {
             int originalQuantity = product.Quantity;
             testStore.UpdateProduct(product);
-            Dictionary<Product, int> product_quantity = new Dictionary<Product, int>();
-            product_quantity.Add(product, 10);
+            HashSet<ProductInCart> product_quantity = new HashSet<ProductInCart>();
+            product_quantity.Add(new ProductInCart(product, 10));
             testStore.CancelTransaction(product_quantity);
             Assert.AreEqual(product.Quantity, originalQuantity + 10);
         }
@@ -196,7 +204,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public async Task SucceessPurchaseBasketBecomesEmpty()
         {
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
@@ -208,7 +216,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public async Task FailedPurchaseBasketRemainsTheSame()
         {
-            testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
             testStore.UpdateProduct(product);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
@@ -229,8 +237,8 @@ namespace TradingSystemTests.IntegrationTests
             Product oneProduct = new Product(1, 100, 100);
             User secondTestUser = new User("second test user");
             testStore.UpdateProduct(oneProduct);
-            testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
-            secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
+            await testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
+            await secondTestUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             var v2 = await secondTestUser.PurchaseShoppingCart(new CreditCard("1", "1", "1", "1", "1", "1"), "0533333333", new Address("2", "2", "2", "2", "2"));
             val1 = !v1.IsErr;
@@ -240,15 +248,15 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
-            private bool CheckTotalWeightMoreThan400(IShoppingBasket shoppingBasket)
+        private bool CheckTotalWeightMoreThan400(ShoppingBasket shoppingBasket)
         {
-            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.product.Weight * next.quantity);
             return weight > 400;
         }
 
-        private bool CheckTotalWeightNoMoreThan400(IShoppingBasket shoppingBasket)
+        private bool CheckTotalWeightNoMoreThan400(ShoppingBasket shoppingBasket)
         {
-            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.product.Weight * next.quantity);
             return weight <= 400;
         }
         

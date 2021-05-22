@@ -1,28 +1,49 @@
+
+
 import React, {Component} from 'react';
-import Cart from "../../components/Cart";
+import * as HiIcons from "react-icons/hi";
+import Navbar from "../../components/Navbar/Navbar";
+import './ShoppingCart.css';
+import data from "../../data/productData.json";
+import Products from "../../components/Products";
+import CartProducts from "../../components/CartProducts";
 
 class ShoppingCart extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            cartItems: []
+            name: "",
+            products: data.products
         };
     }
-
-    removeFromCart = (product) => {
-        const cartItems = this.state.cartItems.slice();
-        this.setState({
-            cartItems: cartItems.filter(x => x.id !== product.id),
-        });
-    };
-
     render() {
         return (
-            <div>
-                <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+            <div className="grid-container">
+                <header className="header-container">
+                    <a href="/">E - commerce Application</a>
+                    <div></div>
+                    <button className="icons">
+                        <HiIcons.HiShoppingCart />
+                    </button>
+                    <Navbar></Navbar>
+                </header>
+
+                <main className="store-products-main-conatiner">
+
+                    <div>
+                        <CartProducts products={this.state.products} ></CartProducts>
+                    </div>
+
+                    <div className="bottom-row">
+
+
+                    </div>
+
+                </main>
+                <footer> End of Store</footer>
             </div>
-        );
+        )
     }
 }
 

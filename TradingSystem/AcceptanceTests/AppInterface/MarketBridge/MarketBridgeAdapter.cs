@@ -230,23 +230,23 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool MakeOwner(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeOwnerAsync(assignee, storeID, assigner).Equals("Success");
+            return marketStorePermissionsManagementService.MakeOwnerAsync(assignee, storeID, assigner).Result.Equals("Success");
         }
         public bool MakeManager(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeManagerAsync(assignee, storeID, assigner).Equals("Success");
+            return marketStorePermissionsManagementService.MakeManagerAsync(assignee, storeID, assigner).Result.Equals("Success");
         }
         public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
-            return marketStorePermissionsManagementService.RemoveOwnerAsync(ownerName, storeID, assignerName).Equals("success");
+            return marketStorePermissionsManagementService.RemoveOwnerAsync(ownerName, storeID, assignerName).Result.Equals("success");
         }
         public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
         {
-            return marketStorePermissionsManagementService.DefineManagerPermissionsAsync(manager, storeID, assigner, permissions).Equals("Success");
+            return marketStorePermissionsManagementService.DefineManagerPermissionsAsync(manager, storeID, assigner, permissions).Result.Equals("Success");
         }
         public bool RemoveManager(String managerName, Guid storeID, String assignerName)
         {
-            return marketStorePermissionsManagementService.RemoveManagerAsync(managerName, storeID, assignerName).Equals("success");
+            return marketStorePermissionsManagementService.RemoveManagerAsync(managerName, storeID, assignerName).Result.Equals("success");
         }
 
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)

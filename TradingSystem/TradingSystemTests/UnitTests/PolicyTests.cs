@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using TradingSystem.Business.Market;
 using Moq;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests
 {
@@ -21,7 +22,7 @@ namespace TradingSystemTests
         private Product product1;
         private Product product2;
         private Dictionary<Product, int> product_quantity;
-        private IShoppingBasket shoppingBasket;
+        private ShoppingBasket shoppingBasket;
 
         public PolicyTests()
         {
@@ -30,8 +31,14 @@ namespace TradingSystemTests
             this.product2 = new Product(QUANTITY2, WEIGHT2, PRICE2);
             this.product_quantity = new Dictionary<Product, int>();
             User u = new User();
-            IStore store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
+            Store store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
         }
 
         //START OF UNIT TESTS
@@ -41,9 +48,9 @@ namespace TradingSystemTests
         public void CheckAllRulesReturnTrue()
         {
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy policy = new Policy();
             policy.AddRule(rule1.Object);
             policy.AddRule(rule2.Object);
@@ -56,18 +63,18 @@ namespace TradingSystemTests
         public void CheckSomeRulesFalse()
         {
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy policy = new Policy();
             policy.AddRule(rule1.Object);
             policy.AddRule(rule2.Object);
             Assert.AreEqual(false, policy.Check(shoppingBasket));
         }
 
-        public bool CheckTotalWeightNoMoreThan400(IShoppingBasket shoppingBasket)
+        public bool CheckTotalWeightNoMoreThan400(ShoppingBasket shoppingBasket)
         {
-            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.Key.Weight * next.Value);
+            double weight = shoppingBasket.GetDictionaryProductQuantity().Aggregate(0.0, (total, next) => total + next.product.Weight * next.quantity);
             return weight <= 400;
         }
 
@@ -77,7 +84,7 @@ namespace TradingSystemTests
         {
             this.product_quantity.Add(product1, 1);
             this.product_quantity.Add(product2, 1);
-            Func < IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
+            Func < ShoppingBasket, bool> f = new Func<ShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             policyTest.AddRule(r);
             Assert.IsTrue(policyTest.Check(this.shoppingBasket));
@@ -89,7 +96,7 @@ namespace TradingSystemTests
         {
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
-            Func<IShoppingBasket, bool> f = new Func<IShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
+            Func<ShoppingBasket, bool> f = new Func<ShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             policyTest.AddRule(r);
             Assert.IsFalse(policyTest.Check(this.shoppingBasket));
@@ -102,9 +109,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy andPolicy = legalPolicy1.And(rule2.Object);
@@ -118,9 +125,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy andPolicy = legalPolicy1.And(rule2.Object);
@@ -134,9 +141,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy andPolicy = legalPolicy1.And(rule2.Object);
@@ -150,9 +157,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy andPolicy = legalPolicy1.And(rule2.Object);
@@ -166,9 +173,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy orPolicy = legalPolicy1.Or(rule2.Object);
@@ -182,9 +189,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy orPolicy = legalPolicy1.Or(rule2.Object);
@@ -198,9 +205,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy orPolicy = legalPolicy1.Or(rule2.Object);
@@ -214,9 +221,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy orPolicy = legalPolicy1.Or(rule2.Object);
@@ -230,9 +237,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
@@ -246,9 +253,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
@@ -262,9 +269,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(true);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
@@ -278,9 +285,9 @@ namespace TradingSystemTests
             this.shoppingBasket.addProduct(product1, 1);
             this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
-            rule1.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
-            rule2.Setup(r => r.Check(It.IsAny<IShoppingBasket>())).Returns(false);
+            rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Policy legalPolicy1 = new Policy(rule1.Object);
 
             Policy conditionPolicy = legalPolicy1.Condition(rule2.Object);
@@ -295,7 +302,7 @@ namespace TradingSystemTests
         {
             Transaction.Instance.DeleteAllTests();
             User u = new User();
-            IStore store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
+            Store store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
         }
 

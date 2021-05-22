@@ -4,10 +4,12 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -20,36 +22,37 @@ namespace TradingSystemTests.IntegrationTests
         Store store;
         ProductData product1;
 
-        public AddRemoveEditProductTests()
+        public async Task Initialize()
         {
+            ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("founder", "123", null, null);
-            marketUsers.AddMember("founder", "123", guestName);
+            await userManagement.SignUp("founder", "123", null, null);
+            await marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            userManagement.SignUp("manager", "123", null, null);
-            marketUsers.AddMember("manager", "123", guestName);
+            await userManagement.SignUp("manager", "123", null, null);
+            await marketUsers.AddMember("manager", "123", guestName);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            store = market.CreateStore("testStore", "founder", card, address);
-            market.makeManager("manager", store.Id, "founder");
+            store = await market.CreateStore("testStore", "founder", card, address);
+            await market.makeManager("manager", store.Id, "founder");
             product1 = new ProductData("1", 10, 10, 10, "c");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public void CheckValidAddProduct()
+        public async Task CheckValidAddProduct()
         {
-            Result<Product> result = market.AddProduct(product1, store.Id, "founder");
+            Result<Product> result = await market.AddProduct(product1, store.Id, "founder");
             Assert.IsFalse(result.IsErr);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public void CheckAddProductUnauthorizedUser()
+        public async Task CheckAddProductUnauthorizedUser()
         {
-            Result<Product> result = market.AddProduct(product1, store.Id, "no one");
+            Result<Product> result = await market.AddProduct(product1, store.Id, "no one");
             Assert.IsTrue(result.IsErr);
             Assert.AreEqual(result.Mess, "Invalid user");
         }
@@ -57,10 +60,10 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public void CheckAddProductInvalidPrice()
+        public async Task CheckAddProductInvalidPrice()
         {
             ProductData product2 = new ProductData("1", 10, 10, -10, "category");
-            Result<Product> result = market.AddProduct(product2, store.Id, "founder");
+            Result<Product> result = await market.AddProduct(product2, store.Id, "founder");
             Assert.IsTrue(result.IsErr);
             Assert.AreEqual(result.Mess, "Invalid product");
         }
@@ -68,10 +71,10 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc23")]
-        public void CheckAddProductInvalidName()
+        public async Task CheckAddProductInvalidName()
         {
             ProductData product2 = new ProductData("", 10, 10, 10, "category");
-            Result<Product> result = market.AddProduct(product2, store.Id, "founder");
+            Result<Product> result = await market.AddProduct(product2, store.Id, "founder");
             Assert.IsTrue(result.IsErr);
             Assert.AreEqual(result.Mess, "Invalid product");
         }
@@ -79,69 +82,71 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
-        public void CheckValidRemoveProduct()
+        public async void CheckValidRemoveProduct()
         {
             Product p = new Product(product1);
-            store.Products.TryAdd(p.Id, p);
-            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "founder"), "Product removed");
-            Assert.IsFalse(store.Products.TryRemove(p.Id, out _));
+            store.Products.Add(p);
+            Assert.AreEqual(await market.RemoveProduct(p.Id, store.Id, "founder"), "Product removed");
+            Assert.IsFalse(store.Products.Remove(p));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
-        public void CheckRemoveProductInvalidUser()
+        public async Task CheckRemoveProductInvalidUserAsync()
         {
             Product p = new Product(product1);
-            store.Products.TryAdd(p.Id, p);
-            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "no one"), "Invalid user");
-            Assert.IsTrue(store.Products.TryRemove(p.Id, out _));
+            store.Products.Add(p);
+            Assert.AreEqual(await market.RemoveProduct(p.Id, store.Id, "no one"), "Invalid user");
+            Assert.IsTrue(store.Products.Remove(p));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
-        public void CheckRemoveProductInvalidPermission()
+        public async Task CheckRemoveProductInvalidPermissionAsync()
         {
             Product p = new Product(product1);
-            store.Products.TryAdd(p.Id, p);
-            Assert.AreEqual(market.RemoveProduct(p.Id, store.Id, "manager"), "No permission");
+            store.Products.Add(p);
+            Assert.AreEqual(await market.RemoveProduct(p.Id, store.Id, "manager"), "No permission");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(Guid, ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc25")]
-        public void CheckValidEditProduct()
+        public async Task CheckValidEditProductAsync()
         {
             Product p1 = new Product(product1);
             ProductData p2 = new ProductData("1", 10, 10, 20, "category");
-            store.Products.TryAdd(p1.Id, p1);
-            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product edited");
-            Assert.IsTrue(store.Products.TryRemove(p1.Id, out Product p));
+            store.Products.Add(p1);
+            Assert.AreEqual(await market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product edited");
+            Product p = store.GetProduct(p1.Id);
+            Assert.IsTrue(store.Products.Remove(p1));
             Assert.AreEqual(p.Price, 20);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(Guid, ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc25")]
-        public void CheckEditUnavailablwProduct()
+        public async Task CheckEditUnavailablwProductAsync()
         {
             Product p1 = new Product(product1);
             ProductData p2 = new ProductData("1", 10, 10, 20, "category");
-            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product not in the store");
-            Assert.IsFalse(store.Products.ContainsKey(p1.Id));
+            Assert.AreEqual(await market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product not in the store");
+            Assert.IsFalse(store.Products.Contains(p1));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.EditProduct(Guid, ProductData, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc25")]
-        public void CheckEditNoPermission()
+        public async Task CheckEditNoPermissionAsync()
         {
             Product p1 = new Product(product1);
             ProductData p2 = new ProductData("1", 10, 10, 20, "category");
-            store.Products.TryAdd(p1.Id, p1);
-            Assert.AreEqual(market.EditProduct(p1.Id, p2, store.Id, "manager"), "No permission");
-            Assert.IsTrue(store.Products.TryRemove(p1.Id, out Product p));
+            store.Products.Add(p1);
+            Assert.AreEqual(await market.EditProduct(p1.Id, p2, store.Id, "manager"), "No permission");
+            Product p = store.GetProduct(p1.Id);
+            Assert.IsTrue(store.Products.Remove(p1));
             Assert.AreEqual(p.Price, 10);
         }
 

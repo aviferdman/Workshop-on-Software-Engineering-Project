@@ -1,7 +1,6 @@
 import React from "react";
 import './Home.css';
 import data from '../../data/productData.json';
-import Products from "../../components/Products";
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
 import Navbar from "../../components/Navbar/Navbar";
@@ -9,6 +8,8 @@ import * as HiIcons from "react-icons/hi";
 import Cart from "../../components/Cart";
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
+import {Link} from "react-router-dom";
+import HomeProducts from "../../components/HomeProducts";
 
 export class Home extends React.Component {
     constructor(props) {
@@ -133,10 +134,15 @@ export class Home extends React.Component {
                         <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
                     </div>
 
-
-                    <button className="icons">
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
 
                     <Navbar/>
 
@@ -183,10 +189,9 @@ export class Home extends React.Component {
                             value={this.state.searchPriceMax}
                             onChange={this.onSearchPriceMaxChange}
                         />
-
                     </div>
-
                 </div>
+
                 <main>
                     <div className="content">
                         <div className="main">
@@ -197,13 +202,12 @@ export class Home extends React.Component {
                                 filterProducts={this.filterProducts}
                                 sortProducts={this.sortProducts} >
                             </Filter>
-                            <Products products={this.state.products} addToCart={this.addToCart}/>
+                            <HomeProducts products={this.state.products} addToCart={this.addToCart}></HomeProducts>
                         </div>
                         <div className="sidebar">
                             <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
                         </div>
                     </div>
-
                 </main>
                 <footer> End of products</footer>
             </div>

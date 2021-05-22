@@ -11,7 +11,7 @@ using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.DAL
 {
-    class ProxyMarketContext
+    public class ProxyMarketContext
     {
         private bool isDebug;
 
@@ -74,7 +74,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                return transactionStatuses.Where(t=> t.username==username).ToList();
+                return transactionStatuses.Where(t=> t.username.Equals(username)).ToList();
             }
             try
             {
@@ -171,7 +171,11 @@ namespace TradingSystem.DAL
             {
                 Category c;
                 if (!categories.TryGetValue(category, out c))
+                {
                     c = new Category(category);
+                    categories.TryAdd(category, c);
+                }
+                    
                 return c;
             }
         }
@@ -227,7 +231,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                return transactionStatuses.Where(t => t.storeID == storeId).ToList();
+                return transactionStatuses.Where(t => t.storeID.Equals(storeId)).ToList();
             }
             try
             {
@@ -341,7 +345,7 @@ namespace TradingSystem.DAL
             }
         }
 
-        internal void UserTearDown()
+        public void UserTearDown()
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
         }

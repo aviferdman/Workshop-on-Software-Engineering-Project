@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -38,12 +38,17 @@ namespace TradingSystem.Business.Market
         internal Address Address { get => _address; set => _address = value; }
         public Guid Id { get => sid; set => sid = value; }
         public string Name { get => name; set => name = value; }
-        internal CreditCard Bank { get => _bank; set => _bank = value; }
+        public CreditCard Bank { get => _bank; set => _bank = value; }
         public ICollection<Discount> Discounts { get => _discounts; set => _discounts = value; }
         public HashSet<Manager> Managers { get => managers; set => managers = value; }
         public HashSet<Owner> Owners { get => owners; set => owners = value; }
         public Founder Founder { get => founder; set => founder = value; }
         public string Name1 { get => name; set => name = value; }
+
+        public Store()
+        {
+
+        }
 
         public Store(string name, CreditCard bank, Address address)
         {
@@ -59,19 +64,19 @@ namespace TradingSystem.Business.Market
             this.bids = new HashSet<Bid>();
         }
 
-        public Guid GetId()
+        public virtual Guid GetId()
         {
             return sid;
         }
         public bool hasPremssion(string username, Permission p)
         {
-            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()))
             {
 
-                if (!managers.Where(m => m.username == username).Any())
+                if (!managers.Where(m => m.username.Equals(username)).Any())
                     return false;
                 else {
-                    Manager m = managers.Where(m => m.username == username).First();
+                    Manager m = managers.Where(m => m.username.Equals(username)).First();
                     if (!m.GetPermission(p))
                         return false;
                 }
@@ -80,7 +85,7 @@ namespace TradingSystem.Business.Market
         }
         public bool isStaff(string username)
         {
-            return ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any())) ;
+            return ((founder.Username.Equals(username)) ||(owners.Where(o => o.username.Equals(username)).Any()) || (managers.Where(m => m.username.Equals(username)).Any())) ;
         }
 
         public HashSet<Owner> GetOwners()
@@ -89,7 +94,7 @@ namespace TradingSystem.Business.Market
         }
 
         //TODO
-        public async Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
+        public virtual async Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
@@ -122,7 +127,7 @@ namespace TradingSystem.Business.Market
         }
 
         //TODO
-        public double CalcPrice(string username, ShoppingBasket shoppingBasket)
+        public virtual double CalcPrice(string username, ShoppingBasket shoppingBasket)
         {
             double paySum = CalcPaySum(shoppingBasket);
             return paySum - CalcBidNewSum(username, shoppingBasket);
@@ -185,7 +190,7 @@ namespace TradingSystem.Business.Market
         }
         //TODO
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
-        public double ApplyDiscounts(ShoppingBasket shoppingBasket)
+        public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             var availableDiscounts = Discounts.Select(d=>d.ApplyDiscounts(shoppingBasket));
             //chose the max value of an available discount
@@ -200,14 +205,14 @@ namespace TradingSystem.Business.Market
         }
         //TODO
         //use case 12 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/75
-        public bool CheckPolicy(ShoppingBasket shoppingBasket)
+        public virtual bool CheckPolicy(ShoppingBasket shoppingBasket)
         {
             return Policy.Check(shoppingBasket);
         }
         //TODO
         public void SetPolicy(string userID, Policy policy)
         {
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return;
             this.Policy = policy;
         }
@@ -221,7 +226,7 @@ namespace TradingSystem.Business.Market
         public Guid AddRule(string userID, IRule rule)
         {
             //Have no permission to do the action
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return new Guid();
             _policy.AddRule(rule);
             return rule.GetId();
@@ -231,15 +236,15 @@ namespace TradingSystem.Business.Market
         public void RemoveRule(string userID)
         {
             //Have no permission to do the action
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return;
             _policy.RemoveRule();
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public  String AddProduct(Product product, string userID)
+        public async Task<string> AddProductAsync(Product product, string userID)
         {
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.AddProduct))
                 return "No permission";
@@ -250,9 +255,10 @@ namespace TradingSystem.Business.Market
                 if (_products.Where(p => p.Id.Equals(product.Id)).Any())
                     return "Product exists";
                 _products.Add(product);
-                MarketStores.Instance.addToCategory(product, product.Category);
+                
             }
-            ProxyMarketContext.Instance.saveChanges();
+            await MarketStores.Instance.addToCategory(product, product.Category);
+            await ProxyMarketContext.Instance.saveChanges();
             return "Product added";
         }
 
@@ -260,13 +266,13 @@ namespace TradingSystem.Business.Market
         public String RemoveProduct(Guid productID, string userID)
         {
             Product toRem;
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.AddProduct))
                 return "No permission";
             lock (_products)
             {
-                if ((_products.Where(p => p.Id.Equals(productID)).Any()))
+                if (!(_products.Where(p => p.Id.Equals(productID)).Any()))
                     return "Product doesn't exist";
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
@@ -277,22 +283,26 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(Guid productID, Product editedProduct, string userID)
+        public async Task<string> EditProductAsync(Guid productID, Product editedProduct, string userID)
         {
             Product prev;
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.EditProduct))
                 return "No permission";
-            lock (_products)
-            {
+            
                 if (!_products.Where(p => p.Id.Equals(productID)).Any())
                     return "Product not in the store";
                 if (!validProduct(editedProduct))
                     return "Invalid edit";
                 prev= _products.Where(p => p.Id.Equals(productID)).First();
-                //TODO add edit categ
-                MarketStores.Instance.removeFromCategory(prev, prev.Category);
+                if (!prev.category.Equals(editedProduct.category))
+                {
+                    MarketStores.Instance.removeFromCategory(prev, prev.Category);
+                    await MarketStores.Instance.addToCategory(prev, editedProduct.Category);
+                }
+                lock (_products)
+                {
                 prev.category = editedProduct.category;
                 prev.Name = editedProduct.Name;
                 prev.Price = editedProduct.Price;
@@ -300,7 +310,7 @@ namespace TradingSystem.Business.Market
                 prev.Rating = editedProduct.rating;
                 prev.Weight = editedProduct.Weight;
             }
-            ProxyMarketContext.Instance.saveChanges();
+            await ProxyMarketContext.Instance.saveChanges();
             return "Product edited";
         }
 
@@ -312,7 +322,7 @@ namespace TradingSystem.Business.Market
             string ret;
             if (assigner == null)
                 return "invalid assiner";
-            if (!managers.Where(m=> m.username==assigner.Username).Any())
+            if (managers.Where(m=> m.username.Equals(assigner.Username)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assigner.Username))
                 a = founder;
@@ -323,38 +333,35 @@ namespace TradingSystem.Business.Market
             assignee = await MarketDAL.Instance.getMemberState(assigneeID);
             if (assignee==null)
                 return "the assignee isn't a member";
-            lock (this)
+            try
             {
-                try
+                if (type.Equals("owner"))
                 {
-                    if (type.Equals("owner"))
-                    {
-                        a.AddAppointmentOwner(assignee, this);
-                        PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as an owner for store " + name);
-                    }
-                    else
-                    {
-                        a.AddAppointmentManager(assignee, this);
-                        PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as a manager for store "+name);
-                    }
-                    ret = "Success";
-                        
+                    await a.AddAppointmentOwner(assignee, this);
+                    PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as an owner for store " + name);
                 }
-                catch { ret = "this member is already assigned as a store owner or manager"; }
+                else
+                {
+                    await a.AddAppointmentManager(assignee, this);
+                    PublisherManagement.Instance.EventNotification(assigneeID, EventType.AddAppointmentEvent, assigner.Username + " has appointed you as a manager for store "+name);
+                }
+                ret = "Success";
+                        
             }
+            catch { ret = "this member is already assigned as a store owner or manager"; }
             
             return ret;
         }
 
         //functional requirement 4.6 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/56
-        public String DefineManagerPermissions(string managerID, string assignerID, List<Permission> newPermissions)
+        public async Task<string> DefineManagerPermissionsAsync(string managerID, string assignerID, List<Permission> newPermissions)
         {
             Manager manager;
-            if (!managers.Where(m=>m.username==managerID).Any())
+            if (!managers.Where(m=>m.username.Equals(managerID)).Any())
                 return "Manager doesn't exist";
-            manager = managers.Where(m => m.username == managerID).First();
+            manager = managers.Where(m => m.username.Equals(managerID)).First();
             Appointer a;
-            if (!managers.Where(m => m.username == assignerID).Any())
+            if (managers.Where(m => m.username.Equals(assignerID)).Any())
                 return "Invalid assigner";
             else if (founder.Username.Equals(assignerID))
                 a = founder;
@@ -364,7 +371,7 @@ namespace TradingSystem.Business.Market
                 return "Invalid assigner";
             try
             {
-                a.DefinePermissions(managerID, manager,newPermissions);
+                await a.DefinePermissions(managerID, manager,newPermissions);
             }
             catch {return "Invalid assigner";}
 
@@ -384,9 +391,9 @@ namespace TradingSystem.Business.Market
             Appointer a;
             String ret;
             Manager manager;
-            if (!managers.Where(m => m.username == managerName).Any())
+            if (!managers.Where(m => m.username.Equals(managerName)).Any())
                 return "Manager doesn't exist";
-            manager = managers.Where(m => m.username == managerName).First();
+            manager = managers.Where(m => m.username.Equals(managerName)).First();
             if (founder.Username.Equals(assigner))
                 a = founder;
             else if (owners.Where(p => p.username.Equals(assigner)).Any())
@@ -452,7 +459,7 @@ namespace TradingSystem.Business.Market
         public List<WorkerDetails> GetInfo(String username)
         {
             List<WorkerDetails> ret = new List<WorkerDetails>();
-            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any()))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()) && !(managers.Where(m => m.username.Equals(username)).Any()))
                 return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
                 return ret;
@@ -471,17 +478,17 @@ namespace TradingSystem.Business.Market
         public WorkerDetails GetInfoSpecific(String workerName, String username)
         {
             WorkerDetails ret = null;
-            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username == username).Any()) && !(managers.Where(m => m.username == username).Any()))
+            if ((!founder.Username.Equals(username)) && !(owners.Where(o => o.username.Equals(username)).Any()) && !(managers.Where(m => m.username.Equals(username)).Any()))
                 return ret;
             if (!hasPremssion(username, Permission.GetPersonnelInfo))
                 return ret;
             if (founder.Username.Equals(workerName))
                 return new WorkerDetails(founder);
-            else if (owners.Where(o => o.username == workerName).Any())
-                return new WorkerDetails(owners.Where(o => o.username == workerName).Single());
-            else if (managers.Where(o => o.username == workerName).Any())
+            else if (owners.Where(o => o.username.Equals(workerName)).Any())
+                return new WorkerDetails(owners.Where(o => o.username.Equals(workerName)).Single());
+            else if (managers.Where(o => o.username.Equals(workerName)).Any())
             {
-                return new WorkerDetails(managers.Where(o => o.username == workerName).Single());
+                return new WorkerDetails(managers.Where(o => o.username.Equals(workerName)).Single());
             }
             return null;
         }
@@ -510,7 +517,7 @@ namespace TradingSystem.Business.Market
         public Guid AddDiscount(string userID, Discount discount)
         {
             //Have no permission to do the action
-            if((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()) || !hasPremssion(userID, Permission.EditDiscount))
+            if((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
             Discounts.Add(discount);
             return discount.Id;
@@ -520,7 +527,7 @@ namespace TradingSystem.Business.Market
         public Guid RemoveDiscount(string userID, Guid discountId)
         {
             //Have no permission to do the action
-            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username == userID).Any()) && !(managers.Where(m => m.username == userID).Any()) || !hasPremssion(userID, Permission.EditDiscount))
+            if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()) || !hasPremssion(userID, Permission.EditDiscount))
                 return new Guid();
             Discount d = GetDiscountById(discountId);
             if (d != null)
@@ -584,7 +591,7 @@ namespace TradingSystem.Business.Market
 
         private bool CheckPermission(string username, Permission permission)
         {
-            return ((managers.Where(m => m.username == username&& m.GetPermission(permission)).Any() || owners.Where(o=> o.username==username).Any()|| founder.Username.Equals(username)));
+            return ((managers.Where(m => m.username.Equals(username) && m.GetPermission(permission)).Any() || owners.Where(o=> o.username.Equals(username)).Any()|| founder.Username.Equals(username)));
         }
 
         public int CompareTo(object obj)
@@ -625,6 +632,50 @@ namespace TradingSystem.Business.Market
             }
             this.bids.Add(new Bid(username, productId, newBidPrice));
             return new Result<bool>(true, false, "");
+        }
+
+        public bool Contains(String comparator, String list)
+        {
+            switch (list)
+            {
+                case "Owners":
+                    return Owners.Where(o => o.Username.Equals(comparator)).Any();
+                case "Managers":
+                    return Managers.Where(m => m.Username.Equals(comparator)).Any();
+                case "Products":
+                    return Products.Where(p => p.Id.Equals(comparator)).Any();
+                default: return false;
+            }
+        }
+
+        public Manager GetManager(String name)
+        {
+            foreach (Manager manager in Managers)
+            {
+                if (manager.Username.Equals(name))
+                    return manager;
+            }
+            return null;
+        }
+
+        public Owner GetOwner(String name)
+        {
+            foreach (Owner owner in Owners)
+            {
+                if (owner.Username.Equals(name))
+                    return owner;
+            }
+            return null;
+        }
+
+        public Product GetProduct(Guid id)
+        {
+            foreach (Product product in Products)
+            {
+                if (product.Id.Equals(id))
+                    return product;
+            }
+            return null;
         }
     }
 }

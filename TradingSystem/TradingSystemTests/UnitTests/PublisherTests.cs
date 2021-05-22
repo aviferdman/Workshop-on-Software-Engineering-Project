@@ -3,9 +3,11 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Notifications;
 using TradingSystem.Business.UserManagement;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 
 namespace TradingSystemTests.UnitTests
@@ -19,10 +21,17 @@ namespace TradingSystemTests.UnitTests
 
         public PublisherTests()
         {
+            ProxyMarketContext.Instance.marketTearDown();
             this.publisher = new Publisher("UserTests");
             this.user = new User("UserTests");
             this.subscriber = new NotificationSubscriber(user.Username, true);
 
+        }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.TypedPublisher.Subscribe(IObserver)"/>
@@ -47,12 +56,13 @@ namespace TradingSystemTests.UnitTests
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.TypedPublisher.EventNotification(String)"/>
         [TestMethod]
-        public void CheckEventNotification()
+        public async Task CheckEventNotification()
         {
             var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
             dataUser.IsLoggedin = true;
-            UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
-            UserManagement.Instance.DataUsers[user.Username] = dataUser;
+            await ProxyMarketContext.Instance.AddDataUser(dataUser);
+            //UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
+            //UserManagement.Instance.DataUsers[user.Username] = dataUser;
             publisher.LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
             subscriber.Subscribe(publisher);
@@ -64,6 +74,7 @@ namespace TradingSystemTests.UnitTests
         public void DeleteAll()
         {
             this.publisher = new Publisher("UserTests");
+            ProxyMarketContext.Instance.marketTearDown();
         }
     }
 }

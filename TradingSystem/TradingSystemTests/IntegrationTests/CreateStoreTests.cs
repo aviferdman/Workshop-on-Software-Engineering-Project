@@ -3,7 +3,9 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 using TradingSystem.Service;
 
 namespace TradingSystemTests.IntegrationTests
@@ -13,7 +15,7 @@ namespace TradingSystemTests.IntegrationTests
     {
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.CreateStore(string, string, CreditCard, Address)"/>
         [TestMethod]
-        public void CreateStoreAndCheckFounder()
+        public async Task CreateStoreAndCheckFounder()
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
@@ -23,15 +25,21 @@ namespace TradingSystemTests.IntegrationTests
             MarketStores market = MarketStores.Instance;
             MarketUsers marketUsers = MarketUsers.Instance;
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
-            Store store = market.CreateStore("storeTest", user.Username, card, address);
+            Store store = await market.CreateStore("storeTest", user.Username, card, address);
             Assert.IsNotNull(store);
             Assert.AreEqual(store.Founder.Username, user.Username);
 
         }
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
         /// test for function :<see cref="TradingSystem.Business.Market..MarketStores.CreateStore(string, string, BankAccount, Address)"/>
         [TestMethod]
-        public void NotCreateStoreAndCheckNotFounder()
+        public async Task NotCreateStoreAndCheckNotFounder()
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
@@ -43,7 +51,7 @@ namespace TradingSystemTests.IntegrationTests
             User user2 = new User("testUser2");
             marketUsers.ActiveUsers.TryAdd(user.Username, user);
             marketUsers.ActiveUsers.TryAdd(user2.Username, user2);
-            Store store = market.CreateStore("storeTest", user.Username, card, address);
+            Store store = await market.CreateStore("storeTest", user.Username, card, address);
             Assert.IsNotNull(store);
             Assert.AreNotEqual(store.Founder.Username, user2.Username);
         }

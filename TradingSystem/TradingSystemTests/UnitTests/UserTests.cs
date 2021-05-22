@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.MarketTests
 {
@@ -29,29 +31,35 @@ namespace TradingSystemTests.MarketTests
             testStore = new Store("testStore", testStoreCreditCard, testStoreAddress);
         }
 
+        [TestInitialize]
+        public void Initialize()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
+
         //START UNIT TESTS
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.UpdateProductInShoppingBasket(Store, Product, int)"/>
         [TestMethod]
-        public void CheckUpdateNotExistingProduct()
+        public async Task CheckUpdateNotExistingProduct()
         {
 
-            IShoppingBasket shoppingBasket = testUser.ShoppingCart.GetShoppingBasket(testStore);
+            ShoppingBasket shoppingBasket = await testUser.ShoppingCart.GetShoppingBasket(testStore);
             Assert.IsFalse(shoppingBasket.GetProducts().Contains(product));
             Assert.AreEqual(0, shoppingBasket.GetProductQuantity(product));
-            testUser.UpdateProductInShoppingBasket(testStore, product, QUANTITY1);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, QUANTITY1);
             Assert.IsTrue(shoppingBasket.GetProducts().Contains(product));
             Assert.AreEqual(QUANTITY1, shoppingBasket.GetProductQuantity(product));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.UpdateProductInShoppingBasket(Store, Product, int)"/>
         [TestMethod]
-        public void CheckUpdateExistingProduct()
+        public async Task CheckUpdateExistingProduct()
         {
-            IShoppingBasket shoppingBasket = testUser.ShoppingCart.GetShoppingBasket(testStore);
+            ShoppingBasket shoppingBasket = await testUser.ShoppingCart.GetShoppingBasket(testStore);
             CheckUpdateNotExistingProduct();
             //now the quantity of product in shopping basket is QUANTITY1
-            testUser.UpdateProductInShoppingBasket(testStore, product, QUANTITY2);
+            await testUser.UpdateProductInShoppingBasket(testStore, product, QUANTITY2);
             Assert.IsTrue(shoppingBasket.GetProducts().Contains(product));
             Assert.AreEqual(QUANTITY2, shoppingBasket.GetProductQuantity(product));
         }
