@@ -8,7 +8,7 @@ using TradingSystem.DAL;
 
 namespace TradingSystem.Business.Market
 {
-    public class ShoppingBasket 
+    public class ShoppingBasket :IComparable
     {
         public HashSet<ProductInCart> _product_quantity { get; set; }
         public  ShoppingCart shoppingCart { get; set; }
