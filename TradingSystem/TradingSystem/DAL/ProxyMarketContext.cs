@@ -341,7 +341,7 @@ namespace TradingSystem.DAL
             }
         }
 
-        internal void UserTearDown()
+        public void UserTearDown()
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
         }

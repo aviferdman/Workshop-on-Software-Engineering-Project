@@ -61,11 +61,11 @@ namespace TradingSystem.Business.UserManagement
             {
                 if (u.password.Equals(password))
                 {
-                    if (u.isLoggedin)
+                    if (u.IsLoggedin)
                         return "user is already logged in";
                     else
                     {
-                        u.isLoggedin = true;
+                        u.IsLoggedin = true;
                         return "success";
                     }
                         
@@ -113,9 +113,9 @@ namespace TradingSystem.Business.UserManagement
             DataUser u = await usersDAL.GetDataUser(username);
             if (u != null)
             {
-                if (u.isLoggedin == false)
+                if (u.IsLoggedin == false)
                     return false;
-                u.isLoggedin = false;
+                u.IsLoggedin = false;
                 return true;
             }
             return false;
@@ -131,7 +131,7 @@ namespace TradingSystem.Business.UserManagement
             DataUser u = await usersDAL.GetDataUser(username);
             if (u != null)
                 return false;
-            return u.isLoggedin;
+            return u.IsLoggedin;
         }
 
 

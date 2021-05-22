@@ -23,7 +23,7 @@ namespace TradingSystem.Business.Market
             this.Status = status;
             this._id = Guid.NewGuid();
             this.username = username;
-            this.storeID = storeID;
+            this.storeID = storeId;
             this.ProductHistories = new ProductHistoryData();
             var tmpDict = shoppingBasket?.GetDictionaryProductQuantity() ?? new HashSet<UserPackage.ProductInCart>();
             foreach (var p_q in tmpDict)
@@ -31,7 +31,7 @@ namespace TradingSystem.Business.Market
                 ProductHistories.Add(p_q.product, p_q.quantity);
             }
         }
-
+        /*
         public TransactionStatus(  PaymentStatus paymentStatus, DeliveryStatus deliveryStatus, ShoppingBasket shoppingBasket, bool status)
         {
             this._paymentStatus = paymentStatus;
@@ -45,6 +45,7 @@ namespace TradingSystem.Business.Market
                 ProductHistories.Add(p_q.product, p_q.quantity);
             }
         }
+        */
         public Guid Id { get => _id; set => _id = value; }
         public bool Status { get => _status; set => _status = value; }
         public DeliveryStatus DeliveryStatus { get => _deliveryStatus; set => _deliveryStatus = value; }

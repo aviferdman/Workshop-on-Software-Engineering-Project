@@ -20,7 +20,7 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 
         public Func<ShoppingBasket, double> F { get => _f; set => _f = value; }
 
-        public double CalcDiscount(ShoppingBasket shoppingBasket)
+        public virtual double CalcDiscount(ShoppingBasket shoppingBasket)
         {
             return F(shoppingBasket);
         }
@@ -45,7 +45,7 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
             return new DiscountCalculator(newF);
         }
 
-        public Func<ShoppingBasket, double> GetFunction()
+        public virtual Func<ShoppingBasket, double> GetFunction()
         {
             return F;
         }

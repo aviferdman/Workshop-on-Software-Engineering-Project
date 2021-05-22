@@ -10,7 +10,7 @@ namespace TradingSystem.Business.UserManagement
     {
         public string username { get; set; }
         public string password { get; set; }
-        public bool isLoggedin { get; set; }
+        public bool IsLoggedin { get; set; }
         public Address address { get; set; }
         public string phone { get; set; }
         public bool isAdmin { get; set; }
@@ -20,7 +20,7 @@ namespace TradingSystem.Business.UserManagement
             this.username = username;
             this.password = password;
             this.address = address;
-            this.isLoggedin = false;
+            this.IsLoggedin = false;
             this.phone = phone;
         }
 
