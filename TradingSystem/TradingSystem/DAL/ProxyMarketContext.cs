@@ -255,7 +255,7 @@ namespace TradingSystem.DAL
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
-            memberStates.TryAdd("DEFAULT_ADMIN", new MemberState("DEFAULT_ADMIN"));
+            memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
             shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
         }
 
@@ -315,6 +315,8 @@ namespace TradingSystem.DAL
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
             admins.TryAdd("DEFAULT_ADMIN", admin);
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
+            shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
         }
 
         public async Task AddNewMemberState(string username)

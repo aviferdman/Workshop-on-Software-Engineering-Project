@@ -2,6 +2,7 @@ using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 
 using NUnit.Framework;
+using TradingSystem.Business.Market;
 
 namespace AcceptanceTests.Tests.User
 {
@@ -51,5 +52,7 @@ namespace AcceptanceTests.Tests.User
             Success_Normal();
             Assert.IsFalse(Bridge.SignUp(UserInfo.WithDifferentPassword("abcd1234")));
         }
+
+        
     }
 }
