@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 
 namespace TradingSystemTests.IntegrationTests
 {
@@ -13,7 +14,10 @@ namespace TradingSystemTests.IntegrationTests
     {
         private MarketUsers m = MarketUsers.Instance;
         private MarketStores marketStores = MarketStores.Instance;
-
+        public MarketIntegrationTests()
+        {
+            ProxyMarketContext.Instance.IsDebug = true;
+        }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc5")]
@@ -87,7 +91,7 @@ namespace TradingSystemTests.IntegrationTests
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
             ShoppingBasket b = await u.ShoppingCart.GetShoppingBasket(s);
-            b.addProduct(p, 4);
+            await b.addProduct(p, 4);
             Assert.AreEqual("product removed from shopping basket", m.RemoveProductFromCart(username, p.Id));
             Assert.IsFalse(b.GetProducts().Contains(p));
         }
@@ -138,7 +142,7 @@ namespace TradingSystemTests.IntegrationTests
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
             ShoppingBasket b = await u.ShoppingCart.GetShoppingBasket(s);
-            b.addProduct(p, 4);
+            await b.addProduct(p, 4);
             Assert.AreEqual("product updated", m.ChangeProductQuanInCart(username, p.Id, 5));
             Assert.IsTrue(b.GetProducts().Contains(p));
             Assert.AreEqual(b.GetProductQuantity(p), 5);
@@ -165,7 +169,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.ChangeProductQuanInCart(string, Guid, string, int)"/>
         [TestMethod]
         [TestCategory("uc9")]
-        public async System.Threading.Tasks.Task updateProductInCartFail3Async()
+        public async Task updateProductInCartFail3Async()
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
@@ -174,7 +178,7 @@ namespace TradingSystemTests.IntegrationTests
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
             ShoppingBasket b = await u.ShoppingCart.GetShoppingBasket(s);
-            b.addProduct(p, 4);
+            await b.addProduct(p, 4);
             Assert.AreEqual("product's quantity is insufficient", m.ChangeProductQuanInCart(username, p.Id, 500000));
             Assert.IsTrue(b.GetProducts().Contains(p));
             Assert.AreEqual(b.GetProductQuantity(p), 4);

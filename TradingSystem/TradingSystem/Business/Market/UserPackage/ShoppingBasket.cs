@@ -46,12 +46,12 @@ namespace TradingSystem.Business.Market
             return !possitiveQuantities.Any();
         }
 
-        public virtual string addProduct(Product p, int q)
+        public virtual async Task<string> addProduct(Product p, int q)
         {
-            if (_product_quantity.Where(p=> p.product.Equals(p)).Any())
+            if (_product_quantity.Where(pr=> pr.product.Id.Equals(p.Id)).Any())
                 return "product is already in shopping basket";
             _product_quantity.Add(new ProductInCart(p, q));
-            ProxyMarketContext.Instance.saveChanges();
+            await ProxyMarketContext.Instance.saveChanges();
             return "product added to shopping basket";
         }
 

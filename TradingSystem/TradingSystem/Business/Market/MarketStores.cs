@@ -147,7 +147,7 @@ namespace TradingSystem.Business.Market
             Store store=await GetStoreById(storeID);
             if (store==null)
                 return new Result<Product>(product, true, "Store doesn't exist");
-            String res = store.AddProduct(product, username);
+            String res = await store.AddProductAsync(product, username);
             if (res.Equals("Product added"))
                 return new Result<Product>(product, false, res);
             return new Result<Product>(product, true, res);
@@ -187,7 +187,7 @@ namespace TradingSystem.Business.Market
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
-            return store.EditProduct(productID, editedProduct, username);
+            return await store.EditProductAsync(productID, editedProduct, username);
         }
 
 
@@ -213,7 +213,7 @@ namespace TradingSystem.Business.Market
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
-            return store.DefineManagerPermissions(managerName, assignerName, permissions);
+            return await store.DefineManagerPermissionsAsync(managerName, assignerName, permissions);
         }
 
         public async Task<String> AssignMember(String assigneeName, Guid storeID, String assignerName, string type)

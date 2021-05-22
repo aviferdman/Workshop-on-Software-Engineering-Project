@@ -29,7 +29,12 @@ namespace TradingSystem.Business.Market.StoreStates
        
         public async Task<Owner> AddAppointmentOwner(MemberState m, Store s)
         {
-            Owner prem = Owner.makeOwner(m, s, this);
+            Owner prem;
+            lock (m)
+            {
+                prem = Owner.makeOwner(m, s, this);
+            }
+           
             await ProxyMarketContext.Instance.saveChanges();
             return prem;
         }
@@ -45,7 +50,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
 
         //define premissions to manger with matching username if manger has not been appointer by this appointer an UnauthorizedAccessException will be thrown
-        public async void DefinePermissions(string username, Manager man, List<Permission> permissions)
+        public async Task DefinePermissions(string username, Manager man, List<Permission> permissions)
         {
             if (!man.appointer.Equals(this))
                 throw new UnauthorizedAccessException();
