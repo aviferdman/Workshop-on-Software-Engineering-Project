@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using TradingSystem.Business.Market;
+using TradingSystem.Service;
 
 namespace TradingSystem.WebApi.DTO
 {
@@ -17,7 +18,7 @@ namespace TradingSystem.WebApi.DTO
 
         public IEnumerable<ShoppingBasketDTO> ShoppingBaskets { get; }
 
-        public static ShoppingCartDTO FromDictionary(Dictionary<Guid, Dictionary<ProductData, int>> dictionary)
+        public static ShoppingCartDTO FromDictionary(Dictionary<NamedGuid, Dictionary<ProductData, int>> dictionary)
         {
             return new ShoppingCartDTO
             (
@@ -25,9 +26,9 @@ namespace TradingSystem.WebApi.DTO
                 {
                     return new ShoppingBasketDTO
                     {
-                        Id = shoppingBasket.Key,
-                        Name = null, // TODO: fill
-                        Products = shoppingBasket.Value.Select(product =>
+                        Id = shoppingBasket.Key.Id,
+                        Name = null, // TODO: fill - maybe you meant Name = shoppingBasket.Key.Name
+                        Products = shoppingBasket.Value.Select(product => 
                         {
                             return ShoppingBasketProductDTO.FromProductData(product.Key, product.Value);
                         })
