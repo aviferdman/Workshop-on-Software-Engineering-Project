@@ -235,7 +235,7 @@ namespace TradingSystem.Business.Market
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
 
-            return basket.addProduct(p, quantity);
+            return await basket.addProductAsync(p, quantity);
 
         }
 
@@ -363,7 +363,8 @@ namespace TradingSystem.Business.Market
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                if(!ProxyMarketContext.Instance.IsDebug)
+                    transaction.Rollback();
                 return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
             }
             

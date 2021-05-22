@@ -60,7 +60,7 @@ namespace TradingSystem.Business.Market
                 shoppingBaskets.Add(new ShoppingBasket(this, store));
                 await ProxyMarketContext.Instance.saveChanges();
             }
-            return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).FirstOrDefault();
+            return shoppingBaskets.Where(basket => basket.GetStore().GetId().Equals(store.GetId())).First();
         }
 
 

@@ -171,7 +171,11 @@ namespace TradingSystem.DAL
             {
                 Category c;
                 if (!categories.TryGetValue(category, out c))
+                {
                     c = new Category(category);
+                    categories.TryAdd(category, c);
+                }
+                    
                 return c;
             }
         }

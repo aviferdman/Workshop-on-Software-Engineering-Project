@@ -237,7 +237,7 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public  String AddProduct(Product product, string userID)
+        public async Task<string> AddProductAsync(Product product, string userID)
         {
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
@@ -250,9 +250,10 @@ namespace TradingSystem.Business.Market
                 if (_products.Where(p => p.Id.Equals(product.Id)).Any())
                     return "Product exists";
                 _products.Add(product);
-                MarketStores.Instance.addToCategory(product, product.Category);
+                
             }
-            ProxyMarketContext.Instance.saveChanges();
+            await MarketStores.Instance.addToCategory(product, product.Category);
+            await ProxyMarketContext.Instance.saveChanges();
             return "Product added";
         }
 
@@ -277,22 +278,26 @@ namespace TradingSystem.Business.Market
         }
 
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
-        public String EditProduct(Guid productID, Product editedProduct, string userID)
+        public async Task<string> EditProductAsync(Guid productID, Product editedProduct, string userID)
         {
             Product prev;
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
             if (!hasPremssion(userID, Permission.EditProduct))
                 return "No permission";
-            lock (_products)
-            {
+            
                 if (!_products.Where(p => p.Id.Equals(productID)).Any())
                     return "Product not in the store";
                 if (!validProduct(editedProduct))
                     return "Invalid edit";
                 prev= _products.Where(p => p.Id.Equals(productID)).First();
-                //TODO add edit categ
-                MarketStores.Instance.removeFromCategory(prev, prev.Category);
+                if (!prev.category.Equals(editedProduct.category))
+                {
+                    MarketStores.Instance.removeFromCategory(prev, prev.Category);
+                    await MarketStores.Instance.addToCategory(prev, editedProduct.Category);
+                }
+                lock (_products)
+                {
                 prev.category = editedProduct.category;
                 prev.Name = editedProduct.Name;
                 prev.Price = editedProduct.Price;
@@ -300,7 +305,7 @@ namespace TradingSystem.Business.Market
                 prev.Rating = editedProduct.rating;
                 prev.Weight = editedProduct.Weight;
             }
-            ProxyMarketContext.Instance.saveChanges();
+            await ProxyMarketContext.Instance.saveChanges();
             return "Product edited";
         }
 
