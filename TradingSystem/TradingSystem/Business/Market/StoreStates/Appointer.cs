@@ -45,14 +45,14 @@ namespace TradingSystem.Business.Market.StoreStates
         ///use locks for store premmissions
         public bool canRemoveAppointment(string userToRemove)
         {
-            return s.managers.Where(m => m.appointer.username.Equals(userToRemove) && m.username.Equals( userToRemove)).Any() || s.owners.Where(m => m.appointer.username.Equals(userToRemove) && m.username.Equals(userToRemove)).Any();
+            return s.managers.Where(m => m.appointer.username.Equals(username) && m.username.Equals( userToRemove)).Any() || s.owners.Where(m => m.appointer.username.Equals(username) && m.username.Equals(userToRemove)).Any();
         }
 
 
         //define premissions to manger with matching username if manger has not been appointer by this appointer an UnauthorizedAccessException will be thrown
         public async Task DefinePermissions(string username, Manager man, List<Permission> permissions)
         {
-            if (!man.appointer.Equals(this))
+            if (!man.appointer.username.Equals(this.username))
                 throw new UnauthorizedAccessException();
             List<string> perms = new List<string>();
             foreach(Permission p in permissions)

@@ -414,7 +414,7 @@ namespace TradingSystem.Business.Market
             return ret;
         }
         //functional requirement 4.4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/136
-        public String RemoveOwner(String ownerName, String assigner)
+        public async Task<string> RemoveOwnerAsync(String ownerName, String assigner)
         {
             Appointer a;
             String ret;
@@ -437,7 +437,7 @@ namespace TradingSystem.Business.Market
             {
                 foreach (String appointee in ownerToRemove.getAppointees())
                 {
-                    ret = RemoveOwner(appointee, ownerName);
+                    ret = await RemoveOwnerAsync(appointee, ownerName);
                     if (!ret.Equals("success"))
                         return ret;
                 }
@@ -447,11 +447,11 @@ namespace TradingSystem.Business.Market
             {
                 ownerToRemove.removePermission(this);
                 owners.Remove(ownerToRemove);
-                MarketDAL.Instance.removeOwner(ownerToRemove);
-                ret = "success";
-                PublisherManagement.Instance.EventNotification(ownerName, EventType.RemoveAppointment, assigner + " has revoked your appointment as an owner for store " + name);
+               
             }
-
+            await MarketDAL.Instance.removeOwner(ownerToRemove);
+            ret = "success";
+            PublisherManagement.Instance.EventNotification(ownerName, EventType.RemoveAppointment, assigner + " has revoked your appointment as an owner for store " + name);
             return ret;
         }
 

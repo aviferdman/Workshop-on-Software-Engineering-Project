@@ -245,7 +245,7 @@ namespace TradingSystem.Business.Market
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
-            return store.RemoveOwner(ownerName, assignerName);
+            return await store.RemoveOwnerAsync(ownerName, assignerName);
         }
 
         public async  Task addToCategory(Product p, string category)
