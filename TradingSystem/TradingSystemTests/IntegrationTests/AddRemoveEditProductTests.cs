@@ -82,7 +82,7 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveProduct(Guid, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc24")]
-        public async void CheckValidRemoveProduct()
+        public async Task CheckValidRemoveProduct()
         {
             Product p = new Product(product1);
             store.Products.Add(p);

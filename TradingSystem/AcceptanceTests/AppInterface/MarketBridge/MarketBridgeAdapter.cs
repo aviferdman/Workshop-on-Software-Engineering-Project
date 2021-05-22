@@ -151,7 +151,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public IEnumerable<ProductInCart>? GetShoppingCartItems()
         {
-            IDictionary<Guid, Dictionary<ProductData, int>> shoppingCartData = marketShoppingCartService.ViewShoppingCart(Username);
+            IDictionary<NamedGuid, Dictionary<ProductData, int>> shoppingCartData = marketShoppingCartService.ViewShoppingCart(Username);
             return shoppingCartData
                 .SelectMany
                 (

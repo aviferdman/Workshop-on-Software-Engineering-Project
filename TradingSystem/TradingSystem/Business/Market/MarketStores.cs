@@ -143,8 +143,9 @@ namespace TradingSystem.Business.Market
         //functional requirement 4.1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/17
         public async Task<Result<Product>> AddProduct(ProductData productData, Guid storeID, String username)
         {
+            Store store = await GetStoreById(storeID);
+            productData.StoreName = store.name;
             Product product = new Product(productData);
-            Store store=await GetStoreById(storeID);
             if (store==null)
                 return new Result<Product>(product, true, "Store doesn't exist");
             String res = await store.AddProductAsync(product, username);

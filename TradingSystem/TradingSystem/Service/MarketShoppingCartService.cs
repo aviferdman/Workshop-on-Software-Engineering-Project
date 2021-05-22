@@ -28,7 +28,7 @@ namespace TradingSystem.Service
 
         public static MarketShoppingCartService Instance => instanceLazy.Value;
 
-        public Dictionary<Guid, Dictionary<ProductData, int>> ViewShoppingCart(string username)
+        public Dictionary<NamedGuid, Dictionary<ProductData, int>> ViewShoppingCart(string username)
         {
             var cart = (ShoppingCart)marketUsers.viewShoppingCart(username);
             if (cart == null)
@@ -36,7 +36,7 @@ namespace TradingSystem.Service
                 return null;
             }
 
-            var dataCart = new Dictionary<Guid, Dictionary<ProductData, int>>();
+            var dataCart = new Dictionary<NamedGuid, Dictionary<ProductData, int>>();
             foreach (ShoppingBasket basket in cart.ShoppingBaskets)
             {
                 var products = new Dictionary<ProductData, int>();
@@ -44,7 +44,7 @@ namespace TradingSystem.Service
                 {
                     products.Add(new ProductData(p.product), p.quantity);
                 }
-                dataCart.Add(basket.GetStore().GetId(), products);
+                dataCart.Add(new NamedGuid(basket.GetStore().GetId(), basket.GetStore().name), products);
             }
             return dataCart;
         }
