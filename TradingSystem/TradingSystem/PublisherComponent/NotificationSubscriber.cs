@@ -47,8 +47,6 @@ namespace TradingSystem.Notifications
             {
                 messages.Add(message);
             }
-            else
-                throw new NotImplementedException();
         }
 
         public void MyCallback()
