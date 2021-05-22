@@ -57,10 +57,10 @@ namespace TradingSystem.Business.Market
 
         public virtual bool RemoveProduct(Product product)
         {
-            if(_product_quantity.Where(p => p.product.Equals(product)).Any())
+            if(_product_quantity.Where(p => p.product.Id.Equals(product.Id)).Any())
             {
-                MarketDAL.Instance.removeProductFromCart(_product_quantity.Where(p => p.product.Equals(product)).Single());
-                _product_quantity.RemoveWhere(p => p.product.Equals(product));
+                MarketDAL.Instance.removeProductFromCart(_product_quantity.Where(p => p.product.Id.Equals(product.Id)).Single());
+                _product_quantity.RemoveWhere(p => p.product.Id.Equals(product.Id));
                 return true;
             }
                
@@ -69,25 +69,25 @@ namespace TradingSystem.Business.Market
 
         public virtual void UpdateProduct(Product product, int quantity)
         {
-            if (!_product_quantity.Where(p => p.product.Equals(product)).Any())
+            if (!_product_quantity.Where(p => p.product.Id.Equals(product.Id)).Any())
             {
                 _product_quantity.Add(new ProductInCart(product, quantity));
             }
             else
             {
-                _product_quantity.Where(p => p.product.Equals(product)).First().quantity = quantity;
+                _product_quantity.Where(p => p.product.Id.Equals(product.Id)).First().quantity = quantity;
             }
         }
 
         public virtual bool TryUpdateProduct(Product product, int quantity)
         {
-            if (!_product_quantity.Where(p => p.product.Equals(product)).Any())
+            if (!_product_quantity.Where(p => p.product.Id.Equals(product.Id)).Any())
             {
                 return false;
             }
             else
             {
-                _product_quantity.Where(p => p.product.Equals(product)).First().quantity = quantity;
+                _product_quantity.Where(p => p.product.Id.Equals(product.Id)).First().quantity = quantity;
                 return true;
             }
         }
@@ -109,9 +109,9 @@ namespace TradingSystem.Business.Market
 
         public virtual int GetProductQuantity(Product product)
         {
-            if (_product_quantity.Where(p => p.product.Equals(product)).Any())
+            if (_product_quantity.Where(p => p.product.Id.Equals(product.Id)).Any())
             {
-                return _product_quantity.Where(p => p.product.Equals(product)).First().quantity;
+                return _product_quantity.Where(p => p.product.Id.Equals(product.Id)).First().quantity;
             }
             return 0;
         }
