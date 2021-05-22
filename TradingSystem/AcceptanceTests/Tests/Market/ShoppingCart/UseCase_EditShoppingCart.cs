@@ -111,7 +111,6 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_NotMutuallyDisjoint()
         {
-
             Assert.IsFalse(MarketBridge.EditUserCart(
                 new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
                 new HashSet<ProductId> { MarketImage[1].ShopProducts[1].ProductId },

@@ -1,8 +1,5 @@
 import React from "react";
-import Dialog from "@material-ui/core/Dialog";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogActions from "@material-ui/core/DialogActions";
-import {DialogTitle, TextField} from "@material-ui/core";
+import {TextField} from "@material-ui/core";
 import './StoreCreationForm.css'
 import FormFieldInfo from "../../formsUtil/formFieldInfo";
 import {GlobalContext} from "../../globalContext";
@@ -11,7 +8,6 @@ import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
-import FormFieldCustomValidation from "../../formsUtil/formFieldCustomValidation";
 import axios from "axios";
 
 export default class StoreCreateForm extends React.Component {

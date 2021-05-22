@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 
+using TradingSystem.Business.Market;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
 
@@ -16,19 +18,25 @@ namespace TradingSystem.WebApi.Controllers
     {
         public StoresController
         (
+            IFileProvider fileProvider,
             MarketUserService marketUserService,
-            MarketStoreGeneralService marketStoreGeneralService
+            MarketStoreGeneralService marketStoreGeneralService,
+            MarketProductsService marketProductsService
         )
         {
+            FileProvider = fileProvider;
             MarketUserService = marketUserService;
             MarketStoreGeneralService = marketStoreGeneralService;
+            MarketProductsService = marketProductsService;
         }
 
+        public IFileProvider FileProvider { get; }
         public MarketUserService MarketUserService { get; }
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
+        public MarketProductsService MarketProductsService { get; }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<StoreInfoDTO>>> MyStores([FromBody] string username)
+        public async Task<ActionResult<IEnumerable<StoreRefDTO>>> MyStores([FromBody] string username)
         {
             ICollection<StoreData>? stores = await MarketUserService.getUserStores(username);
             if (stores is null)
@@ -36,15 +44,38 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(stores.Select(store => new StoreInfoDTO
+            return Ok(stores.Select(store => new StoreRefDTO
             {
                 Id = store.Id,
                 Name = store.Name,
             }));
         }
 
+        [HttpGet]
+        public async Task<ActionResult<StoreInfoDTO>> Info([FromQuery] Guid storeId)
+        {
+            System.Text.Json.JsonDocument? json = await ParseJsonFromFile(FileProvider, "productData.json");
+            if (json is null)
+            {
+                return InternalServerError();
+            }
+            return Ok(json.RootElement);
+            //StoreData? store = await MarketStoreGeneralService.getStoreById(storeId);
+            //if (store == null)
+            //{
+            //    return InternalServerError();
+            //}
+
+            //return Ok(new StoreInfoDTO
+            //{
+            //    Id = store.Id,
+            //    Name = store.Name,
+            //    Products = store.Products.Select(ProductDTO.FromProductData)
+            //});
+        }
+
         [HttpPost]
-        public async Task<ActionResult<StoreRefDTO>> CreateAsync([FromBody] StoreCreationDTO storeCreationDTO)
+        public async Task<ActionResult<StoreRefDTO>> Create([FromBody] StoreCreateDTO storeCreationDTO)
         {
             object?[] values =
             {
@@ -93,6 +124,111 @@ namespace TradingSystem.WebApi.Controllers
                 Id = storeData.Id,
                 Name = storeData.Name,
             });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductRefDTO>> AddProduct([FromBody] ProductCreateDTO productCreationDTO)
+        {
+            object?[] values =
+            {
+                productCreationDTO.Username,
+                productCreationDTO.ProductDetails?.Name,
+                productCreationDTO.ProductDetails?.Category,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+            Result<Product> productResult = await MarketProductsService.AddProduct
+            (
+                productCreationDTO.ProductDetails!.ToProductData(),
+                productCreationDTO.StoreId,
+                productCreationDTO.Username
+            );
+
+            if (productResult == null)
+            {
+                return InternalServerError();
+            }
+            if (productResult.IsErr)
+            {
+                return string.IsNullOrWhiteSpace(productResult.Mess) ?
+                    InternalServerError() :
+                    InternalServerError(productResult.Mess);
+            }
+
+            Product product = productResult.Ret;
+            return new ProductRefDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+            };
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> EditProduct([FromBody] ProductEditDTO productEditDTO)
+        {
+            object?[] values =
+            {
+                productEditDTO.Username,
+                productEditDTO.ProductDetails?.Name,
+                productEditDTO.ProductDetails?.Category,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+            string result = await MarketProductsService.EditProductAsync
+            (
+                productEditDTO.ProductId,
+                productEditDTO.ProductDetails!.ToProductData(),
+                productEditDTO.StoreId,
+                productEditDTO.Username
+            );
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return InternalServerError();
+            }
+            if (result != "Product edited")
+            {
+                return InternalServerError(result);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RemoveProduct([FromBody] ProductRemoveDTO productRemoveDTO)
+        {
+            object?[] values =
+            {
+                productRemoveDTO.Username,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+            string? result = await MarketProductsService.RemoveProductAsync
+            (
+                productRemoveDTO.ProductId,
+                productRemoveDTO.StoreId,
+                productRemoveDTO.Username
+            );
+
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return InternalServerError();
+            }
+            if (result != "Product removed")
+            {
+                return InternalServerError(result);
+            }
+
+            return Ok();
         }
     }
 }

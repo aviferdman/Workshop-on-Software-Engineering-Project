@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import formatCurrency from "../pages/mainPage/currency";
-import * as AiIcons from "react-icons/ai";
-import EditProduct from "./EditProduct";
 
 class HomeProducts extends Component {
     render() {

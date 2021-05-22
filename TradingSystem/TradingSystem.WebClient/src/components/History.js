@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import * as AiIcons from "react-icons/ai";
 import './History.css';
 
 

@@ -1,10 +1,21 @@
+import FormFieldInfo from "./formFieldInfo";
+
 export default class FormFields {
     constructor(fields) {
         this.fields = fields;
+        this.convertToFieldInfo();
     }
 
     validate() {
-        throw new Error('abstract method');
+        let valid = true;
+        let keys = Object.keys(this.fields);
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i];
+            if (!this.getField(key).validate()) {
+                valid = false;
+            }
+        }
+        return valid;
     }
 
     valuesObject(remap) {
@@ -28,6 +39,17 @@ export default class FormFields {
         }
 
         return false;
+    }
+
+    convertToFieldInfo() {
+        let keys = Object.keys(this.fields);
+        for (let i = 0; i < keys.length; i++) {
+            let key = keys[i];
+            let value = this.fields[key];
+            if (!(value instanceof FormFieldInfo)) {
+                this.fields[key] = new FormFieldInfo(value);
+            }
+        }
     }
 
     getField(name) {

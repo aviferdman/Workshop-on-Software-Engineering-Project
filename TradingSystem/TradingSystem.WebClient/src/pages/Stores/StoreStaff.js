@@ -3,7 +3,6 @@ import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
 import './StoreStaff.css';
 import data from "../../data/staffData.json";
-import AddProduct from "../../components/AddProduct";
 import Users from "../../components/Users";
 import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
@@ -23,30 +22,30 @@ class StoreStaff extends Component {
             <div className="grid-container">
                 <header className="header-container">
                     <a href="/">E - commerce Application</a>
-                    <div></div>
+                    <div/>
                     <button className="icons">
                         <HiIcons.HiShoppingCart />
                     </button>
-                    <Navbar></Navbar>
+                    <Navbar/>
                 </header>
 
                 <main className="store-products-main-conatiner">
 
                     <div>
-                        <Users staff={this.state.staff} ></Users>
+                        <Users staff={this.state.staff} />
                     </div>
 
                     <div className="bottom-row">
                         <div>
-                            <AddManager></AddManager>
+                            <AddManager/>
                         </div>
 
                         <div>
-                            <AddOwner></AddOwner>
+                            <AddOwner/>
                         </div>
 
                         <div>
-                            <SetPermission></SetPermission>
+                            <SetPermission/>
                         </div>
 
 
