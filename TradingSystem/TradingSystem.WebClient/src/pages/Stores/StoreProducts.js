@@ -43,6 +43,23 @@ class StoreProductsContent extends Component {
         });
     }
 
+    onProductAdded = product => {
+        this.state.products.push(product);
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onProductEdited = product => {
+        let index = this.state.products.findIndex(p2 => {
+            return p2.id === product.id;
+        });
+        this.state.products[index] = product;
+        this.setState({
+            ...this.state
+        });
+    }
+
     render() {
         return (
             <main className="store-products-main-conatiner">
@@ -50,11 +67,11 @@ class StoreProductsContent extends Component {
                 <div>
                     <Products storeId={this.props.match.params.storeId}
                               products={this.state.products}
-                              onProductRemoved={this.onProductRemoved} />
+                              onProductRemoved={this.onProductRemoved} onProductEdited={this.onProductEdited} />
                 </div>
 
                 <div className="bottom-row">
-                    <AddProduct storeId={this.props.match.params.storeId} />
+                    <AddProduct storeId={this.props.match.params.storeId} onProductAdded={this.onProductAdded} />
                 </div>
 
             </main>
