@@ -45,3 +45,11 @@
   margin: 0;
   padding: 0;
 }
+
+.logout-btn {
+  width: 80px;
+  cursor: pointer;
+  background-color: #ECCC77FF;
+  border: none;
+  display: inline-block;
+}

@@ -2,8 +2,9 @@ import React, {useEffect} from 'react';
 import Routes from "./routes";
 import axios from "axios";
 import SimpleAlertDialog from "./components/simpleAlertDialog";
-import {GlobalContext} from "./globalContext";
+import {GlobalContext, UserRole} from "./globalContext";
 import './App.css'
+import {__RouterContext} from 'react-router'
 
 export function useTitle(title) {
   useEffect(() => {
@@ -22,6 +23,7 @@ class App extends React.Component {
     this.handleCloseErrorDialog = this.handleCloseErrorDialog.bind(this);
     this.setUsername = this.setUsername.bind(this);
     this.setWebSocket = this.setWebSocket.bind(this);
+    this.logout = this.logout.bind(this);
 
     this.state = {
       showErrorDialog: false,
@@ -29,21 +31,53 @@ class App extends React.Component {
       globalContext: {
         username: '',
         setUsername: this.setUsername,
-        isLoggedIn: false,
+        role: null,
         webSocket: null,
-        setWebSocket: this.setWebSocket
+        setWebSocket: this.setWebSocket,
+        logout: this.logout,
       }
     };
   }
 
-  setUsername = (username, loggedIn) => {
+  releaseContext = async (webSocketCloseCode, webSocketCloseReason) => {
+    if (webSocketCloseReason && this.state.globalContext.webSocket) {
+      this.state.globalContext.webSocket.close(webSocketCloseCode, webSocketCloseReason);
+    }
+
+    let newUsername = '';
+    try {
+      let response = await axios.post('/UserGateway/Logout/', {
+        username: this.state.globalContext.username,
+      });
+      newUsername = response.data;
+    }
+    catch (e) {
+      newUsername = '';
+    }
+
+    this.setState({
+      globalContext: {
+        ...this.state.globalContext,
+        username: newUsername,
+        role: null,
+        webSocket: null
+      }
+    });
+    this.context.history.push('/');
+  }
+
+  setUsername = (username, role) => {
     this.setState({
       globalContext: {
         ...this.state.globalContext,
         username: username,
-        isLoggedIn: !!loggedIn
+        role: role
       }
     });
+  }
+
+  logout = () => {
+    this.releaseContext(1000, 'logout');
   }
 
   setWebSocket = username => {
@@ -55,6 +89,12 @@ class App extends React.Component {
       console.log('web socket connection opened');
       socket.send(username);
       console.log('sent username');
+    });
+
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        alert(`Live notification: ${event.data}`);
+        console.log('web socket message from server', event.data);
     });
 
     this.setState({
@@ -76,12 +116,7 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    this.setState({
-      globalContext: {
-        ...this.state.globalContext,
-        username: '',
-      }
-    });
+    this.releaseContext(null, null);
   }
 
   render() {
@@ -100,10 +135,10 @@ class App extends React.Component {
         showErrorDialog: false,
         errorMessage: null,
       });
-      this.setUsername(response.data, false);
+      this.setUsername(response.data, UserRole.guest);
     }
     catch (e) {
-      this.setUsername('', false);
+      this.setUsername('', null);
       if (e.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
@@ -124,5 +159,7 @@ class App extends React.Component {
     }
   }
 }
+
+App.contextType = __RouterContext;
 
 export default App;

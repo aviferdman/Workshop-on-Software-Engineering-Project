@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.FileProviders;
 
 using TradingSystem.Business.Market;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
+using TradingSystem.WebApi.DTO.Products;
 
 namespace TradingSystem.WebApi.Controllers
 {
@@ -23,7 +23,7 @@ namespace TradingSystem.WebApi.Controllers
         public MarketProductsService MarketProductsService { get; }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> Search([FromQuery] ProductSearchCreteria searchCreteria)
+        public async Task<ActionResult<IEnumerable<ProductSearchDTO>>> Search([FromQuery] ProductSearchCreteria searchCreteria)
         {
             if (searchCreteria == null)
             {
@@ -43,7 +43,7 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(products.Select(ProductDTO.FromProductData));
+            return Ok(products.Select(ProductSearchDTO.FromProductData));
         }
     }
 }

@@ -3,13 +3,11 @@ import './Home.css';
 import data from '../../data/productData.json';
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
-import Navbar from "../../components/Navbar/Navbar";
-import * as HiIcons from "react-icons/hi";
 import Cart from "../../components/Cart";
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
-import {Link} from "react-router-dom";
 import HomeProducts from "../../components/HomeProducts";
+import Header from "../../header";
 
 export class Home extends React.Component {
     constructor(props) {
@@ -51,8 +49,9 @@ export class Home extends React.Component {
     };
 
     onSearch = async () => {
+        let response;
         try {
-            let response = await axios.get('/Products/Search', {
+            response = await axios.get('/Products/Search', {
                 params: {
                     keywords: this.state.searchKeywords,
                     category: this.state.searchCategory,
@@ -60,14 +59,15 @@ export class Home extends React.Component {
                     priceRange_High: this.state.searchPriceMax === "" ? -1 : this.state.searchPriceMax,
                 }
             });
-            this.setState({
-                products: response.data
-            });
         }
         catch (e) {
             alert('An error occurred: ' + (e.response && e.response.data) || e.message);
             console.error("search error occurred: ", e);
+            return;
         }
+        this.setState({
+            products: response.data
+        });
     };
 
     removeFromCart = (product) => {
@@ -83,13 +83,15 @@ export class Home extends React.Component {
         cartItems.forEach( (item) => {
             if(item.id === product.id){
                 //console.log(this.state.cartItems.length);
-                item.count++;
+                item.count += product.quantity;
                 alreadyInCart = true;
             }
         });
 
         if(!alreadyInCart){
-            cartItems.push({...product, count: 1})
+            product.count = product.cartQuantity;
+            // product._inCart = true;
+            cartItems.push(product);
         }
         this.setState({cartItems: cartItems});
     };
@@ -125,28 +127,14 @@ export class Home extends React.Component {
         }
     };
 
+    onProceedToPurchase = () => {
+        this.props.history.push('/ShoppingCart');
+    }
+
     render() {
         return (
-            <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''} Admin</h3>
-                    </div>
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar/>
-
-                </header>
+            <div className="grid-container home">
+                <Header />
 
                 <div>
 
@@ -205,7 +193,7 @@ export class Home extends React.Component {
                             <HomeProducts products={this.state.products} addToCart={this.addToCart}></HomeProducts>
                         </div>
                         <div className="sidebar">
-                            <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+                            <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} onProceed={this.onProceedToPurchase} />
                         </div>
                     </div>
                 </main>

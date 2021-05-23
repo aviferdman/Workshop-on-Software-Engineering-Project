@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -27,7 +25,7 @@ namespace TradingSystem.WebApi
 
         public async Task OnAccept()
         {
-            var usernameBuffer = new byte[256];
+            byte[]? usernameBuffer = new byte[256];
             WebSocketReceiveResult result = await WebSocket.ReceiveAsync(new ArraySegment<byte>(usernameBuffer), CancellationToken.None);
             string username = Encoding.UTF8.GetString(usernameBuffer, 0, result.Count);
             LoggedInController.Instance.addClient(username, WebSocket);
@@ -36,9 +34,7 @@ namespace TradingSystem.WebApi
                 byte[]? buffer = new byte[1024];
                 _ = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
-            //in logout
-            //await ws.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-            //LoggedInController.Instance.RemoveClient(BitConverter.ToString(username));
+            LoggedInController.Instance.RemoveClient(username);
         }
     }
 }

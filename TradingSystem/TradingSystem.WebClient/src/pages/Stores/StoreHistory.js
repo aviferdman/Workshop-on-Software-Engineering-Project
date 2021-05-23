@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import './StoreHistory.css';
 import data from "../../data/historyData.json";
 import History from "../../components/History";
-import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
+import Header from "../../header";
 
 export class StoreHistory extends Component {
     constructor(props) {
@@ -19,26 +17,7 @@ export class StoreHistory extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar/>
-
-                </header>
+                <Header />
 
                 <main className="store-products-main-conatiner">
 

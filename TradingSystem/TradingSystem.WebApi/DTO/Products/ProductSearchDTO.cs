@@ -2,9 +2,9 @@
 
 using TradingSystem.Business.Market;
 
-namespace TradingSystem.WebApi.DTO
+namespace TradingSystem.WebApi.DTO.Products
 {
-    public class ShoppingBasketProductDTO
+    public class ProductSearchDTO
     {
         public string? Name { get; set; }
         public Guid Id { get; set; }
@@ -12,18 +12,20 @@ namespace TradingSystem.WebApi.DTO
         public double Weight { get; set; }
         public double Price { get; set; }
         public string? Category { get; set; }
+        public string? StoreName { get; set; }
         public int Rating { get; set; }
 
-        public static ShoppingBasketProductDTO FromProductData(ProductData productData, int quantity)
+        public static ProductSearchDTO FromProductData(ProductData productData)
         {
-            return new ShoppingBasketProductDTO
+            return new ProductSearchDTO
             {
                 Id = productData.pid,
                 Name = productData._name,
                 Category = productData.category,
-                Quantity = quantity,
+                Quantity = productData._quantity,
                 Price = productData._price,
                 Weight = productData._weight,
+                StoreName = productData.StoreName,
                 Rating = productData.rating,
             };
         }

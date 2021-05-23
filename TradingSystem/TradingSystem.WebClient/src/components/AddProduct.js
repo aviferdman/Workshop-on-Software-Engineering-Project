@@ -53,7 +53,7 @@ class AddProduct extends React.Component {
             });
             product.id = response.data.id;
             this.props.onProductAdded(product);
-        }).catch(alertRequestError_default);
+        }, alertRequestError_default);
     }
 
     render() {

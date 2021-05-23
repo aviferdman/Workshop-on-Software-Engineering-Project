@@ -1,9 +1,9 @@
 ﻿namespace TradingSystem.WebApi.DTO
 {
-    public class StoreCreateDTO
+    public class ShoppingCartPurchaseDTO
     {
         public string? Username { get; set; }
-        public string? StoreName { get; set; }
+        public string? PhoneNumber { get; set; }
         public Address? Address { get; set; }
         public CreditCard? CreditCard { get; set; }
     }
