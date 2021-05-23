@@ -51,8 +51,9 @@ export class Home extends React.Component {
     };
 
     onSearch = async () => {
+        let response;
         try {
-            let response = await axios.get('/Products/Search', {
+            response = await axios.get('/Products/Search', {
                 params: {
                     keywords: this.state.searchKeywords,
                     category: this.state.searchCategory,
@@ -60,14 +61,15 @@ export class Home extends React.Component {
                     priceRange_High: this.state.searchPriceMax === "" ? -1 : this.state.searchPriceMax,
                 }
             });
-            this.setState({
-                products: response.data
-            });
         }
         catch (e) {
             alert('An error occurred: ' + (e.response && e.response.data) || e.message);
             console.error("search error occurred: ", e);
+            return;
         }
+        this.setState({
+            products: response.data
+        });
     };
 
     removeFromCart = (product) => {

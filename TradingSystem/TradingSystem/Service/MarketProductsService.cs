@@ -51,6 +51,11 @@ namespace TradingSystem.Service
 
         public async Task<ICollection<ProductData>> FindProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
+            if (string.IsNullOrWhiteSpace(keyword))
+            {
+                return new ProductData[] { };
+            }
+
             ICollection<Product> pro = await marketStores.findProducts(keyword, price_range_low, price_range_high, rating, category);
             ICollection<ProductData> products = new LinkedList<ProductData>();
             foreach (Product p in pro)

@@ -42,20 +42,21 @@ class EditProduct extends React.Component {
             return;
         }
 
+        let product = this.state.product.valuesObject();
         axios.post('/Stores/EditProduct', {
             username: this.context.username,
             storeId: this.props.storeId,
             productId: this.props.productId,
-            productDetails: this.state.product.valuesObject(),
-        }).then(response => {
+            productDetails: product,
+        }).catch(alertRequestError_default)
+        .then(response => {
             this.setState({
                 show: false,
                 product: new ProductFields(),
             });
-            let product = this.state.product.valuesObject();
             product.id = this.props.productId;
             this.props.onProductEdited(product);
-        }).catch(alertRequestError_default);
+        });
     }
 
     render() {
