@@ -176,6 +176,7 @@ const Modal = ({ handleClose, handleConfirm, show, children }) => {
                     <button className="modal-buttons-props" onClick={handleConfirm}> Edit </button>
                 </div>
 
+
             </section>
         </div>
     );

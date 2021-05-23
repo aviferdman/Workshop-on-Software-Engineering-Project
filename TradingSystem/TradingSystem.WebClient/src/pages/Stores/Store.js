@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import {Route, Switch} from "react-router-dom";
 
-export class StoreContent extends Component {
+class StoreContent extends Component {
     constructor(props) {
         super(props);
         this.onProductsButtonClick = this.onProductsButtonClick.bind(this);
@@ -33,7 +33,7 @@ export class StoreContent extends Component {
     }
 }
 
-class Store extends Component {
+export class Store extends Component {
     render() {
         return (
             <div className="grid-container">

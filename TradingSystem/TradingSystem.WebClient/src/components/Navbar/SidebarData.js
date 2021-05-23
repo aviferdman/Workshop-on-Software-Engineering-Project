@@ -35,7 +35,6 @@ export const SidebarData = [
         icon: <AiIcons.AiOutlineHistory />,
         cName: 'nav-text'
     },
-
     {
         title: 'Support',
         path: '/support',
