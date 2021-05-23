@@ -11,7 +11,7 @@ export default class AddressFields extends FormFields {
             apartmentNumber: new FormFieldInfo(''),
             zipCode: new FormFieldInfo(''),
         });
-        this.fields.apartmentNumber = new FormFieldCustomValidation('', this.validate_digits.bind(this, 'apartmentNumber'));
+        // this.fields.apartmentNumber = new FormFieldCustomValidation('', this.validate_digits.bind(this, 'apartmentNumber'));
         this.fields.zipCode = new FormFieldCustomValidation('', this.validate_digits.bind(this, 'zipCode'));
     }
 

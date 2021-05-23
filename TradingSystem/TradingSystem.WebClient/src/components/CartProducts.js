@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import formatCurrency from "../pages/mainPage/currency";
 import * as AiIcons from "react-icons/ai";
+import {Link} from "react-router-dom";
 
 class CartProducts extends Component {
     render() {
@@ -21,7 +22,12 @@ class CartProducts extends Component {
                                 <a href={"#" + product.id}>
                                     <p className= "productName">{product.name}</p>
                                 </a>
-                                <p className= "productName"> store: {product.name}</p>
+                                <p className= "productName">
+                                    store:<span> </span>
+                                    <Link to={{ pathname: `/store/${product.store.id}` }}>
+                                        {product.store.name}
+                                    </Link>
+                                </p>
                                 <input
                                     type="number"
                                     placeholder="Quantity"
