@@ -24,7 +24,7 @@ namespace TradingSystem.WebApi.Controllers
 
         public MarketShoppingCartService MarketShoppingCartService { get; }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult<ShoppingCartDTO> MyShoppingCart([FromBody] UsernameDTO usernameDTO)
         {
             if (string.IsNullOrWhiteSpace(usernameDTO.Username))
@@ -39,6 +39,59 @@ namespace TradingSystem.WebApi.Controllers
             }
 
             return Ok(ShoppingCartDTO.FromDictionary(result));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Purchase([FromBody] ShoppingCartPurchaseDTO shoppingCartPurchaseDTO)
+        {
+            object?[] values =
+            {
+                shoppingCartPurchaseDTO.Username,
+                shoppingCartPurchaseDTO.PhoneNumber,
+                shoppingCartPurchaseDTO.CreditCard?.CardNumber,
+                shoppingCartPurchaseDTO.CreditCard?.Month,
+                shoppingCartPurchaseDTO.CreditCard?.Year,
+                shoppingCartPurchaseDTO.CreditCard?.HolderName,
+                shoppingCartPurchaseDTO.CreditCard?.Cvv,
+                shoppingCartPurchaseDTO.CreditCard?.HolderId,
+                shoppingCartPurchaseDTO.Address?.State,
+                shoppingCartPurchaseDTO.Address?.City,
+                shoppingCartPurchaseDTO.Address?.Street,
+                shoppingCartPurchaseDTO.Address?.ApartmentNumber,
+                shoppingCartPurchaseDTO.Address?.ZipCode,
+            };
+            if (values.Contains(null))
+            {
+                return BadRequest("Missing parameter values");
+            }
+
+            Result<bool>? result = await MarketShoppingCartService.PurchaseShoppingCart
+            (
+                shoppingCartPurchaseDTO.Username,
+                shoppingCartPurchaseDTO.CreditCard!.CardNumber,
+                shoppingCartPurchaseDTO.CreditCard!.Month,
+                shoppingCartPurchaseDTO.CreditCard!.Year,
+                shoppingCartPurchaseDTO.CreditCard!.HolderName,
+                shoppingCartPurchaseDTO.CreditCard!.Cvv,
+                shoppingCartPurchaseDTO.CreditCard!.HolderId,
+                shoppingCartPurchaseDTO.PhoneNumber,
+                shoppingCartPurchaseDTO.Address!.State,
+                shoppingCartPurchaseDTO.Address!.City,
+                shoppingCartPurchaseDTO.Address!.Street,
+                shoppingCartPurchaseDTO.Address!.ApartmentNumber,
+                shoppingCartPurchaseDTO.Address!.ZipCode
+            );
+
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
         }
 
         [HttpPost]
