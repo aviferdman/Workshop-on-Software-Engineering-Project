@@ -12,10 +12,11 @@
 
 }
 
-.header-container{
-    display: grid;
-    grid-template-columns: 15% 75% 5% 5%;
-}
+/* TODO: ask gil */
+/*.header-container{*/
+/*    display: grid;*/
+/*    grid-template-columns: 15% 75% 5% 5%;*/
+/*}*/
 
 .icons {
 

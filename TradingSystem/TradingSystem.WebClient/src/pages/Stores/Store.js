@@ -5,6 +5,7 @@ import './Store.css';
 import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import {Route, Switch} from "react-router-dom";
+import Header from "../../header";
 
 class StoreContent extends Component {
     constructor(props) {
@@ -37,26 +38,7 @@ export class Store extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container" >
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar/>
-
-                </header>
+                <Header />
 
                 <Switch>
                     <Route path={`${this.props.match.path}/:storeId`} component={StoreContent} />

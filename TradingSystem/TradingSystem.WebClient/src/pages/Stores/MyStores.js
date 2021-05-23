@@ -4,8 +4,9 @@ import Navbar from "../../components/Navbar/Navbar";
 import * as HiIcons from "react-icons/hi";
 import Store from "./StoreList"
 import axios from "axios";
-import {GlobalContext} from "../../globalContext";
+import {GlobalContext, UserRole} from "../../globalContext";
 import {Link} from "react-router-dom";
+import Header from "../../header";
 
 export class MyStores extends React.Component {
     constructor(props) {
@@ -47,26 +48,7 @@ export class MyStores extends React.Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar/>
-
-                </header>
+                <Header />
 
                 <main>{
                     (!this.state.stores || !this.state.stores.length) ? (

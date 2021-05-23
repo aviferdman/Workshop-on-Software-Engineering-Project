@@ -8,6 +8,7 @@ import {Route, Switch} from "react-router-dom";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
+import Header from "../../header";
 
 class StoreProductsContent extends Component {
     constructor(props) {
@@ -89,26 +90,7 @@ export class StoreProducts extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar></Navbar>
-
-                </header>
+                <Header />
 
                 <Switch>
                     <Route path={`${this.props.match.path}/:storeId`} component={StoreProductsContent} />

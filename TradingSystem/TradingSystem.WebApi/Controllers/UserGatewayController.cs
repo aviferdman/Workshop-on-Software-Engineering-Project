@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using TradingSystem.Service;
+using TradingSystem.WebApi.DTO;
 
 namespace TradingSystem.WebApi.Controllers
 {
@@ -21,7 +22,7 @@ namespace TradingSystem.WebApi.Controllers
         public async Task<ActionResult<string>> Login([FromBody] LoginInfo info)
         {
             string res = await MarketUserService.Instance.loginAsync(info.username, info.password, info.guestusername);
-            if (!res.Equals("success"))
+            if (res != "success" && res != "admin")
                 return BadRequest(res);
 
             return Ok(res);
@@ -34,6 +35,23 @@ namespace TradingSystem.WebApi.Controllers
             if (!res.Equals("success"))
                 return BadRequest(res);
             return Ok(res);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Logout([FromBody] UsernameDTO usernameDTO)
+        {
+            if (string.IsNullOrWhiteSpace(usernameDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+
+            string? result = await MarketUserService.Instance.logoutAsync(usernameDTO.Username);
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                return InternalServerError();
+            }
+
+            return Ok(result);
         }
     }
 }

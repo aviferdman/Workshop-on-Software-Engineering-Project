@@ -9,6 +9,7 @@ import AddOwner from "../../components/AddOwner";
 import SetPermission from "../../components/SetPermission";
 import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
+import Header from "../../header";
 
 export class StoreStaff extends Component {
 
@@ -22,26 +23,7 @@ export class StoreStaff extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar></Navbar>
-
-                </header>
+                <Header />
 
                 <main className="store-products-main-conatiner-staff">
 

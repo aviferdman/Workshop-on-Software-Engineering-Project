@@ -10,6 +10,7 @@ import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import Header from "../../header";
 
 export default class StoreCreateForm extends React.Component {
     constructor(props) {
@@ -98,28 +99,7 @@ export default class StoreCreateForm extends React.Component {
     render() {
         return (
             <div className="grid-container">
-                <SimpleAlertDialog isShown={this.state.showErrorDialog} message={this.state.dialogErrorMessage} onClose={this.closeErrorDialog} />
-
-                <header className="header-container" >
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar></Navbar>
-
-                </header>
+                <Header />
 
                 <main>
                     <div className='center-screen store-creation-width-div'>

@@ -9,7 +9,7 @@ import FormFieldInfo from "../../formsUtil/formFieldInfo";
 import axios from "axios";
 import useFormsStyles from "../../style/forms";
 import SimpleAlertDialog from "../../components/simpleAlertDialog";
-import {GlobalContext} from "../../globalContext";
+import {GlobalContext, UserRole} from "../../globalContext";
 
 const useStyles = makeStyles((theme) => ({
     form: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function LoginPage() {
+export default function LoginPage(props) {
     useTitle('Login');
 
     const classes = useStyles();
@@ -74,6 +74,10 @@ export default function LoginPage() {
         };
         newState[prop].value = e.target.value;
         setState(newState);
+    };
+
+    const onContinueAsGuestClick = () => {
+        props.history.push('/home');
     };
 
     let submitting = false;
@@ -116,8 +120,8 @@ export default function LoginPage() {
                     username: state.username.value,
                     password: state.password.value,
                 });
-                if (response.data === "success") {
-                    context.setUsername(state.username.value, true);
+                if (response.data === "success" || response.data === "admin") {
+                    context.setUsername(state.username.value, response.data === "success" ? UserRole.member : UserRole.admin);
                     context.setWebSocket(state.username.value);
                     history.push('/home');
                 }
@@ -200,7 +204,7 @@ export default function LoginPage() {
                             <Button variant="contained" color="primary" onClick={onSignupClick}>Sign up</Button>
                         </div>
                         <div className={classes.topMargin}>
-                            <Button variant="contained" style={{textTransform: 'none'}}>Continue as guest</Button>
+                            <Button variant="contained" style={{textTransform: 'none'}} onClick={onContinueAsGuestClick}>Continue as guest</Button>
                         </div>
                     </form>
                 </div>

@@ -9,6 +9,7 @@ import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import axios from "axios";
 import {alertRequestError_default} from "../../utils";
+import Header from "../../header";
 
 export class ShoppingCart extends Component {
     constructor(props) {
@@ -56,26 +57,7 @@ export class ShoppingCart extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
-                    </div>
-
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar/>
-
-                </header>
+                <Header />
 
                 <main className="store-products-main-conatiner">
 

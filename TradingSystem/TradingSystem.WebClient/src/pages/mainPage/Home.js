@@ -7,9 +7,10 @@ import Navbar from "../../components/Navbar/Navbar";
 import * as HiIcons from "react-icons/hi";
 import Cart from "../../components/Cart";
 import axios from "axios";
-import {GlobalContext} from "../../globalContext";
+import {GlobalContext, UserRole} from "../../globalContext";
 import {Link} from "react-router-dom";
 import HomeProducts from "../../components/HomeProducts";
+import Header from "../../header";
 
 export class Home extends React.Component {
     constructor(props) {
@@ -135,26 +136,8 @@ export class Home extends React.Component {
 
     render() {
         return (
-            <div className="grid-container">
-                <header className="header-container">
-                    <a href="/">E - commerce Application</a>
-                    <div>
-                        <h3>{this.context.isLoggedIn ? this.context.username : ''} Admin</h3>
-                    </div>
-
-                    <Link
-                        className="icons"
-                        to={{
-                            pathname: "/ShoppingCart"
-                        }}
-                    >
-                        <HiIcons.HiShoppingCart />
-                    </Link>
-
-
-                    <Navbar/>
-
-                </header>
+            <div className="grid-container home">
+                <Header />
 
                 <div>
 

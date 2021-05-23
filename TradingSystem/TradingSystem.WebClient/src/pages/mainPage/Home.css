@@ -29,7 +29,7 @@ body, input, select, button, textarea{
 
 .header-container{
     display: grid;
-    grid-template-columns: 15% 75% 5% 5%;
+    grid-template-columns: 15% 30% 30% 15% 5% 5%;
 }
 
 .icons {
