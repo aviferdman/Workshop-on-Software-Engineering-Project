@@ -57,6 +57,12 @@ class App extends React.Component {
       console.log('sent username');
     });
 
+    // Listen for messages
+    socket.addEventListener('message', function (event) {
+        alert(`Live notification: ${event.data}`);
+        console.log('web socket message from server', event.data);
+    });
+
     this.setState({
       globalContext: {
         ...this.state.globalContext,

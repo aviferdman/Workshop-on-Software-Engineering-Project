@@ -16,18 +16,18 @@ namespace TradingSystem.WebApi
         {
             this.socket = socket;
         }
-        public virtual void OnCompleted()
+        public override void OnCompleted()
         {
             throw new NotImplementedException();
         }
 
-        public virtual void OnError(Exception e)
+        public override void OnError(Exception e)
         {
             byte[] buffer = Encoding.ASCII.GetBytes(e.Message);
             socket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        public virtual void OnNext(Event ev)
+        public override void OnNext(Event ev)
         {
             var message = $"Hey {SubscriberName} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
             byte[] buffer = Encoding.ASCII.GetBytes(message);
