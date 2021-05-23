@@ -41,16 +41,16 @@ class AddProduct extends React.Component {
             return;
         }
 
+        let product = this.state.product.valuesObject();
         axios.post('/Stores/AddProduct', {
             username: this.context.username,
             storeId: this.props.storeId,
-            productDetails: this.state.product.valuesObject(),
+            productDetails: product,
         }).then(response => {
             this.setState({
                 show: false,
                 product: new ProductFields(),
             });
-            let product = this.state.product.valuesObject();
             product.id = response.data.id;
             this.props.onProductAdded(product);
         }).catch(alertRequestError_default);

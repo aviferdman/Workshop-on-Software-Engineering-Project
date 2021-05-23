@@ -142,7 +142,15 @@ footer{
     flex-direction: column;
     justify-content: space-between;
 
+
 }
+
+.center-add-product {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 
 .product-price{
     display: flex;

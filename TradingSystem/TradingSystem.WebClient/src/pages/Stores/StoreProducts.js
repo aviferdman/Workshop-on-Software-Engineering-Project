@@ -73,7 +73,11 @@ class StoreProductsContent extends Component {
                 </div>
 
                 <div className="bottom-row">
-                    <AddProduct storeId={this.props.match.params.storeId} onProductAdded={this.onProductAdded} />
+
+                    <div className="center-add-product">
+                        <AddProduct storeId={this.props.match.params.storeId} onProductAdded={this.onProductAdded} />
+                    </div>
+
                 </div>
 
             </main>
