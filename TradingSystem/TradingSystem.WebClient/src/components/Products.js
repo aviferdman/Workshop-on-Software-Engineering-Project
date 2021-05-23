@@ -50,11 +50,11 @@ class Products extends Component {
     render() {
         return (
             <div>
-                <ul className = "store-products">
+                <ul className = "products">
                 {this.props.products.map((product) => (
                     <li key={product.id}>
                         {this.renderControlButtonsElement(product)}
-                        <div className = "product">
+                        <div className = "store-product">
                             <a>
                                 <p className= "productName">{product.name}</p>
                             </a>
