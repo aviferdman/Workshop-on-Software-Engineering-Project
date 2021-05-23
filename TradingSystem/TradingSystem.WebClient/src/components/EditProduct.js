@@ -166,7 +166,7 @@ const Modal = ({ handleClose, handleConfirm, show, children }) => {
             <section className='modal-main'>
 
                 <div className="lines-props">
-                    <h2 className="center-text">Add Product</h2>
+                    <h2 className="center-text">Edit Product</h2>
                     {children}
                 </div>
 

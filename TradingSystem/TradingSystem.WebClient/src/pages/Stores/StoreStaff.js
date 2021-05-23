@@ -7,8 +7,10 @@ import Users from "../../components/Users";
 import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
 import SetPermission from "../../components/SetPermission";
+import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 
-class StoreStaff extends Component {
+export class StoreStaff extends Component {
 
     constructor(props) {
         super(props);
@@ -22,20 +24,32 @@ class StoreStaff extends Component {
             <div className="grid-container">
                 <header className="header-container">
                     <a href="/">E - commerce Application</a>
-                    <div/>
-                    <button className="icons">
+                    <div>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                    </div>
+
+
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
-                    <Navbar/>
+                    </Link>
+
+
+                    <Navbar></Navbar>
+
                 </header>
 
-                <main className="store-products-main-conatiner">
+                <main className="store-products-main-conatiner-staff">
 
                     <div>
                         <Users staff={this.state.staff} />
                     </div>
 
-                    <div className="bottom-row">
+                    <div className="bottom-row-staff">
                         <div>
                             <AddManager/>
                         </div>
@@ -58,4 +72,4 @@ class StoreStaff extends Component {
     }
 }
 
-export default StoreStaff;
+StoreStaff.contextType = GlobalContext;

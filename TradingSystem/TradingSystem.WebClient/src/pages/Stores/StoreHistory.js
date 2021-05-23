@@ -4,9 +4,10 @@ import Navbar from "../../components/Navbar/Navbar";
 import './StoreHistory.css';
 import data from "../../data/historyData.json";
 import History from "../../components/History";
+import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 
-class StoreHistory extends Component {
-
+export class StoreHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -14,16 +15,29 @@ class StoreHistory extends Component {
             history: data.history
         };
     }
+
     render() {
         return (
             <div className="grid-container">
                 <header className="header-container">
                     <a href="/">E - commerce Application</a>
-                    <div/>
-                    <button className="icons">
+                    <div>
+                        <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
+                    </div>
+
+
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
                         <HiIcons.HiShoppingCart />
-                    </button>
+                    </Link>
+
+
                     <Navbar/>
+
                 </header>
 
                 <main className="store-products-main-conatiner">
@@ -44,4 +58,4 @@ class StoreHistory extends Component {
     }
 }
 
-export default StoreHistory;
+StoreHistory.contextType = GlobalContext;

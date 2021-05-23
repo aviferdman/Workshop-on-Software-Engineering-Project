@@ -50,7 +50,7 @@ class Products extends Component {
     render() {
         return (
             <div>
-                <ul className = "products">
+                <ul className = "store-products">
                 {this.props.products.map((product) => (
                     <li key={product.id}>
                         {this.renderControlButtonsElement(product)}
@@ -61,10 +61,6 @@ class Products extends Component {
                             <div className="product-price">
                                 <div>{formatCurrency(product.price)}</div>
                             </div>
-                            {/*
-                            TODO: ask gil
-                            <button onClick={() => this.props.addToCart(product)} className="button primary">Add To Cart</button>
-                             */}
                         </div>
                     </li>
                     ))}

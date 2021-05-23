@@ -9,6 +9,7 @@ import Navbar from "../../components/Navbar/Navbar";
 import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 export default class StoreCreateForm extends React.Component {
     constructor(props) {
@@ -99,17 +100,25 @@ export default class StoreCreateForm extends React.Component {
             <div className="grid-container">
                 <SimpleAlertDialog isShown={this.state.showErrorDialog} message={this.state.dialogErrorMessage} onClose={this.closeErrorDialog} />
 
-                <header className="header-container">
+                <header className="header-container" >
                     <a href="/">E - commerce Application</a>
                     <div>
                         <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
                     </div>
 
-                    <button className="icons">
-                        <HiIcons.HiShoppingCart />
-                    </button>
 
-                    <Navbar/>
+                    <Link
+                        className="icons"
+                        to={{
+                            pathname: "/ShoppingCart"
+                        }}
+                    >
+                        <HiIcons.HiShoppingCart />
+                    </Link>
+
+
+                    <Navbar></Navbar>
+
                 </header>
 
                 <main>

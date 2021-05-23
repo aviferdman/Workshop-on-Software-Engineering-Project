@@ -137,6 +137,12 @@ footer{
     justify-content: space-between;
     height: 100%;
 }
+.store-product{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
 
 .product-price{
     display: flex;
