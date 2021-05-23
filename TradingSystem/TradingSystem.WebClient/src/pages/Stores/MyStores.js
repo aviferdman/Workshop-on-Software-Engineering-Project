@@ -23,19 +23,21 @@ export class MyStores extends React.Component {
     }
 
     async fetchStores() {
+        let response;
         try {
-            let response = await axios.post('/Stores/MyStores', '"' + this.context.username + '"', {
+            response = await axios.post('/Stores/MyStores', '"' + this.context.username + '"', {
                 headers: {
                     'content-type': 'application/json'
                 }
             });
-            this.setState({
-                stores: response.data
-            });
         }
         catch (e) {
             console.error("search error occurred: ", e);
+            return;
         }
+        this.setState({
+            stores: response.data
+        });
     }
 
     onCreateStoreButtonClick = e => {

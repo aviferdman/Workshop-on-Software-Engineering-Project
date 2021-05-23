@@ -70,6 +70,6 @@
     align-items: center;
 }
 
-span {
+span.nav-menu-span {
     margin-left: 16px;
 }

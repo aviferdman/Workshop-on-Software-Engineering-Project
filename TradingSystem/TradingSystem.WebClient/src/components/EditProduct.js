@@ -48,15 +48,14 @@ class EditProduct extends React.Component {
             storeId: this.props.storeId,
             productId: this.props.productId,
             productDetails: product,
-        }).catch(alertRequestError_default)
-        .then(response => {
+        }).then(response => {
             this.setState({
                 show: false,
                 product: new ProductFields(),
             });
             product.id = this.props.productId;
             this.props.onProductEdited(product);
-        });
+        }, alertRequestError_default);
     }
 
     render() {

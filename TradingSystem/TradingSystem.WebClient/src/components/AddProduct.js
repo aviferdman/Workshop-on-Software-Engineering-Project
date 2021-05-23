@@ -46,15 +46,14 @@ class AddProduct extends React.Component {
             username: this.context.username,
             storeId: this.props.storeId,
             productDetails: product,
-        }).catch(alertRequestError_default)
-        .then(response => {
+        }).then(response => {
             this.setState({
                 show: false,
                 product: new ProductFields(),
             });
             product.id = response.data.id;
             this.props.onProductAdded(product);
-        });
+        }, alertRequestError_default);
     }
 
     render() {
