@@ -104,7 +104,7 @@ namespace TradingSystem.Service
             {
                 //accept bid
                 case Answer.Accept:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ownerUsername+" has declined your bid offer");
                     return await MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
 
                 //request new bid
@@ -115,7 +115,7 @@ namespace TradingSystem.Service
 
                 //deny new bid
                 default:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestDenyMessage"]);
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ownerUsername + " has declined your bid offer");
                     return new Result<bool>(true, false, "");
             }
         }
@@ -126,12 +126,12 @@ namespace TradingSystem.Service
             {
                 //request new bid
                 case Answer.Bid:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestAcceptMessage"]);
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent,  "a store has accepted your offer");
                     return await MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
                 
                 //accept / deny bid
                 default:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ConfigurationManager.AppSettings["RequestDenyMessage"]);
+                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, "a store has declined yor offer");
                     return new Result<bool>(true, false, "");
             }
         }
