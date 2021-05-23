@@ -31,6 +31,11 @@ namespace TradingSystem.Business.Market
                 ProductHistories.Add(p_q.product, p_q.quantity);
             }
         }
+
+        public TransactionStatus()
+        {
+        }
+
         /*
         public TransactionStatus(  PaymentStatus paymentStatus, DeliveryStatus deliveryStatus, ShoppingBasket shoppingBasket, bool status)
         {

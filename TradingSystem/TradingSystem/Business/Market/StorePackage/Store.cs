@@ -129,7 +129,7 @@ namespace TradingSystem.Business.Market
             else
             {
                 AddToHistory(transactionStatus);
-                NotifyOwners();
+                NotifyOwners(username);
             }
             return new PurchaseStatus(true, transactionStatus, sid);
         }
@@ -171,15 +171,15 @@ namespace TradingSystem.Business.Market
             HistoryManager.Instance.AddHistory(transactionStatus);
         }
 
-        private void NotifyOwners()
+        private void NotifyOwners(string usrname)
         {
             //notify the founder for a new purchase
-            PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+            PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, usrname+" purchased items from store "+name);
 
             //notify the owners
             foreach (var owner in owners)
             {
-                PublisherManagement.Instance.EventNotification(owner.Username, EventType.PurchaseEvent, ConfigurationManager.AppSettings["PurchaseMessage"]);
+                PublisherManagement.Instance.EventNotification(owner.Username, EventType.PurchaseEvent, usrname + " purchased items from store " + name);
             }
         }
 

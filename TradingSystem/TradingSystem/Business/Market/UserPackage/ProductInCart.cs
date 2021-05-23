@@ -14,5 +14,9 @@ namespace TradingSystem.Business.Market.UserPackage
             this.product = product;
             this.quantity = quantity;
         }
+
+        public ProductInCart()
+        {
+        }
     }
 }

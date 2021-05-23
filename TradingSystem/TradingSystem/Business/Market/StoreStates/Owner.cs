@@ -26,6 +26,10 @@ namespace TradingSystem.Business.Market.StoreStates
             this.sid = sid;
         }
 
+        public Owner()
+        {
+        }
+
         public override MemberState getM() { return m; }
 
         public  static Owner makeOwner(MemberState m, Store s, Appointer appointer)

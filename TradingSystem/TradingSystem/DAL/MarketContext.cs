@@ -101,7 +101,6 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<ProductInCart>()
             .HasOne(b => b.product)
             .WithMany();
-            
             modelBuilder.Entity<Owner>()
             .HasOne(b => b.appointer)
             .WithMany()

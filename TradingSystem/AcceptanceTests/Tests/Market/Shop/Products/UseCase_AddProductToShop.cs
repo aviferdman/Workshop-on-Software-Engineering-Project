@@ -116,12 +116,14 @@ namespace AcceptanceTests.Tests.Market.Shop.Products
         [TearDown]
         public override void Teardown()
         {
+
             _ = UserBridge.AssureLogin(ShopImage.OwnerUser);
             foreach (ProductId productId in teardownProducts)
             {
                 _ = MarketBridge.RemoveProductFromShop(ShopId, productId);
             }
             useCase_openShop.Teardown();
+            
         }
 
         [TestCase]
