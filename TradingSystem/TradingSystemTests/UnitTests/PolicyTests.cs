@@ -6,6 +6,7 @@ using System.Text;
 using TradingSystem.Business.Market;
 using Moq;
 using TradingSystem.DAL;
+using System.Threading.Tasks;
 
 namespace TradingSystemTests
 {
@@ -92,10 +93,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Check(Dictionary{Product, int})"/>
         [TestMethod]
-        public void CheckFailTheRules()
+        public async Task CheckFailTheRules()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Func<ShoppingBasket, bool> f = new Func<ShoppingBasket, bool>(CheckTotalWeightNoMoreThan400);
             IRule r = new Rule(f);
             policyTest.AddRule(r);
@@ -104,10 +105,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
         [TestMethod]
-        public void CheckAndPolicies()
+        public async Task CheckAndPolicies()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -120,10 +121,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
         [TestMethod]
-        public void CheckAndPoliciesFirstFalseSecondTrue()
+        public async Task CheckAndPoliciesFirstFalseSecondTrue()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -136,10 +137,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
         [TestMethod]
-        public void CheckAndPoliciesFirstTrueSecondFalse()
+        public async Task CheckAndPoliciesFirstTrueSecondFalse()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -152,10 +153,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.And(Policy))"/>
         [TestMethod]
-        public void CheckAndPoliciesFirstFalseSecondFalse()
+        public async Task CheckAndPoliciesFirstFalseSecondFalse()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -168,10 +169,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
         [TestMethod]
-        public void CheckOrPolicies()
+        public async Task CheckOrPolicies()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -184,10 +185,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
         [TestMethod]
-        public void CheckOrPoliciesFirstFalseSecondTrue()
+        public async Task CheckOrPoliciesFirstFalseSecondTrue()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -200,10 +201,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
         [TestMethod]
-        public void CheckOrPoliciesFirstTrueSecondFalse()
+        public async Task CheckOrPoliciesFirstTrueSecondFalse()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -216,10 +217,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Or(Policy))"/>
         [TestMethod]
-        public void CheckOrPoliciesFirstFalseSecondFalse()
+        public async Task CheckOrPoliciesFirstFalseSecondFalse()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -232,10 +233,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Condition(Policy))"/>
         [TestMethod]
-        public void CheckConditionPolicies()
+        public async Task CheckConditionPolicies()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -248,10 +249,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Condition(Policy))"/>
         [TestMethod]
-        public void CheckConditionPoliciesFirstFalseSecondTrue()
+        public async Task CheckConditionPoliciesFirstFalseSecondTrue()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -264,10 +265,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Condition(Policy))"/>
         [TestMethod]
-        public void CheckConditionPoliciesFirstTrueSecondFalse()
+        public async Task CheckConditionPoliciesFirstTrueSecondFalse()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             Mock<IRule> rule2 = new Mock<IRule>();
@@ -280,10 +281,10 @@ namespace TradingSystemTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.Policy.Condition(Policy))"/>
         [TestMethod]
-        public void CheckConditionPoliciesFirstFalseSecondFalse()
+        public async Task CheckConditionPoliciesFirstFalseSecondFalse()
         {
-            this.shoppingBasket.addProduct(product1, 1);
-            this.shoppingBasket.addProduct(product2, 2);
+            await this.shoppingBasket.addProduct(product1, 1);
+            await this.shoppingBasket.addProduct(product2, 2);
             Mock<IRule> rule1 = new Mock<IRule>();
             rule1.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             Mock<IRule> rule2 = new Mock<IRule>();
