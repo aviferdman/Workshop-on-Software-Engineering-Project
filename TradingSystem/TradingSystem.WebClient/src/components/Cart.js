@@ -3,7 +3,6 @@ import "./Cart.css"
 import formatCurrency from "../pages/mainPage/currency";
 
 class Cart extends Component {
-
     render() {
         const {cartItems} = this.props;
         return (
@@ -36,9 +35,10 @@ class Cart extends Component {
                             <div className="total">
                                 <div>
                                     Total: {" "}
+                                    {/* TODO: fetch total price form server */}
                                     {formatCurrency(cartItems.reduce((a,c) => a + (c.price * c.count), 0))}
                                 </div>
-                                <button className="button primary"> Proceed To Purchase</button>
+                                <button className="button primary" onClick={this.props.onProceed}> Proceed To Purchase</button>
                             </div>
                         </div>
                     )}

@@ -77,6 +77,7 @@ class Purchase extends React.Component {
             }),
         }).then(response => {
             this.setState(this.initState());
+            this.props.onSuccess();
         }, alertRequestError_default);
     }
 

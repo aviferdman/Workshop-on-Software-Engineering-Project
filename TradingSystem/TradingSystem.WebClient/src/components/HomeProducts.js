@@ -35,6 +35,7 @@ class HomeProducts extends Component {
             productId: product.id,
             quantity: this.state.quantity.value,
         }).then(response => {
+            product.cartQuantity = this.state.quantity.value;
             this.setState({
                 quantity: new NumberFormField(),
             });
@@ -52,19 +53,27 @@ class HomeProducts extends Component {
                                 <a href={"#" + product.id}>
                                     <p className= "productName">{product.name}</p>
                                 </a>
-                                <p className= "productName"> store: {product.name}</p>
-                                <input
-                                    type="number"
-                                    placeholder="Quantity"
-                                    style={{width: "8rem", height: "4rem", marginLeft:"10rem", marginBottom:"2rem", textAlign:"center"}}
-                                    required
-                                    value={this.state.quantity.value}
-                                    onChange={this.onInputChange}
-                                />
+                                <p className= "productName"> store: {product.storeName}</p>
+                                {product._inCart ? (
+                                    <div style={{display: 'none'}} />
+                                ) : (
+                                    <input
+                                        type="number"
+                                        placeholder="Quantity"
+                                        style={{width: "8rem", height: "4rem", marginLeft:"10rem", marginBottom:"2rem", textAlign:"center"}}
+                                        required
+                                        value={this.state.quantity.value}
+                                        onChange={this.onInputChange}
+                                    />
+                                )}
                                 <div className="product-price">
                                     <div>{formatCurrency(product.price)}</div>
                                 </div>
-                                <button onClick={this.onAddToCartButtonClick(product)} className="button primary">Add To Cart</button>
+                                {product._inCart ? (
+                                    <div style={{display: 'none'}} />
+                                ) : (
+                                    <button onClick={this.onAddToCartButtonClick(product)} className="button primary">Add To Cart</button>
+                                )}
                             </div>
                         </li>
                     ))}

@@ -44,6 +44,10 @@ export class ShoppingCart extends Component {
         return products;
     }
 
+    onPurchaseSuccess = () => {
+        this.props.history.push('/home');
+    }
+
     render() {
         return (
             <div className="grid-container">
@@ -64,7 +68,7 @@ export class ShoppingCart extends Component {
                     </Link>
 
 
-                    <Navbar></Navbar>
+                    <Navbar/>
 
                 </header>
 
@@ -83,7 +87,7 @@ export class ShoppingCart extends Component {
                     <div className="bottom-row">
 
                         <div className="grid-item">
-                            <Purchase></Purchase>
+                            <Purchase onSuccess={this.onPurchaseSuccess}/>
                         </div>
 
                     </div>

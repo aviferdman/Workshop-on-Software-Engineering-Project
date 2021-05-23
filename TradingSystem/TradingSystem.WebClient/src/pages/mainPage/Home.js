@@ -85,13 +85,15 @@ export class Home extends React.Component {
         cartItems.forEach( (item) => {
             if(item.id === product.id){
                 //console.log(this.state.cartItems.length);
-                item.count++;
+                item.count += product.quantity;
                 alreadyInCart = true;
             }
         });
 
         if(!alreadyInCart){
-            cartItems.push({...product, count: 1})
+            product.count = product.cartQuantity;
+            // product._inCart = true;
+            cartItems.push(product);
         }
         this.setState({cartItems: cartItems});
     };
@@ -126,6 +128,10 @@ export class Home extends React.Component {
             });
         }
     };
+
+    onProceedToPurchase = () => {
+        this.props.history.push('/ShoppingCart');
+    }
 
     render() {
         return (
@@ -207,7 +213,7 @@ export class Home extends React.Component {
                             <HomeProducts products={this.state.products} addToCart={this.addToCart}></HomeProducts>
                         </div>
                         <div className="sidebar">
-                            <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+                            <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} onProceed={this.onProceedToPurchase} />
                         </div>
                     </div>
                 </main>
