@@ -68,7 +68,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
                 signupInfo.Address.ApartmentNum,
                 signupInfo.Address.ZipCode,
                 signupInfo.PhoneNumber
-            );
+            ).Result;
             return result == "success";
         }
         
@@ -79,7 +79,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private bool LoginCore(UserInfo loginInfo)
         {
-            bool success = marketUserService.loginAsync(loginInfo.Username, loginInfo.Password, Username) == "success";
+            bool success = marketUserService.loginAsync(loginInfo.Username, loginInfo.Password, Username).Result == "success";
             if (success)
             {
                 Username = loginInfo.Username;
@@ -107,7 +107,7 @@ namespace AcceptanceTests.AppInterface.UserBridge
 
         private string LogoutCore()
         {
-            return marketUserService.logoutAsync(Username);
+            return marketUserService.logoutAsync(Username).Result;
         }
         
 

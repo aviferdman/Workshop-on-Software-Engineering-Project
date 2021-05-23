@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {sortProducts, filterProducts} from '../pages/mainPage/Home.js'
 
 class Filter extends Component {
     render() {

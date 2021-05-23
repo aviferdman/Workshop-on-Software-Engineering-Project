@@ -14,7 +14,9 @@ namespace TradingSystem.Business.Market
         public String category { get; set; }
         public int rating { get; set; }
 
-        public Product(String name, int quantity, double weight, double price, String category)
+        private string _storeName;
+
+        public Product(String name, int quantity, double weight, double price, String category, string storeName = "")
         {
             this._name = name;
             this._quantity = quantity;
@@ -23,6 +25,7 @@ namespace TradingSystem.Business.Market
             this._id = Guid.NewGuid();
             this.category = category;
             rating = -1;
+            this.StoreName = storeName;
         }
 
         public Product(int quantity, double weight, double price)
@@ -45,6 +48,7 @@ namespace TradingSystem.Business.Market
             this.category = data.category;
             this.rating = data.rating;
             this._id = Guid.NewGuid();
+            this.StoreName = data.StoreName;
         }
 
         public String Name { get => _name; set => _name = value; }
@@ -54,5 +58,6 @@ namespace TradingSystem.Business.Market
         public double Price { get => _price; set => _price = value; }
         public string Category { get => category; set => category = value; }
         public int Rating { get => rating; set => rating = value; }
+        public string StoreName { get => _storeName; set => _storeName = value; }
     }
 }

@@ -1,4 +1,3 @@
-
 import React, {Component} from 'react';
 import * as HiIcons from "react-icons/hi";
 import Navbar from "../../components/Navbar/Navbar";
@@ -22,7 +21,7 @@ export class ShoppingCart extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container" >
+                <header className="header-container">
                     <a href="/">E - commerce Application</a>
                     <div>
                         <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
@@ -43,10 +42,10 @@ export class ShoppingCart extends Component {
 
                 </header>
 
-                <main className="store-products-main-conatiner ">
+                <main className="store-products-main-conatiner">
 
                     <div>
-                        <CartProducts products={this.state.products} ></CartProducts>
+                        <CartProducts products={this.state.products} />
                     </div>
 
                     <div className="total">

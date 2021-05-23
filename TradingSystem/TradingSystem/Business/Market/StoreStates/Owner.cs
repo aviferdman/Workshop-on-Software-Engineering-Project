@@ -52,12 +52,17 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public bool hasAppointees()
         {
-            return m.ownerAppointments.Count!=0;
+            return s.owners.Where(m => m.appointer.username.Equals(this.username)).Any();
         }
 
         public void removeManagers()
         {
+            List<Manager> mangersToRem = new List<Manager>();
             foreach (Manager manager in s.managers.Where(m=> m.appointer.username.Equals(this.username)))
+            {
+                mangersToRem.Add(manager);
+            }
+            foreach (Manager manager in mangersToRem)
             {
                 s.RemoveManager(manager.Username, Username);
             }

@@ -7,12 +7,12 @@ namespace TradingSystem.Business.Market
     public class CreditCard : PaymentMethod
     {
 
-        private string _cardNumber;
-        private string _month;
-        private string _year;
-        private string _holderName;
-        private string _cvv;
-        private string _holderId;
+        public string _cardNumber { get; set; }
+        public string _month { get; set; }
+        public string _year { get; set; }
+        public string _holderName { get; set; }
+        public string _cvv { get; set; }
+        public string _holderId { get; set; }
 
         public CreditCard(string cardNumber, string month, string year, string holderName, string cvv, string holderId)
         {

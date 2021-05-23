@@ -1,5 +1,4 @@
-
-import React, { Component } from "react";
+import React from "react";
 import './AddManager.css';
 
 class AddOwner extends React.Component {
@@ -19,7 +18,7 @@ class AddOwner extends React.Component {
                 <Modal show={this.state.show} handleClose={this.hideModal} >
                     <div className= "col-grd">
                         <div className="text-props">
-                            <text >UserName</text>
+                            <label >UserName</label>
                         </div>
 
                         <div >

@@ -22,7 +22,7 @@ export class StoreStaff extends Component {
     render() {
         return (
             <div className="grid-container">
-                <header className="header-container" >
+                <header className="header-container">
                     <a href="/">E - commerce Application</a>
                     <div>
                         <h3>{this.context.isLoggedIn ? this.context.username : ''}</h3>
@@ -46,20 +46,20 @@ export class StoreStaff extends Component {
                 <main className="store-products-main-conatiner-staff">
 
                     <div>
-                        <Users staff={this.state.staff} ></Users>
+                        <Users staff={this.state.staff} />
                     </div>
 
                     <div className="bottom-row-staff">
                         <div>
-                            <AddManager></AddManager>
+                            <AddManager/>
                         </div>
 
                         <div>
-                            <AddOwner></AddOwner>
+                            <AddOwner/>
                         </div>
 
                         <div>
-                            <SetPermission></SetPermission>
+                            <SetPermission/>
                         </div>
 
 

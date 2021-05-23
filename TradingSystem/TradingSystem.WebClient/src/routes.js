@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import LoginPage from "./pages/Login/Login";
 import Signup from "./pages/Signup/Signup";
 import {Home} from "./pages/mainPage/Home";
@@ -27,7 +27,6 @@ export default function Routes() {
             <Route path={"/storeHistory"} component={StoreHistory} />
             <Route path={"/storeCreate"} component={StoreCreateForm} />
             <Route path={"/ShoppingCart"} component={ShoppingCart} />
-
         </Switch>
     );
 }

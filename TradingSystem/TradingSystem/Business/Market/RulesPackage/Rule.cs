@@ -28,8 +28,9 @@ namespace TradingSystem.Business.Market
         }
 
         //All products and it's quantities needs to pass the rule, otherwise its illegal
-        virtual public bool Check(ShoppingBasket shoppingBasket)
+        public virtual bool Check(ShoppingBasket shoppingBasket)
         {
+            var v = _r.Method.GetMethodBody();
             return _r(shoppingBasket);
         }
 

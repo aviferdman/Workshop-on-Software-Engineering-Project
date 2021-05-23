@@ -66,7 +66,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 (int)Math.Ceiling(creteria.PriceRange_High),
                 (int)creteria.ProductRating,
                 creteria.Category
-            );
+            ).Result;
 
             return new ProductSearchResults(results.Select(ProductIdentifiable.FromProductData), null);
         }
@@ -88,7 +88,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 shopInfo.Address.Street,
                 shopInfo.Address.ApartmentNum,
                 shopInfo.Address.ZipCode
-            );
+            ).Result;
             return storeData == null ? (ShopId?)null : new ShopId(storeData.Id, shopInfo.Name);
         }
 
@@ -116,7 +116,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public IEnumerable<ProductIdentifiable>? GetShopProducts(ShopId shopId)
         {
-            ICollection<ProductData>? products = marketProductsService.FindProductsByStoresAsync(shopId.ShopName);
+            ICollection<ProductData>? products = marketProductsService.FindProductsByStoresAsync(shopId.ShopName).Result;
             return products?.Select(ProductIdentifiable.FromProductData);
         }
 
@@ -127,13 +127,13 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 ProductInfo.ToProductData(productInfo),
                 shopId,
                 Username
-            );
+            ).Result;
             return result.IsErr ? (ProductId?)null : new ProductId(result.Ret.Id);
         }
 
         public bool RemoveProductFromShop(ShopId shopId, ProductId productId)
         {
-            string result = marketProductsService.RemoveProductAsync(productId, shopId, Username);
+            string result = marketProductsService.RemoveProductAsync(productId, shopId, Username).Result;
             return result == "Product removed";
         }
 
@@ -145,13 +145,13 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 ProductInfo.ToProductData(newProductDetails),
                 shopId,
                 Username
-            );
+            ).Result;
             return result == "Product edited";
         }
 
         public IEnumerable<ProductInCart>? GetShoppingCartItems()
         {
-            IDictionary<Guid, Dictionary<ProductData, int>> shoppingCartData = marketShoppingCartService.ViewShoppingCart(Username);
+            IDictionary<NamedGuid, Dictionary<ProductData, int>> shoppingCartData = marketShoppingCartService.ViewShoppingCart(Username);
             return shoppingCartData
                 .SelectMany
                 (
@@ -198,7 +198,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 productsRemove.Select(x => x.Value).ToList(),
                 ProductInCart.ToDictionary(productsAdd),
                 ProductInCart.ToDictionary(productsEdit)
-            );
+            ).Result;
             return result != null && !result.IsErr;
         }
 
@@ -230,23 +230,23 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         public bool MakeOwner(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeOwnerAsync(assignee, storeID, assigner).Equals("Success");
+            return marketStorePermissionsManagementService.MakeOwnerAsync(assignee, storeID, assigner).Result.Equals("Success");
         }
         public bool MakeManager(string assignee, Guid storeID, string assigner)
         {
-            return marketStorePermissionsManagementService.MakeManagerAsync(assignee, storeID, assigner).Equals("Success");
+            return marketStorePermissionsManagementService.MakeManagerAsync(assignee, storeID, assigner).Result.Equals("Success");
         }
         public bool RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
-            return marketStorePermissionsManagementService.RemoveOwnerAsync(ownerName, storeID, assignerName).Equals("success");
+            return marketStorePermissionsManagementService.RemoveOwnerAsync(ownerName, storeID, assignerName).Result.Equals("success");
         }
         public bool DefineManagerPermissions(string manager, Guid storeID, string assigner, List<Permission> permissions)
         {
-            return marketStorePermissionsManagementService.DefineManagerPermissionsAsync(manager, storeID, assigner, permissions).Equals("Success");
+            return marketStorePermissionsManagementService.DefineManagerPermissionsAsync(manager, storeID, assigner, permissions).Result.Equals("Success");
         }
         public bool RemoveManager(String managerName, Guid storeID, String assignerName)
         {
-            return marketStorePermissionsManagementService.RemoveManagerAsync(managerName, storeID, assignerName).Equals("success");
+            return marketStorePermissionsManagementService.RemoveManagerAsync(managerName, storeID, assignerName).Result.Equals("success");
         }
 
         public void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem)
@@ -259,9 +259,14 @@ namespace AcceptanceTests.AppInterface.MarketBridge
             marketGeneralService.ActivateDebugMode(null, null, false);
         }
 
+        public void SetDbDebugMode(bool debugMode)
+        {
+            marketGeneralService.SetDbDebugMode(debugMode);
+        }
+
         public PurchaseHistory? GetUserPurchaseHistory()
         {
-            ICollection<HistoryData>? history = marketUserService.GetUserHistory(SystemContext.TokenUsername);
+            ICollection<HistoryData>? history = marketUserService.GetUserHistory(SystemContext.TokenUsername).Result;
             if (history == null)
             {
                 return null;
@@ -273,7 +278,7 @@ namespace AcceptanceTests.AppInterface.MarketBridge
                 (
                     x.Products.ProductId_quantity.Select
                     (
-                        (id_quantity) => new ProductInCart(id_quantity.Key, id_quantity.Value)
+                        (id_quantity) => new ProductInCart(id_quantity.id, id_quantity.quantity)
                     ),
                     x.Deliveries.PackageId,
                     x.Deliveries.Status,

@@ -53,6 +53,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         [SetUp]
         public void Initialize()
         {
+            marketBridge.SetDbDebugMode(true);
             publisherManagement.DeleteAll();
             Bridge.Connect();
             Bridge.SignUp(founder);

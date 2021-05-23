@@ -61,5 +61,6 @@ namespace AcceptanceTests.AppInterface.MarketBridge
 
         void SetExternalTransactionMocks(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem);
         void DisableExternalTransactionMocks();
+        void SetDbDebugMode(bool debugMode);
     }
 }

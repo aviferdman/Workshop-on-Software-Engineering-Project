@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
@@ -22,7 +23,7 @@ namespace TradingSystemTests.IntegrationTests
         Store store;
 
         [TestInitialize]
-        public async void Initialize()
+        public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
@@ -44,27 +45,30 @@ namespace TradingSystemTests.IntegrationTests
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckValidRemoveManager()
+        public async Task CheckValidRemoveManager()
         {
-            Assert.AreEqual(market.RemoveManager("manager", store.Id, "founder"), "success");
+            String res = await market.RemoveManager("manager", store.Id, "founder");
+            Assert.AreEqual(res, "success");
             Assert.IsFalse(store.Contains("manager", "Managers"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckRemoveManagerWrongStore()
+        public async Task CheckRemoveManagerWrongStore()
         {
-            Assert.AreEqual(market.RemoveManager("manager2", store.Id, "founder"), "Manager doesn't exist");
+            String res = await market.RemoveManager("manager2", store.Id, "founder");
+            Assert.AreEqual(res, "Manager doesn't exist");
             Assert.IsTrue(store.Contains("manager", "Managers"));
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.RemoveManager(string, Guid, string)"/>
         [TestMethod]
         [TestCategory("uc34")]
-        public void CheckRemoveManagerBadAppointer()
+        public async Task CheckRemoveManagerBadAppointer()
         {
-            Assert.AreEqual(market.RemoveManager("manager", store.Id, "owner"), "Invalid Assigner");
+            String res = await market.RemoveManager("manager", store.Id, "owner");
+            Assert.AreEqual(res, "Invalid Assigner");
             Assert.IsTrue(store.Contains("manager", "Managers"));
         }
 

@@ -105,16 +105,16 @@ namespace TradingSystem.Business.Market
         public async Task<string> AddMember(String usrname, string password, string guestusername)
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(AddMember));
+            User u;
+            if (!activeUsers.TryRemove(guestusername, out u))
+                return "user not found in market";
             string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
                 return loginmang;
             }
-            User u;
             User guest;
             ShoppingCart s;
-            if (!activeUsers.TryRemove(guestusername, out u))
-                return "user not found in market";
             string GuidString;
             MemberState m= await marketUsersDAL.getMemberState(usrname);
             if (m==null)
@@ -147,6 +147,8 @@ namespace TradingSystem.Business.Market
 
             };
             PublisherManagement.Instance.BecomeLoggedIn(u.Username);
+            if (u.Username.Equals(DEFAULT_ADMIN_USERNAME))
+                return "admin";
             return "success";
         }
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
@@ -235,7 +237,7 @@ namespace TradingSystem.Business.Market
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
 
-            return basket.addProduct(p, quantity);
+            return await basket.addProduct(p, quantity);
 
         }
 
@@ -363,7 +365,8 @@ namespace TradingSystem.Business.Market
             }
             catch (Exception ex)
             {
-                transaction.Rollback();
+                if(!ProxyMarketContext.Instance.IsDebug)
+                    transaction.Rollback();
                 return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
             }
             

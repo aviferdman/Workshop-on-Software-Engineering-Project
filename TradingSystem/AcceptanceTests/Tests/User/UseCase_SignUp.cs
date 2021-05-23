@@ -2,6 +2,7 @@ using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
 
 using NUnit.Framework;
+using TradingSystem.Business.Market;
 
 namespace AcceptanceTests.Tests.User
 {
@@ -29,6 +30,7 @@ namespace AcceptanceTests.Tests.User
         public override void Setup()
         {
             base.Setup();
+            SystemContext.MarketBridge.SetDbDebugMode(true);
             Assert.IsTrue(Bridge.Connect());
         }
 
@@ -50,5 +52,7 @@ namespace AcceptanceTests.Tests.User
             Success_Normal();
             Assert.IsFalse(Bridge.SignUp(UserInfo.WithDifferentPassword("abcd1234")));
         }
+
+        
     }
 }

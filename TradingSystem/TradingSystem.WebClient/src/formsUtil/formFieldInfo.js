@@ -15,6 +15,11 @@ export default class FormFieldInfo {
         this.errorMessage = '';
     }
 
+    trySetValueFromEvent(e) {
+        this.value = e.target.value;
+        return true;
+    }
+
     validate() {
         return this.validate_required();
     }

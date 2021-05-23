@@ -74,7 +74,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                return transactionStatuses.Where(t=> t.username==username).ToList();
+                return transactionStatuses.Where(t=> t.username.Equals(username)).ToList();
             }
             try
             {
@@ -171,7 +171,11 @@ namespace TradingSystem.DAL
             {
                 Category c;
                 if (!categories.TryGetValue(category, out c))
+                {
                     c = new Category(category);
+                    categories.TryAdd(category, c);
+                }
+                    
                 return c;
             }
         }
@@ -227,7 +231,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                return transactionStatuses.Where(t => t.storeID == storeId).ToList();
+                return transactionStatuses.Where(t => t.storeID.Equals(storeId)).ToList();
             }
             try
             {
@@ -248,9 +252,11 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFUALT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            dataUsers.TryAdd("DEFUALT_ADMIN", admin);
-            admins.TryAdd("DEFUALT_ADMIN", admin);
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            admins.TryAdd("DEFAULT_ADMIN", admin);
+            memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
+            shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
         }
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
@@ -306,9 +312,11 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFUALT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
-            dataUsers.TryAdd("DEFUALT_ADMIN", admin);
-            admins.TryAdd("DEFUALT_ADMIN", admin);
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            admins.TryAdd("DEFAULT_ADMIN", admin);
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
+            shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
         }
 
         public async Task AddNewMemberState(string username)
@@ -341,9 +349,19 @@ namespace TradingSystem.DAL
             }
         }
 
-        internal void UserTearDown()
+        public void UserTearDown()
         {
             dataUsers = new ConcurrentDictionary<string, DataUser>();
+            dataUsers = new ConcurrentDictionary<string, DataUser>();
+            admins = new ConcurrentDictionary<string, RegisteredAdmin>();
+            memberStates = new ConcurrentDictionary<string, MemberState>();
+            shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
+            stores = new ConcurrentDictionary<Guid, Store>();
+            transactionStatuses = new HashSet<TransactionStatus>();
+            categories = new ConcurrentDictionary<string, Category>();
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+            admins.TryAdd("DEFAULT_ADMIN", admin);
         }
 
 
