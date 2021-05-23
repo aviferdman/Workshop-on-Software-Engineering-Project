@@ -1,13 +1,10 @@
 import React, {Component} from 'react';
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import './StoreStaff.css';
 import data from "../../data/staffData.json";
 import Users from "../../components/Users";
 import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
 import SetPermission from "../../components/SetPermission";
-import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 

@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import './StoreHistory.css';
 import data from "../../data/historyData.json";
 import History from "../../components/History";
-import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 

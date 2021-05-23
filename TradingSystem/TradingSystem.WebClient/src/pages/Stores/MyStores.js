@@ -1,11 +1,8 @@
 import React from "react";
 import './MyStores.css';
-import Navbar from "../../components/Navbar/Navbar";
-import * as HiIcons from "react-icons/hi";
 import Store from "./StoreList"
 import axios from "axios";
-import {GlobalContext, UserRole} from "../../globalContext";
-import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 
 export class MyStores extends React.Component {

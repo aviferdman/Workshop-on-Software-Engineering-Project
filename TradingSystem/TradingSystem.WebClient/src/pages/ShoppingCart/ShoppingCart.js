@@ -1,11 +1,8 @@
 import React, {Component} from 'react';
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import './ShoppingCart.css';
 import CartProducts from "../../components/CartProducts";
 import Purchase from "../../components/Purchase";
 import formatCurrency from "../mainPage/currency";
-import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import axios from "axios";
 import {alertRequestError_default} from "../../utils";

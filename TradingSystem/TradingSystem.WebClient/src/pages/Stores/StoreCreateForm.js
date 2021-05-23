@@ -3,13 +3,9 @@ import {TextField} from "@material-ui/core";
 import './StoreCreationForm.css'
 import FormFieldInfo from "../../formsUtil/formFieldInfo";
 import {GlobalContext} from "../../globalContext";
-import SimpleAlertDialog from "../../components/simpleAlertDialog";
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
 import axios from "axios";
-import {Link} from "react-router-dom";
 import Header from "../../header";
 
 export default class StoreCreateForm extends React.Component {

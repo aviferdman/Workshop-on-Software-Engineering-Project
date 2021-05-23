@@ -3,12 +3,9 @@ import './Home.css';
 import data from '../../data/productData.json';
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
-import Navbar from "../../components/Navbar/Navbar";
-import * as HiIcons from "react-icons/hi";
 import Cart from "../../components/Cart";
 import axios from "axios";
-import {GlobalContext, UserRole} from "../../globalContext";
-import {Link} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 import HomeProducts from "../../components/HomeProducts";
 import Header from "../../header";
 

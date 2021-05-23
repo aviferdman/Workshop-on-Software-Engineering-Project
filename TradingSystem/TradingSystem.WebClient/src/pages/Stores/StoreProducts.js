@@ -1,12 +1,9 @@
 import React, {Component} from 'react';
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import './StoreProducts.css';
 import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
 import {Route, Switch} from "react-router-dom";
 import axios from "axios";
-import {Link} from "react-router-dom";
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 

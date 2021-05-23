@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
-import * as HiIcons from "react-icons/hi";
-import Navbar from "../../components/Navbar/Navbar";
 import './Store.css';
-import {Link} from "react-router-dom";
-import {GlobalContext} from "../../globalContext";
 import {Route, Switch} from "react-router-dom";
+import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 
 class StoreContent extends Component {
