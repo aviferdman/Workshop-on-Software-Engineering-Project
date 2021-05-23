@@ -27,7 +27,7 @@ namespace TradingSystem.WebApi.Controllers
         {
             if (string.IsNullOrWhiteSpace(usernameDTO.Username))
             {
-                return BadRequest("Missing parameter values");
+                return BadRequest("Invalid username");
             }
 
             Dictionary<NamedGuid, Dictionary<ProductData, int>>? result = MarketShoppingCartService.ViewShoppingCart(usernameDTO.Username);
@@ -124,6 +124,34 @@ namespace TradingSystem.WebApi.Controllers
                 new List<Guid>(),
                 new Dictionary<Guid, int>(),
                 new Dictionary<Guid, int> { [productDTO.ProductId] = productDTO.Quantity }
+            );
+
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RemoveProduct([FromBody] ShoppingCartRemoveProductDTO shoppingCartRemoveProductDTO)
+        {
+            if (string.IsNullOrWhiteSpace(shoppingCartRemoveProductDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+
+            Result<Dictionary<Guid, Dictionary<ProductData, int>>>? result = await MarketShoppingCartService.EditShoppingCart
+            (
+                shoppingCartRemoveProductDTO.Username,
+                new List<Guid> { shoppingCartRemoveProductDTO.ProductId },
+                new Dictionary<Guid, int>(),
+                new Dictionary<Guid, int>()
             );
 
             if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))

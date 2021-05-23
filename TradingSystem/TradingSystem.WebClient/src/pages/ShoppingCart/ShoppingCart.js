@@ -14,7 +14,6 @@ export class ShoppingCart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
             products: []
         };
     }
@@ -48,6 +47,12 @@ export class ShoppingCart extends Component {
         this.props.history.push('/home');
     }
 
+    onRemoveProduct = product => {
+        this.setState({
+            products: this.state.products.filter(p => p.id !== product.id)
+        });
+    }
+
     render() {
         return (
             <div className="grid-container">
@@ -75,7 +80,7 @@ export class ShoppingCart extends Component {
                 <main className="store-products-main-conatiner">
 
                     <div>
-                        <CartProducts products={this.state.products} />
+                        <CartProducts products={this.state.products} onRemoveProduct={this.onRemoveProduct} />
                     </div>
 
                     {/* TODO: get total price from server */}
