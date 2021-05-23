@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace TradingSystem.WebApi.DTO
+﻿namespace TradingSystem.WebApi.DTO
 {
     public class StoreCreateDTO
     {

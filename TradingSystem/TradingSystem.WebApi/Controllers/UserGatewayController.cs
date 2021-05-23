@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using TradingSystem.Business.UserManagement;
+
+using Microsoft.AspNetCore.Mvc;
+
 using TradingSystem.Service;
 
 namespace TradingSystem.WebApi.Controllers
@@ -24,7 +23,7 @@ namespace TradingSystem.WebApi.Controllers
             string res = await MarketUserService.Instance.loginAsync(info.username, info.password, info.guestusername);
             if (!res.Equals("success"))
                 return BadRequest(res);
-            
+
             return Ok(res);
         }
 

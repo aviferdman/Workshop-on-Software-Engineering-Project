@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-using TradingSystem.WebApi.Controllers;
-
 namespace TradingSystem.WebApi.Notifications
 {
     public static class NotificationsMiddlewareExtensions
