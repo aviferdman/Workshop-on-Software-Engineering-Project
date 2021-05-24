@@ -39,31 +39,35 @@ class App extends React.Component {
     };
   }
 
-  releaseContext = async (webSocketCloseCode, webSocketCloseReason) => {
-    if (webSocketCloseReason && this.state.globalContext.webSocket) {
-      this.state.globalContext.webSocket.close(webSocketCloseCode, webSocketCloseReason);
-    }
-
+  logoutCore = async (unmounting) => {
     let newUsername = '';
     try {
-      let response = await axios.post('/UserGateway/Logout/', {
+      let promise = axios.post('/UserGateway/Logout/', {
         username: this.state.globalContext.username,
       });
-      newUsername = response.data;
+      if (!unmounting) {
+        let response = await promise;
+        newUsername = response.data;
+      }
     }
     catch (e) {
       newUsername = '';
     }
 
-    this.setState({
-      globalContext: {
-        ...this.state.globalContext,
-        username: newUsername,
-        role: null,
-        webSocket: null
-      }
+    return newUsername;
+  }
+
+  releaseContext = (unmounting) => {
+    this.logoutCore(unmounting).then(newUsername => {
+      this.setState({
+        globalContext: {
+          ...this.state.globalContext,
+          username: newUsername,
+          role: unmounting ? null : UserRole.guest,
+          webSocket: null
+        }
+      })
     });
-    this.context.history.push('/');
   }
 
   setUsername = (username, role) => {
@@ -77,7 +81,11 @@ class App extends React.Component {
   }
 
   logout = () => {
-    this.releaseContext(1000, 'logout');
+    if (this.state.globalContext.webSocket) {
+      this.state.globalContext.webSocket.close(1000, 'logout');
+    }
+    this.releaseContext(false);
+    this.context.history.push('/login');
   }
 
   setWebSocket = username => {
@@ -116,7 +124,7 @@ class App extends React.Component {
   }
 
   componentWillUnmount() {
-    this.releaseContext(null, null);
+    this.releaseContext(true);
   }
 
   render() {

@@ -12,16 +12,14 @@ namespace TradingSystem.WebApi
 {
     public class WebSocketHandler
     {
-        public WebSocketHandler(HttpContext context, WebSocket ws, TaskCompletionSource<object> tcs)
+        public WebSocketHandler(HttpContext context, WebSocket ws)
         {
             Context = context;
             WebSocket = ws;
-            TaskCompletionSource = tcs;
         }
 
         public HttpContext Context { get; }
         public WebSocket WebSocket { get; }
-        public TaskCompletionSource<object> TaskCompletionSource { get; }
 
         public async Task OnAccept()
         {

@@ -10,13 +10,24 @@ import StoreCreateForm from "./pages/Stores/StoreCreateForm";
 import {StoreStaff} from "./pages/Stores/StoreStaff";
 import {StoreHistory} from "./pages/Stores/StoreHistory";
 import {ShoppingCart} from "./pages/ShoppingCart/ShoppingCart";
+import {GlobalContext, UserRole} from "./globalContext";
+
+class DefaultRoute extends React.Component {
+    render() {
+        let {...rest} = this.props;
+        return (
+            <Route {...rest} render={props => (
+                <Redirect to={this.context.role ? '/home' : '/login'} />
+            )} />
+        );
+    }
+}
+DefaultRoute.contextType = GlobalContext;
 
 export default function Routes() {
     return (
         <Switch>
-            <Route exact path="/">
-                <Redirect exact from="/" to="/login" />
-            </Route>
+            <DefaultRoute exact path="/" />
             <Route path={"/login"} component={LoginPage} />
             <Route path={"/signup"} component={Signup} />
             <Route path={"/home"} component={Home} />

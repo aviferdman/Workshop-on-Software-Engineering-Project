@@ -82,7 +82,6 @@ export class Home extends React.Component {
         const cartItems = this.state.cartItems.slice()
         cartItems.forEach( (item) => {
             if(item.id === product.id){
-                //console.log(this.state.cartItems.length);
                 item.count += product.quantity;
                 alreadyInCart = true;
             }
@@ -90,14 +89,13 @@ export class Home extends React.Component {
 
         if(!alreadyInCart){
             product.count = product.cartQuantity;
-            // product._inCart = true;
+            product._inCart = true;
             cartItems.push(product);
         }
         this.setState({cartItems: cartItems});
     };
 
     sortProducts = (event) =>{
-      //impl
         const sort = event.target.value;
         console.log(event.target.value);
         this.setState((state) => ({
@@ -114,7 +112,6 @@ export class Home extends React.Component {
     };
 
     filterProducts = (event) => {
-        //impl
         console.log(event.target.value);
         if(event.target.value === ""){
             this.setState({category: event.target.value , products:data.products})
@@ -190,7 +187,7 @@ export class Home extends React.Component {
                                 filterProducts={this.filterProducts}
                                 sortProducts={this.sortProducts} >
                             </Filter>
-                            <HomeProducts products={this.state.products} addToCart={this.addToCart}></HomeProducts>
+                            <HomeProducts products={this.state.products} addToCart={this.addToCart} history={this.props.history} />
                         </div>
                         <div className="sidebar">
                             <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} onProceed={this.onProceedToPurchase} />
