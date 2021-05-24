@@ -15,10 +15,8 @@ namespace TradingSystem.WebApi.Notifications
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
-                    var socketFinishedTcs = new TaskCompletionSource<object>();
                     using WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-                    await new WebSocketHandler(context, ws, socketFinishedTcs).OnAccept();
-                    //_ = await socketFinishedTcs.Task;
+                    await new WebSocketHandler(context, ws).OnAccept();
                 }
                 else
                 {
