@@ -39,11 +39,11 @@ namespace TradingSystem.Business.UserManagement
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
         //using concurrent dictionary try add if usename already exist
         //than fail and return error message otherwise return success
-        public async Task<string> SignUp( string username, string password, Address address, string phone)
+        public async Task<string> SignUp( string username, string password,  string phone)
         {
             if (username == null)
                 return "username cannot be null";
-            if (await usersDAL.AddDataUser(new DataUser(username, password, address, phone)))
+            if (await usersDAL.AddDataUser(new DataUser(username, password, phone)))
             {
                 await usersDAL.AddNewMemberState(username);
                 await usersDAL.AddNewShoppingCart(username);
@@ -95,15 +95,7 @@ namespace TradingSystem.Business.UserManagement
             return new Result<string>(null , true, "username doesn't exist");
         }
 
-        private async Task<Result<Address>> getUserAddress(string username)
-        {
-            DataUser u = await usersDAL.GetDataUser(username);
-            if (u != null)
-            {
-                return new Result<Address>(u.address, false, "");
-            }
-            return new Result<Address>(null, true, "username doesn't exist");
-        }
+        
 
         
         public async  Task<bool> Logout(string username)

@@ -62,11 +62,6 @@ namespace AcceptanceTests.AppInterface.UserBridge
                 Username,
                 signupInfo.Username,
                 signupInfo.Password,
-                signupInfo.Address.State,
-                signupInfo.Address.City,
-                signupInfo.Address.Street,
-                signupInfo.Address.ApartmentNum,
-                signupInfo.Address.ZipCode,
                 signupInfo.PhoneNumber
             ).Result;
             return result == "success";

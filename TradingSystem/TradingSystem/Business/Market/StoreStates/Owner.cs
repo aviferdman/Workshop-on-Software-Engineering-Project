@@ -15,7 +15,6 @@ namespace TradingSystem.Business.Market.StoreStates
         public MemberState appointer { get; set; }
 
         public string Username { get => username; set => username = value; }
-        public Store S { get => s; set => s = value; }
 
         private Owner(MemberState m, Store s, MemberState appointer)
         {
@@ -46,12 +45,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public bool removePermission(Store store)
         {
-            bool ret;
-            lock (m)
-            {
-                ret = m.ownerPrems.Remove(this) | appointer.ownerAppointments.Remove(this);
-            }
-            return ret;
+            return true;
         }
 
         public bool hasAppointees()
@@ -68,7 +62,7 @@ namespace TradingSystem.Business.Market.StoreStates
             }
             foreach (Manager manager in mangersToRem)
             {
-                s.RemoveManager(manager.Username, Username);
+                s.RemoveManager(manager.username, Username);
             }
         }
 

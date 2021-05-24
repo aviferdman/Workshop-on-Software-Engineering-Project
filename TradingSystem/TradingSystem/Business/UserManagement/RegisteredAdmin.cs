@@ -7,7 +7,7 @@ namespace TradingSystem.Business.UserManagement
 {
     public class RegisteredAdmin : DataUser
     {
-        public RegisteredAdmin(string username, string password, Address address, string phone) : base(username, password, address, phone)
+        public RegisteredAdmin(string username, string password, string phone) : base(username, password, phone)
         {
             isAdmin = true;
         }

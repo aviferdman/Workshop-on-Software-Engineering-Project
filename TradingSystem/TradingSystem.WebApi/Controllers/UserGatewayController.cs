@@ -31,7 +31,7 @@ namespace TradingSystem.WebApi.Controllers
         [HttpPost]
         public async Task<ActionResult<String>> SignUp([FromBody] SignUpInfo info)
         {
-            string res = await UserService.Instance.SignupAsync(info.guestusername, info.username, info.password, info._state, info._city, info._street, info._apartmentNum, info.zip, info.phone);
+            string res = await UserService.Instance.SignupAsync(info.guestusername, info.username, info.password, info.phone);
             if (!res.Equals("success"))
                 return BadRequest(res);
             return Ok(res);

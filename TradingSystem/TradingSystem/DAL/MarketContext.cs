@@ -30,7 +30,6 @@ namespace TradingSystem.DAL
         public DbSet<Founder> founders { get; set; }
         public DbSet<Owner> owners { get; set; }
         public DbSet<Store> stores { get; set; }
-
         public async Task AddHistory(TransactionStatus history)
         {
             transactionStatuses.Add(history);
@@ -66,7 +65,7 @@ namespace TradingSystem.DAL
             .WithOne();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.managers)
-            .WithOne();
+            .WithOne(m=>m.s);
             modelBuilder.Entity<Store>()
             .HasOne(b => b._bank)
             .WithOne();
@@ -75,26 +74,20 @@ namespace TradingSystem.DAL
             .WithMany();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.owners)
-            .WithOne();
+            .WithOne(m => m.s);
             modelBuilder.Entity<Store>()
             .HasOne(b => b.founder)
-            .WithOne();
+            .WithOne(m => m.s);
             modelBuilder.Entity<DataUser>()
                 .HasKey(d => d.username);
-            modelBuilder.Entity<DataUser>()
-            .HasOne(b => b.address)
-            .WithMany();
             modelBuilder.Entity<State>()
                 .HasKey(d => d.username);
             modelBuilder.Entity<ShoppingCart>()
                .HasKey(s => s.username);
             modelBuilder.Entity<ShoppingCart>()
-               .Ignore(s=>s.User1);
-            modelBuilder.Entity<ShoppingBasket>()
-               .HasKey(s => new { s.shoppingCart, s.store } );
-            modelBuilder.Entity<Appointer>()
-                .HasKey(a => new { a.s, a.m });
-            modelBuilder.Entity<Manager>().HasKey(a => new { a.s, a.m });
+               .HasMany(s => s.shoppingBaskets).WithOne(s=>s.shoppingCart);
+            modelBuilder.Entity<ShoppingCart>()
+               .Ignore(s => s.User1);
             modelBuilder.Entity<ShoppingBasket>()
             .HasMany(b => b.Product_quantity)
             .WithOne();
@@ -110,7 +103,6 @@ namespace TradingSystem.DAL
             .HasOne(b => b.appointer)
             .WithMany()
             .HasForeignKey(pt => pt.username);
-
         }
 
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
