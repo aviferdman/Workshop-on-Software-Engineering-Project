@@ -63,7 +63,7 @@ class App extends React.Component {
         globalContext: {
           ...this.state.globalContext,
           username: newUsername,
-          role: null,
+          role: unmounting ? null : UserRole.guest,
           webSocket: null
         }
       })
@@ -85,7 +85,7 @@ class App extends React.Component {
       this.state.globalContext.webSocket.close(1000, 'logout');
     }
     this.releaseContext(false);
-    this.context.history.push('/');
+    this.context.history.push('/login');
   }
 
   setWebSocket = username => {
