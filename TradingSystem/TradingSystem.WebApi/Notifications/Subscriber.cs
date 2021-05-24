@@ -55,7 +55,13 @@ namespace TradingSystem.WebApi
             //}
             //message += dateStr;
 
-            string message = $"Hey {SubscriberName} -> you received {ev.EventProviderName} {ev.Description} @ {ev.Date} ";
+            // TODO: remove this later
+            if (ev.EventProviderName == EventType.OpenStoreEvent.ToString())
+            {
+                return;
+            }
+
+            string message = $"Hey {SubscriberName}, {ev.Description} @ {ev.Date} ";
             byte[] buffer = Encoding.ASCII.GetBytes(message);
             socket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
         }
