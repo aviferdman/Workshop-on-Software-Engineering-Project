@@ -29,8 +29,6 @@ namespace TradingSystem.Business.Market
         public Guid sid { get; set; }
         public string name { get; set; }
         public Address _address { get; set; }
-        public ICollection<Bid> bids { get; set; }
-
         public HashSet<Product> Products { get => _products; set => _products = value; }
         internal Address Address { get => _address; set => _address = value; }
         public Guid Id { get => sid; set => sid = value; }
@@ -55,7 +53,11 @@ namespace TradingSystem.Business.Market
             this._address = address;
             this.managers = new HashSet<Manager>();
             this.owners = new HashSet<Owner>();
-            this.bids = new HashSet<Bid>();
+        }
+
+        internal async Task CustomerDenyBid(Guid bidId)
+        {
+            founder.CustomerDenyBid(bidId);
         }
 
         public virtual Guid GetId()
@@ -101,6 +103,16 @@ namespace TradingSystem.Business.Market
             return owners;
         }
 
+        // TODO
+        public async Task AddBid(Bid bid)
+        {
+            await founder.AddBid(bid);
+            foreach (var owner in Owners)
+            {
+                await owner.AddBid(bid);
+            }
+        }
+
         //TODO
         public virtual async Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
@@ -129,7 +141,7 @@ namespace TradingSystem.Business.Market
             else
             {
                 AddToHistory(transactionStatus);
-                NotifyOwners(username);
+                NotifyOwners(EventType.PurchaseEvent, username + " purchased items from store " + name);
             }
             return new PurchaseStatus(true, transactionStatus, sid);
         }
@@ -156,6 +168,7 @@ namespace TradingSystem.Business.Market
         private double GetProductBid(string username, Product p)
         {
             double sum = 0;
+            var bids = founder.GetUserAcceptedBids(username);
             foreach (var bid in bids)
             {
                 if (bid.Username.Equals(username) && bid.ProductId.Equals(p.Id))
@@ -171,15 +184,15 @@ namespace TradingSystem.Business.Market
             HistoryManager.Instance.AddHistory(transactionStatus);
         }
 
-        private void NotifyOwners(string usrname)
+        public void NotifyOwners(EventType eventType, string message)
         {
             //notify the founder for a new purchase
-            PublisherManagement.Instance.EventNotification(founder.Username, EventType.PurchaseEvent, usrname+" purchased items from store "+name);
+            PublisherManagement.Instance.EventNotification(founder.Username, eventType, message);
 
             //notify the owners
             foreach (var owner in owners)
             {
-                PublisherManagement.Instance.EventNotification(owner.Username, EventType.PurchaseEvent, usrname + " purchased items from store " + name);
+                PublisherManagement.Instance.EventNotification(owner.Username, eventType, message);
             }
         }
 
@@ -605,7 +618,7 @@ namespace TradingSystem.Business.Market
             throw new UnauthorizedAccessException();
         }
 
-        private bool CheckPermission(string username, Permission permission)
+        public bool CheckPermission(string username, Permission permission)
         {
             return ((managers.Where(m => m.username.Equals(username) && m.GetPermission(permission)).Any() || owners.Where(o=> o.username.Equals(username)).Any()|| founder.Username.Equals(username)));
         }
@@ -643,15 +656,6 @@ namespace TradingSystem.Business.Market
             this.founder = f;
         }
         //TODO
-        public Result<bool> AcceptBid(string ownerUsername, string username, Guid productId, double newBidPrice)
-        {
-            if (!CheckPermission(ownerUsername, Permission.BidRequests))
-            {
-                return new Result<bool>(false, true, "No permission to accept Bid");
-            }
-            this.bids.Add(new Bid(username, productId, newBidPrice));
-            return new Result<bool>(true, false, "");
-        }
 
         public bool Contains(String comparator, String list)
         {
@@ -695,6 +699,16 @@ namespace TradingSystem.Business.Market
                     return product;
             }
             return null;
+        }
+
+        public Appointer GetAppointer(string appointerName)
+        {
+            Appointer ret = GetOwner(appointerName);
+            if (ret == null)
+            {
+                ret = founder;
+            }
+            return ret;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace TradingSystem.Business.Market.StoreStates
             this.sid = sid;
         }
 
-        public Owner()
+        public Owner() : base()
         {
         }
 

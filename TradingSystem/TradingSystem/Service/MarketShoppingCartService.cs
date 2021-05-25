@@ -9,12 +9,6 @@ using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Service
 {
-    public enum Answer
-    {
-        Accept, 
-        Deny,
-        Bid
-    }
     public class MarketShoppingCartService
     {
         private static readonly Lazy<MarketShoppingCartService> instanceLazy = new Lazy<MarketShoppingCartService>(() => new MarketShoppingCartService(), true);
@@ -96,44 +90,6 @@ namespace TradingSystem.Service
             var card = new CreditCard(cardNumber, month, year, holderName, cvv, holderId);
             var address = new Address(state, city, street, apartmentNum, zip);
             return await marketUsers.PurchaseShoppingCart(username, card, phone, address);
-        }
-
-        public async Task<Result<bool>> OwnerAnswerBid(string ownerUsername, Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
-        {
-            switch (answer)
-            {
-                //accept bid
-                case Answer.Accept:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ownerUsername+" has declined your bid offer");
-                    return await MarketStores.Instance.OwnerAcceptBid(ownerUsername, username, storeId, productId, newBidPrice);
-
-                //request new bid
-                case Answer.Bid:
-                    var message = $"{username} {storeId} {productId} {newBidPrice}";
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, message);
-                    return new Result<bool>(true, false, "");
-
-                //deny new bid
-                default:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, ownerUsername + " has declined your bid offer");
-                    return new Result<bool>(true, false, "");
-            }
-        }
-
-        public async Task<Result<bool>> CustomerAnswerBid(Answer answer, String username, Guid storeId, Guid productId, double newBidPrice = 0)
-        {
-            switch (answer)
-            {
-                //request new bid
-                case Answer.Bid:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent,  "a store has accepted your offer");
-                    return await MarketStores.Instance.CustomerRequestBid(username, storeId, productId, newBidPrice);
-                
-                //accept / deny bid
-                default:
-                    PublisherManagement.Instance.EventNotification(username, EventType.RequestPurchaseEvent, "a store has declined yor offer");
-                    return new Result<bool>(true, false, "");
-            }
         }
     }
 }

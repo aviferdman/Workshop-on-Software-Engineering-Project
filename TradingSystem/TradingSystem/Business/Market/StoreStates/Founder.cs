@@ -18,7 +18,7 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public override MemberState getM() { return m; }
 
-        private Founder(MemberState m, Store s)
+        private Founder(MemberState m, Store s): base()
         {
             this.username = m.UserId;
             this.m = m;
