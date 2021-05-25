@@ -12,7 +12,9 @@ namespace TradingSystem.Business
         readonly HttpClient client = new HttpClient();
         public async Task<string> Send(Dictionary<string, string> postContent)
         {
-            var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
+            //var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
+
+            var url = "https://cs-bgu-wsep.herokuapp.com/";
 
             var content = new FormUrlEncodedContent(postContent);
 

@@ -20,14 +20,16 @@ namespace TradingSystem.Business.Market
 
         public static Transaction Instance { get { return _lazy.Value; } }
 
+        private const bool enableExternal = false;
+
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }
         public HandshakeAdapter HandshakeAdapter { get => _handshakeAdapter; set => _handshakeAdapter = value; }
 
         private Transaction()
         {
-            string enabled = ConfigurationManager.AppSettings["EnableRealExternalSystems"]; 
-            bool enableExternal = enabled != null? enabled.ToLower().Equals("true") : false;
+            //string enabled = ConfigurationManager.AppSettings["EnableRealExternalSystems"]; 
+            //bool enableExternal = enabled != null? enabled.ToLower().Equals("true") : false;
             if (enableExternal)
             {
                 this.PaymentAdapter = new PaymentImpl(new RealPaymentSystem());
@@ -113,9 +115,18 @@ namespace TradingSystem.Business.Market
 
         public void DeleteAllTests()
         {
-            this.PaymentAdapter = new PaymentImpl();
-            this.DeliveryAdapter = new DeliveryImpl();
-
+            if (enableExternal)
+            {
+                this.PaymentAdapter = new PaymentImpl(new RealPaymentSystem());
+                this.DeliveryAdapter = new DeliveryImpl(new RealDeliverySystem());
+                this.HandshakeAdapter = new HandshakeImpl(new RealHandshakeSystem());
+            }
+            else
+            {
+                this.PaymentAdapter = new PaymentImpl();
+                this.DeliveryAdapter = new DeliveryImpl();
+                this.HandshakeAdapter = new HandshakeImpl();
+            }
         }
     }
 }
