@@ -108,18 +108,6 @@ namespace TradingSystem.Business.Market
             return await store.GetStoreHistory(username);
         }
 
-        //TODO
-        public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, string username, Guid storeId, Guid productId, double newBidPrice)
-        {
-            Store store = await GetStoreById(storeId);
-            User u = MarketUsers.Instance.GetUserByUserName(username);
-            if (store==null)
-            {
-                return new Result<bool>(false, true, "Store doesn't exist");
-            }
-            return store.AcceptBid(ownerUsername, username, productId, newBidPrice);
-        }
-
         public async Task<Store> GetStoreById(Guid storeId)
         {
             Store s = null;
@@ -164,7 +152,7 @@ namespace TradingSystem.Business.Market
             return new Result<Product>(product, true, res);
         }
         //TODO
-        public async  Task<Result<bool>> CustomerRequestBid(string username, Guid storeId, Guid productId, double newBidPrice)
+        public async  Task<Result<bool>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice)
         {
             User u = MarketUsers.Instance.GetUserByUserName(username);
             Store store = await GetStoreById(storeId);

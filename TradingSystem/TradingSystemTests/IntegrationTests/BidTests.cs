@@ -20,7 +20,7 @@ namespace TradingSystemTests.IntegrationTests
         int BID_PRICE = 50;
         MarketStores market = MarketStores.Instance;
         MarketUsers marketUsers = MarketUsers.Instance;
-        MarketStores marketStores = MarketStores.Instance;
+        MarketBids marketBids = MarketBids.Instance;
         UserManagement userManagement = UserManagement.Instance;
         PublisherManagement publisherManagement;
         Store store;
@@ -39,17 +39,16 @@ namespace TradingSystemTests.IntegrationTests
 
             PublisherManagement.Instance.DeleteAll();
             marketUsers.CleanMarketUsers();
-            marketStores.DeleteAll();
             publisherManagement = PublisherManagement.Instance;
             publisherManagement.SetTestMode(true);
             String guestName = marketUsers.AddGuest();
-            await userManagement.SignUp("FounderTest1", "123", null, null);
+            await userManagement.SignUp("FounderTest1", "123", null);
             await marketUsers.AddMember("FounderTest1", "123", guestName);
             guestName = marketUsers.AddGuest();
-            await userManagement.SignUp("ManagerTest1", "123", null, null);
+            await userManagement.SignUp("ManagerTest1", "123", null);
             await marketUsers.AddMember("ManagerTest1", "123", guestName);
             guestName = marketUsers.AddGuest();
-            await userManagement.SignUp("OwnerTest1", "123", null, null);
+            await userManagement.SignUp("OwnerTest1", "123", null);
             await marketUsers.AddMember("OwnerTest1", "123", guestName);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
@@ -64,37 +63,7 @@ namespace TradingSystemTests.IntegrationTests
 
         }
 
-        /*
-        public BidTests()
-        {
-            PublisherManagement.Instance.DeleteAll();
-            marketUsers.CleanMarketUsers();
-            marketStores.DeleteAll();
-            publisherManagement = PublisherManagement.Instance;
-            publisherManagement.SetTestMode(true);
-            String guestName = marketUsers.AddGuest();
-            userManagement.SignUp("FounderTest1", "123", null, null);
-            marketUsers.AddMember("FounderTest1", "123", guestName);
-            guestName = marketUsers.AddGuest();
-            userManagement.SignUp("ManagerTest1", "123", null, null);
-            marketUsers.AddMember("ManagerTest1", "123", guestName);
-            guestName = marketUsers.AddGuest();
-            userManagement.SignUp("OwnerTest1", "123", null, null);
-            marketUsers.AddMember("OwnerTest1", "123", guestName);
-            Address address = new Address("1", "1", "1", "1", "1");
-            CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            store = market.CreateStore("testStore", "FounderTest1", card, address);
-            market.makeOwner("OwnerTest1", store.Id, "FounderTest1");
-            owner = marketUsers.ActiveUsers.GetOrAdd("OwnerTest1", owner);
-            customer = marketUsers.ActiveUsers.GetOrAdd("ManagerTest1", customer);
-            product = new Product(100, 100, 100);
-            var shoppingCart = new ShoppingCart(customer); 
-            customer.UpdateProductInShoppingBasket(store, product, QUANTITY);
-            store.UpdateProduct(product);
-        }
-        */
-
-        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.CustomerRequestBid(string, Guid, Guid, double)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.CustomerCreateBid(string, Guid, Guid, double)"/>
         [TestMethod]
         public async Task TestRequestPurcahse()
         {
@@ -102,32 +71,37 @@ namespace TradingSystemTests.IntegrationTests
             subscriber.TestMode = true;
             int originMessages = subscriber.Messages.Count;
             Assert.AreEqual(originMessages, subscriber.Messages.Count);
-            await marketStores.CustomerRequestBid(customer.Username, store.Id, product.Id, BID_PRICE);
+            await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, BID_PRICE);
             Assert.AreEqual(originMessages + 1, subscriber.Messages.Count);
         }
-
+        
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
         public async Task TestOwnerWithPermissionAcceptBid()
         {
             double originPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(product.Price * QUANTITY, originPrice);
-            await marketStores.OwnerAcceptBid(owner.Username, customer.Username, store.Id, product.Id, BID_PRICE);
+            var resultBid = await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, BID_PRICE);
+            var bidId = resultBid.Ret;
+            await marketBids.OwnerAcceptBid(owner.Username, store.Id, bidId);
             double bidPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(BID_PRICE * QUANTITY, bidPrice);
         }
 
+        
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
         public async Task TestOwnerWithoutPermissionAcceptBid()
         {
             double originPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
-            Assert.AreEqual(product.Price * QUANTITY, originPrice);
-            await marketStores.OwnerAcceptBid("blahblahblah", customer.Username, store.Id, product.Id, BID_PRICE);
+            var resultBid = await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, originPrice * 0.5);
+            var bidId = resultBid.Ret;
+            await marketBids.OwnerAcceptBid("blahblahblah", store.Id, bidId);
             double bidPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(originPrice, bidPrice);
         }
 
+        
         /// test for function :<see cref="TradingSystem.Service.MarketShoppingCartService.OwnerAnswerBid(string, TradingSystem.Service.Answer, string, Guid, Guid, double)">
         [TestMethod]
         public async Task TestOwnerAnswerDenyBid()
@@ -136,10 +110,12 @@ namespace TradingSystemTests.IntegrationTests
             subscriber.TestMode = true;
             int originMessages = subscriber.Messages.Count;
             Assert.AreEqual(originMessages, subscriber.Messages.Count);
-            await MarketShoppingCartService.Instance.OwnerAnswerBid(owner.Username, Answer.Deny, customer.Username, store.Id, product.Id);
+            var resultBid = await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, BID_PRICE);
+            var bidId = resultBid.Ret;
+            await marketBids.OwnerDenyBid(owner.Username, store.Id, bidId);
             Assert.AreEqual(originMessages + 1, subscriber.Messages.Count);
         }
-
+        
         /// test for function :<see cref="TradingSystem.Service.MarketShoppingCartService.OwnerAnswerBid(string, TradingSystem.Service.Answer, string, Guid, Guid, double)">
         [TestMethod]
         public async Task TestOwnerAnswerNewBid()
@@ -148,10 +124,12 @@ namespace TradingSystemTests.IntegrationTests
             subscriber.TestMode = true;
             int originMessages = subscriber.Messages.Count;
             Assert.AreEqual(originMessages, subscriber.Messages.Count);
-            await MarketShoppingCartService.Instance.OwnerAnswerBid(owner.Username, Answer.Deny, customer.Username, store.Id, product.Id, 75);
+            var resultBid = await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, BID_PRICE);
+            var bidId = resultBid.Ret;
+            await marketBids.OwnerNegotiateBid(owner.Username, store.Id, bidId, 1.2 * BID_PRICE);
             Assert.AreEqual(originMessages + 1, subscriber.Messages.Count);
         }
-
+        
         [TestCleanup]
         public async Task DeleteAll()
         {
@@ -160,7 +138,6 @@ namespace TradingSystemTests.IntegrationTests
             await UserManagement.Instance.DeleteUser("OwnerTest1");
             PublisherManagement.Instance.DeleteAll();
             marketUsers.CleanMarketUsers();
-            marketStores.DeleteAll();
         }
     }
 }

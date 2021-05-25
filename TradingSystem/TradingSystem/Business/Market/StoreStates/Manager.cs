@@ -33,7 +33,8 @@ namespace TradingSystem.Business.Market.StoreStates
             BidRequests
         }
 
-        public Manager() {
+        public Manager()
+        {
             username = "manager";
         }
 

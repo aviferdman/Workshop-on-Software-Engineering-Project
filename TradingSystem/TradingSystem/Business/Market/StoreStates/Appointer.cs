@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.DAL;
+using TradingSystem.Notifications;
+using TradingSystem.PublisherComponent;
 using static TradingSystem.Business.Market.StoreStates.Manager;
 
 namespace TradingSystem.Business.Market.StoreStates
@@ -14,6 +17,72 @@ namespace TradingSystem.Business.Market.StoreStates
         public Store s { get; set; }
         public Guid sid { get; set; }
         public string username { get; set; }
+
+        private ICollection<Bid> bids;
+        public Appointer()
+        {
+            this.Bids = new HashSet<Bid>();
+        }
+
+        public ICollection<Bid> Bids { get => bids; set => bids = value; }
+
+        public async Task AddBid(Bid bid)
+        {
+            this.bids.Add(bid);
+        }
+
+        public ICollection<Bid> GetUserBids(string username)
+        {
+            return bids.Where(b => b.Username.Equals(username)).ToHashSet();
+        }
+
+        public ICollection<Bid> GetUserAcceptedBids(string username)
+        {
+            return bids.Where(b => b.Username.Equals(username) && b.Status.Equals(BidStatus.Accept)).ToHashSet();
+        }
+
+        public Bid GetBidById(Guid id)
+        {
+            return bids.Where(b => b.Id.Equals(id)).FirstOrDefault();
+        }
+
+        internal void CustomerDenyBid(Guid bidId)
+        {
+            var bid = GetBidById(bidId);
+            bid.Status = BidStatus.Deny;
+        }
+
+        //TODO
+        public async Task<Result<bool>> CustomerNegotiateBid(Guid bidId, double newBidPrice)
+        {
+            var bid = GetBidById(bidId);
+            bid.Price = newBidPrice;
+            bid.Status = BidStatus.Negotiate;
+            return new Result<bool>(true, false, "");
+        }
+
+        public async Task<Result<bool>> OwnerAcceptBid(Guid bidId)
+        {
+            var bid = GetBidById(bidId);
+            bid.Status = BidStatus.Accept;
+            return new Result<bool>(true, false, "");
+        }
+
+        public async Task<Result<bool>> OwnerNegotiateBid(Guid bidId, double newBidPrice)
+        {
+            var bid = GetBidById(bidId);
+            bid.Price = newBidPrice;
+            bid.Status = BidStatus.Negotiate;
+            return new Result<bool>(true, false, "");
+        }
+
+        internal async Task<Result<bool>> OwnerDenyBid(Guid bidId)
+        {
+            var bid = GetBidById(bidId);
+            bid.Status = BidStatus.Deny;
+            return new Result<bool>(true, false, "");
+        }
+
         //appoint a new manager with memberStaste m to Store s adds to lists in store and memberState
         //use locks for store premmissions and memberState premissions
         public async  Task<Manager> AddAppointmentManager(MemberState m, Store s)
@@ -62,11 +131,5 @@ namespace TradingSystem.Business.Market.StoreStates
             man.store_permission = perms;
             await ProxyMarketContext.Instance.saveChanges();
         }
-
-      
-
-
-
-
     }
 }

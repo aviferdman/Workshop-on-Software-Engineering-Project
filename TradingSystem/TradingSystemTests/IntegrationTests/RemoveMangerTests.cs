@@ -27,13 +27,13 @@ namespace TradingSystemTests.IntegrationTests
         {
             ProxyMarketContext.Instance.IsDebug = true;
             String guestName = marketUsers.AddGuest();
-            await userManagement.SignUp("founder", "123", null, null);
+            await userManagement.SignUp("founder", "123", null);
             await marketUsers.AddMember("founder", "123", guestName);
             guestName = marketUsers.AddGuest();
-            await userManagement.SignUp("manager", "123", null, null);
+            await userManagement.SignUp("manager", "123", null);
             await marketUsers.AddMember("manager", "123", guestName);
             guestName = marketUsers.AddGuest();
-            await userManagement.SignUp("owner", "123", null, null);
+            await userManagement.SignUp("owner", "123", null);
             await marketUsers.AddMember("owner", "123", guestName);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
