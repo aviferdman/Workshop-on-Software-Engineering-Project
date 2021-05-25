@@ -11,6 +11,12 @@ import {StoreStaff} from "./pages/Stores/StoreStaff";
 import {StoreHistory} from "./pages/Stores/StoreHistory";
 import {ShoppingCart} from "./pages/ShoppingCart/ShoppingCart";
 import {GlobalContext, UserRole} from "./globalContext";
+import {searchStore} from "./pages/Stores/searchStore";
+import {StoreProductsUserView} from "./pages/Stores/StoreProductsUserView";
+import {UserHistory} from "./pages/History/UserHistory";
+import {HistoryProductsList} from "./pages/History/HistoryProductsList";
+import {AdminActions} from "./pages/Admin/AdminActions";
+import {AdminHistory} from "./pages/Admin/AdminHistory";
 
 class DefaultRoute extends React.Component {
     render() {
@@ -38,6 +44,12 @@ export default function Routes() {
             <Route path={"/storeHistory"} component={StoreHistory} />
             <Route path={"/storeCreate"} component={StoreCreateForm} />
             <Route path={"/ShoppingCart"} component={ShoppingCart} />
+            <Route path={"/searchStore"} component={searchStore} />
+            <Route path={"/storeProductsUserView"} component={StoreProductsUserView} />
+            <Route path={"/userHistory"} component={UserHistory} />
+            <Route path={"/historyProducts"} component={HistoryProductsList} />
+            <Route path={"/adminActions"} component={AdminActions} />
+            <Route path={"/adminHistory"} component={AdminHistory} />
         </Switch>
     );
 }

@@ -17,6 +17,14 @@ export const SidebarData = [
         icon: <HiIcons.HiShoppingCart />,
         cName: 'nav-text'
     },
+
+    {
+        title: 'Search Store',
+        path: '/searchStore',
+        icon: <FaIcons.FaStoreAlt />,
+        cName: 'nav-text'
+    },
+
     {
         title: 'Store Management',
         path: '/myStores',
@@ -24,14 +32,14 @@ export const SidebarData = [
         cName: 'nav-text'
     },
     {
-        title: 'Users Management',
-        path: '/team',
+        title: 'Admin Actions',
+        path: '/adminActions',
         icon: <IoIcons.IoMdPeople />,
         cName: 'nav-text'
     },
     {
         title: 'History',
-        path: '/messages',
+        path: '/userHistory',
         icon: <AiIcons.AiOutlineHistory />,
         cName: 'nav-text'
     },

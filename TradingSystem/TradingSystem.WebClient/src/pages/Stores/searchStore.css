@@ -1,0 +1,15 @@
+.search-store-grid{
+
+    display: grid;
+    grid-template-rows: 10% 85%;
+    gap: 10%
+}
+
+.search-store-element{
+    place-self: center;
+}
+
+.stores-view-flex{
+    display: flex;
+    flex: 3 60;
+}

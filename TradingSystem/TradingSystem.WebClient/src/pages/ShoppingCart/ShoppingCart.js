@@ -64,8 +64,8 @@ export class ShoppingCart extends Component {
 
                     {/* TODO: get total price from server */}
                     <div className="total">
-                        Total: {" "}
-                        {formatCurrency(this.state.products.reduce((a,c) => a + (c.price * c.quantity), 0))}
+                        <h2>Total price of all products: </h2>
+                        <h1>{formatCurrency(this.state.products.reduce((a,c) => a + (c.price * c.quantity), 0))} </h1>
                     </div>
 
                     <div className="bottom-row">
@@ -75,7 +75,6 @@ export class ShoppingCart extends Component {
                         </div>
 
                     </div>
-
 
                 </main>
                 <footer> End of Store</footer>

@@ -1,4 +1,4 @@
-/* Products */
+/* History */
 
 .history{
     display: flex;
@@ -16,7 +16,7 @@
 }
 
 .history li{
-    flex:0 1 29rem;
+    flex:0 1 29rem ;
     height: 25rem;
     border: 1px solid #ddd;
     padding: 1rem;

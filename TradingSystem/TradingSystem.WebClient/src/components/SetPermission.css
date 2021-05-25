@@ -50,6 +50,7 @@
 
 .display-block {
     display: block;
+    z-index: 9999;
 }
 
 .display-none {

@@ -1,0 +1,5 @@
+
+.history-products-view-flex{
+    display: flex;
+    flex-direction: column;
+}
