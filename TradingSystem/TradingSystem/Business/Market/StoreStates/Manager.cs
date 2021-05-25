@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TradingSystem.Business.Interfaces;
 
@@ -12,12 +13,9 @@ namespace TradingSystem.Business.Market.StoreStates
         public Store s { get; set; }
         public string username { get; set; }
         public Guid sid { get; set; }
-        public ICollection<string> store_permission { get; set; }
+        public List<Prem> store_permission { get; set; }
 
-        public string Username { get => username; set => username = value; }
-        public ICollection<string> Store_permission { get => store_permission; set => store_permission = value; }
-        public MemberState M { get => m; set => m = value; }
-        public Store S { get => s; set => s = value; }
+
 
 
         public enum Permission
@@ -46,8 +44,8 @@ namespace TradingSystem.Business.Market.StoreStates
             this.s = s;
             this.sid = sid;
             this.appointer = appointer;
-            store_permission = new LinkedList<string>();
-            store_permission.Add(Permission.GetPersonnelInfo.ToString());
+            store_permission = new List<Prem>();
+            store_permission.Add(new Prem(Permission.GetPersonnelInfo.ToString()));
         }
         public static Manager makeManager(MemberState m, Store s, Appointer appointer)
         {
@@ -60,18 +58,29 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public virtual bool GetPermission(Permission permission)
         {
-            return store_permission.Contains(permission.ToString());
+            return store_permission.Where(per=>per.p.Equals(permission.ToString())).Any();
         }
 
         public bool removePermission(Store store)
         {
             bool ret;
-            lock (m.managerPrems)
-            {
-                ret = m.managerPrems.Remove(this)||s.managers.Remove(this)|| appointer.managerAppointments.Remove(this);
-            }
+            ret = s.managers.Remove(this);
             return ret;
         }
 
+    }
+    public class Prem
+    {
+
+        public Prem(string v)
+        {
+            this.p = v;
+        }
+
+        public Prem()
+        {
+        }
+
+        public string p { get; set; }
     }
 }

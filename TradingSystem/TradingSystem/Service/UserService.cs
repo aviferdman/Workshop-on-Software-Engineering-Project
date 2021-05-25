@@ -26,9 +26,9 @@ namespace TradingSystem.Service
             userManagement.tearDown();
         }
 
-        public async Task<string> SignupAsync(string guestusername, string username, string password, string _state, string _city, string _street, string _apartmentNum, string zip, string phone)
+        public async Task<string> SignupAsync(string guestusername, string username, string password,string phone)
         {
-            string ans= await userManagement.SignUp(username, password, new Address(_state, _city, _street, _apartmentNum, zip), phone);
+            string ans= await userManagement.SignUp(username, password, phone);
             return ans;
                 
         }

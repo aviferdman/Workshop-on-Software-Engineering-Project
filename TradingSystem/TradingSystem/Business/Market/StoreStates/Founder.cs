@@ -15,7 +15,6 @@ namespace TradingSystem.Business.Market.StoreStates
         
 
         public string Username { get => username; set => username = value; }
-        public Store S { get => s; set => s = value; }
 
         public override MemberState getM() { return m; }
 
@@ -32,8 +31,8 @@ namespace TradingSystem.Business.Market.StoreStates
             return new Founder(m, s);
         }
 
-
-      
-
+        public Founder()
+        {
+        }
     }
 }

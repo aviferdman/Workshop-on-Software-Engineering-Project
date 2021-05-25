@@ -54,12 +54,12 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             if (!man.appointer.username.Equals(this.username))
                 throw new UnauthorizedAccessException();
-            List<string> perms = new List<string>();
+            List<Prem> perms = new List<Prem>();
             foreach(Permission p in permissions)
             {
-                perms.Add(p.ToString());
+                perms.Add(new Prem(p.ToString()));
             }
-            man.Store_permission = perms;
+            man.store_permission = perms;
             await ProxyMarketContext.Instance.saveChanges();
         }
 

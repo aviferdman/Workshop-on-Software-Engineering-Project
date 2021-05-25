@@ -252,7 +252,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
@@ -312,7 +312,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", "0501234566");
             admins.TryAdd("DEFAULT_ADMIN", admin);
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
@@ -359,7 +359,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", new Address("Israel", "Beer Sheva", "lala", "5", "1111111"), "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN",  "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
         }

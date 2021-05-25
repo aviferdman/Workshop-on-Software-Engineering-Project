@@ -660,7 +660,7 @@ namespace TradingSystem.Business.Market
                 case "Owners":
                     return Owners.Where(o => o.Username.Equals(comparator)).Any();
                 case "Managers":
-                    return Managers.Where(m => m.Username.Equals(comparator)).Any();
+                    return Managers.Where(m => m.username.Equals(comparator)).Any();
                 case "Products":
                     return Products.Where(p => p.Id.Equals(comparator)).Any();
                 default: return false;
@@ -671,7 +671,7 @@ namespace TradingSystem.Business.Market
         {
             foreach (Manager manager in Managers)
             {
-                if (manager.Username.Equals(name))
+                if (manager.username.Equals(name))
                     return manager;
             }
             return null;
