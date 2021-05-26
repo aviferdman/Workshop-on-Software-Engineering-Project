@@ -168,7 +168,7 @@ namespace TradingSystem.Business.Market
         private double GetProductBid(string username, Product p)
         {
             double sum = 0;
-            var bids = founder.GetUserAcceptedBids(username);
+            var bids = founder == null ? new HashSet<Bid>() : founder.GetUserAcceptedBids(username);
             foreach (var bid in bids)
             {
                 if (bid.Username.Equals(username) && bid.ProductId.Equals(p.Id))
