@@ -1,0 +1,16 @@
+
+.admin-main-container{
+    display: grid;
+    grid-template-rows: 10% 90%
+}
+
+.internal-conatiner{
+    display: grid;
+    grid-template-rows: 33% 33% 33%
+}
+
+.button-view{
+    cursor: pointer;
+    font-size: 8rem;
+    background-color: #ECCC77FF;
+}

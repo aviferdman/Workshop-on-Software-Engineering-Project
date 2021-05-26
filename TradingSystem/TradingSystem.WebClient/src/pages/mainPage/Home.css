@@ -64,7 +64,7 @@ header{
     display: flex;
     align-items: center;
     flex: 3 60;
-    margin-left: 37rem;
+    place-self: center;
 
 }
 

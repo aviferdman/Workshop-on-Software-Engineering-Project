@@ -1,0 +1,25 @@
+
+.admin-hist-cont{
+    display: grid;
+    grid-template-rows: 10% 90%
+}
+
+.admin-search-store-grid{
+
+    display: grid;
+    grid-template-rows: 15% 70%;
+    gap: 15%
+}
+
+.admin-search-store-element{
+
+    display: flex;
+    align-items: center;
+    flex: 3 60;
+    place-self: center;
+    margin-bottom: 4rem;
+}
+.filter-category{
+    margin-left: 8rem;
+}
+

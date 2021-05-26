@@ -142,7 +142,7 @@ export class Home extends React.Component {
                     <SearchBar onChange={this.onSearchInputChange} value={this.state.searchKeywords} onSearch={this.onSearch}/>
                     {" "}
 
-                    <div className="filter-category">
+                    <div >
                         Category{" "}
                         <select value={this.state.searchCategory} onChange={this.onSearchCategoryChange}>
                             <option value="">ALL</option>
@@ -188,9 +188,6 @@ export class Home extends React.Component {
                                 sortProducts={this.sortProducts} >
                             </Filter>
                             <HomeProducts products={this.state.products} addToCart={this.addToCart} history={this.props.history} />
-                        </div>
-                        <div className="sidebar">
-                            <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} onProceed={this.onProceedToPurchase} />
                         </div>
                     </div>
                 </main>

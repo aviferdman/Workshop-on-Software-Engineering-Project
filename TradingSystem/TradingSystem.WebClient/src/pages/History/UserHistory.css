@@ -1,0 +1,9 @@
+.user-history-grid{
+    display: grid;
+    grid-template-rows: 100%;
+}
+
+.history-view-flex{
+    display: flex;
+    flex: 4 60;
+}
