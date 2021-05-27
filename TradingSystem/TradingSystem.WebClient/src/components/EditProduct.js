@@ -14,6 +14,14 @@ class EditProduct extends React.Component {
             product: new ProductFields(),
         };
 
+        let fields = this.state.product.fields;
+        let product = this.props.product;
+        fields.name.value = product.name;
+        fields.quantity.value = product.quantity;
+        fields.price.value = product.price;
+        fields.category.value = product.category;
+        fields.weight.value = product.weight;
+
         this.onConfirm = this.onConfirm.bind(this);
     }
 
@@ -46,14 +54,13 @@ class EditProduct extends React.Component {
         axios.post('/Stores/EditProduct', {
             username: this.context.username,
             storeId: this.props.storeId,
-            productId: this.props.productId,
+            productId: this.props.product.id,
             productDetails: product,
         }).then(response => {
             this.setState({
                 show: false,
-                product: new ProductFields(),
             });
-            product.id = this.props.productId;
+            product.id = this.props.product.id;
             this.props.onProductEdited(product);
         }, alertRequestError_default);
     }

@@ -51,12 +51,10 @@ class StoreProductsContent extends Component {
     }
 
     onProductEdited = product => {
-        let index = this.state.products.findIndex(p2 => {
-            return p2.id === product.id;
-        });
-        this.state.products[index] = product;
         this.setState({
-            ...this.state
+            products: this.state.products.map(p2 => {
+                return p2.id === product.id ? product : p2;
+            }),
         });
     }
 
