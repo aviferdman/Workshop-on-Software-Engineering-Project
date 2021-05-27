@@ -10,7 +10,7 @@ import StoreCreateForm from "./pages/Stores/StoreCreateForm";
 import {StoreStaff} from "./pages/Stores/StoreStaff";
 import {StoreHistory} from "./pages/Stores/StoreHistory";
 import {ShoppingCart} from "./pages/ShoppingCart/ShoppingCart";
-import {GlobalContext, UserRole} from "./globalContext";
+import {GlobalContext} from "./globalContext";
 import {searchStore} from "./pages/Stores/searchStore";
 import {StoreProductsUserView} from "./pages/Stores/StoreProductsUserView";
 import {UserHistory} from "./pages/History/UserHistory";

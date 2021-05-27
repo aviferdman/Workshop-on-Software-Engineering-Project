@@ -3,7 +3,6 @@ import './Home.css';
 import data from '../../data/productData.json';
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
-import Cart from "../../components/Cart";
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
 import HomeProducts from "../../components/HomeProducts";

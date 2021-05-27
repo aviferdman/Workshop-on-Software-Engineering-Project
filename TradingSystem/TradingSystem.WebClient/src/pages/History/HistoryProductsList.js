@@ -3,7 +3,6 @@ import './HistoryProductsList.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 import Data from "../../data/productData.json"
-import HomeProducts from "../../components/HomeProducts";
 import HistoryProducts from "./HistoryProducts";
 import formatCurrency from "../mainPage/currency";
 
