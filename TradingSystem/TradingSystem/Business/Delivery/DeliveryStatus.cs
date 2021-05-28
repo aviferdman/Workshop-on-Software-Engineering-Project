@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace TradingSystem.Business.Delivery
 {
     public class DeliveryStatus
     {
+        [Key]
         string _packageId;
         string _username;
         Guid _storeId;
