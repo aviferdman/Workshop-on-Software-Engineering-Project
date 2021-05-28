@@ -19,7 +19,7 @@ class StoreContent extends Component {
     }
 
     componentDidMount() {
-        api.storeInfo(this.storeId)
+        api.stores.info(this.storeId)
             .then(storeInfo => {
                 this.setState({
                     name: storeInfo.name,

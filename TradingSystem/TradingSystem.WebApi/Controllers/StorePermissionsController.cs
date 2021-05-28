@@ -84,7 +84,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<WorkerDetailsDTO>> WorkerDetails([FromBody] AppointmentDTO appointmentDTO)
+        public async Task<ActionResult<WorkerDetailsDTO>> WorkerSpecificDetails([FromBody] AppointmentDTO appointmentDTO)
         {
             object?[] values =
             {
@@ -111,7 +111,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ApointOwner([FromBody] AppointmentDTO appointmentDTO)
+        public async Task<ActionResult> AppointOwner([FromBody] AppointmentDTO appointmentDTO)
         {
             object?[] values =
             {
@@ -138,7 +138,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ApointManagerManager([FromBody] AppointmentDTO appointmentDTO)
+        public async Task<ActionResult> AppointManager([FromBody] AppointmentDTO appointmentDTO)
         {
             object?[] values =
             {

@@ -21,7 +21,7 @@ export class StoreProducts extends Component {
     async fetchProducts() {
         let response;
         try {
-            response = await api.storeInfo(this.props.match.params.storeId);
+            response = await api.stores.info(this.props.match.params.storeId);
         }
         catch (e) {
             alertRequestError_default(e);
