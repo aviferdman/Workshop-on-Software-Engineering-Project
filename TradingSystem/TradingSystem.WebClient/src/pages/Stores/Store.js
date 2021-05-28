@@ -6,17 +6,36 @@ import Header from "../../header";
 import {StoreProducts} from "./StoreProducts";
 import {StoreStaff} from "./StoreStaff";
 import {StoreHistory} from "./StoreHistory";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 class StoreContent extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            name: '',
+        };
+        this.storeId = this.props.match.params.storeId;
+    }
+
+    componentDidMount() {
+        api.storeInfo(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    name: storeInfo.name,
+                });
+            }, alertRequestError_default);
+    }
+
     onNavigationButtonClick = route => e => {
-        this.props.history.push(`/store/${route}/${this.props.match.params.storeId}`)
+        this.props.history.push(`/store/${route}/${this.storeId}`)
     }
 
     render() {
         return (
             <main className="main-conatiner">
                 <div>
-                    <h2>Store Name</h2>
+                    <h2>{this.state.name}</h2>
                 </div>
 
                 <div className="internal-conatiner">

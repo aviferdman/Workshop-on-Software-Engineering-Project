@@ -2,8 +2,9 @@ import React, {Component} from 'react';
 import './StoreProducts.css';
 import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
-import axios from "axios";
 import {GlobalContext} from "../../globalContext";
+import {alertRequestError_default} from "../../utils";
+import * as api from "../../api";
 
 export class StoreProducts extends Component {
     constructor(props) {
@@ -18,19 +19,18 @@ export class StoreProducts extends Component {
     }
 
     async fetchProducts() {
+        let response;
         try {
-            let response = await axios.get('/Stores/Info', {
-               params: {
-                   storeId: this.props.match.params.storeId
-               }
-            });
-            this.setState({
-                products: response.data.products
-            });
+            response = await api.storeInfo(this.props.match.params.storeId);
         }
         catch (e) {
-            console.error("search error occurred: ", e);
+            alertRequestError_default(e);
+            return;
         }
+
+        this.setState({
+            products: response.products
+        });
     }
 
     onProductRemoved = product => {
