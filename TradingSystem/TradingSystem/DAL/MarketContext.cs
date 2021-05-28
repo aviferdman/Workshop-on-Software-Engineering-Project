@@ -47,9 +47,9 @@ namespace TradingSystem.DAL
         public DbSet<Address> addresses { get; set; }
 
         public DbSet<Category> categories { get; set; }
-        
+        public static string conString = "Data Source=marketDB.db";
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-           => options.UseSqlite(@"Data Source=marketDB.db");
+           => options.UseSqlite(@conString);
 
         public static MarketContext Instance { get { return _lazy.Value; } }
 
@@ -83,8 +83,8 @@ namespace TradingSystem.DAL
                 .HasKey(d => d.username);
             modelBuilder.Entity<DeliveryStatus>()
               .HasKey(s => s.PackageId);
-            modelBuilder.Entity<DeliveryStatus>()
-              .HasKey(s => s.PackageId);
+            modelBuilder.Entity<PaymentStatus>()
+              .HasKey(s => s.PaymentId);
             modelBuilder.Entity<ShoppingCart>()
                .HasKey(s => s.username);
             modelBuilder.Entity<Store>()
