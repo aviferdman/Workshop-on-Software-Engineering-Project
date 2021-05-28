@@ -26,7 +26,7 @@ namespace TradingSystemTests.IntegrationTests
             Address source = new Address("1", "1", "1", "1", "1");
             Address destination = new Address("2", "2", "2", "2", "2");
             DeliveryAdapter deliveryAdapter = new DeliveryImpl();
-            DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, "0544444444", 1, source, destination);
+            DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, "storeName", "0544444444", 1, source, destination);
             DeliveryStatus deliveryStatus = await deliveryAdapter.CreateDelivery(deliveryDetails);
             Assert.AreEqual(true, deliveryStatus.Status);
         }
