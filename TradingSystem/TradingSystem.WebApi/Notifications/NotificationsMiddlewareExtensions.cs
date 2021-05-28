@@ -1,31 +1,50 @@
 ﻿using System;
 using System.Net.WebSockets;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 
 namespace TradingSystem.WebApi.Notifications
 {
     public static class NotificationsMiddlewareExtensions
     {
-        private static async Task Middleware(HttpContext context, Func<Task> next)
+        private class NotificationsMiddleware
         {
-            if (context.Request.Path == "/login")
+            public NotificationsMiddleware(RequestDelegate next, IHostApplicationLifetime applicationLifetime)
             {
-                if (context.WebSockets.IsWebSocketRequest)
+                Next = next;
+                ApplicationLifetime = applicationLifetime;
+            }
+
+            public RequestDelegate Next { get; }
+            public IHostApplicationLifetime ApplicationLifetime { get; }
+
+            public async Task InvokeAsync(HttpContext context)
+            {
+                if (context.Request.Path == "/login")
                 {
-                    using WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-                    await new WebSocketHandler(context, ws).OnAccept();
+                    if (context.WebSockets.IsWebSocketRequest)
+                    {
+                        using WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
+                        var cts = new CancellationTokenSource();
+                        using CancellationTokenRegistration cancellationRegisteration = ApplicationLifetime.ApplicationStopping.Register(() =>
+                        {
+                            cts.Cancel();
+                        });
+                        await new WebSocketHandler(cts.Token, context, ws).OnAccept();
+                    }
+                    else
+                    {
+                        context.Response.StatusCode = 400;
+                    }
                 }
                 else
                 {
-                    context.Response.StatusCode = 400;
+                    await Next(context);
                 }
-            }
-            else
-            {
-                await next();
             }
         }
 
@@ -36,7 +55,7 @@ namespace TradingSystem.WebApi.Notifications
                 throw new ArgumentNullException(nameof(app));
             }
 
-            return app.Use(Middleware);
+            return app.UseMiddleware<NotificationsMiddleware>();
         }
     }
 }
