@@ -78,11 +78,11 @@ export default class StoreCreateForm extends React.Component {
     };
 
     validateFields() {
-        let err = false;
-        err = err || this.state.storeName.validate_required();
-        err = err || this.state.address.validate();
-        err = err || this.state.creditCard.validate();
-        return err;
+        let valid = true;
+        valid = valid && this.state.storeName.validate_required();
+        valid = valid && this.state.address.validate();
+        valid = valid && this.state.creditCard.validate();
+        return valid;
     }
 
     closeErrorDialog = () => {
