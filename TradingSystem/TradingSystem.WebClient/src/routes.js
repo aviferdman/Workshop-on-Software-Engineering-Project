@@ -39,9 +39,6 @@ export default function Routes() {
             <Route path={"/home"} component={Home} />
             <Route path={"/myStores"} component={MyStores} />
             <Route path={"/store"} component={Store} />
-            <Route path={"/storeProducts"} component={StoreProducts} />
-            <Route path={"/storeStaff"} component={StoreStaff} />
-            <Route path={"/storeHistory"} component={StoreHistory} />
             <Route path={"/storeCreate"} component={StoreCreateForm} />
             <Route path={"/ShoppingCart"} component={ShoppingCart} />
             <Route path={"/searchStore"} component={searchStore} />

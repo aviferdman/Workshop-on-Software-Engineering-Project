@@ -2,12 +2,10 @@ import React, {Component} from 'react';
 import './StoreProducts.css';
 import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
-import {Route, Switch} from "react-router-dom";
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
-import Header from "../../header";
 
-class StoreProductsContent extends Component {
+export class StoreProducts extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -78,24 +76,6 @@ class StoreProductsContent extends Component {
 
             </main>
         );
-    }
-}
-
-export class StoreProducts extends Component {
-    render() {
-        return (
-            <div className="grid-container">
-                <Header />
-
-                <Switch>
-                    <Route path={`${this.props.match.path}/:storeId`} component={StoreProductsContent} />
-                    <Route path={this.props.match.path}>
-                        <h3 className='center-screen'>No store selected</h3>
-                    </Route>
-                </Switch>
-                <footer> End of Store</footer>
-            </div>
-        )
     }
 }
 
