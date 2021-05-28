@@ -8,7 +8,7 @@ namespace TradingSystem.Business.Market.UserPackage
     {
         public Product product { get; set; }
         public int quantity { get; set; }
-
+        public int id { get; set; }
         public ProductInCart(Product product, int quantity)
         {
             this.product = product;

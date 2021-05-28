@@ -15,6 +15,7 @@ namespace TradingSystem.Business.Market.StoreStates
     {
         public MemberState m { get; set; }
         public Store s { get; set; }
+
         public Guid sid { get; set; }
         public string username { get; set; }
 

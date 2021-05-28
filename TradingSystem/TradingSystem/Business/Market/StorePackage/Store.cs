@@ -25,19 +25,29 @@ namespace TradingSystem.Business.Market
         public Founder founder { get; set; }
         public HashSet<Manager> managers { get; set; }
         public HashSet<Owner> owners { get; set; }
+        [NotMapped]
         public CreditCard _bank { get; set; }
         public Guid sid { get; set; }
         public string name { get; set; }
         public Address _address { get; set; }
+        [NotMapped]
         public HashSet<Product> Products { get => _products; set => _products = value; }
+        [NotMapped]
         internal Address Address { get => _address; set => _address = value; }
+        [NotMapped]
         public Guid Id { get => sid; set => sid = value; }
+        [NotMapped]
         public string Name { get => name; set => name = value; }
+        [NotMapped]
         public CreditCard Bank { get => _bank; set => _bank = value; }
+        [NotMapped]
         public HashSet<Manager> Managers { get => managers; set => managers = value; }
+        [NotMapped]
         public HashSet<Owner> Owners { get => owners; set => owners = value; }
+        [NotMapped]
         public Founder Founder { get => founder; set => founder = value; }
         public PurchasePolicy purchasePolicy { get; set; }
+
         public Store()
         {
 

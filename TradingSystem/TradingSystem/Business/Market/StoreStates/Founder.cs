@@ -15,7 +15,7 @@ namespace TradingSystem.Business.Market.StoreStates
         
 
         public string Username { get => username; set => username = value; }
-
+        
         public override MemberState getM() { return m; }
 
         private Founder(MemberState m, Store s): base()

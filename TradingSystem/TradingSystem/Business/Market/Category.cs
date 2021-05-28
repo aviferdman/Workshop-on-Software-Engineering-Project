@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace TradingSystem.Business.Market
 {
     public class Category
     {
-        List<Product> products;
-        string nameId;
+        public List<Product> products { get; set; }
+        public string nameId { get; set; }
 
+        [NotMapped]
         public List<Product> Products { get => products; set => products = value; }
+        [NotMapped]
         public string Name { get => nameId; set => nameId = value; }
 
         public Category(string name)

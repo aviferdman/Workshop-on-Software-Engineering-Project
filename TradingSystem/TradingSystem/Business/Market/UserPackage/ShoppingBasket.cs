@@ -10,6 +10,7 @@ namespace TradingSystem.Business.Market
 {
     public class ShoppingBasket :IComparable
     {
+        public Guid id { get; set; }
         public HashSet<ProductInCart> _product_quantity { get; set; }
         public  ShoppingCart shoppingCart { get; set; }
         public Store store { get; set; }
