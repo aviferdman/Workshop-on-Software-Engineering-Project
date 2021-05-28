@@ -1,43 +1,71 @@
 import React, {Component} from 'react';
 import './StoreStaff.css';
-import data from "../../data/staffData.json";
 import Users from "../../components/Users";
 import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
-import SetPermission from "../../components/SetPermission";
 import {GlobalContext} from "../../globalContext";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 export class StoreStaff extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            staff: data.staff
+            staff: [],
         };
         this.storeId = this.props.match.params.storeId;
     }
+
+    async componentDidMount() {
+        await this.fetchStaff();
+    }
+
+    async fetchStaff() {
+        return api.stores.permissions.workersDetails(this.context.username, this.storeId)
+            .then(staff => {
+                this.setState({
+                    staff: staff,
+                });
+            }, alertRequestError_default);
+    }
+
+    onUserAdd = user => {
+        this.state.staff.push(user);
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onUserRemove = async user => {
+        if (user.role === 'manager') {
+            this.setState({
+                staff: this.state.staff.filter(u => {
+                    return u.username !== user.username;
+                }),
+            });
+        }
+        else {
+            await this.fetchStaff();
+        }
+    };
 
     render() {
         return (
             <main className="store-products-main-conatiner-staff">
 
                 <div>
-                    <Users staff={this.state.staff} />
+                    <Users staff={this.state.staff} storeId={this.storeId} onRemove={this.onUserRemove} />
                 </div>
 
                 <div className="bottom-row-staff">
                     <div>
-                        <AddManager/>
+                        <AddManager storeId={this.storeId} onSuccess={this.onUserAdd} />
                     </div>
 
                     <div>
-                        <AddOwner/>
+                        <AddOwner storeId={this.storeId} onSuccess={this.onUserAdd} />
                     </div>
-
-                    <div>
-                        <SetPermission/>
-                    </div>
-
 
                 </div>
 

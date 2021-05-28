@@ -10,6 +10,24 @@ export const post = async (...args) => {
     return response.data;
 }
 
+export const data = {
+    stores: {
+        permissions: {
+            addProduct: 'AddProduct',
+            appointManger: 'AppointManger',
+            removeProduct: 'RemoveProduct',
+            getPersonnelInfo: 'GetPersonnelInfo',
+            editProduct: 'EditProduct',
+            getShopHistory: 'GetShopHistory',
+            editPermissions: 'EditPermissions',
+            closeShop: 'CloseShop',
+            editDiscount: 'EditDiscount',
+            editPolicy: 'EditPolicy',
+            bidRequests: 'BidRequests',
+        }
+    }
+};
+
 export const stores = (function () {
     const permissionInfoRequest = action => async (username, storeId) => {
         return post(`/stores/permissions/${action}`, {
@@ -40,9 +58,18 @@ export const stores = (function () {
             workerSpecificDetails: appointRequest('WorkerSpecificDetails'),
             appointOwner: appointRequest('AppointOwner'),
             appointManager: appointRequest('AppointManager'),
-            updateManagerPermissions: appointRequest('UpdateManagerPermissions'),
             removeManager: appointRequest('RemoveManager'),
             removeOwner: appointRequest('RemoveOwner'),
+            updateManagerPermissions: async (username, storeId, workerUsername, permissions) => {
+                return post('/stores/permissions/UpdateManagerPermissions', {
+                    appointment: {
+                        storeId: storeId,
+                        assigner: username,
+                        assignee: workerUsername,
+                    },
+                    permissions: permissions
+                });
+            },
         }
     };
 })();

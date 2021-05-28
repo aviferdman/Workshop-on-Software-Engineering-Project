@@ -9,7 +9,7 @@
 
 .bottom-row-staff{
     display: grid;
-    grid-template-columns: 15% 15% 15%;
+    grid-template-columns: 15% 15%;
     position: relative;
     justify-content: space-between;
     margin: 0 auto;
@@ -21,4 +21,8 @@
     width: 20rem;
     height: 5rem;
     background-color: #ECCC77FF;
+}
+
+.store-staff-users .margin-no-controls {
+    margin-bottom: 42px;
 }

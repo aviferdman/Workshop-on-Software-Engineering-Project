@@ -53,3 +53,7 @@
   border: none;
   display: inline-block;
 }
+
+.pointer-cursor {
+  cursor: pointer;
+}
