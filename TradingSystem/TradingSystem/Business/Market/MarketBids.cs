@@ -34,6 +34,10 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<Guid>(new Guid(), true, "Store doesn't exist");
             }
+            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<Guid>(new Guid(), true, "Bids are not supported in this store");
+            }
             var bid = new Bid(username, storeId, productId, newBidPrice);
             await store.AddBid(bid);
             store.NotifyOwners(EventType.RequestPurchaseEvent, $"You got new Bid in store {store.name}");
@@ -45,6 +49,10 @@ namespace TradingSystem.Business.Market
             if (store == null)
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
+            }
+            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
             }
             var appointer = store.founder;
             var bid = appointer.GetBidById(bidId);
@@ -61,6 +69,10 @@ namespace TradingSystem.Business.Market
             if (store == null)
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
+            }
+            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
             }
             await store.CustomerDenyBid(bidId);
             var bid = store.GetFounder().GetBidById(bidId);
@@ -95,10 +107,28 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<bool>(false, true, "No permission to accept Bid");
             }
+            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
             var appointer = store.GetAppointer(ownerUsername);
             var bid = appointer.GetBidById(bidId);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"We accepted your bid request.");
             return await appointer.OwnerAcceptBid(bidId);
+        }
+
+        public async Task<Result<bool>> OwnerChangeBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
+        {
+            Store store = await marketStores.GetStoreById(storeId);
+            if (store == null)
+            {
+                return new Result<bool>(false, true, "Store doesn't exist");
+            }
+            if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            return await store.ChangeBidPolicy(isAvailable);
         }
 
         public async Task<Result<bool>> OwnerNegotiateBid(string ownerUsername, Guid storeId, Guid bidId, double newBidPrice)
@@ -111,6 +141,10 @@ namespace TradingSystem.Business.Market
             if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
             {
                 return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
             }
             var appointer = store.GetAppointer(ownerUsername);
             var bid = appointer.GetBidById(bidId);
@@ -128,6 +162,10 @@ namespace TradingSystem.Business.Market
             if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
             {
                 return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
             }
             var appointer = store.GetAppointer(ownerUsername);
             var bid = appointer.GetBidById(bidId);
