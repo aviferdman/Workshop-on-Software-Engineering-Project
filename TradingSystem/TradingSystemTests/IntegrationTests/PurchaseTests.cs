@@ -151,7 +151,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckLegalTransaction()
         {
             Transaction transaction = Transaction.Instance;
-            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserCreditCard, testStore.GetId(), testStoreCreditCard, 1, shoppingBasket);
+            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserCreditCard, testStore.GetId(), testStore.name, testStoreCreditCard, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, true);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, true);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
@@ -165,7 +165,7 @@ namespace TradingSystemTests.IntegrationTests
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
-            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserCreditCard, testStore.GetId(), testStoreCreditCard, 1, shoppingBasket);
+            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserCreditCard, testStore.GetId(), testStore.name, testStoreCreditCard, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.IsNull(transactionStatus.DeliveryStatus);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, false);
@@ -182,7 +182,7 @@ namespace TradingSystemTests.IntegrationTests
             Transaction transaction = Transaction.Instance;
             transaction.PaymentAdapter.SetPaymentSystem(paymentSystem.Object);
             transaction.DeliveryAdapter.SetDeliverySystem(deliverySystem.Object);
-            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserCreditCard, testStore.GetId(), testStoreCreditCard, 1, shoppingBasket);
+            TransactionStatus transactionStatus = await transaction.ActivateTransaction(testUser.Username, "0544444444", WEIGHT1, testStoreAddress, testUserAddress, testUserCreditCard, testStore.GetId(), testStore.name, testStoreCreditCard, 1, shoppingBasket);
             Assert.AreEqual(transactionStatus.Status, false);
             Assert.AreEqual(transactionStatus.DeliveryStatus.Status, false);
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);

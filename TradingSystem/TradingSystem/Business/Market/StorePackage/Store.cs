@@ -141,7 +141,7 @@ namespace TradingSystem.Business.Market
 
                 UpdateQuantities(product_quantity);
             }
-            transactionStatus = await Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, sid, _bank, paySum, shoppingBasket);
+            transactionStatus = await Transaction.Instance.ActivateTransaction(username, clientPhone, weight, _address, clientAddress, method, sid, name, _bank, paySum, shoppingBasket);
             //transaction failed
             if (!transactionStatus.Status)
             {

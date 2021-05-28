@@ -9,15 +9,17 @@ namespace TradingSystem.Business.Delivery
     {
         private string _username;
         private Guid _storeId;
+        private string _storeName;
         private string _recieverPhone;
         private double _weight;
         private Address _source;
         private Address _destination;
 
-        public DeliveryDetails(string username, Guid storeId, string recieverPhone, double weight, Address source, Address destination)
+        public DeliveryDetails(string username, Guid storeId, string storeName, string recieverPhone, double weight, Address source, Address destination)
         {
             this.Username = username;
             this.StoreId = storeId;
+            this.StoreName = storeName;
             this._recieverPhone = recieverPhone;
             this._weight = weight;
             this._source = source;
@@ -30,5 +32,6 @@ namespace TradingSystem.Business.Delivery
         public Address Destination { get => _destination; set => _destination = value; }
         public Guid StoreId { get => _storeId; set => _storeId = value; }
         public string Username { get => _username; set => _username = value; }
+        public string StoreName { get => _storeName; set => _storeName = value; }
     }
 }

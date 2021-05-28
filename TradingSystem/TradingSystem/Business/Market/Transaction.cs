@@ -66,10 +66,10 @@ namespace TradingSystem.Business.Market
             return connectExternalSystems;
         }
         //TODO fixs
-        public async Task<TransactionStatus> ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, CreditCard recieverBankAccountId, double paymentSum, ShoppingBasket shoppingBasket)
+        public async Task<TransactionStatus> ActivateTransaction(string username, string recieverPhone, double weight, Address source, Address destination, PaymentMethod method, Guid storeId, string storeName, CreditCard recieverBankAccountId, double paymentSum, ShoppingBasket shoppingBasket)
         {
             var product_quantity = shoppingBasket.GetDictionaryProductQuantity();
-            DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, recieverPhone, weight, source, destination);
+            DeliveryDetails deliveryDetails = new DeliveryDetails(username, storeId, storeName, recieverPhone, weight, source, destination);
             PaymentDetails paymentDetails = new PaymentDetails(username, method, storeId, recieverBankAccountId, paymentSum);
             ProductsStatus productsDetails = new ProductsStatus(username, storeId, product_quantity);
             bool handshake = await _handshakeAdapter.CheckAvailablity();
