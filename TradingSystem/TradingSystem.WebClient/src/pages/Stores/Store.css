@@ -5,13 +5,13 @@
     grid-template-rows: 10% 90%
 }
 
-.internal-conatiner{
+.internal-conatiner.store-container {
     display: grid;
-    grid-template-rows: 33% 33% 33%
+    grid-template-rows: 25% 25% 25% 25%;
 }
 
-.button-view{
+.store-container .button-view{
     cursor: pointer;
-    font-size: 8rem;
+    font-size: 6rem;
     background-color: #ECCC77FF;
 }
