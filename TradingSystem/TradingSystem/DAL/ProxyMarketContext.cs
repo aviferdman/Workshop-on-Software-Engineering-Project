@@ -15,6 +15,7 @@ namespace TradingSystem.DAL
     {
         private bool isDebug;
 
+        public static string conString = "Data Source=marketDB.db";
         private ConcurrentDictionary<string, DataUser> dataUsers;
         private ConcurrentDictionary<string, RegisteredAdmin> admins;
         private ConcurrentDictionary<string, MemberState> memberStates;
@@ -362,6 +363,7 @@ namespace TradingSystem.DAL
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN",  "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
+            shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
         }
 
 

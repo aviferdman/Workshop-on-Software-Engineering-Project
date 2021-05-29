@@ -47,9 +47,8 @@ namespace TradingSystem.DAL
         public DbSet<Address> addresses { get; set; }
 
         public DbSet<Category> categories { get; set; }
-        public static string conString = "Data Source=marketDB.db";
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-           => options.UseSqlite(@conString);
+           => options.UseSqlite(@ProxyMarketContext.conString);
 
         public static MarketContext Instance { get { return _lazy.Value; } }
 
