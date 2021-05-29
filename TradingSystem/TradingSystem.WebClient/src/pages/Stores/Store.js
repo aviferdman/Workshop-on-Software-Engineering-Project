@@ -7,8 +7,8 @@ import {StoreProducts} from "./StoreProducts";
 import {StoreStaff} from "./StoreStaff";
 import {StoreHistory} from "./StoreHistory";
 import * as api from "../../api";
-import {alertRequestError_default} from "../../utils";
 import * as util from "../../utils";
+import {alertRequestError_default} from "../../utils";
 import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 
 class StoreContent extends Component {

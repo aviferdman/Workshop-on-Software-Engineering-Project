@@ -5,8 +5,8 @@ import AddManager from "../../components/AddManager";
 import AddOwner from "../../components/AddOwner";
 import {GlobalContext} from "../../globalContext";
 import * as api from "../../api";
-import {alertRequestError_default} from "../../utils";
 import * as util from "../../utils";
+import {alertRequestError_default} from "../../utils";
 import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 
 export class StoreStaff extends Component {

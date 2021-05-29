@@ -3,9 +3,9 @@ import './StoreProducts.css';
 import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
 import {GlobalContext} from "../../globalContext";
+import * as util from "../../utils";
 import {alertRequestError_default} from "../../utils";
 import * as api from "../../api";
-import * as util from "../../utils";
 import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 
 export class StoreProducts extends Component {
