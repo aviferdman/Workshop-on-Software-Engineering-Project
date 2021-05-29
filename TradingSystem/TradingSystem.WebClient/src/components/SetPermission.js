@@ -4,6 +4,7 @@ import { alertRequestError_default } from "../utils";
 import * as api from "../api";
 import { GlobalContext } from "../globalContext";
 import * as AiIcons from "react-icons/ai";
+import * as util from "../utils";
 
 class SetPermission extends React.Component {
     constructor(props) {
@@ -49,9 +50,7 @@ class SetPermission extends React.Component {
     }
 
     setPermissionsFromArray = permissions => {
-        this.props.user.permissionsMap = Object.fromEntries(
-            permissions.map(permission => [permission, {}])
-        );
+        this.props.user.permissionsMap = util.arrayToHashset(permissions);
         return this.props.user.permissionsMap;
     }
 

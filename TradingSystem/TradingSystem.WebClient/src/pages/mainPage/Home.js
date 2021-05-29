@@ -96,7 +96,6 @@ export class Home extends React.Component {
 
     sortProducts = (event) =>{
         const sort = event.target.value;
-        console.log(event.target.value);
         this.setState((state) => ({
             sort: sort,
             products: this.state.products.slice().sort((a,b) => (
@@ -111,7 +110,6 @@ export class Home extends React.Component {
     };
 
     filterProducts = (event) => {
-        console.log(event.target.value);
         if(event.target.value === ""){
             this.setState({category: event.target.value , products:data.products})
         }

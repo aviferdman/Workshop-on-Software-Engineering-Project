@@ -57,3 +57,7 @@
 .pointer-cursor {
   cursor: pointer;
 }
+
+.margin-no-controls {
+  margin-bottom: 42px;
+}
