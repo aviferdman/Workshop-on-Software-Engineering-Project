@@ -25,7 +25,7 @@ namespace TradingSystem.DAL
         private HashSet<TransactionStatus> transactionStatuses;
         public bool IsDebug { get => isDebug; set => isDebug = value; }
 
-        private MarketContext marketContext = MarketContext.Instance;
+        private MarketContext marketContext;
         public static ProxyMarketContext Instance { get { return _lazy.Value; } }
 
         public async Task saveChanges()
@@ -306,6 +306,7 @@ namespace TradingSystem.DAL
         public ProxyMarketContext()
         {
             isDebug = false;
+            marketContext = MarketContext.Instance;
             dataUsers = new ConcurrentDictionary<string, DataUser>();
             admins = new ConcurrentDictionary<string, RegisteredAdmin>();
             memberStates = new ConcurrentDictionary<string, MemberState>();
