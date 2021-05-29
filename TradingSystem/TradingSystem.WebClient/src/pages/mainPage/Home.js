@@ -1,6 +1,5 @@
 import React from "react";
 import './Home.css';
-import data from '../../data/productData.json';
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
 import axios from "axios";
@@ -12,7 +11,7 @@ export class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: [],
+            products: null,
             cartItems: [],
             category: "",
             ordered: "",
@@ -111,12 +110,12 @@ export class Home extends React.Component {
 
     filterProducts = (event) => {
         if(event.target.value === ""){
-            this.setState({category: event.target.value , products:data.products})
+            this.setState({category: event.target.value , products: this.state.products})
         }
         else{
             this.setState({
                 category: event.target.value,
-                products: data.products.filter(product => product.category === event.target.value),
+                products: this.state.products.filter(product => product.category === event.target.value),
             });
         }
     };
@@ -178,13 +177,16 @@ export class Home extends React.Component {
                     <div className="content">
                         <div className="main">
                             <Filter
-                                count={this.state.products.length}
+                                count={this.state.products === null ? 0 : this.state.products.length}
                                 category={this.state.category}
                                 sort={this.state.ordered}
                                 filterProducts={this.filterProducts}
                                 sortProducts={this.sortProducts} >
                             </Filter>
-                            <HomeProducts products={this.state.products} addToCart={this.addToCart} history={this.props.history} />
+                            {this.state.products === null ? null : (
+                                <HomeProducts products={this.state.products} addToCart={this.addToCart}
+                                              history={this.props.history}/>
+                            )}
                         </div>
                     </div>
                 </main>

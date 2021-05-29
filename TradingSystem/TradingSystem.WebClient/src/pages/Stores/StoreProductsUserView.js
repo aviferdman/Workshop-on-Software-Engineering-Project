@@ -2,33 +2,51 @@ import React from "react";
 import './StoreProductsUserView.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
-import Data from "../../data/productData.json"
 import HomeProducts from "../../components/HomeProducts";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 export class StoreProductsUserView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: Data.products
+            products: [],
+            cartProducts: {},
         };
+        this.storeId = this.props.match.params.storeId;
     }
 
+    async componentDidMount() {
+        await api.stores.info(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    products: storeInfo.products
+                });
+            }, alertRequestError_default);
+    }
+
+    onAddToCart = product => {
+        let cartProducts = this.state.cartProducts;
+        if(!(product.id in cartProducts)){
+            product._inCart = true;
+            cartProducts[product.id] = product;
+        }
+        this.setState({
+            cartProducts: cartProducts
+        });
+    }
 
     render() {
         return (
-            <div className="grid-container">
-                <Header />
+            <main>
 
-                <main>
-                    
-                        <div className="products-view-flex">
-                            <HomeProducts  products={this.state.products}/>
-                        </div>
+                <div className="products-view-flex">
+                    <HomeProducts  products={this.state.products}
+                                   addToCart={this.onAddToCart}
+                                   history={this.props.history} />
+                </div>
 
-                </main>
-
-                <footer> End of Stores</footer>
-            </div>
+            </main>
         )
     }
 }

@@ -6,6 +6,7 @@ import Header from "../../header";
 import {StoreProducts} from "./StoreProducts";
 import {StoreStaff} from "./StoreStaff";
 import {StoreHistory} from "./StoreHistory";
+import {StoreProductsUserView} from './StoreProductsUserView'
 import * as api from "../../api";
 import * as util from "../../utils";
 import {alertRequestError_default} from "../../utils";
@@ -54,8 +55,18 @@ class StoreContent extends Component {
                     <h2>{this.state.name}</h2>
                 </div>
 
-                <div className="internal-conatiner">
-                    <button className="button-view" onClick={this.onNavigationButtonClick('products')}>Store Products</button>
+                <div className="internal-conatiner store-container">
+                    <button className="button-view" onClick={this.onNavigationButtonClick('productsView')}>Store Products</button>
+                    <StoreRestrictedComponentCustom
+                        permissions={this.state.myPermissions}
+                        allowedActions={[
+                            api.data.stores.permissions.addProduct,
+                            api.data.stores.permissions.editProduct,
+                            api.data.stores.permissions.removeProduct,
+                        ]}
+                        render={() => (
+                            <button className="button-view" onClick={this.onNavigationButtonClick('products')}>Store Products Management</button>
+                        )} />
                     <StoreRestrictedComponentCustom
                         permissions={this.state.myPermissions}
                         allowedActions={[api.data.stores.permissions.getPersonnelInfo,]}
@@ -82,6 +93,7 @@ export class Store extends Component {
 
                 <Switch>
                     <Route path={`${this.props.match.path}/products/:storeId`} component={StoreProducts} />
+                    <Route path={`${this.props.match.path}/productsView/:storeId`} component={StoreProductsUserView} />
                     <Route path={`${this.props.match.path}/staff/:storeId`} component={StoreStaff} />
                     <Route path={`${this.props.match.path}/history/:storeId`} component={StoreHistory} />
                     <Route path={`${this.props.match.path}/:storeId`} component={StoreContent} />
