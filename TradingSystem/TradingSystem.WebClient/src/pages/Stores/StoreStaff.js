@@ -6,6 +6,8 @@ import AddOwner from "../../components/AddOwner";
 import {GlobalContext} from "../../globalContext";
 import * as api from "../../api";
 import {alertRequestError_default} from "../../utils";
+import * as util from "../../utils";
+import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 
 export class StoreStaff extends Component {
     constructor(props) {
@@ -13,12 +15,19 @@ export class StoreStaff extends Component {
         this.state = {
             name: "",
             staff: [],
+            myPermissions: {
+                role: 'guest',
+                actions: {},
+            },
         };
         this.storeId = this.props.match.params.storeId;
     }
 
     async componentDidMount() {
-        await this.fetchStaff();
+        await Promise.all([
+            this.fetchStaff(),
+            this.fetchMyStorePermissions(),
+        ]);
     }
 
     async fetchStaff() {
@@ -26,6 +35,18 @@ export class StoreStaff extends Component {
             .then(staff => {
                 this.setState({
                     staff: staff,
+                });
+            }, alertRequestError_default);
+    }
+
+    async fetchMyStorePermissions() {
+        await api.stores.permissions.mine(this.context.username, this.storeId)
+            .then(permissions => {
+                this.setState({
+                    myPermissions: {
+                        role: permissions.role,
+                        actions: util.arrayToHashset(permissions.permissions),
+                    },
                 });
             }, alertRequestError_default);
     }
@@ -55,19 +76,26 @@ export class StoreStaff extends Component {
             <main className="store-products-main-conatiner-staff">
 
                 <div>
-                    <Users staff={this.state.staff} storeId={this.storeId} onRemove={this.onUserRemove} />
+                    <Users staff={this.state.staff}
+                           storeId={this.storeId}
+                           myPermissions={this.state.myPermissions}
+                           onRemove={this.onUserRemove} />
                 </div>
 
-                <div className="bottom-row-staff">
-                    <div>
-                        <AddManager storeId={this.storeId} onSuccess={this.onUserAdd} />
-                    </div>
+                <StoreRestrictedComponentCustom
+                    permissions={this.state.myPermissions}
+                    allowedActions={[]}
+                    render={() => (
+                        <div className="bottom-row-staff">
+                            <div>
+                                <AddManager storeId={this.storeId} onSuccess={this.onUserAdd} />
+                            </div>
 
-                    <div>
-                        <AddOwner storeId={this.storeId} onSuccess={this.onUserAdd} />
-                    </div>
-
-                </div>
+                            <div>
+                                <AddOwner storeId={this.storeId} onSuccess={this.onUserAdd} />
+                            </div>
+                        </div>
+                    )} />
 
             </main>
         )

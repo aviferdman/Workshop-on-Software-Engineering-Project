@@ -4,6 +4,7 @@ import SetPermission from "./SetPermission";
 import {GlobalContext} from "../globalContext";
 import * as api from '../api'
 import {alertRequestError_default} from "../utils";
+import StoreRestrictedComponentCustom from "./StoreRestrictedComponentCustom";
 
 class Users extends Component {
     onRemove = user => e => {
@@ -25,22 +26,43 @@ class Users extends Component {
         return promise;
     }
 
+    renderControlButtons = user => {
+        let classes = 'control-buttons-staff';
+        let removeButton = null;
+        let changePermissionsButton = null;
+
+        if (user.role === 'founder') {
+            classes += ' margin-no-controls';
+        }
+        else {
+            removeButton = (
+                <button className="exit-button" onClick={this.onRemove(user)}>
+                    <AiIcons.AiOutlineClose />
+                </button>
+            );
+        }
+        if (user.role === 'manager') {
+            changePermissionsButton = (<SetPermission storeId={this.props.storeId} user={user} />);
+        }
+
+        return (
+            <div className={classes}>
+                {removeButton}
+                {changePermissionsButton}
+            </div>
+        );
+    }
+
     render() {
         return (
             <div className='store-staff-users'>
                 <ul className = "products">
                     {this.props.staff.map((user) => (
                         <li key={user.username}>
-                            <div className={user.role !== 'founder' ? 'control-buttons-staff' : 'control-buttons-staff margin-no-controls'}>
-                                {user.role !== 'founder' ? (
-                                    <button className="exit-button" onClick={this.onRemove(user)}>
-                                        <AiIcons.AiOutlineClose />
-                                    </button>
-                                ) : null}
-                                {user.role === 'manager' ? (
-                                    <SetPermission storeId={this.props.storeId} user={user} />
-                                ) : null}
-                            </div>
+                            <StoreRestrictedComponentCustom
+                                permissions={this.props.myPermissions}
+                                allowedActions={[]}
+                                render={() => this.renderControlButtons(user)} />
                             <div className = "user">
                                 <a href={"#" + user.username}>
                                     <p className= "userName">{user.username}</p>
