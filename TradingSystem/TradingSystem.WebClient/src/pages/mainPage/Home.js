@@ -1,6 +1,5 @@
 import React from "react";
 import './Home.css';
-import data from '../../data/productData.json';
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
 import axios from "axios";
@@ -111,12 +110,12 @@ export class Home extends React.Component {
 
     filterProducts = (event) => {
         if(event.target.value === ""){
-            this.setState({category: event.target.value , products:data.products})
+            this.setState({category: event.target.value , products:this.state.products})
         }
         else{
             this.setState({
                 category: event.target.value,
-                products: data.products.filter(product => product.category === event.target.value),
+                products: this.state.products.filter(product => product.category === event.target.value),
             });
         }
     };
