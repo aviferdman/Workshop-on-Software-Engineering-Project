@@ -11,6 +11,8 @@ using TradingSystem.WebApi.DTO.Store.Permissions;
 
 namespace TradingSystem.WebApi.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]/[action]")]
     public class HistoryController : ControllerBase
     {
         public HistoryController
