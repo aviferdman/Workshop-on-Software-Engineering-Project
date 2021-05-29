@@ -3,7 +3,6 @@ import './Home.css';
 import data from '../../data/productData.json';
 import SearchBar from "../../components/searchBar";
 import Filter from "../../components/Filter";
-import Cart from "../../components/Cart";
 import axios from "axios";
 import {GlobalContext} from "../../globalContext";
 import HomeProducts from "../../components/HomeProducts";
@@ -97,7 +96,6 @@ export class Home extends React.Component {
 
     sortProducts = (event) =>{
         const sort = event.target.value;
-        console.log(event.target.value);
         this.setState((state) => ({
             sort: sort,
             products: this.state.products.slice().sort((a,b) => (
@@ -112,7 +110,6 @@ export class Home extends React.Component {
     };
 
     filterProducts = (event) => {
-        console.log(event.target.value);
         if(event.target.value === ""){
             this.setState({category: event.target.value , products:data.products})
         }

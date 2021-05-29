@@ -3,7 +3,6 @@ import './StoreHistory.css';
 import data from "../../data/historyData.json";
 import History from "../../components/History";
 import {GlobalContext} from "../../globalContext";
-import Header from "../../header";
 
 export class StoreHistory extends Component {
     constructor(props) {
@@ -16,23 +15,18 @@ export class StoreHistory extends Component {
 
     render() {
         return (
-            <div className="grid-container">
-                <Header />
+            <main className="store-products-main-conatiner">
 
-                <main className="store-products-main-conatiner">
+                <div>
+                    <History history={this.state.history} />
+                </div>
 
-                    <div>
-                        <History history={this.state.history} />
-                    </div>
-
-                    <div className="bottom-row">
+                <div className="bottom-row">
 
 
-                    </div>
+                </div>
 
-                </main>
-                <footer> End of Store</footer>
-            </div>
+            </main>
         )
     }
 }

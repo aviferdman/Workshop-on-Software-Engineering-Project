@@ -46,8 +46,7 @@ namespace TradingSystem.Business.Market
         public HashSet<Owner> Owners { get => owners; set => owners = value; }
         [NotMapped]
         public Founder Founder { get => founder; set => founder = value; }
-        [NotMapped]
-        public string Name1 { get => name; set => name = value; }
+        public PurchasePolicy purchasePolicy { get; set; }
 
         public Store()
         {
@@ -63,6 +62,7 @@ namespace TradingSystem.Business.Market
             this._address = address;
             this.managers = new HashSet<Manager>();
             this.owners = new HashSet<Owner>();
+            this.purchasePolicy = new PurchasePolicy();
         }
 
         internal async Task CustomerDenyBid(Guid bidId)
@@ -154,6 +154,25 @@ namespace TradingSystem.Business.Market
                 NotifyOwners(EventType.PurchaseEvent, username + " purchased items from store " + name);
             }
             return new PurchaseStatus(true, transactionStatus, sid);
+        }
+
+        public async Task<Result<bool>> ChangeBidPolicy(bool isAvailable)
+        {
+            if (isAvailable)
+            {
+                await this.purchasePolicy.AddPurchaseKind(PurchaseKind.Bid);
+                return new Result<bool>(true, false, "");
+            }
+            else
+            {
+                await this.purchasePolicy.RemovePurchaseKind(PurchaseKind.Bid);
+                return new Result<bool>(true, false, "");
+            }
+        }
+
+        public bool IsPurchaseKindAvailable(PurchaseKind purchaseKind)
+        {
+            return this.purchasePolicy.IsAvalable(purchaseKind);
         }
 
         //TODO

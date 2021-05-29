@@ -2,17 +2,23 @@ import React, {Component} from 'react';
 import './StoreProducts.css';
 import Products from "../../components/Products";
 import AddProduct from "../../components/AddProduct";
-import {Route, Switch} from "react-router-dom";
-import axios from "axios";
 import {GlobalContext} from "../../globalContext";
-import Header from "../../header";
+import * as util from "../../utils";
+import {alertRequestError_default} from "../../utils";
+import * as api from "../../api";
+import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 
-class StoreProductsContent extends Component {
+export class StoreProducts extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: []
+            products: [],
+            myPermissions: {
+                role: 'guest',
+                actions: {},
+            }
         };
+        this.storeId = this.props.match.params.storeId;
     }
 
     async componentDidMount() {
@@ -20,19 +26,22 @@ class StoreProductsContent extends Component {
     }
 
     async fetchProducts() {
-        try {
-            let response = await axios.get('/Stores/Info', {
-               params: {
-                   storeId: this.props.match.params.storeId
-               }
-            });
-            this.setState({
-                products: response.data.products
-            });
-        }
-        catch (e) {
-            console.error("search error occurred: ", e);
-        }
+        let promise_storeInfo = api.stores.info(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    products: storeInfo.products
+                });
+            }, alertRequestError_default);
+        let promise_storePermissions = api.stores.permissions.mine(this.context.username, this.storeId)
+            .then(permissions => {
+                this.setState({
+                    myPermissions: {
+                        role: permissions.role,
+                        actions: util.arrayToHashset(permissions.permissions),
+                    },
+                });
+            }, alertRequestError_default);
+        await Promise.all([promise_storeInfo, promise_storePermissions]);
     }
 
     onProductRemoved = product => {
@@ -51,12 +60,10 @@ class StoreProductsContent extends Component {
     }
 
     onProductEdited = product => {
-        let index = this.state.products.findIndex(p2 => {
-            return p2.id === product.id;
-        });
-        this.state.products[index] = product;
         this.setState({
-            ...this.state
+            products: this.state.products.map(p2 => {
+                return p2.id === product.id ? product : p2;
+            }),
         });
     }
 
@@ -67,37 +74,26 @@ class StoreProductsContent extends Component {
                 <div>
                     <Products storeId={this.props.match.params.storeId}
                               products={this.state.products}
+                              myPermissions={this.state.myPermissions}
                               onProductRemoved={this.onProductRemoved} onProductEdited={this.onProductEdited} />
                 </div>
 
                 <div className="bottom-row">
 
                     <div className="center-add-product">
-                        <AddProduct storeId={this.props.match.params.storeId} onProductAdded={this.onProductAdded} />
+                        <StoreRestrictedComponentCustom
+                            permissions={this.state.myPermissions}
+                            allowedActions={[api.data.stores.permissions.addProduct,]}
+                            render={() => (
+                                <AddProduct storeId={this.props.match.params.storeId}
+                                            onProductAdded={this.onProductAdded} />
+                            )} />
                     </div>
 
                 </div>
 
             </main>
         );
-    }
-}
-
-export class StoreProducts extends Component {
-    render() {
-        return (
-            <div className="grid-container">
-                <Header />
-
-                <Switch>
-                    <Route path={`${this.props.match.path}/:storeId`} component={StoreProductsContent} />
-                    <Route path={this.props.match.path}>
-                        <h3 className='center-screen'>No store selected</h3>
-                    </Route>
-                </Switch>
-                <footer> End of Store</footer>
-            </div>
-        )
     }
 }
 

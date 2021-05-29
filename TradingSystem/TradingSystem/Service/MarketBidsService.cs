@@ -102,6 +102,18 @@ namespace TradingSystem.Service
                 semaphoreSlim.Release();
             }
         }
+        public async Task<Result<bool>> OwnerChangeBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                return await MarketBids.Instance.OwnerChangeBidPolicy(ownerUsername, storeId, isAvailable);
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+        }
         public Result<ICollection<Bid>> GetOwnerBids(string ownerUsername)
         {
             return MarketBids.Instance.GetOwnerBids(ownerUsername);
