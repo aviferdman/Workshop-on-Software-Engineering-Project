@@ -5,13 +5,20 @@ import AddProduct from "../../components/AddProduct";
 import {GlobalContext} from "../../globalContext";
 import {alertRequestError_default} from "../../utils";
 import * as api from "../../api";
+import * as util from "../../utils";
+import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 
 export class StoreProducts extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: []
+            products: [],
+            myPermissions: {
+                role: 'guest',
+                actions: {},
+            }
         };
+        this.storeId = this.props.match.params.storeId;
     }
 
     async componentDidMount() {
@@ -19,18 +26,22 @@ export class StoreProducts extends Component {
     }
 
     async fetchProducts() {
-        let response;
-        try {
-            response = await api.stores.info(this.props.match.params.storeId);
-        }
-        catch (e) {
-            alertRequestError_default(e);
-            return;
-        }
-
-        this.setState({
-            products: response.products
-        });
+        let promise_storeInfo = api.stores.info(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    products: storeInfo.products
+                });
+            }, alertRequestError_default);
+        let promise_storePermissions = api.stores.permissions.mine(this.context.username, this.storeId)
+            .then(permissions => {
+                this.setState({
+                    myPermissions: {
+                        role: permissions.role,
+                        actions: util.arrayToHashset(permissions.permissions),
+                    },
+                });
+            }, alertRequestError_default);
+        await Promise.all([promise_storeInfo, promise_storePermissions]);
     }
 
     onProductRemoved = product => {
@@ -63,13 +74,20 @@ export class StoreProducts extends Component {
                 <div>
                     <Products storeId={this.props.match.params.storeId}
                               products={this.state.products}
+                              myPermissions={this.state.myPermissions}
                               onProductRemoved={this.onProductRemoved} onProductEdited={this.onProductEdited} />
                 </div>
 
                 <div className="bottom-row">
 
                     <div className="center-add-product">
-                        <AddProduct storeId={this.props.match.params.storeId} onProductAdded={this.onProductAdded} />
+                        <StoreRestrictedComponentCustom
+                            permissions={this.state.myPermissions}
+                            allowedActions={[api.data.stores.permissions.addProduct,]}
+                            render={() => (
+                                <AddProduct storeId={this.props.match.params.storeId}
+                                            onProductAdded={this.onProductAdded} />
+                            )} />
                     </div>
 
                 </div>

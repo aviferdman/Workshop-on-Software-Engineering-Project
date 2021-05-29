@@ -52,6 +52,15 @@ namespace TradingSystem.WebApi.Controllers
             }
             if (result.IsErr)
             {
+                if (result.Mess == "user doesnt exist")
+                {
+                    return Ok(new WorkerDetailsDTO
+                    {
+                        Username = storeInfoActionDTO.Username,
+                        Role = "guest",
+                        Permissions = Enumerable.Empty<string>(),
+                    });
+                }
                 return InternalServerError(result.Mess);
             }
 
