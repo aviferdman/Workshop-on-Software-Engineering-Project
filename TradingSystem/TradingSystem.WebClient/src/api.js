@@ -70,6 +70,12 @@ export const stores = {
         });
     },
 
+    search: async storeName => {
+        return post('/Stores/Search', {
+            storeName: storeName,
+        });
+    },
+
     permissions: {
         mine: permissionInfoRequest('MyPermissions'),
         workersDetails: permissionInfoRequest('WorkersDetails'),
