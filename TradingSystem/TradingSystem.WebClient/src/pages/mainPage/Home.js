@@ -110,7 +110,7 @@ export class Home extends React.Component {
 
     filterProducts = (event) => {
         if(event.target.value === ""){
-            this.setState({category: event.target.value , products:this.state.products})
+            this.setState({category: event.target.value , products: this.state.products})
         }
         else{
             this.setState({
