@@ -42,6 +42,7 @@ export class ShoppingCart extends Component {
     }
 
     onPurchaseSuccess = () => {
+        alert('purchase successful');
         this.props.history.push('/home');
     }
 
