@@ -6,3 +6,7 @@ export function alertRequestError_default(e) {
     alert('An error occurred' + msg);
     console.error("search error occurred: ", e);
 }
+
+export const arrayToHashset = array => {
+    return Object.fromEntries(array.map(key => [key, {}]));
+}

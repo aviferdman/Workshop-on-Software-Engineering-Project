@@ -1,4 +1,3 @@
-
 import formatCurrency from "../../pages/mainPage/currency";
 import React from "react";
 import {GlobalContext} from "../../globalContext";

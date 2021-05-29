@@ -78,11 +78,11 @@ export default class StoreCreateForm extends React.Component {
     };
 
     validateFields() {
-        let err = false;
-        err = err || this.state.storeName.validate_required();
-        err = err || this.state.address.validate();
-        err = err || this.state.creditCard.validate();
-        return err;
+        let valid = true;
+        valid = valid && this.state.storeName.validate_required();
+        valid = valid && this.state.address.validate();
+        valid = valid && this.state.creditCard.validate();
+        return valid;
     }
 
     closeErrorDialog = () => {
@@ -112,23 +112,23 @@ export default class StoreCreateForm extends React.Component {
                                     <div>
                                         <TextField label={'State'} variant={'outlined'} className='store-creation-margin-right'
                                                    required error={this.state.address.isError('state')} helperText={this.state.address.getErrorMessageOf('state')}
-                                                   onChange={this.handleAddressChange("state")}/>
+                                                   value={this.state.address.getValue('state')} onChange={this.handleAddressChange("state")}/>
                                         <TextField label={'City'} variant={'outlined'} className='store-creation-margin-right'
                                                    required error={this.state.address.isError('city')} helperText={this.state.address.getErrorMessageOf('city')}
-                                                   onChange={this.handleAddressChange("city")}/>
+                                                   value={this.state.address.getValue('city')} onChange={this.handleAddressChange("city")}/>
                                     </div>
                                     <div className='store-creation-form-row'>
                                         <TextField label={'zipCode'} variant={'outlined'}
                                                    required error={this.state.address.isError('zipCode')} helperText={this.state.address.getErrorMessageOf('zipCode')}
-                                                   onChange={this.handleAddressChange("zipCode")}/>
+                                                   value={this.state.address.getValue('zipCode')} onChange={this.handleAddressChange("zipCode")}/>
                                     </div>
                                     <div className='store-creation-form-row'>
                                         <TextField label={'Street'} variant={'outlined'} className='store-creation-margin-right'
                                                    required error={this.state.address.isError('street')} helperText={this.state.address.getErrorMessageOf('street')}
-                                                   onChange={this.handleAddressChange("street")}/>
+                                                   value={this.state.address.getValue('street')} onChange={this.handleAddressChange("street")}/>
                                         <TextField label={'Apartment number'} variant={'outlined'}
                                                    required error={this.state.address.isError('apartmentNumber')} helperText={this.state.address.getErrorMessageOf('apartmentNumber')}
-                                                   onChange={this.handleAddressChange("apartmentNumber")}/>
+                                                   value={this.state.address.getValue('apartmentNumber')} onChange={this.handleAddressChange("apartmentNumber")}/>
                                     </div>
                                 </div>
                                 <div className='form-padding store-creation-form-row gray-border'>
@@ -136,26 +136,26 @@ export default class StoreCreateForm extends React.Component {
                                     <div>
                                         <TextField label={'Card number'} variant={'outlined'}
                                                    required error={this.state.creditCard.isError('number')} helperText={this.state.creditCard.getErrorMessageOf('number')}
-                                                   onChange={this.handleCreditCardChange("number")}/>
+                                                   value={this.state.creditCard.getValue('number')} onChange={this.handleCreditCardChange("number")}/>
                                     </div>
                                     <div className='store-creation-form-row'>
                                         <TextField label={'Year'} variant={'outlined'} className='store-creation-margin-right credit-card-small-field'
                                                    required error={this.state.creditCard.isError('year')} helperText={this.state.creditCard.getErrorMessageOf('year')}
-                                                   onChange={this.handleCreditCardChange("year")}/>
+                                                   value={this.state.creditCard.getValue('year')} onChange={this.handleCreditCardChange("year")}/>
                                         <TextField label={'Month'} variant={'outlined'} className='store-creation-margin-right credit-card-small-field'
                                                    required error={this.state.creditCard.isError('month')} helperText={this.state.creditCard.getErrorMessageOf('month')}
-                                                   onChange={this.handleCreditCardChange("month")}/>
+                                                   value={this.state.creditCard.getValue('month')} onChange={this.handleCreditCardChange("month")}/>
                                         <TextField label={'CVV'} variant={'outlined'} className='credit-card-small-field'
                                                    required error={this.state.creditCard.isError('cvv')} helperText={this.state.creditCard.getErrorMessageOf('cvv')}
-                                                   onChange={this.handleCreditCardChange("cvv")}/>
+                                                   value={this.state.creditCard.getValue('cvv')} onChange={this.handleCreditCardChange("cvv")}/>
                                     </div>
                                     <div className='store-creation-form-row'>
                                         <TextField label={'Card holder name'} variant={'outlined'} className='store-creation-margin-right'
                                                    required error={this.state.creditCard.isError('holderName')} helperText={this.state.creditCard.getErrorMessageOf('holderName')}
-                                                   onChange={this.handleCreditCardChange("holderName")}/>
+                                                   value={this.state.creditCard.getValue('holderName')} onChange={this.handleCreditCardChange("holderName")}/>
                                         <TextField label={'Card holder ID'} variant={'outlined'}
                                                    required error={this.state.creditCard.isError('holderId')} helperText={this.state.creditCard.getErrorMessageOf('holderId')}
-                                                   onChange={this.handleCreditCardChange("holderId")}/>
+                                                   value={this.state.creditCard.getValue('holderId')} onChange={this.handleCreditCardChange("holderId")}/>
                                     </div>
                                 </div>
                             </div>

@@ -9,14 +9,14 @@ export default class CreditCardFields extends FormFields {
             year: new FormFieldInfo(''),
             month: new FormFieldInfo(''),
             cvv: new FormFieldInfo(''),
-            holderName: new FormFieldInfo(''),
-            holderId: new FormFieldInfo(''),
+            holderName: new FormFieldInfo('forsen'),
+            holderId: new FormFieldInfo('987654321'),
         });
 
-        this.fields.number = new FormFieldCustomValidation('', this.validate_number.bind(this));
-        this.fields.year = new FormFieldCustomValidation('', this.validate_year.bind(this));
-        this.fields.month = new FormFieldCustomValidation('', this.validate_month.bind(this));
-        this.fields.cvv = new FormFieldCustomValidation('', this.validate_cvv.bind(this));
+        this.fields.number = new FormFieldCustomValidation('11112222333344445555', this.validate_number.bind(this));
+        this.fields.year = new FormFieldCustomValidation('25', this.validate_year.bind(this));
+        this.fields.month = new FormFieldCustomValidation('12', this.validate_month.bind(this));
+        this.fields.cvv = new FormFieldCustomValidation('123', this.validate_cvv.bind(this));
     }
 
     validate_Ndigits(field, n) {

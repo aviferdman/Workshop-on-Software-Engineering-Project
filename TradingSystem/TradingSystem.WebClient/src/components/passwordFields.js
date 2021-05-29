@@ -6,7 +6,7 @@ export default class PasswordField extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showPassword: false
+            showPassword: true
         };
 
         this.formControlProps = {...props};

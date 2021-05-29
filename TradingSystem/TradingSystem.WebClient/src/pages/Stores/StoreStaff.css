@@ -9,7 +9,7 @@
 
 .bottom-row-staff{
     display: grid;
-    grid-template-columns: 15% 15% 15%;
+    grid-template-columns: 15% 15%;
     position: relative;
     justify-content: space-between;
     margin: 0 auto;

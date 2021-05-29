@@ -12,12 +12,14 @@ namespace TradingSystem.WebApi
 {
     public class WebSocketHandler
     {
-        public WebSocketHandler(HttpContext context, WebSocket ws)
+        public WebSocketHandler(CancellationToken cancellationToken, HttpContext context, WebSocket ws)
         {
+            CancellationToken = cancellationToken;
             Context = context;
             WebSocket = ws;
         }
 
+        public CancellationToken CancellationToken { get; }
         public HttpContext Context { get; }
         public WebSocket WebSocket { get; }
 
@@ -30,7 +32,18 @@ namespace TradingSystem.WebApi
             while (!WebSocket.CloseStatus.HasValue)
             {
                 byte[]? buffer = new byte[1024];
-                _ = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                try
+                {
+                    _ = await WebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+                catch (WebSocketException e) when (e.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
+                {
+                    break;
+                }
             }
             LoggedInController.Instance.RemoveClient(username);
         }
