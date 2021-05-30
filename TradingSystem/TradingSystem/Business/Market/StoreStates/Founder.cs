@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace TradingSystem.Business.Market.StoreStates
     {
 
         
-
+        [NotMapped]
         public string Username { get => username; set => username = value; }
         
         public override MemberState getM() { return m; }

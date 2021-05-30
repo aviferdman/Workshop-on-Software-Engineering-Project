@@ -97,11 +97,12 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Category>()
                .HasKey(s => s.Name);
             modelBuilder.Entity<ShoppingCart>()
-               .HasMany(s => s.shoppingBaskets).WithOne(s=>s.shoppingCart);
+               .HasMany(s => s.shoppingBaskets).
+               WithOne(s => s.shoppingCart);
             modelBuilder.Entity<ShoppingCart>()
                .Ignore(s => s.User1);
             modelBuilder.Entity<ShoppingBasket>()
-            .HasMany(b => b.Product_quantity)
+            .HasMany(b => b._product_quantity)
             .WithOne();
             modelBuilder.Entity<ProductInCart>()
             .HasOne(b => b.product)

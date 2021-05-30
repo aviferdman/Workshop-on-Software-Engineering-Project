@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Payment;
@@ -8,7 +9,7 @@ namespace TradingSystem.Business.Market
 {
     public class TransactionStatus
     {
-        public Guid _id { get; set; }
+        public Guid id { get; set; }
         public string username { get; set; }
         public Guid storeID { get; set; }
         public PaymentStatus _paymentStatus { get; set; }
@@ -21,7 +22,7 @@ namespace TradingSystem.Business.Market
             this._paymentStatus = paymentStatus;
             this._deliveryStatus = deliveryStatus;
             this.Status = status;
-            this._id = Guid.NewGuid();
+            this.id = Guid.NewGuid();
             this.username = username;
             this.storeID = storeId;
             this.ProductHistories = new ProductHistoryData();
@@ -51,10 +52,15 @@ namespace TradingSystem.Business.Market
             }
         }
         */
-        public Guid Id { get => _id; set => _id = value; }
+        [NotMapped]
+        public Guid Id { get => id; set => id = value; }
+        [NotMapped]
         public bool Status { get => _status; set => _status = value; }
+        [NotMapped]
         public DeliveryStatus DeliveryStatus { get => _deliveryStatus; set => _deliveryStatus = value; }
+        [NotMapped]
         public PaymentStatus PaymentStatus { get => _paymentStatus; set => _paymentStatus = value; }
+        [NotMapped]
         public ProductHistoryData ProductHistories { get => productHistories; set => productHistories = value; }
     }
 }

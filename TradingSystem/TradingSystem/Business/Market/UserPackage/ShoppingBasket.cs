@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,9 +37,11 @@ namespace TradingSystem.Business.Market
         public ShoppingBasket()
         {
         }
-
+        [NotMapped]
         public HashSet<ProductInCart> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
+        [NotMapped]
         public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
+        [NotMapped]
         public Store Store { get => store; set => store = value; }
 
         public virtual bool IsEmpty()

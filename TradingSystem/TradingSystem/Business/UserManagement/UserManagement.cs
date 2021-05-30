@@ -5,12 +5,16 @@ using System.Text;
 using TradingSystem.Business.Market;
 using TradingSystem.DAL;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.IO;
+
 namespace TradingSystem.Business.UserManagement
 {
     //this class tests are in UserMangmentTests
     public class UserManagement
     {
         private UsersDAL usersDAL= UsersDAL.Instance;
+        private string key = "b14ca5898a4e4133bbce2ea2315a1916";
         private static readonly Lazy<UserManagement>
         lazy =
         new Lazy<UserManagement>
@@ -34,7 +38,34 @@ namespace TradingSystem.Business.UserManagement
             
         }
 
-       
+        public  string EncryptString(string key, string plainText)
+        {
+            byte[] iv = new byte[16];
+            byte[] array;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
+                        {
+                            streamWriter.Write(plainText);
+                        }
+
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            return Convert.ToBase64String(array);
+        }
 
         //use case 1 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/11
         //using concurrent dictionary try add if usename already exist
@@ -43,7 +74,7 @@ namespace TradingSystem.Business.UserManagement
         {
             if (username == null)
                 return "username cannot be null";
-            if (await usersDAL.AddDataUser(new DataUser(username, password, phone)))
+            if (await usersDAL.AddDataUser(new DataUser(username, EncryptString(key, password), phone)))
             {
                 await usersDAL.AddNewMemberState(username);
                 await usersDAL.AddNewShoppingCart(username);
@@ -59,7 +90,7 @@ namespace TradingSystem.Business.UserManagement
             DataUser u = await usersDAL.GetDataUser(username);
             if (u!=null)
             {
-                if (u.password.Equals(password))
+                if (u.password.Equals(EncryptString(key, password)))
                 {
                     if (u.IsLoggedin)
                         return "user is already logged in";

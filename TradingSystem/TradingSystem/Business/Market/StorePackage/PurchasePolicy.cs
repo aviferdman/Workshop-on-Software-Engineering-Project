@@ -12,6 +12,7 @@ namespace TradingSystem.Business.Market
     }
     public class PurchasePolicy
     {
+        public Guid id { get; set; }
         public HashSet<Prem> availablePurchaseKinds { get; set; }
         public PurchasePolicy()
         {
