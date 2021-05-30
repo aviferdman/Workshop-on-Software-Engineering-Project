@@ -3,18 +3,35 @@ import './searchStore.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 import SearchBar from "../../components/searchBar";
-import Data from "../../data/StoresData.json"
 import StoreListUserView from "./StoreListUserView";
+import * as api from "../../api";
 
 export class searchStore extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            stores: Data.stores
+            stores: null
         };
     }
 
+    onSearchInputChange = e => {
+        this.setState({
+            name: e.target.value
+        });
+    };
+
+    onSearch = async e => {
+        if (!this.state.name) {
+            return;
+        }
+        await api.stores.search(this.state.name)
+            .then(stores => {
+                this.setState({
+                    stores: stores,
+                });
+            });
+    }
 
     render() {
         return (
@@ -24,12 +41,15 @@ export class searchStore extends React.Component {
                 <main>
                     <div className="search-store-grid">
                         <div className="search-store-element">
-                            <SearchBar />
+                            <SearchBar value={this.state.name} onChange={this.onSearchInputChange}
+                                onSearch={this.onSearch} />
                             {" "}
                         </div>
 
                         <div className="stores-view-flex">
-                            <StoreListUserView  stores={this.state.stores}/>
+                            {this.state.stores === null ? null : (
+                                <StoreListUserView stores={this.state.stores} history={this.props.history} />
+                            )}
                         </div>
 
                     </div>
