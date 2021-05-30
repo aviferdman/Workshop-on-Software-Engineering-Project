@@ -44,21 +44,40 @@ export const data = {
 
 export const history = {
     mine: async username => {
-        await post('/History/Mine', {
+        return await post('/History/Mine', {
             username: username,
         });
     },
+    mineSpecific: async (username, paymentId) => {
+        return await post('/History/MineSpecific', {
+            username: username,
+            key: paymentId,
+        });
+    },
     ofStore: async (username, storeId) => {
-        await post('/History/OfStore', {
+        return await post('/History/OfStore', {
            username: username,
            storeId: storeId,
         });
     },
+    ofStoreSpecific: async (username, storeId, paymentId) => {
+        return await post('/History/OfStoreSpecific', {
+            username: username,
+            storeId: storeId,
+            paymentId: paymentId,
+        });
+    },
     all: async username => {
-        await post('/History/OfAll', {
+        return await post('/History/OfAll', {
             username: username,
         });
-    }
+    },
+    allSpecific: async (username, paymentId) => {
+        return await post('/History/OfAllSpecific', {
+            username: username,
+            key: paymentId,
+        });
+    },
 };
 
 export const stores = {

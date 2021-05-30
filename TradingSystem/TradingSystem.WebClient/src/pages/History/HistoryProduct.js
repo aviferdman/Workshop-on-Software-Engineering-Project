@@ -5,8 +5,6 @@ import {GlobalContext} from "../../globalContext";
 export default class HistoryProduct extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-        };
         this.product = props.product;
     }
 
@@ -18,7 +16,7 @@ export default class HistoryProduct extends React.Component {
                 </a>
                 <p className= "productName"> store: {this.product.storeName}</p>
 
-                <p className= "productName"> quantity:</p>
+                <p className= "productName"> quantity: {this.product.quantity}</p>
 
                 <div className="product-price">
                     <h3 className= "productName"> Unit Price: </h3> <div>{formatCurrency(this.product.price)}</div>

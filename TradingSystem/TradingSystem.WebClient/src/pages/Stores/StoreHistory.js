@@ -1,16 +1,27 @@
 import React, {Component} from 'react';
 import './StoreHistory.css';
-import data from "../../data/historyData.json";
 import History from "../../components/History";
 import {GlobalContext} from "../../globalContext";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 export class StoreHistory extends Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            history: data.history
+            historyRecords: null,
         };
+        this.storeId = this.props.match.params.storeId;
+    }
+
+    async componentDidMount() {
+        await api.history.ofStore(this.context.username, this.storeId)
+            .then(historyRecords => {
+                this.setState({
+                    historyRecords: historyRecords,
+                });
+            }, alertRequestError_default);
     }
 
     render() {
@@ -18,7 +29,9 @@ export class StoreHistory extends Component {
             <main className="store-products-main-conatiner">
 
                 <div>
-                    <History history={this.state.history} />
+                    {this.state.historyRecords == null ? null : (
+                        <History historyRecords={this.state.historyRecords} history={this.props.history} storeId={this.storeId} />
+                    )}
                 </div>
 
                 <div className="bottom-row">

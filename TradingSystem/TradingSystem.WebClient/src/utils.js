@@ -1,5 +1,5 @@
 export function alertRequestError_default(e) {
-    let msg = (e.response && e.response.data) || e.message || e.title;
+    let msg = (e.response && e.response.data) || e.message || (e.response && e.response.title);
     if (msg) {
         msg = ': ' + msg;
     }

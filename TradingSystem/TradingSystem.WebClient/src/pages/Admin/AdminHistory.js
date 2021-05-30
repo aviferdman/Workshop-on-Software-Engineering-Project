@@ -3,18 +3,29 @@ import './AdminHistory.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 import SearchBar from "../../components/searchBar";
-import Data from "../../data/historyData.json";
 import History from "../../components/History";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 
 export class AdminHistory extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            hist: Data.history
+            historyRecords: null,
         };
+    }
+
+    async componentDidMount() {
+        console.log('admin history');
+        await api.history.all(this.context.username)
+            .then(historyRecords => {
+                console.log('received history:', historyRecords);
+                this.setState({
+                    historyRecords: historyRecords,
+                });
+            }, alertRequestError_default);
     }
 
     render() {
@@ -43,7 +54,9 @@ export class AdminHistory extends Component {
                         </div>
 
                         <div>
-                            <History  history={this.state.hist}/>
+                            {this.state.historyRecords == null ? null : (
+                                <History  historyRecords={this.state.historyRecords} history={this.props.history} />
+                            )}
                         </div>
 
                     </div>
