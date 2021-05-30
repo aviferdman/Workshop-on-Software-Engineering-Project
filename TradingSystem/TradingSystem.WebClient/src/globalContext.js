@@ -9,6 +9,7 @@ export const UserRole = Object.freeze({
 export const GlobalContext = React.createContext({
     username: '',
     setUsername: () => {},
+    role: null,
     webSocket: null,
     setWebSocket: () => {},
     logout: () => {},

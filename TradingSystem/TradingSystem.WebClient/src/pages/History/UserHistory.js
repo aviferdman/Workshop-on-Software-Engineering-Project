@@ -2,18 +2,27 @@ import React from "react";
 import './UserHistory.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
-import Data from "../../data/historyData.json"
 import History from "../../components/History";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 export class UserHistory extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            hist: Data.history
+            historyRecords: null,
         };
     }
 
+    async componentDidMount() {
+         await api.history.mine(this.context.username)
+             .then(historyRecords => {
+                 this.setState({
+                     historyRecords: historyRecords,
+                 });
+             }, alertRequestError_default);
+    }
 
     render() {
         return (
@@ -24,7 +33,9 @@ export class UserHistory extends React.Component {
 
                     <div className="user-history-grid">
                         <div className="history-view-flex">
-                            <History  history={this.state.hist}/>
+                            {this.state.historyRecords == null ? null : (
+                                <History historyRecords={this.state.historyRecords} history={this.props.history} username={this.context.username} />
+                            )}
                         </div>
 
                     </div>

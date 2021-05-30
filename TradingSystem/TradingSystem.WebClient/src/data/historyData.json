@@ -2,42 +2,42 @@
     "history": [
         {
             "id": "xyz1",
-            "reception_ID": "11111",
-            "delivery_ID": "11111",
+            "paymentId": "11111",
+            "deliveryId": "11111",
             "products": []
 
         },{
             "id": "xyz2",
-            "reception_ID": "22222",
-            "delivery_ID": "22222",
+            "paymentId": "22222",
+            "deliveryId": "22222",
             "products": []
 
         },
         {
             "id": "xyz3",
-            "reception_ID": "33333",
-            "delivery_ID": "33333",
+            "paymentId": "33333",
+            "deliveryId": "33333",
             "products": []
 
         },
         {
             "id": "xyz4",
-            "reception_ID": "44444",
-            "delivery_ID": "44444",
+            "paymentId": "44444",
+            "deliveryId": "44444",
             "products": []
 
         },
         {
             "id": "xyz5",
-            "reception_ID": "55555",
-            "delivery_ID": "55555",
+            "paymentId": "55555",
+            "deliveryId": "55555",
             "products": []
 
         },
         {
             "id": "xyz6",
-            "reception_ID": "66666",
-            "delivery_ID": "66666",
+            "paymentId": "66666",
+            "deliveryId": "66666",
             "products": []
 
         }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
+using TradingSystem.WebApi.DTO.History;
 using TradingSystem.WebApi.DTO.Store.Permissions;
 
 namespace TradingSystem.WebApi.Controllers
@@ -31,8 +32,25 @@ namespace TradingSystem.WebApi.Controllers
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
         public MarketUserService MarketUserService { get; }
 
+        private ActionResult<HistoryRecordDTO> SingleHistory(string paymentId, ICollection<HistoryData> result)
+        {
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            HistoryData? historyData = result
+                .Where(x => x.Payments.PaymentId == paymentId)
+                .FirstOrDefault();
+            if (historyData == null)
+            {
+                return InternalServerError("History with the specified payment ID does not exist");
+            }
+            return Ok(HistoryRecordDTO.FromHistoryData(historyData));
+        }
+
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<ShoppingBasketHistoryDTO>>> Mine([FromBody] UsernameDTO usernameDTO)
+        public async Task<ActionResult<IEnumerable<HistoryRecordDTO>>> Mine([FromBody] UsernameDTO usernameDTO)
         {
             if (string.IsNullOrWhiteSpace(usernameDTO.Username))
             {
@@ -45,11 +63,27 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(result.Select(ShoppingBasketHistoryDTO.FromHistoryData));
+            return Ok(result.Select(HistoryRecordDTO.FromHistoryData));
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<ShoppingBasketHistoryDTO>>> OfStore([FromBody] StoreInfoActionDTO storeInfoActionDTO)
+        public async Task<ActionResult<HistoryRecordDTO>> MineSpecific([FromBody] InfoActionDTO<string> historyInfoSpecificDTO)
+        {
+            if (string.IsNullOrWhiteSpace(historyInfoSpecificDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (string.IsNullOrWhiteSpace(historyInfoSpecificDTO.Key))
+            {
+                return BadRequest("Invalid payment ID");
+            }
+
+            ICollection<HistoryData>? result = await MarketUserService.GetUserHistory(historyInfoSpecificDTO.Username);
+            return SingleHistory(historyInfoSpecificDTO.Key, result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<HistoryRecordDTO>>> OfStore([FromBody] StoreInfoActionDTO storeInfoActionDTO)
         {
             if (string.IsNullOrWhiteSpace(storeInfoActionDTO.Username))
             {
@@ -62,11 +96,27 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(result.Select(ShoppingBasketHistoryDTO.FromHistoryData));
+            return Ok(result.Select(HistoryRecordDTO.FromHistoryData));
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<ShoppingBasketHistoryDTO>>> OfAll([FromBody] UsernameDTO usernameDTO)
+        public async Task<ActionResult<HistoryRecordDTO>> OfStoreSpecific([FromBody] StoreHistorySpecificDTO storeHistorySpecificDTO)
+        {
+            if (string.IsNullOrWhiteSpace(storeHistorySpecificDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (string.IsNullOrWhiteSpace(storeHistorySpecificDTO.PaymentId))
+            {
+                return BadRequest("Invalid payment ID");
+            }
+
+            ICollection<HistoryData>? result = await MarketStoreGeneralService.GetStoreHistory(storeHistorySpecificDTO.Username, storeHistorySpecificDTO.StoreId);
+            return SingleHistory(storeHistorySpecificDTO.PaymentId, result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<HistoryRecordDTO>>> OfAll([FromBody] UsernameDTO usernameDTO)
         {
             if (string.IsNullOrWhiteSpace(usernameDTO.Username))
             {
@@ -79,7 +129,23 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(result.Select(ShoppingBasketHistoryDTO.FromHistoryData));
+            return Ok(result.Select(HistoryRecordDTO.FromHistoryData));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<HistoryRecordDTO>> OfAllSpecific([FromBody] InfoActionDTO<string> historyInfoSpecificDTO)
+        {
+            if (string.IsNullOrWhiteSpace(historyInfoSpecificDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (string.IsNullOrWhiteSpace(historyInfoSpecificDTO.Key))
+            {
+                return BadRequest("Invalid payment ID");
+            }
+
+            ICollection<HistoryData>? result = await MarketGeneralService.GetAllHistoryAsync(historyInfoSpecificDTO.Username);
+            return SingleHistory(historyInfoSpecificDTO.Key, result);
         }
     }
 }

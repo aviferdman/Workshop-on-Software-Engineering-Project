@@ -8,20 +8,24 @@ using TradingSystem.WebApi.DTO.Products;
 
 namespace TradingSystem.WebApi.DTO
 {
-    public class ShoppingBasketHistoryDTO
+    public class HistoryRecordDTO
     {
         public string? Username { get; set; }
         public Guid StoreID { get; set; }
         public string? StoreName { get; set; }
+        public string? PaymentId { get; set; }
+        public string? DeliveryId { get; set; }
         public IEnumerable<ProductHistoryDTO>? Products { get; set; }
 
-        public static ShoppingBasketHistoryDTO FromHistoryData(HistoryData historyData)
+        public static HistoryRecordDTO FromHistoryData(HistoryData historyData)
         {
-            return new ShoppingBasketHistoryDTO
+            return new HistoryRecordDTO
             {
                 Username = historyData.Deliveries.Username,
                 StoreID = historyData.Deliveries.StoreId,
                 StoreName = historyData.Deliveries.StoreName,
+                PaymentId = historyData.Payments.PaymentId,
+                DeliveryId = historyData.Deliveries.PackageId,
                 Products = historyData.Products.ProductId_quantity.Select(ProductHistoryDTO.FromPurchasedProduct),
             };
         }
