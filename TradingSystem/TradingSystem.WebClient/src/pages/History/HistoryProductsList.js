@@ -47,8 +47,8 @@ export class HistoryProductsList extends React.Component {
         await promise.then(historyRecord => {
             this.setState({
                 username: username == null ? historyRecord.username : null,
-                storeId: storeId == null ? historyRecord.storeId : null,
-                storeName: storeId == null ? historyRecord.storeName : null,
+                storeId: historyRecord.storeId,
+                storeName: historyRecord.storeName,
                 products: historyRecord.products,
             });
         }, alertRequestError_default);
