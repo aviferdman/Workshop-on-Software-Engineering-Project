@@ -11,9 +11,7 @@ using static TradingSystem.Business.Market.StoreStates.Manager;
 namespace TradingSystem.Business.Market.StoreStates
 {
     public class Founder : Appointer
-    {
-
-        
+    {        
         [NotMapped]
         public string Username { get => username; set => username = value; }
         

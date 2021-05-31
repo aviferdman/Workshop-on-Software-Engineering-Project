@@ -92,7 +92,7 @@ namespace TradingSystemTests.IntegrationTests
         
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
-        public async Task TestOwnerWithPermissionAcceptBid()
+        public async Task TestNotAllOwnersAcceptBid()
         {
             double originPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(product.Price * QUANTITY, originPrice);
@@ -101,10 +101,25 @@ namespace TradingSystemTests.IntegrationTests
             var bidId = resultBid.Ret;
             await marketBids.OwnerAcceptBid(owner.Username, store.Id, bidId);
             double bidPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
+            Assert.AreEqual(originPrice, bidPrice);
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
+        [TestMethod]
+        public async Task TestAllOwnersAcceptBid()
+        {
+            double originPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
+            Assert.AreEqual(product.Price * QUANTITY, originPrice);
+            await marketBids.OwnerChangeBidPolicy(owner.Username, store.Id, true);
+            var resultBid = await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, BID_PRICE);
+            var bidId = resultBid.Ret;
+            await marketBids.OwnerAcceptBid(owner.Username, store.Id, bidId);
+            await marketBids.OwnerAcceptBid(store.founder.Username, store.Id, bidId);
+            double bidPrice = store.CalcPrice(customer.Username, await customer.ShoppingCart.GetShoppingBasket(store));
             Assert.AreEqual(BID_PRICE * QUANTITY, bidPrice);
         }
 
-        
+
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
         public async Task TestOwnerWithoutPermissionAcceptBid()

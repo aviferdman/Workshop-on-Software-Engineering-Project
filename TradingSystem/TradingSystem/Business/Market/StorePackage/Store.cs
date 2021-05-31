@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.BidsPackage;
 using TradingSystem.Business.Market.Histories;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
@@ -21,6 +22,7 @@ namespace TradingSystem.Business.Market
 {
     public class Store 
     {
+        private BidsManager bidsManager { get; set; }
         public HashSet<Product> _products { get; set; }
         public Founder founder { get; set; }
         public HashSet<Manager> managers { get; set; }
@@ -32,6 +34,7 @@ namespace TradingSystem.Business.Market
         public Address _address { get; set; }
         [NotMapped]
         public HashSet<Product> Products { get => _products; set => _products = value; }
+
         [NotMapped]
         internal Address Address { get => _address; set => _address = value; }
         [NotMapped]
@@ -47,10 +50,10 @@ namespace TradingSystem.Business.Market
         [NotMapped]
         public Founder Founder { get => founder; set => founder = value; }
         public PurchasePolicy purchasePolicy { get; set; }
+        public BidsManager BidsManager { get => bidsManager; set => bidsManager = value; }
 
         public Store()
         {
-
         }
 
         public Store(string name, CreditCard bank, Address address)
@@ -63,11 +66,76 @@ namespace TradingSystem.Business.Market
             this.managers = new HashSet<Manager>();
             this.owners = new HashSet<Owner>();
             this.purchasePolicy = new PurchasePolicy();
+            this.bidsManager = new BidsManager(owners, founder);
+        }
+        public async Task<Result<Guid>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice)
+        {
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<Guid>(new Guid(), true, "Bids are not supported in this store");
+            }
+            return await bidsManager.CustomerCreateBid(username, storeId, productId, newBidPrice, Name);
         }
 
-        internal async Task CustomerDenyBid(Guid bidId)
+        public async Task<Result<bool>> CustomerDenyBid(Guid bidId)
         {
-            founder.CustomerDenyBid(bidId);
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
+            return await bidsManager.CustomerDenyBid(bidId, Name);
+
+        }
+
+        public async Task<Result<bool>> CustomerNegotiateBid(Guid bidId, double newBidPrice)
+        {
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
+            var productId = bidsManager.getProductIdByBidId(bidId);
+            return await bidsManager.CustomerNegotiateBid(bidId, newBidPrice, Name, GetProduct(productId).Name);
+        }
+
+        public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, Guid bidId)
+        {
+            if (!CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
+            return await bidsManager.OwnerAcceptBid(ownerUsername, bidId);
+        }
+
+        public async Task<Result<bool>> OwnerNegotiateBid(string ownerUsername, Guid bidId, double newBidPrice)
+        {
+
+            if (!CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
+            return await bidsManager.OwnerNegotiateBid(ownerUsername, bidId, newBidPrice);
+        }
+
+        public async Task<Result<bool>> OwnerDenyBid(string ownerUsername, Guid bidId)
+        {
+
+            if (!CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
+            return await bidsManager.OwnerDenyBid(ownerUsername, bidId);
         }
 
         public virtual Guid GetId()
@@ -111,16 +179,6 @@ namespace TradingSystem.Business.Market
         public HashSet<Owner> GetOwners()
         {
             return owners;
-        }
-
-        // TODO
-        public async Task AddBid(Bid bid)
-        {
-            await founder.AddBid(bid);
-            foreach (var owner in Owners)
-            {
-                await owner.AddBid(bid);
-            }
         }
 
         //TODO
@@ -197,8 +255,8 @@ namespace TradingSystem.Business.Market
         private double GetProductBid(string username, Product p)
         {
             double sum = 0;
-            var bids = founder == null ? new HashSet<Bid>() : founder.GetUserAcceptedBids(username);
-            foreach (var bid in bids)
+            var acceptedBids = bidsManager.GetUserAcceptedBids(username);
+            foreach (var bid in acceptedBids)
             {
                 if (bid.Username.Equals(username) && bid.ProductId.Equals(p.Id))
                 {
@@ -683,6 +741,7 @@ namespace TradingSystem.Business.Market
         public void SetFounder(Founder f)
         {
             this.founder = f;
+            this.bidsManager.founder = f;
         }
         //TODO
 
@@ -710,15 +769,7 @@ namespace TradingSystem.Business.Market
             return null;
         }
 
-        public Owner GetOwner(String name)
-        {
-            foreach (Owner owner in Owners)
-            {
-                if (owner.Username.Equals(name))
-                    return owner;
-            }
-            return null;
-        }
+
 
         public Product GetProduct(Guid id)
         {
@@ -729,7 +780,15 @@ namespace TradingSystem.Business.Market
             }
             return null;
         }
-
+        public Owner GetOwner(String name)
+        {
+            foreach (Owner owner in Owners)
+            {
+                if (owner.Username.Equals(name))
+                    return owner;
+            }
+            return null;
+        }
         public Appointer GetAppointer(string appointerName)
         {
             Appointer ret = GetOwner(appointerName);

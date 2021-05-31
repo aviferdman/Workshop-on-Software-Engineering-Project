@@ -38,10 +38,7 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<Guid>(new Guid(), true, "Bids are not supported in this store");
             }
-            var bid = new Bid(username, storeId, productId, newBidPrice);
-            await store.AddBid(bid);
-            store.NotifyOwners(EventType.RequestPurchaseEvent, $"You got new Bid in store {store.name}");
-            return new Result<Guid>(bid.Id, false, "");
+            return await store.CustomerCreateBid(username, storeId, productId, newBidPrice);
         }
         public async Task<Result<bool>> CustomerNegotiateBid(Guid storeId, Guid bidId, double newBidPrice)
         {
@@ -50,17 +47,8 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
             }
-            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
-            {
-                return new Result<bool>(false, true, "Bids are not supported in this store");
-            }
-            var appointer = store.founder;
-            var bid = appointer.GetBidById(bidId);
-            var username = bid.Username;
-            var storeName = store.name;
-            var productName = store.GetProduct(bid.ProductId).Name;
-            store.NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Suggested to buy product {productName} for {newBidPrice} in store {storeName}");
-            return await appointer.CustomerNegotiateBid(bidId, newBidPrice);
+
+            return await store.CustomerNegotiateBid(bidId, newBidPrice);
         }
 
         public async Task<Result<bool>> CustomerDenyBid(Guid storeId, Guid bidId)
@@ -74,10 +62,7 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<bool>(false, true, "Bids are not supported in this store");
             }
-            await store.CustomerDenyBid(bidId);
-            var bid = store.GetFounder().GetBidById(bidId);
-            store.NotifyOwners(EventType.RequestPurchaseEvent, $"{bid.Username} denied the bid in store {store.name} for buying the product {bid.ProductId} for {bid.Price}$");
-            return new Result<bool>(true, false, "");
+            return await store.CustomerDenyBid(bidId);
         }
 
         public Result<ICollection<Bid>> GetCustomerBids(string username)
@@ -86,7 +71,7 @@ namespace TradingSystem.Business.Market
             var stores = marketStores.LoadedStores;
             foreach (var store in stores)
             {
-                ICollection<Bid> tempBids = store.Value.GetFounder().GetUserBids(username);
+                ICollection<Bid> tempBids = store.Value.BidsManager.GetUserBids(username);
                 foreach (var bid in tempBids)
                 {
                     bids.Add(bid);
@@ -103,18 +88,8 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
             }
-            if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
-            {
-                return new Result<bool>(false, true, "No permission to accept Bid");
-            }
-            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
-            {
-                return new Result<bool>(false, true, "Bids are not supported in this store");
-            }
-            var appointer = store.GetAppointer(ownerUsername);
-            var bid = appointer.GetBidById(bidId);
-            PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"We accepted your bid request.");
-            return await appointer.OwnerAcceptBid(bidId);
+
+            return await store.OwnerAcceptBid(ownerUsername, bidId);
         }
 
         public async Task<Result<bool>> OwnerChangeBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
@@ -138,18 +113,7 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
             }
-            if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
-            {
-                return new Result<bool>(false, true, "No permission to accept Bid");
-            }
-            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
-            {
-                return new Result<bool>(false, true, "Bids are not supported in this store");
-            }
-            var appointer = store.GetAppointer(ownerUsername);
-            var bid = appointer.GetBidById(bidId);
-            PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, We suggest another bid request for you.");
-            return await appointer.OwnerNegotiateBid(bidId, newBidPrice);
+            return await store.OwnerNegotiateBid(ownerUsername, bidId, newBidPrice);
         }
 
         public async Task<Result<bool>> OwnerDenyBid(string ownerUsername, Guid storeId, Guid bidId)
@@ -159,18 +123,7 @@ namespace TradingSystem.Business.Market
             {
                 return new Result<bool>(false, true, "Store doesn't exist");
             }
-            if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
-            {
-                return new Result<bool>(false, true, "No permission to accept Bid");
-            }
-            if (!store.IsPurchaseKindAvailable(PurchaseKind.Bid))
-            {
-                return new Result<bool>(false, true, "Bids are not supported in this store");
-            }
-            var appointer = store.GetAppointer(ownerUsername);
-            var bid = appointer.GetBidById(bidId);
-            PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, sorry, but we denied your bid request.");
-            return await appointer.OwnerDenyBid(bidId);
+            return await store.OwnerDenyBid(ownerUsername, bidId);
         }
 
         public Result<ICollection<Bid>> GetOwnerBids(string ownerUsername)
@@ -181,7 +134,7 @@ namespace TradingSystem.Business.Market
             {
                 if (store.Value.CheckPermission(ownerUsername, Permission.BidRequests))
                 {
-                    ICollection<Bid> tempBids = store.Value.GetFounder().Bids;
+                    ICollection<Bid> tempBids = store.Value.BidsManager.bids;
                     foreach (var bid in tempBids)
                     {
                         bids.Add(bid);
