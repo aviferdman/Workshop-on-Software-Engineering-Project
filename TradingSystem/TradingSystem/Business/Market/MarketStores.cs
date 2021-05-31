@@ -63,7 +63,7 @@ namespace TradingSystem.Business.Market
             if (user == null || typeof(GuestState).IsInstanceOfType(user.State))
                 return null;
             Store store = new Store(name, bank, address);
-            store.Founder = Founder.makeFounder((MemberState)user.State, store);
+            store.SetFounder(Founder.makeFounder((MemberState)user.State, store));
             if (!loadedStores.TryAdd(store.Id, store))
                 return null;
             await MarketDAL.Instance.AddStore(store);
