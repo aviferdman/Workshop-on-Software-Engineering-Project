@@ -669,10 +669,10 @@ namespace TradingSystem.Business.Market
             return null;
         }
         //TODO
-        public IRule GetDiscountRuleById(Guid ruleId)
+        public IRule GetRuleByDiscountId(Guid discountId)
         {
             var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
-            return discounts.Where(d => d.GetRule().GetId().Equals(ruleId)).FirstOrDefault().GetRule();
+            return discounts.Where(d => d.Id.Equals(discountId)).FirstOrDefault().GetRule();
         }
 
         public Founder GetFounder()

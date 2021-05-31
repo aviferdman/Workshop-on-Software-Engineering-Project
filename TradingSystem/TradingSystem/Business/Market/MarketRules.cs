@@ -16,6 +16,7 @@ namespace TradingSystem.Business.Market
     }
     public enum RuleType
     {
+        Simple,
         Age,
         Quantity,
         Price,
@@ -60,27 +61,27 @@ namespace TradingSystem.Business.Market
             Discount discount = new Discount(d);
             return store.AddDiscount(username, discount);
         }
-        public async System.Threading.Tasks.Task<Guid> CreateConditionalDiscountAsync(string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(), string ruleUsername = "",
+        public async System.Threading.Tasks.Task<Guid> CreateConditionalDiscountAsync(string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
             double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
             Store store = await marketStores.GetStoreById(storeId);
             var d = CreateCalculator(discountType, precent, category, productId);
-            var r = CreateRule(discountType, ruleType, category, productId, ruleUsername, valueLessThan, valueGreaterEQThan, d1, d2);
+            var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             ConditionDiscount discount = new ConditionDiscount(d);
             discount.AddRule(r);
             return store.AddDiscount(username, discount);
         }
 
-        public async Task<Guid> GenerateConditionalDiscountsAsync(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId, Guid discountId2, bool decide)
+        public async Task<Guid> GenerateConditionalDiscountsAsync(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
         {
             switch (discountRuleRelation)
             {
                 case DiscountRuleRelation.And:
-                    return await AddDiscountAndRuleAsync(username, storeId, ruleId1, ruleId2, discountId);
+                    return await AddDiscountAndRuleAsync(username, storeId, discountId1, discountId2);
                 case DiscountRuleRelation.Or:
-                    return await AddDiscountOrRuleAsync(username, storeId, ruleId1, ruleId2, discountId);
+                    return await AddDiscountOrRuleAsync(username, storeId, discountId1, discountId2);
                 default:
-                    return await AddDiscountXorRuleAsync(username, storeId, discountId, discountId2, decide);
+                    return await AddDiscountXorRuleAsync(username, storeId, discountId1, discountId2, decide);
             }
         }
 
@@ -90,10 +91,10 @@ namespace TradingSystem.Business.Market
             return store.RemoveDiscount(username, discountId);
         }
 
-        public async Task AddPolicyRule(string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(), string usernameRule = "",
+        public async Task AddPolicyRule(string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(),
             double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
-            var r = CreateRule(ruleContext, ruleType, category, productId, usernameRule, valueLessThan, valueGreaterEQThan, d1, d2);
+            var r = CreateRule(ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             switch (policyRuleRelation)
             {
                 case PolicyRuleRelation.Simple:
@@ -117,13 +118,13 @@ namespace TradingSystem.Business.Market
             store.RemoveRule(username);
         }
 
-        public Rule CreateRule(RuleContext discountType, RuleType ruleType, string category, Guid productId, string usernameRule, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        public Rule CreateRule(RuleContext discountType, RuleType ruleType, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
         {
             Rule r;
             switch (ruleType)
             {
                 case RuleType.Age:
-                    r = rulesCreator.CreateUserAgeRule(usernameRule, Convert.ToInt32(valueLessThan), Convert.ToInt32(valueGreaterEQThan));
+                    r = rulesCreator.CreateUserAgeRule(Convert.ToInt32(valueLessThan), Convert.ToInt32(valueGreaterEQThan));
                     break;
                 case RuleType.Price:
                     r = rulesCreator.CreateStorePriceRule(Convert.ToInt32(valueLessThan), Convert.ToInt32(valueGreaterEQThan));
@@ -152,25 +153,25 @@ namespace TradingSystem.Business.Market
             return r;
         }
 
-        private async Task<Guid> AddDiscountOrRuleAsync(string username, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
+        private async Task<Guid> AddDiscountOrRuleAsync(string username, Guid storeId, Guid discountId1, Guid discountId2)
         {
             Store store = await marketStores.GetStoreById(storeId);
-            var rule1 = store.GetDiscountRuleById(ruleId1);
-            var rule2 = store.GetDiscountRuleById(ruleId2);
-            var andRule = Rule.OrTwoRules(rule1, rule2);
-            var discount = (ConditionDiscount)store.GetDiscountById(discountId);
-            discount.AddRule(andRule);
+            var rule1 = store.GetRuleByDiscountId(discountId1);
+            var rule2 = store.GetRuleByDiscountId(discountId2);
+            var orRule = Rule.OrTwoRules(rule1, rule2);
+            var discount = new ConditionDiscount(store.GetDiscountById(discountId1).Calc, orRule);
+            //discount.AddRule(andRule);
             return store.AddDiscount(username, discount);
         }
 
-        private async Task<Guid> AddDiscountAndRuleAsync(string username, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId)
+        private async Task<Guid> AddDiscountAndRuleAsync(string username, Guid storeId, Guid discountId1, Guid discountId2)
         {
             Store store = await marketStores.GetStoreById(storeId);
-            var rule1 = store.GetDiscountRuleById(ruleId1);
-            var rule2 = store.GetDiscountRuleById(ruleId2);
+            var rule1 = store.GetRuleByDiscountId(discountId1);
+            var rule2 = store.GetRuleByDiscountId(discountId2);
             var andRule = Rule.AddTwoRules(rule1, rule2);
-            var discount = (ConditionDiscount)store.GetDiscountById(discountId);
-            discount.AddRule(andRule);
+            var discount = new ConditionDiscount(store.GetDiscountById(discountId1).Calc, andRule);
+            //discount.AddRule(andRule);
             return store.AddDiscount(username, discount);
         }
         private async Task<Guid> CreateRuleToStoreAsync(string username, Guid storeId, Rule rule)
