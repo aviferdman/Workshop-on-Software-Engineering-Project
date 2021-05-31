@@ -13,13 +13,12 @@ namespace TradingSystem.Business.Market.StorePackage
         private double precent;
         private string category;
         private Guid productId;
-        private string ruleUsername;
         private double valueLessThan;
         private double valueGreaterEQThan;
         private DateTime d1;
         private DateTime d2;
 
-        public MarketRulesRequestType6(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, string ruleUsername, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        public MarketRulesRequestType6(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
         {
             this.counter = counter;
             this.functionName = functionName;
@@ -30,7 +29,6 @@ namespace TradingSystem.Business.Market.StorePackage
             this.precent = precent;
             this.category = category;
             this.productId = productId;
-            this.ruleUsername = ruleUsername;
             this.valueLessThan = valueLessThan;
             this.valueGreaterEQThan = valueGreaterEQThan;
             this.d1 = d1;

@@ -135,5 +135,10 @@ namespace TradingSystem.Business.Market
         {
             return this.ShoppingCart;
         }
+
+        public string GetUsername()
+        {
+            return this.ShoppingCart.username;
+        }
     }
 }

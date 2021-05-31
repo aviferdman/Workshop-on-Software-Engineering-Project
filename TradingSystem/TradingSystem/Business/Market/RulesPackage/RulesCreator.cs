@@ -11,10 +11,10 @@ namespace TradingSystem.Business.Market.RulesPackage
 
         }
 
-        public Rule CreateUserAgeRule(string username, int ageLessThan = int.MaxValue, int ageGreaterEQThan = 0)
+        public Rule CreateUserAgeRule(int ageLessThan = int.MaxValue, int ageGreaterEQThan = 0)
         {
             return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) =>
-                UserAgeLessThan(username, ageLessThan) && !UserAgeLessThan(username, ageGreaterEQThan)
+                UserAgeLessThan(basket.GetUsername(), ageLessThan) && !UserAgeLessThan(basket.GetUsername(), ageGreaterEQThan)
             ));
         }
 

@@ -78,9 +78,9 @@ namespace TradingSystem.Business.Market.StorePackage
             var marketRulesRequest = new MarketRulesRequestType1(counter, functionName, username, storeId, discountId);
         }
 
-        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category, Guid productId, string ruleUsername, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
         {
-            var marketRulesRequest = new MarketRulesRequestType2(counter, functionName, username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, ruleUsername, valueLessThan, valueGreaterEQThan, d1, d2);
+            var marketRulesRequest = new MarketRulesRequestType2(counter, functionName, username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
 
         }
 
@@ -94,14 +94,14 @@ namespace TradingSystem.Business.Market.StorePackage
             var marketRulesRequest = new MarketRulesRequestType4(counter, functionName, username, storeId, discountType, precent, category, productId);
         }
 
-        internal async Task SaveRequest(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId, Guid discountId2, bool decide)
+        internal async Task SaveRequest(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide)
         {
-            var marketRulesRequest = new MarketRulesRequestType5(counter, functionName, username, discountRuleRelation, storeId, ruleId1, ruleId2, discountId, discountId2, decide);
+            var marketRulesRequest = new MarketRulesRequestType5(counter, functionName, username, discountRuleRelation, storeId, discountId, discountId2, decide);
         }
 
-        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, string ruleUsername, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
         {
-            var marketRulesRequest = new MarketRulesRequestType6(counter, functionName, username, storeId, discountType, ruleType, precent, category, productId, ruleUsername, valueLessThan, valueGreaterEQThan, d1, d2);
+            var marketRulesRequest = new MarketRulesRequestType6(counter, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
         }
         private void RestorePredicates()
         {
