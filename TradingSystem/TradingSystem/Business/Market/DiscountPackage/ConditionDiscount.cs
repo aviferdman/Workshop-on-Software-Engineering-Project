@@ -10,8 +10,13 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         private IRule _rule;
         public ConditionDiscount(IDiscountCalculator calc): base(calc)
         {
-            
+            _rule = new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => true));
         }
+        public ConditionDiscount(IDiscountCalculator calc, IRule rule) : base(calc)
+        {
+            this._rule = rule;
+        }
+
         public override IRule GetRule()
         {
             return _rule;
@@ -23,7 +28,7 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 
         public void RemoveRule(IRule rule)
         {
-            _rule = null;
+            _rule = new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => true));
         }
         public override double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {

@@ -4,7 +4,7 @@ namespace TradingSystem.Business.Market
 {
     public class Address
     {
-        public Guid id;
+        public Guid id { get; set; }
         public string _state { get; set; }
         private string _city { get; set; }
         private string _street { get; set; }

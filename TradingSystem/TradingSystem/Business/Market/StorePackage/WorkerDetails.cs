@@ -9,33 +9,32 @@ namespace TradingSystem.Business.Market.StorePackage
 {
     public class WorkerDetails 
     {
-        String username;
-        String position;
-        ICollection<string> permissions;
-
+        public string Username { get; set; }
+        public string Position { get; set; }
+        public ICollection<string> Permissions { get; set; }
 
         public WorkerDetails(Manager manager)
         {
-            username = manager.username;
-            position = "manager";
-            permissions = manager.store_permission.Select(p=> p.p).ToList();
+            Username = manager.username;
+            Position = "manager";
+            Permissions = manager.store_permission.Select(p=> p.p).ToList();
         }
         public WorkerDetails(Owner owner)
         {
-            username = owner.Username;
-            position = "owner";
-            permissions = new LinkedList<string>();
+            Username = owner.Username;
+            Position = "owner";
+            Permissions = new LinkedList<string>();
         }
         public WorkerDetails(Founder founder)
         {
-            username = founder.Username;
-            position = "founder";
-            permissions = new LinkedList<string>();
+            Username = founder.Username;
+            Position = "founder";
+            Permissions = new LinkedList<string>();
         }
 
         public bool Equals(WorkerDetails other)
         {
-            return this.username.Equals(other.username) && this.position.Equals(other.position) && EqualPermissions(this.permissions, other.permissions);
+            return this.Username.Equals(other.Username) && this.Position.Equals(other.Position) && EqualPermissions(this.Permissions, other.Permissions);
         }
 
         public bool EqualPermissions(ICollection<String> one, ICollection<String> other)

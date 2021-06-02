@@ -15,73 +15,48 @@ namespace TradingSystem.Business.Market.StoreStates
     {
         public MemberState m { get; set; }
         public Store s { get; set; }
+
         public Guid sid { get; set; }
         public string username { get; set; }
 
-        private ICollection<Bid> bids;
+        public HashSet<BidAcceptence> bidsAcceptence { get; set; }
+
         public Appointer()
         {
-            this.Bids = new HashSet<Bid>();
+            this.bidsAcceptence = new HashSet<BidAcceptence>();
         }
 
-        public ICollection<Bid> Bids { get => bids; set => bids = value; }
-
-        public async Task AddBid(Bid bid)
+        public async Task AcceptBid(Guid bidId)
         {
-            this.bids.Add(bid);
+            if (!Exists(bidId))
+            {
+                bidsAcceptence.Add(new BidAcceptence(bidId));
+            }
+            var bidAcceptence = GetBidAcceptenceByBidId(bidId);
+            bidAcceptence.accept = true;
         }
 
-        public ICollection<Bid> GetUserBids(string username)
+        public async Task DenyBid(Guid bidId)
         {
-            return bids.Where(b => b.Username.Equals(username)).ToHashSet();
+            if (!Exists(bidId))
+            {
+                bidsAcceptence.Add(new BidAcceptence(bidId));
+            }
+            var bidAcceptence = GetBidAcceptenceByBidId(bidId);
+            bidAcceptence.accept = false;
         }
 
-        public ICollection<Bid> GetUserAcceptedBids(string username)
+        private bool Exists(Guid bidId)
         {
-            return bids.Where(b => b.Username.Equals(username) && b.Status.Equals(BidStatus.Accept)).ToHashSet();
+            return bidsAcceptence.Count(b => b.bidId.Equals(bidId)) > 0;
         }
 
-        public Bid GetBidById(Guid id)
+        public BidAcceptence GetBidAcceptenceByBidId(Guid bidId)
         {
-            return bids.Where(b => b.Id.Equals(id)).FirstOrDefault();
+            return bidsAcceptence.Where(b => b.bidId.Equals(bidId)).FirstOrDefault();
+
         }
 
-        internal void CustomerDenyBid(Guid bidId)
-        {
-            var bid = GetBidById(bidId);
-            bid.Status = BidStatus.Deny;
-        }
-
-        //TODO
-        public async Task<Result<bool>> CustomerNegotiateBid(Guid bidId, double newBidPrice)
-        {
-            var bid = GetBidById(bidId);
-            bid.Price = newBidPrice;
-            bid.Status = BidStatus.Negotiate;
-            return new Result<bool>(true, false, "");
-        }
-
-        public async Task<Result<bool>> OwnerAcceptBid(Guid bidId)
-        {
-            var bid = GetBidById(bidId);
-            bid.Status = BidStatus.Accept;
-            return new Result<bool>(true, false, "");
-        }
-
-        public async Task<Result<bool>> OwnerNegotiateBid(Guid bidId, double newBidPrice)
-        {
-            var bid = GetBidById(bidId);
-            bid.Price = newBidPrice;
-            bid.Status = BidStatus.Negotiate;
-            return new Result<bool>(true, false, "");
-        }
-
-        internal async Task<Result<bool>> OwnerDenyBid(Guid bidId)
-        {
-            var bid = GetBidById(bidId);
-            bid.Status = BidStatus.Deny;
-            return new Result<bool>(true, false, "");
-        }
 
         //appoint a new manager with memberStaste m to Store s adds to lists in store and memberState
         //use locks for store premmissions and memberState premissions

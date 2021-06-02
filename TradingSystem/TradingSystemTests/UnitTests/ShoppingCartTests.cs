@@ -101,7 +101,7 @@ namespace TradingSystemTests.MarketTests
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(new ProductInCart(product1, 1));
             product_quantity.Add(new ProductInCart(product2, 2));
-            DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, false);
+            DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, "storeName", false);
             PaymentStatus paymentStatus = new PaymentStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, true);
             Mock<ShoppingBasket> shoppingBasket1 = new Mock<ShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);
@@ -130,7 +130,7 @@ namespace TradingSystemTests.MarketTests
             Product product2 = new Product(20, 20, 20);
             product_quantity.Add(new ProductInCart(product1, 1));
             product_quantity.Add(new ProductInCart(product2, 2));
-            DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, true);
+            DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, "storeName", true);
             PaymentStatus paymentStatus = new PaymentStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, false);
             Mock<ShoppingBasket> shoppingBasket1 = new Mock<ShoppingBasket>();
             shoppingBasket1.Setup(sb => sb.GetDictionaryProductQuantity()).Returns(product_quantity);

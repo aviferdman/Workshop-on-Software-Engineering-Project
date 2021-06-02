@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ namespace TradingSystem.Business.Market
 {
     public class ShoppingBasket :IComparable
     {
+        public Guid id { get; set; }
         public HashSet<ProductInCart> _product_quantity { get; set; }
         public  ShoppingCart shoppingCart { get; set; }
         public Store store { get; set; }
@@ -35,9 +37,11 @@ namespace TradingSystem.Business.Market
         public ShoppingBasket()
         {
         }
-
+        [NotMapped]
         public HashSet<ProductInCart> Product_quantity { get => _product_quantity; set => _product_quantity = value; }
+        [NotMapped]
         public ShoppingCart ShoppingCart { get => shoppingCart; set => shoppingCart = value; }
+        [NotMapped]
         public Store Store { get => store; set => store = value; }
 
         public virtual bool IsEmpty()
@@ -134,6 +138,11 @@ namespace TradingSystem.Business.Market
         public ShoppingCart GetShoppingCart()
         {
             return this.ShoppingCart;
+        }
+
+        public string GetUsername()
+        {
+            return this.ShoppingCart.username;
         }
     }
 }

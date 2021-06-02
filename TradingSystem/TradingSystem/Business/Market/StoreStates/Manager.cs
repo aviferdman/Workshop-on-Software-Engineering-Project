@@ -82,6 +82,7 @@ namespace TradingSystem.Business.Market.StoreStates
         {
         }
 
+        public Guid id { get; set; }
         public string p { get; set; }
     }
 }

@@ -53,3 +53,11 @@
   border: none;
   display: inline-block;
 }
+
+.pointer-cursor {
+  cursor: pointer;
+}
+
+.margin-no-controls {
+  margin-bottom: 42px;
+}

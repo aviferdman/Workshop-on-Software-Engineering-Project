@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import {SidebarData} from './SidebarData';
 import './Navbar.css';
 import {IconContext} from 'react-icons';
+import {GlobalContext} from "../../globalContext";
 
 function Navbar() {
     const [sidebar, setSidebar] = useState(false);
@@ -13,32 +14,40 @@ function Navbar() {
 
     return (
         <>
-            <IconContext.Provider value={{ color: '#fff' }}>
-                <div className='navbar'>
-                    <Link to='#' className='menu-bars'>
-                        <FaIcons.FaBars onClick={showSidebar} />
-                    </Link>
-                </div>
-                <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-                    <ul className='nav-menu-items' onClick={showSidebar}>
-                        <li className='navbar-toggle'>
-                            <Link to='#' className='menu-bars'>
-                                <AiIcons.AiOutlineClose />
-                            </Link>
-                        </li>
-                        {SidebarData.map((item, index) => {
-                            return (
-                                <li key={index} className={item.cName}>
-                                    <Link to={item.path}>
-                                        {item.icon}
-                                        <span className='nav-menu-span'>{item.title}</span>
-                                    </Link>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </nav>
-            </IconContext.Provider>
+            <GlobalContext.Consumer>
+            {context => (
+                <IconContext.Provider value={{ color: '#fff' }}>
+                    <div className='navbar'>
+                        <Link to='#' className='menu-bars'>
+                            <FaIcons.FaBars onClick={showSidebar} />
+                        </Link>
+                    </div>
+                    <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+                        <ul className='nav-menu-items' onClick={showSidebar}>
+                            <li className='navbar-toggle'>
+                                <Link to='#' className='menu-bars'>
+                                    <AiIcons.AiOutlineClose />
+                                </Link>
+                            </li>
+                            {SidebarData.map((item, index) => {
+                                if (item.permissions && context.role != null && item.permissions.find(p => p === context.role) == null) {
+                                    return null;
+                                }
+
+                                return (
+                                    <li key={index} className={item.cName}>
+                                        <Link to={item.path}>
+                                            {item.icon}
+                                            <span className='nav-menu-span'>{item.title}</span>
+                                        </Link>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </nav>
+                </IconContext.Provider>
+            )}
+            </GlobalContext.Consumer>
         </>
     );
 }

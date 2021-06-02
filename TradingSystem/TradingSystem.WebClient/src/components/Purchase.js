@@ -17,7 +17,7 @@ class Purchase extends React.Component {
         return {
             show: false,
             fields: {
-                phoneNumber: new FormFieldInfo(),
+                phoneNumber: new FormFieldInfo('0541234567'),
                 address: new AddressFields(),
                 creditCard: new CreditCardFields(),
             }

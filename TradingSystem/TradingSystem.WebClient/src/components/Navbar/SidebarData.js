@@ -3,6 +3,7 @@ import * as FaIcons from 'react-icons/fa';
 import * as AiIcons from 'react-icons/ai';
 import * as IoIcons from 'react-icons/io';
 import * as HiIcons from 'react-icons/hi';
+import {UserRole} from "../../globalContext";
 
 export const SidebarData = [
     {
@@ -35,7 +36,8 @@ export const SidebarData = [
         title: 'Admin Actions',
         path: '/adminActions',
         icon: <IoIcons.IoMdPeople />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        permissions: [UserRole.admin]
     },
     {
         title: 'History',

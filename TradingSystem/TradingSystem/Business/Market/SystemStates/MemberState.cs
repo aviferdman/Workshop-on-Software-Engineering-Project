@@ -17,11 +17,13 @@ namespace TradingSystem.Business.Market
     {
 
        
-        public MemberState(string userId) : base(userId)
+        public MemberState(string username) : base(username)
         {
             
         }
 
+
+        [NotMapped]
         public string UserId { get => username; set => username = value; }
 
         public override Task<ICollection<IHistory>> GetAllHistory()

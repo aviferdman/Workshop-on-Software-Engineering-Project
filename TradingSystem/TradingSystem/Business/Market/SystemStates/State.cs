@@ -11,7 +11,7 @@ namespace TradingSystem.Business.Market
     public abstract class State
     {
         public static readonly Transaction _transaction = Transaction.Instance;
-    public string username { get; set; }
+        public string username { get; set; }
         public State(string username)
         {
             this.username = username;

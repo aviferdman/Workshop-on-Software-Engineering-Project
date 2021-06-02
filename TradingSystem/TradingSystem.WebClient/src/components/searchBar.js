@@ -10,6 +10,7 @@ class SearchBar extends Component {
     };
 
     render() {
+        let disabled = this.props.enabled != null && !this.props.enabled ? { disabled: true, } : {}
         return (
             <div className="ui search">
                 <div className="ui icon input">
@@ -20,6 +21,7 @@ class SearchBar extends Component {
                         onChange={this.props.onChange}
                         onKeyUp={this.onKeyUp}
                         value={this.props.value}
+                        {...disabled}
                     />
                     <button className="searchButton Sprimary" onClick={this.props.onSearch}>Search</button>
                 </div>

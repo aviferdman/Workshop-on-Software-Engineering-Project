@@ -5,13 +5,19 @@ class HomeProducts extends Component {
     render() {
         return (
             <div>
-                <ul className = "products">
-                    {this.props.products.map((product) => (
-                        <li key={product.id}>
-                            <HomeProduct product={product} addToCart={this.props.addToCart} history={this.props.history} />
-                        </li>
-                    ))}
-                </ul>
+                {
+                    this.props.products.length === 0 ? (
+                        <h1 className='center-screen'>No products</h1>
+                    ) : (
+                        <ul className = "products">
+                            {this.props.products.map((product) => (
+                                <li key={product.id}>
+                                    <HomeProduct product={product} addToCart={this.props.addToCart} history={this.props.history} />
+                                </li>
+                            ))}
+                        </ul>
+                    )
+                }
             </div>
         );
     }

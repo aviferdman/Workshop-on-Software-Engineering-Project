@@ -3,19 +3,86 @@ import './AdminHistory.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 import SearchBar from "../../components/searchBar";
-import Data from "../../data/historyData.json";
 import History from "../../components/History";
+import * as api from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 
 export class AdminHistory extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
             name: "",
-            hist: Data.history
+            historyRecords: null,
+            historyRecordsFiltered: null,
+            searchCategory: '',
+            searchText: '',
+            searchBarEnabled: false,
         };
     }
+
+    async componentDidMount() {
+        return await this.fetchAllHistory();
+    }
+
+    async fetchAllHistory() {
+        return await api.history.all(this.context.username)
+            .then(historyRecords => {
+                this.setState({
+                    historyRecords: historyRecords,
+                    historyRecordsFiltered: historyRecords,
+                });
+            }, alertRequestError_default);
+    }
+
+    onSearchCategoryChange = e => {
+        let category = e.target.value;
+        let records = this.filter(this.state.historyRecords, this.state.searchText, category);
+        if (records == null) {
+            records = this.state.historyRecords;
+        }
+        this.setState({
+            searchCategory: category,
+            searchBarEnabled: category !== '',
+            historyRecordsFiltered: records,
+        });
+    };
+
+    onSearchTextChanged = e => {
+        this.setState({
+            searchText: e.target.value,
+        });
+    }
+
+    filter = (historyRecords, searchText, category) => {
+        if (!category) {
+            return null;
+        }
+
+        searchText = searchText.toLowerCase();
+        if(searchText === ""){
+            return historyRecords;
+        }
+        else{
+            return historyRecords.filter(h => {
+                if (category === 'Store') {
+                    return h.storeName.toLowerCase().includes(searchText);
+                }
+                else {
+                    return h.username.toLowerCase().includes(searchText);
+                }
+            });
+        }
+    }
+
+    onFilter = e => {
+        let records = this.filter(this.state.historyRecords, this.state.searchText, this.state.searchCategory);
+        if (records != null) {
+            this.setState({
+                historyRecordsFiltered: records,
+            })
+        }
+    };
 
     render() {
         return (
@@ -26,7 +93,8 @@ export class AdminHistory extends Component {
                     <div className="admin-search-store-grid">
                         <div className="admin-search-store-element">
                             <div>
-                                <SearchBar />
+                                <SearchBar value={this.state.searchText} onChange={this.onSearchTextChanged}
+                                           onSearch={this.onFilter} enabled={this.state.searchBarEnabled} />
                                 {" "}
                             </div>
 
@@ -43,7 +111,9 @@ export class AdminHistory extends Component {
                         </div>
 
                         <div>
-                            <History  history={this.state.hist}/>
+                            {this.state.historyRecordsFiltered == null ? null : (
+                                <History  historyRecords={this.state.historyRecordsFiltered} history={this.props.history} />
+                            )}
                         </div>
 
                     </div>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using TradingSystem.Business.Market;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
+using TradingSystem.WebApi.DTO.Store;
 
 namespace TradingSystem.WebApi.Controllers
 {
@@ -30,6 +31,27 @@ namespace TradingSystem.WebApi.Controllers
         public MarketUserService MarketUserService { get; }
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
         public MarketProductsService MarketProductsService { get; }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<StoreRefDTO>>> Search([FromBody] StoreNameDTO storeNameDTO)
+        {
+            if (string.IsNullOrWhiteSpace(storeNameDTO.StoreName))
+            {
+                return BadRequest("Invalid store name");
+            }
+
+            ICollection<StoreData>? stores = await MarketStoreGeneralService.FindStoresByName(storeNameDTO.StoreName);
+            if (stores is null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(stores.Select(store => new StoreRefDTO
+            {
+                Id = store.Id,
+                Name = store.Name,
+            }));
+        }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<StoreRefDTO>>> MyStores([FromBody] string username)

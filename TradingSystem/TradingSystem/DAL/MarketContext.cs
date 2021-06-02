@@ -46,11 +46,9 @@ namespace TradingSystem.DAL
         public DbSet<PaymentStatus> paymentStatuses { get; set; }
         public DbSet<Address> addresses { get; set; }
 
-        public DbSet<CreditCard> creditCards { get; set; }
         public DbSet<Category> categories { get; set; }
-        
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-           => options.UseSqlite(@"Data Source=marketDB.db");
+           => options.UseSqlite(@ProxyMarketContext.conString);
 
         public static MarketContext Instance { get { return _lazy.Value; } }
 
@@ -67,29 +65,44 @@ namespace TradingSystem.DAL
             .HasMany(b => b.managers)
             .WithOne(m=>m.s);
             modelBuilder.Entity<Store>()
-            .HasOne(b => b._bank)
-            .WithOne();
+            .Ignore(b => b._bank);
             modelBuilder.Entity<Store>()
             .HasOne(b => b._address)
             .WithMany();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.owners)
             .WithOne(m => m.s);
-            modelBuilder.Entity<Store>()
-            .HasOne(b => b.founder)
-            .WithOne(m => m.s);
+            modelBuilder.Entity<Founder>()
+            .HasOne(f => f.s)
+            .WithOne()
+            .HasForeignKey<Founder>(f=>f.sid);
             modelBuilder.Entity<DataUser>()
                 .HasKey(d => d.username);
             modelBuilder.Entity<State>()
                 .HasKey(d => d.username);
+            modelBuilder.Entity<DeliveryStatus>()
+              .HasKey(s => s.PackageId);
+            modelBuilder.Entity<PaymentStatus>()
+              .HasKey(s => s.PaymentId);
             modelBuilder.Entity<ShoppingCart>()
                .HasKey(s => s.username);
+            modelBuilder.Entity<Store>()
+              .HasKey(s => s.sid);
+            modelBuilder.Entity<Appointer>()
+              .HasKey(s => new { s.sid, s.username });
+            modelBuilder.Entity<Manager>()
+              .HasKey(s => new { s.sid, s.username });
+            modelBuilder.Entity<ShoppingBasket>()
+              .HasKey(s=> s.id);
+            modelBuilder.Entity<Category>()
+               .HasKey(s => s.Name);
             modelBuilder.Entity<ShoppingCart>()
-               .HasMany(s => s.shoppingBaskets).WithOne(s=>s.shoppingCart);
+               .HasMany(s => s.shoppingBaskets).
+               WithOne(s => s.shoppingCart);
             modelBuilder.Entity<ShoppingCart>()
                .Ignore(s => s.User1);
             modelBuilder.Entity<ShoppingBasket>()
-            .HasMany(b => b.Product_quantity)
+            .HasMany(b => b._product_quantity)
             .WithOne();
             modelBuilder.Entity<ProductInCart>()
             .HasOne(b => b.product)

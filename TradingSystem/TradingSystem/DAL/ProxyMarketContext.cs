@@ -15,6 +15,7 @@ namespace TradingSystem.DAL
     {
         private bool isDebug;
 
+        public static string conString = "Data Source=marketDB.db";
         private ConcurrentDictionary<string, DataUser> dataUsers;
         private ConcurrentDictionary<string, RegisteredAdmin> admins;
         private ConcurrentDictionary<string, MemberState> memberStates;
@@ -24,7 +25,7 @@ namespace TradingSystem.DAL
         private HashSet<TransactionStatus> transactionStatuses;
         public bool IsDebug { get => isDebug; set => isDebug = value; }
 
-        private MarketContext marketContext = MarketContext.Instance;
+        private MarketContext marketContext;
         public static ProxyMarketContext Instance { get { return _lazy.Value; } }
 
         public async Task saveChanges()
@@ -305,6 +306,7 @@ namespace TradingSystem.DAL
         public ProxyMarketContext()
         {
             isDebug = false;
+            marketContext = MarketContext.Instance;
             dataUsers = new ConcurrentDictionary<string, DataUser>();
             admins = new ConcurrentDictionary<string, RegisteredAdmin>();
             memberStates = new ConcurrentDictionary<string, MemberState>();
@@ -362,6 +364,7 @@ namespace TradingSystem.DAL
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN",  "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
+            shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
         }
 
 

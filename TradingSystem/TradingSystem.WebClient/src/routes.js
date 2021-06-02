@@ -5,12 +5,9 @@ import Signup from "./pages/Signup/Signup";
 import {Home} from "./pages/mainPage/Home";
 import {MyStores} from "./pages/Stores/MyStores";
 import {Store} from "./pages/Stores/Store";
-import {StoreProducts} from "./pages/Stores/StoreProducts";
 import StoreCreateForm from "./pages/Stores/StoreCreateForm";
-import {StoreStaff} from "./pages/Stores/StoreStaff";
-import {StoreHistory} from "./pages/Stores/StoreHistory";
 import {ShoppingCart} from "./pages/ShoppingCart/ShoppingCart";
-import {GlobalContext, UserRole} from "./globalContext";
+import {GlobalContext} from "./globalContext";
 import {searchStore} from "./pages/Stores/searchStore";
 import {StoreProductsUserView} from "./pages/Stores/StoreProductsUserView";
 import {UserHistory} from "./pages/History/UserHistory";
@@ -39,9 +36,6 @@ export default function Routes() {
             <Route path={"/home"} component={Home} />
             <Route path={"/myStores"} component={MyStores} />
             <Route path={"/store"} component={Store} />
-            <Route path={"/storeProducts"} component={StoreProducts} />
-            <Route path={"/storeStaff"} component={StoreStaff} />
-            <Route path={"/storeHistory"} component={StoreHistory} />
             <Route path={"/storeCreate"} component={StoreCreateForm} />
             <Route path={"/ShoppingCart"} component={ShoppingCart} />
             <Route path={"/searchStore"} component={searchStore} />

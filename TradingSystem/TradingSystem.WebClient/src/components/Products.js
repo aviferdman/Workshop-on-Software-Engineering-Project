@@ -5,6 +5,8 @@ import EditProduct from "./EditProduct";
 import axios from "axios";
 import {alertRequestError_default} from "../utils";
 import {GlobalContext} from "../globalContext";
+import StoreRestrictedComponentCustom from "./StoreRestrictedComponentCustom";
+import * as api from "../api";
 
 class Products extends Component {
     onRemove = product => e => {
@@ -24,21 +26,42 @@ class Products extends Component {
 
         // whether this component was called from within a store
         if (this.props.storeId) {
+            let counter = 0;
             controlButtonsElement = (
                 <div className="control-buttons">
                     <div>
-                        <button className="exit-button" onClick={this.onRemove(product)}>
-                            <AiIcons.AiOutlineClose />
-                        </button>
+                        <StoreRestrictedComponentCustom
+                            permissions={this.props.myPermissions}
+                            allowedActions={[api.data.stores.permissions.removeProduct,]}
+                            render={() => {
+                                counter++;
+                                return (
+                                    <button className="exit-button" onClick={this.onRemove(product)}>
+                                        <AiIcons.AiOutlineClose />
+                                    </button>
+                                )}
+                            } />
                     </div>
 
                     <div>
-                        <EditProduct storeId={this.props.storeId} productId={product.id} onProductEdited={this.props.onProductEdited} />
+                        <StoreRestrictedComponentCustom
+                            permissions={this.props.myPermissions}
+                            allowedActions={[api.data.stores.permissions.editProduct,]}
+                            render={() => {
+                                counter++;
+                                return (
+                                    <EditProduct storeId={this.props.storeId} product={product} onProductEdited={this.props.onProductEdited} />
+                                )}
+                            } />
                     </div>
-
 
                 </div>
             );
+            if (counter === 0) {
+                controlButtonsElement = (
+                    <div className="control-buttons margin-no-controls">{controlButtonsElement.props.children}</div>
+                );
+            }
         }
         else {
             controlButtonsElement = <div/>
