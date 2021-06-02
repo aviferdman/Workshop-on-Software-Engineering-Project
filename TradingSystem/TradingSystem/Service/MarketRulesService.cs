@@ -21,7 +21,7 @@ namespace TradingSystem.Service
             user_rules = new Dictionary<string, ICollection<IRule>>();
             counter = 0;
         }
-
+        
 
         //Add New / Complex Discounts
         public async System.Threading.Tasks.Task<Guid> AddSimpleDiscountAsync(string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())

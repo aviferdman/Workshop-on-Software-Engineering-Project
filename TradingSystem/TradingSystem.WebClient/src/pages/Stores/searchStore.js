@@ -15,7 +15,6 @@ export class searchStore extends React.Component {
         };
     }
 
-
     render() {
         return (
             <div className="grid-container">
