@@ -25,6 +25,7 @@ namespace TradingSystem.WebApi.Controllers
             userWS.TryAdd(username, socket);
             Subscriber subPurchaseEvent = new Subscriber(username, socket, false);
             PublisherManagement.Instance.Subscribe(username, subPurchaseEvent, EventType.PurchaseEvent);
+            PublisherManagement.Instance.BecomeLoggedIn(username);
             // TODO: fix, subscribers get all messages regardless the event type they registered to
             //Subscriber subAddAppointmentEvent = new Subscriber(username, socket, false);
             //PublisherManagement.Instance.Subscribe(username, subAddAppointmentEvent, EventType.AddAppointmentEvent);

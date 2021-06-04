@@ -167,7 +167,7 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Store>> GetStoresByName(string name)
         {
-            ICollection<Store>  sc =  stores.Where(s => s.name.Equals(name)).ToList();
+            ICollection<Store>  sc =  stores.Where(s => s.name.ToLower().Contains(name)).ToList();
             
             foreach (Store s in sc)
             {
