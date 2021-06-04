@@ -18,6 +18,9 @@ namespace TradingSystem.PublisherComponent
             (() => new PublisherManagement());
 
         public static PublisherManagement Instance { get { return lazy.Value; } }
+
+        public bool TestMode { get => _testMode; set => _testMode = value; }
+
         private PublisherManagement()
         {
             this._testMode = false;

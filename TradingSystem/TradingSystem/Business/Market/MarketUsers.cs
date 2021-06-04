@@ -146,7 +146,8 @@ namespace TradingSystem.Business.Market
                 }
 
             };
-            PublisherManagement.Instance.BecomeLoggedIn(u.Username);
+            if(PublisherManagement.Instance.TestMode)
+                PublisherManagement.Instance.BecomeLoggedIn(u.Username);
             if (m is AdministratorState)
                 return "admin";
             return "success";

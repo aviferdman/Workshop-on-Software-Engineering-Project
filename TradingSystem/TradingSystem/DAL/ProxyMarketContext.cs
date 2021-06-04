@@ -196,7 +196,7 @@ namespace TradingSystem.DAL
             }
             else
             {
-                return stores.Values.Where(s=>s.name.Equals(name)).ToList();
+                return stores.Values.Where(s=>s.name.ToLower().Contains(name)).ToList();
             }
         }
 

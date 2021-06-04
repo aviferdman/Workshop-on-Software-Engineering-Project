@@ -60,6 +60,7 @@ namespace AcceptanceTests.Tests.LiveNotification
         {
             marketBridge.SetDbDebugMode(true);
             publisherManagement.DeleteAll();
+            publisherManagement.TestMode = true;
             Bridge.Connect();
             Bridge.SignUp(founder);
             Bridge.Login(founder);

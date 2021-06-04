@@ -87,7 +87,7 @@ namespace TradingSystem.Business.Market
         public async Task<ICollection<Store>> GetStoresByName(string name)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoresByName));
-            ICollection<Store> stores = await MarketDAL.Instance.GetStoresByName(name);
+            ICollection<Store> stores = await MarketDAL.Instance.GetStoresByName(name.ToLower());
             return stores;
         }
 
