@@ -14,6 +14,8 @@ using TradingSystem.Business.Market.UserPackage;
 using System.Linq;
 using TradingSystem.Business.Market.Statuses;
 using static TradingSystem.Business.Market.StoreStates.Manager;
+using TradingSystem.Business.Market.StorePackage;
+using TradingSystem.Business.Market.StorePackage.Predicates;
 
 namespace TradingSystem.DAL
 {
@@ -47,6 +49,12 @@ namespace TradingSystem.DAL
         public DbSet<Address> addresses { get; set; }
 
         public DbSet<Category> categories { get; set; }
+        public DbSet<MarketRulesRequestType1> marketRulesRequestType1 { get; set; }
+        public DbSet<MarketRulesRequestType2> marketRulesRequestType2 { get; set; }
+        public DbSet<MarketRulesRequestType3> marketRulesRequestType3 { get; set; }
+        public DbSet<MarketRulesRequestType4> marketRulesRequestType4 { get; set; }
+        public DbSet<MarketRulesRequestType5> marketRulesRequestType5 { get; set; }
+        public DbSet<MarketRulesRequestType6> marketRulesRequestType6 { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder options)
            => options.UseSqlite(@ProxyMarketContext.conString);
 
@@ -332,8 +340,32 @@ namespace TradingSystem.DAL
             {
                 await Entry(m).Reference(s => s.m).LoadAsync();
             }
+            await getDiscoutsPolicies(storeId);
             return sc;
         }
+
+        private async Task getDiscoutsPolicies(Guid storeId)
+        {
+            ICollection<MarketRulesRequestType1> type1 = await marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType2> type2 = await marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType3> type3 = await marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType4> type4 = await marketRulesRequestType4.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType5> type5 = await marketRulesRequestType5.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType6> type6 = await marketRulesRequestType6.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
+            ruleRequests.AddRange(type1);
+            ruleRequests.AddRange(type2);
+            ruleRequests.AddRange(type3);
+            ruleRequests.AddRange(type4);
+            ruleRequests.AddRange(type5);
+            ruleRequests.AddRange(type6);
+            ruleRequests.OrderBy(r => r.getCounter());
+            foreach(MarketRuleRequest r in ruleRequests)
+            {
+                await r.ActivateFunction();
+            }
+        }
+        
 
         public async Task<bool> RemoveDataUser(string userId)
         {
@@ -374,5 +406,43 @@ namespace TradingSystem.DAL
             {
             }
         }
+
+        public async Task AddRequestType1(MarketRulesRequestType1 req)
+        {
+            await marketRulesRequestType1.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType2(MarketRulesRequestType2 req)
+        {
+            await marketRulesRequestType2.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType3(MarketRulesRequestType3 req)
+        {
+            await marketRulesRequestType3.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType4(MarketRulesRequestType4 req)
+        {
+            await marketRulesRequestType4.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType5(MarketRulesRequestType5 req)
+        {
+            await marketRulesRequestType5.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType6(MarketRulesRequestType6 req)
+        {
+            await marketRulesRequestType6.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+
     }
 }

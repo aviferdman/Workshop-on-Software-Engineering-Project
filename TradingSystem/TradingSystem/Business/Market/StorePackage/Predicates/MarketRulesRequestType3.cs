@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage.Predicates;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
-    internal class MarketRulesRequestType3
+    public class MarketRulesRequestType3: MarketRuleRequest
     {
-        private int counter;
-        private string functionName;
-        private string username;
-        private Guid storeId;
+        public int counter { get; set; }
+        public string functionName { get; set; }
+        public string username { get; set; }
+        public Guid storeId { get; set; }
 
         public MarketRulesRequestType3(int counter, string functionName, string username, Guid storeId)
         {
@@ -15,6 +17,19 @@ namespace TradingSystem.Business.Market.StorePackage
             this.functionName = functionName;
             this.username = username;
             this.storeId = storeId;
+        }
+
+        public MarketRulesRequestType3()
+        {
+        }
+        public int getCounter()
+        {
+            return counter;
+        }
+
+        public async Task ActivateFunction()
+        {
+            await MarketRules.Instance.RemovePolicyRuleAsync(username, storeId);
         }
     }
 }

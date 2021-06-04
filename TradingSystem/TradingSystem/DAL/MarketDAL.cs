@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
 
@@ -106,6 +107,36 @@ namespace TradingSystem.DAL
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
             return await proxyMarketContext.findProducts( keyword,  price_range_low,  price_range_high,  rating,  category);
+        }
+
+        public async Task AddRequestType1(MarketRulesRequestType1 req)
+        {
+            await proxyMarketContext.AddRequestType1(req);
+        }
+
+        public async Task AddRequestType2(MarketRulesRequestType2 req)
+        {
+           await proxyMarketContext.AddRequestType2(req);
+        }
+
+        public async Task AddRequestType3(MarketRulesRequestType3 req)
+        {
+            await proxyMarketContext.AddRequestType3(req);
+        }
+
+        public async Task AddRequestType4(MarketRulesRequestType4 req)
+        {
+            await proxyMarketContext.AddRequestType4(req);
+        }
+
+        public async Task AddRequestType5(MarketRulesRequestType5 req)
+        {
+            await proxyMarketContext.AddRequestType5(req);
+        }
+
+        public async Task AddRequestType6(MarketRulesRequestType6 req)
+        {
+            await proxyMarketContext.AddRequestType6(req);
         }
     }
 }

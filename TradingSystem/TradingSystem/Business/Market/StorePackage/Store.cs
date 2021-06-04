@@ -22,7 +22,7 @@ namespace TradingSystem.Business.Market
 {
     public class Store 
     {
-        private BidsManager bidsManager { get; set; }
+        private BidsManager bidsManager;
         public HashSet<Product> _products { get; set; }
         public Founder founder { get; set; }
         public HashSet<Manager> managers { get; set; }
@@ -626,7 +626,7 @@ namespace TradingSystem.Business.Market
                 _products.Remove(p);
             }
         }
-
+        //TODO
         public Guid AddDiscount(string userID, Discount discount)
         {
             var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);

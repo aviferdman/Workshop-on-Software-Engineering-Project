@@ -1,17 +1,19 @@
 ﻿using System;
+using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage.Predicates;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
-    internal class MarketRulesRequestType4
+    public class MarketRulesRequestType4: MarketRuleRequest
     {
-        private int counter;
-        private string functionName;
-        private string username;
-        private Guid storeId;
-        private RuleContext discountType;
-        private double precent;
-        private string category;
-        private Guid productId;
+        public int counter { get; set; }
+        public string functionName { get; set; }
+        public string username { get; set; }
+        public Guid storeId { get; set; }
+        public RuleContext discountType { get; set; }
+        public double precent { get; set; }
+        public string category { get; set; }
+        public Guid productId { get; set; }
 
         public MarketRulesRequestType4(int counter, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId)
         {
@@ -23,6 +25,20 @@ namespace TradingSystem.Business.Market.StorePackage
             this.precent = precent;
             this.category = category;
             this.productId = productId;
+        }
+
+        public MarketRulesRequestType4()
+        {
+        }
+
+        public int getCounter()
+        {
+            return counter;
+        }
+
+        public async Task ActivateFunction()
+        {
+            await MarketRules.Instance.CreateSimpleDiscountAsync(username, storeId, discountType, precent, category, productId);
         }
     }
 }

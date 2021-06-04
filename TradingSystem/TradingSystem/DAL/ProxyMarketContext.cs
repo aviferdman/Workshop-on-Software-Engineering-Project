@@ -8,6 +8,9 @@ using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
 using System.Linq;
 using TradingSystem.Business.Market.UserPackage;
+using TradingSystem.Business.Market.StorePackage;
+using System.Security.Cryptography;
+using System.IO;
 
 namespace TradingSystem.DAL
 {
@@ -23,6 +26,8 @@ namespace TradingSystem.DAL
         private ConcurrentDictionary<Guid, Store> stores;
         private ConcurrentDictionary<string, ShoppingCart> shoppingCarts;
         private HashSet<TransactionStatus> transactionStatuses;
+
+        private string key = "b14ca5898a4e4133bbce2ea2315a1916";
         public bool IsDebug { get => isDebug; set => isDebug = value; }
 
         private MarketContext marketContext;
@@ -227,6 +232,34 @@ namespace TradingSystem.DAL
                 }
             }
         }
+        public string EncryptString(string key, string plainText)
+        {
+            byte[] iv = new byte[16];
+            byte[] array;
+
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Encoding.UTF8.GetBytes(key);
+                aes.IV = iv;
+
+                ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter streamWriter = new StreamWriter((Stream)cryptoStream))
+                        {
+                            streamWriter.Write(plainText);
+                        }
+
+                        array = memoryStream.ToArray();
+                    }
+                }
+            }
+
+            return Convert.ToBase64String(array);
+        }
 
         public async Task<ICollection<TransactionStatus>> getStoreHistories(Guid storeId)
         {
@@ -253,7 +286,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"), "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
@@ -314,7 +347,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN", "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"), "0501234566");
             admins.TryAdd("DEFAULT_ADMIN", admin);
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
@@ -361,7 +394,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", "ADMIN",  "0501234566");
+            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"),  "0501234566");
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             admins.TryAdd("DEFAULT_ADMIN", admin);
             shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
@@ -498,6 +531,54 @@ namespace TradingSystem.DAL
                 catch (Exception e)
                 {
                 }
+            }
+        }
+
+        public async Task AddRequestType1(MarketRulesRequestType1 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType1(req);
+            }
+        }
+
+        public async Task AddRequestType2(MarketRulesRequestType2 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType2(req);
+            }
+        }
+
+        public async Task AddRequestType3(MarketRulesRequestType3 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType3(req);
+            }
+        }
+
+        public async Task AddRequestType4(MarketRulesRequestType4 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType4(req);
+            }
+        }
+
+        public async Task AddRequestType5(MarketRulesRequestType5 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType5(req);
+            }
+        }
+
+        public async Task AddRequestType6(MarketRulesRequestType6 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType6(req);
             }
         }
 
