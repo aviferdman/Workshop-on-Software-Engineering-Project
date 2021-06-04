@@ -32,7 +32,8 @@ class History extends Component {
                                 {/*<a href={"#" + elem.id}>*/}
                                 {/*    <p className= "histName">History:  {elem.id}</p>*/}
                                 {/*</a>*/}
-
+                                <p className= "histName"> name id: {elem.paymentId}</p>
+                                <p className= "histName">store id: {elem.paymentId}</p>
                                 <p className= "histName">reception id: {elem.paymentId}</p>
 
                                     <p className= "histName"> delivery id: {elem.deliveryId} </p>

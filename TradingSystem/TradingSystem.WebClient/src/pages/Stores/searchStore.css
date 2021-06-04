@@ -1,3 +1,4 @@
+
 .search-store-grid{
 
     display: grid;
@@ -11,5 +12,7 @@
 
 .stores-view-flex{
     display: flex;
+    place-self: center;
+    margin-top: 2%;
     flex: 3 60;
 }

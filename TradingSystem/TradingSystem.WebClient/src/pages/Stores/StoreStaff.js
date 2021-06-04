@@ -94,6 +94,7 @@ export class StoreStaff extends Component {
                             <div>
                                 <AddOwner storeId={this.storeId} onSuccess={this.onUserAdd} />
                             </div>
+
                         </div>
                     )} />
 

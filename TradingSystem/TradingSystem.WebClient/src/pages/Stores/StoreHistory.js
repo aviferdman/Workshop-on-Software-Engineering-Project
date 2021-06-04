@@ -30,7 +30,10 @@ export class StoreHistory extends Component {
 
                 <div>
                     {this.state.historyRecords == null ? null : (
-                        <History historyRecords={this.state.historyRecords} history={this.props.history} storeId={this.storeId} />
+                        <div className="history_s">
+                            <History historyRecords={this.state.historyRecords} history={this.props.history} storeId={this.storeId} />
+                        </div>
+
                     )}
                 </div>
 
