@@ -39,7 +39,7 @@ namespace TradingSystemTests.UnitTests
         public void CheckSubscribe()
         {
             Assert.AreEqual(0, publisher.Observers.Count);
-            subscriber.Subscribe(publisher);
+            subscriber.Subscribe(publisher, EventType.RequestPurchaseEvent);
             Assert.AreEqual(1, publisher.Observers.Count);
         }
 
@@ -48,10 +48,12 @@ namespace TradingSystemTests.UnitTests
         public void CheckUnsubscribe()
         {
             Assert.AreEqual(0, publisher.Observers.Count);
-            subscriber.Subscribe(publisher);
+            subscriber.Subscribe(publisher, EventType.RequestPurchaseEvent);
             Assert.AreEqual(1, publisher.Observers.Count);
+            Assert.AreEqual(1, publisher.Observers[EventType.RequestPurchaseEvent].Count);
             subscriber.Unsubscribe();
-            Assert.AreEqual(0, publisher.Observers.Count);
+            Assert.AreEqual(1, publisher.Observers.Count);
+            Assert.AreEqual(0, publisher.Observers[EventType.RequestPurchaseEvent].Count);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Notifications.TypedPublisher.EventNotification(String)"/>
@@ -65,7 +67,7 @@ namespace TradingSystemTests.UnitTests
             //UserManagement.Instance.DataUsers[user.Username] = dataUser;
             publisher.LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
-            subscriber.Subscribe(publisher);
+            subscriber.Subscribe(publisher, EventType.OpenStoreEvent);
             publisher.EventNotification(EventType.OpenStoreEvent, "Test Message");
             Assert.AreEqual(1, subscriber.Messages.Count);
         }
