@@ -80,12 +80,12 @@ export class StoreProducts extends Component {
 
                 <div className="bottom-row">
 
-                    <div className="center-add-product">
+                    <div>
                         <StoreRestrictedComponentCustom
                             permissions={this.state.myPermissions}
                             allowedActions={[api.data.stores.permissions.addProduct,]}
                             render={() => (
-                                <AddProduct storeId={this.props.match.params.storeId}
+                                <AddProduct className="center-add-product" storeId={this.props.match.params.storeId}
                                             onProductAdded={this.onProductAdded} />
                             )} />
                     </div>

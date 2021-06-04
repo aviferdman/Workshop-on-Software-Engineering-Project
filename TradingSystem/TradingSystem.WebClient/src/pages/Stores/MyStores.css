@@ -1,16 +1,3 @@
-.grid-container{
-    display: grid;
-    grid-template-areas:
-       "header"
-       "search"
-       "main"
-       "footer";
-    grid-template-rows: 5rem 6rem 1fr 5rem;
-    grid-template-columns: 1fr;
-    height: 100%;
-    padding: 0.5rem;
-
-}
 
 /* TODO: ask gil */
 /*.header-container{*/
@@ -46,7 +33,8 @@
 
 .stores li{
     flex:0 1 29rem;
-    height: 15rem;
+    height: 20rem;
+    width: 20rem;
     border: 1px solid #ddd;
     padding: 1rem;
 

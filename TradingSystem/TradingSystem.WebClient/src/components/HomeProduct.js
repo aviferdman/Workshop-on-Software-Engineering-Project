@@ -63,7 +63,7 @@ export default class HomeProduct extends React.Component {
                 <a href={"#" + this.product.id}>
                     <p className= "productName">{this.product.name}</p>
                 </a>
-                <p className= "productName"> store: {this.product.storeName}</p>
+                <p className= "productName"> Store: {this.product.storeName}</p>
                 {this.product._inCart ? (
                     <div style={{display: 'none'}} />
                 ) : (

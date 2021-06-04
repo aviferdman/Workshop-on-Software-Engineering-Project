@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-
+import './MyStores.css';
 
 class StoresUserView extends Component {
     constructor(props) {
@@ -22,14 +22,14 @@ class StoresUserView extends Component {
                     ) : (
                     <ul className = "stores">
                         {this.props.stores.map((store) => (
-                            <li key={store.id}>
-                                <div className = "store">
-                                    <a onClick={this.onStoreLinkClick(store.id)} href={`#${store.id}`}>
-                                        <p className= "productName">{store.name}</p>
-                                    </a>
-                                    <button className="button primary" onClick={this.onStoreLinkClick(store.id)}>Show Store</button>
-                                </div>
-                            </li>
+                                <li key={store.id}>
+                                    <div className = "store" >
+                                        <a onClick={this.onStoreLinkClick(store.id)} href={`#${store.id}`}>
+                                            <p className= "productName">{store.name}</p>
+                                        </a>
+                                        <button className="button primary" onClick={this.onStoreLinkClick(store.id)}>Show Store</button>
+                                    </div>
+                                </li>
                         ))}
                     </ul>
                 )}

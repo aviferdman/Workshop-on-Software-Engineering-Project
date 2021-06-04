@@ -5,6 +5,8 @@ import Header from "../../header";
 import HomeProducts from "../../components/HomeProducts";
 import * as api from "../../api";
 import {alertRequestError_default} from "../../utils";
+import SearchBar from "../../components/searchBar";
+import StoreListUserView from "./StoreListUserView";
 
 export class StoreProductsUserView extends React.Component {
     constructor(props) {
@@ -38,15 +40,19 @@ export class StoreProductsUserView extends React.Component {
 
     render() {
         return (
-            <main>
 
-                <div className="products-view-flex">
-                    <HomeProducts  products={this.state.products}
-                                   addToCart={this.onAddToCart}
-                                   history={this.props.history} />
-                </div>
+                <main>
+                    <div>
+                        <h2> "Store Name" Store Products </h2>
+                    </div>
 
-            </main>
+                    <div className="products-view-flex">
+                        <HomeProducts  products={this.state.products}
+                                       addToCart={this.onAddToCart}
+                                       history={this.props.history} />
+                    </div>
+                </main>
+
         )
     }
 }
