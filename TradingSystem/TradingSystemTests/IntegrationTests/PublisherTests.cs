@@ -96,7 +96,8 @@ namespace TradingSystemTests.IntegrationTests
             marketStores.LoadedStores.TryAdd(store.Id, store);
             await marketUsers.AddProductToCart(user.Username, p.Id, 5);
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(founder.Username, EventType.PurchaseEvent);
-            PublisherManagement.Instance.FindPublisher(founder.Username).LoggedIn = true;
+            var pub = PublisherManagement.Instance.FindPublisher(founder.Username);
+            pub.LoggedIn = true;
             Assert.AreEqual(0, subscriber.Messages.Count);
             await marketUsers.PurchaseShoppingCart(user.Username, new CreditCard("1", "1", "1", "1", "1", "1"), "054444444", new Address("1", "1", "1", "1", "1"));
             Assert.AreEqual(1, subscriber.Messages.Count);
