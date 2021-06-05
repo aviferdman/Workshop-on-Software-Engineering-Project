@@ -96,7 +96,15 @@ namespace TradingSystem.PublisherComponent
             subscribers.Add(subscriber5);
         }
 
-        public void Subscribe(String username, NotificationSubscriber subscriber, EventType ev){
+        public void Subscribe(string username, NotificationSubscriber subscriber, EventType ev){
+            if (!username_publisher.Keys.Contains(username))
+            {
+                username_publisher.Add(username, new Publisher(username));
+            }
+            if (!username_subscribers.Keys.Contains(username))
+            {
+                username_subscribers.Add(username, new HashSet<NotificationSubscriber>());
+            }
             var publisher = username_publisher[username];
             subscriber.Subscribe(publisher, ev);
             username_subscribers[username].Add(subscriber);
