@@ -23,14 +23,17 @@ namespace TradingSystem.WebApi.Controllers
         public void addClient(String username, WebSocket socket)
         {
             userWS.TryAdd(username, socket);
+
             Subscriber subPurchaseEvent = new Subscriber(username, socket, false);
             PublisherManagement.Instance.Subscribe(username, subPurchaseEvent, EventType.PurchaseEvent);
+            Subscriber subAddAppointmentEvent = new Subscriber(username, socket, false);
+            PublisherManagement.Instance.Subscribe(username, subAddAppointmentEvent, EventType.AddAppointmentEvent);
+            Subscriber subRemoveAppointment = new Subscriber(username, socket, false);
+            PublisherManagement.Instance.Subscribe(username, subRemoveAppointment, EventType.RemoveAppointment);
+            Subscriber subRequestPurchase = new Subscriber(username, socket, false);
+            PublisherManagement.Instance.Subscribe(username, subRequestPurchase, EventType.RequestPurchaseEvent);
+
             PublisherManagement.Instance.BecomeLoggedIn(username);
-            // TODO: fix, subscribers get all messages regardless the event type they registered to
-            //Subscriber subAddAppointmentEvent = new Subscriber(username, socket, false);
-            //PublisherManagement.Instance.Subscribe(username, subAddAppointmentEvent, EventType.AddAppointmentEvent);
-            //Subscriber subRemoveAppointment = new Subscriber(username, socket, false);
-            //PublisherManagement.Instance.Subscribe(username, subRemoveAppointment, EventType.RemoveAppointment);
         }
 
         public void RemoveClient(String username)
