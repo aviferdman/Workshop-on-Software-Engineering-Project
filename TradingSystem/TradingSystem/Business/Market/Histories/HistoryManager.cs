@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Market
             List<IHistory> histories = new List<IHistory>();
             foreach(TransactionStatus t in transactionStatuses)
             {
-                histories.Add(new UserHistory(t));
+                //histories.Add(new UserHistory(t));
                 histories.Add(new StoreHistory(t));
             }
             return histories;
