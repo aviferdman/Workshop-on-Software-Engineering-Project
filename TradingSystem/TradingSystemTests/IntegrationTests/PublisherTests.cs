@@ -56,36 +56,6 @@ namespace TradingSystemTests.IntegrationTests
             ProxyMarketContext.Instance.IsDebug = true;
         }
 
-        /*
-        public PublisherTests()
-        {
-            marketStores = MarketStores.Instance;
-            marketUsers = MarketUsers.Instance;
-            PublisherManagement.Instance.DeleteAll();
-            marketUsers.DeleteAll();
-            marketStores.DeleteAll();
-            PublisherManagement.Instance.SetTestMode(true);
-
-            this.user = new User("UserTests");
-            user.ChangeState(new MemberState(user.Username));
-            var dataUser = new DataUser(user.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
-            dataUser.IsLoggedin = true;
-            UserManagement.Instance.DataUsers.TryAdd(user.Username, dataUser);
-            marketUsers.ActiveUsers.TryAdd(user.Username, user);
-
-            this.store = new Store("Founder", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
-            founderUser = new User("Founder");
-            founderUser.ChangeState(new MemberState(founderUser.Username));
-            this.founder = Founder.makeFounder((MemberState)founderUser.State, store);
-            store.Founder = founder;
-            dataUser = new DataUser(founderUser.Username, "", new Address("1", "1", "1", "1", "1"), "054444444");
-            dataUser.IsLoggedin = true;
-            UserManagement.Instance.DataUsers.TryAdd(founder.Username, dataUser);
-            marketUsers.ActiveUsers.TryAdd(founder.Username, founderUser);
-            await ProxyMarketContext.Instance.IsDebug(true);
-        }
-        */
-
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
         [TestMethod]
         public async Task CheckLoggedInUserNotifyPurchase()
@@ -123,6 +93,9 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(founder.Username).Waiting.Count);
         }
 
+        /*
+         * CREATE STORE DOESNT HAVE NOTIFICATIONS ANYMORE
+
         /// test for function :<see cref="TradingSystem.Business.Notifications.Publisher.EventNotification(EventType, string)"/>
         [TestMethod]
         public async Task CheckLoggedInUserNotifyCreateShop()
@@ -158,6 +131,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(1, PublisherManagement.Instance.FindPublisher(user.Username).Waiting.Count);
         }
 
+        */
 
         [TestCleanup]
         public async Task DeleteAll()

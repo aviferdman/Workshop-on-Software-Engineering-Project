@@ -67,7 +67,7 @@ namespace TradingSystem.Business.Market
             if (!loadedStores.TryAdd(store.Id, store))
                 return null;
             await MarketDAL.Instance.AddStore(store);
-            PublisherManagement.Instance.EventNotification(username, EventType.OpenStoreEvent, "Opened Store");
+            //PublisherManagement.Instance.EventNotification(username, EventType.OpenStoreEvent, "Opened Store");
 
             return store;
         }
