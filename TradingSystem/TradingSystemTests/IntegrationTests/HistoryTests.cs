@@ -193,7 +193,7 @@ namespace TradingSystemTests.IntegrationTests
             var v1 = await user.PurchaseShoppingCart(card, "0544444444", address);
             Assert.IsTrue(!v1.IsErr);
             allHistory = await user.State.GetAllHistory();
-            Assert.AreEqual(originCount + 2, allHistory.Count);
+            Assert.AreEqual(originCount + 1, allHistory.Count);
 
         }
 
