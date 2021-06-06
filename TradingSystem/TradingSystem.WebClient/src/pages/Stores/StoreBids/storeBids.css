@@ -1,9 +1,18 @@
-.policy-grid{
+.store-bids-grid{
     display: grid;
     grid-template-rows: 1fr 0.3fr;
     gap: 2%;
+
 }
-.policy-grid-button{
+
+.store-bids-grid-simple{
+    display: grid;
+    border: 1px solid #1482cb;
+    width: auto;
+    height: auto;
+}
+
+.store-bids-grid-button{
     display: grid;
     grid-template-areas:  "a a a a a a a a";
     justify-content: space-between;
@@ -13,33 +22,8 @@
     height:  15rem;
 }
 
-.center-btn-st{
-    grid-area: a;
-    place-self: center;
-}
 
-.center-btn-nd{
-    grid-area: b;
-    place-self: center;
-    justify-self: start;
-
-}
-
-.policy-grid-simple{
-    display: grid;
-    border: 1px solid #1482cb;
-    width: auto;
-    height: auto;
-}
-
-.policy-grid-complex{
-    display: grid;
-    border: 1px solid #1482cb;
-    width: auto;
-    height:  auto ;
-}
-
-.simple-discount-ul{
+.simple-bids-ul{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -50,7 +34,7 @@
 
 }
 
-.simple-discount-li-div{
+.simple-bids-li-div{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -63,7 +47,7 @@
     border: #1482cb;
 }
 
-.discName{
+.bidName{
     text-align: center;
     flex: 1;
 }

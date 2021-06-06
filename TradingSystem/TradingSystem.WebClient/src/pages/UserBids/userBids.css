@@ -1,0 +1,44 @@
+.user-bids-grid{
+    display: grid;
+    grid-template-rows: 1fr ;
+
+}
+
+.user-bids-grid-simple{
+    display: grid;
+    border: 1px solid #1482cb;
+    width: auto;
+    height: auto;
+}
+
+
+.simple-bids-ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+
+}
+
+.simple-bids-li-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 2rem;
+    outline: 1px solid #000;
+}
+
+.border-li{
+    box-sizing: border-box;
+    border: #1482cb;
+}
+
+.bidName{
+    text-align: center;
+    flex: 1;
+    margin: 2rem;
+}
+

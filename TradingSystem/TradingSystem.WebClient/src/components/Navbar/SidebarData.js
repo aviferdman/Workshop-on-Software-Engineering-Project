@@ -40,6 +40,12 @@ export const SidebarData = [
         permissions: [UserRole.admin]
     },
     {
+        title: 'My Bids',
+        path: '/userBids',
+        icon: <AiIcons.AiOutlineHistory />,
+        cName: 'nav-text'
+    },
+    {
         title: 'History',
         path: '/userHistory',
         icon: <AiIcons.AiOutlineHistory />,

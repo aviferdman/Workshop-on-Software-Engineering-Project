@@ -16,6 +16,8 @@ import {AdminActions} from "./pages/Admin/AdminActions";
 import {AdminHistory} from "./pages/Admin/AdminHistory";
 import {Discounts} from "./pages/Stores/Discount/Discounts";
 import {Policy} from "./pages/Stores/Policy/Policy";
+import {UserBids} from "./pages/UserBids/userBids";
+import {StoreBids} from "./pages/Stores/StoreBids/storeBids";
 
 class DefaultRoute extends React.Component {
     render() {
@@ -48,6 +50,8 @@ export default function Routes() {
             <Route path={"/adminHistory"} component={AdminHistory} />
             <Route path={"/Discounts"} component={Discounts} />
             <Route path={"/Policy"} component={Policy} />
+            <Route path={"/userBids"} component={UserBids} />
+            <Route path={"/storeBids"} component={StoreBids} />
         </Switch>
     );
 }
