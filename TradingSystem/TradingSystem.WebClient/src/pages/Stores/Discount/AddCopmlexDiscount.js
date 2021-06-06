@@ -92,7 +92,7 @@ class AddComplexDiscount extends React.Component {
 
                 </Modal>
 
-                <button className= "store-products-button-view" onClick={this.showModal}> Add Simple Discount </button>
+                <button className= "store-products-button-view" onClick={this.showModal}> Add Complex Discount </button>
             </main>
         )
     }

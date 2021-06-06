@@ -7,7 +7,7 @@
 }
 .discounts-grid-button{
     display: grid;
-    grid-template-areas:  "a a a a b b b b";
+    grid-template-areas:  "a a a a a a a a b b b b ";
     justify-content: space-between;
     margin-bottom: 10rem;
     border: 1px solid #1482cb;
