@@ -12,6 +12,7 @@ class SimpleDiscount extends Component {
                     {this.props.simpleDiscountRecords.map((elem) => (
                         <li  key={elem.id}>
                             <div className = "simple-discount-li-div">
+                                <p className= "discName">ID: {elem.id}  </p>
                                 <p className= "discName">creator: {elem.creator}  </p>
                                 <p className= "discName">discountType: {elem.discountType} </p>
                                 <p className= "discName"> condition: {elem.condition}  </p>
