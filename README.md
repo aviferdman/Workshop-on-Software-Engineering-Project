@@ -1,6 +1,6 @@
 # Workshop-on-Software-Engineering-Project
 
-Use the API listed below to write your desired commands. Each command must be separated by a new line and end with a semicolon (";").
+Use the API listed below to write your desired commands. Each command must be separated by a new line and end with a semicolon (";").\n
 Use the file "init.txt" inside the service folder to place your commands.
 If too many parameters are given to a command, only the first portion will be used. However, if not enough paramaters are given, the initialization will fail.
 Login and Signup will log in and sign up guests in FIFO order.
