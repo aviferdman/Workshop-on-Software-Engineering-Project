@@ -6,7 +6,7 @@ If too many parameters are given to a command, only the first portion will be us
 Login and Signup will log in and sign up guests in FIFO order.
 
 API:
-  AddGuest(); - adds a guest to the system. 
+  AddGuest(); - adds a guest to the system. (space, space, Enter)
   Login(username, password); - logins a member into the system. 
   Logout(username); - logs out the username from the system. 
   Signup(username, password, phone); - signs up a new costumer. 
