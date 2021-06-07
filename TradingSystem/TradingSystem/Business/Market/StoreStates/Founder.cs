@@ -21,7 +21,7 @@ namespace TradingSystem.Business.Market.StoreStates
         {
             this.username = m.UserId;
             this.m = m;
-            this.sid = sid;
+            this.sid = s.sid;
             this.s = s;
         }
 

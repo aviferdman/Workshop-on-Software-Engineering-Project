@@ -13,7 +13,7 @@ namespace TradingSystem.Business.Market
     {
         public Guid id { get; set; }
         public HashSet<ProductInCart> _product_quantity { get; set; }
-        public  ShoppingCart shoppingCart { get; set; }
+        private  ShoppingCart shoppingCart { get; set; }
         public Store store { get; set; }
 
         public ShoppingBasket(ShoppingCart shoppingCart, Store store)

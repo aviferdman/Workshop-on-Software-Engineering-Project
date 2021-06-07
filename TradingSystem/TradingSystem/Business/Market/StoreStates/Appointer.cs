@@ -48,12 +48,12 @@ namespace TradingSystem.Business.Market.StoreStates
 
         private bool Exists(Guid bidId)
         {
-            return bidsAcceptence.Count(b => b.bidId.Equals(bidId)) > 0;
+            return bidsAcceptence.Count(b => b.id.Equals(bidId)) > 0;
         }
 
         public BidAcceptence GetBidAcceptenceByBidId(Guid bidId)
         {
-            return bidsAcceptence.Where(b => b.bidId.Equals(bidId)).FirstOrDefault();
+            return bidsAcceptence.Where(b => b.id.Equals(bidId)).FirstOrDefault();
 
         }
 
