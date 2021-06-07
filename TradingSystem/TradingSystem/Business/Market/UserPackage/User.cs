@@ -54,13 +54,18 @@ namespace TradingSystem.Business.Market
         {
 
             BuyStatus buyStatus = await ShoppingCart.Purchase(method, phone, address);
+            string message = "";
             //add information to history
             //empty the shopping cart after a successful purchase
             if (buyStatus.Status)
             {
                 MarketDAL.Instance.EmptyShppingCart(username);
             }
-            return new Result<bool>(buyStatus.Status, !buyStatus.Status, "Purchase failed.");
+            else
+            {
+                message = "Purchase failed.";
+            }
+            return new Result<bool>(buyStatus.Status, !buyStatus.Status, message);
         }
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()
