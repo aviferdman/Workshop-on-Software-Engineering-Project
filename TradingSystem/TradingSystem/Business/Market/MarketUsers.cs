@@ -83,6 +83,9 @@ namespace TradingSystem.Business.Market
                 GuidString = GuidString.Replace("+", "");
                 u.Username = GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
+            Statistics s=UsersDAL.Instance.getStatis(DateTime.Now.Date);
+            s.guestsNum++;
+            ProxyMarketContext.Instance.saveChanges();
             return u.Username;
         }
 
@@ -148,8 +151,27 @@ namespace TradingSystem.Business.Market
             };
             if(PublisherManagement.Instance.TestMode)
                 PublisherManagement.Instance.BecomeLoggedIn(u.Username);
+            Statistics stat = UsersDAL.Instance.getStatis(DateTime.Now.Date);
             if (m is AdministratorState)
+            {
+                stat.adminNum++;
+                await ProxyMarketContext.Instance.saveChanges();
                 return "admin";
+            }
+            ICollection<Store> stores = await getUserStores(usrname);
+            if (stores == null || stores.Count == 0)
+            {
+                stat.membersNum++;
+            }
+            else if (stores.Where(s => s.founder.username.Equals(usrname) || s.GetOwner(usrname) != null).Any())
+            {
+                stat.ownersNum++;
+            }
+            else
+            {
+                stat.managersNum++;
+            }
+            await ProxyMarketContext.Instance.saveChanges();
             return "success";
         }
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51

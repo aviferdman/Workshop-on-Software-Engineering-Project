@@ -29,8 +29,35 @@ namespace TradingSystem.DAL
         public DbSet<MemberState> memberStates { get; set; }
         public DbSet<State> states { get; set; }
         public DbSet<Product> products { get; set; }
+        public DbSet<Statistics> statistics { get; set; }
+        
         public DbSet<AdministratorState> administratorStates { get; set; }
         public DbSet<Appointer> appointers { get; set; }
+
+        public  Statistics getStatis(DateTime date)
+        {
+            Statistics s;
+            try{
+                s= statistics.Single(s => s.date.Day.Equals(date.Day));
+            }
+            catch(Exception e)
+            {
+                s = new Statistics();
+                s.date = date;
+                statistics.Add(s);
+                try
+                {
+                    SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    return null;
+                }
+                
+            }
+            return s;
+        }
+
         public DbSet<Founder> founders { get; set; }
         public DbSet<Owner> owners { get; set; }
         public DbSet<Store> stores { get; set; }
@@ -103,6 +130,9 @@ namespace TradingSystem.DAL
               .HasKey(s => s.PackageId);
             modelBuilder.Entity<PaymentStatus>()
               .HasKey(s => s.PaymentId);
+            modelBuilder.Entity<Statistics>()
+             .HasKey(s => s.date);
+            
             modelBuilder.Entity<ShoppingCart>()
                .HasKey(s => s.username);
             modelBuilder.Entity<Store>()
