@@ -89,7 +89,7 @@ namespace TradingSystemTests.IntegrationTests
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
-        [TestMethod]
+/*        [TestMethod]
         public async Task CheckIllegalPurcahseStoreQuantityRemains()
         {
             int originQuantity = product.Quantity;
@@ -102,9 +102,9 @@ namespace TradingSystemTests.IntegrationTests
             bool successPurchase = !v1.IsErr;
             Assert.AreEqual(successPurchase, false);
             Assert.AreEqual(originQuantity, product.Quantity);
-        }
+        }*/
 
-        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
+/*        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
         [TestMethod]
         public async Task CheckIllegalPurcahseUserRefund()
         {
@@ -120,7 +120,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(successPurchase, false);
             bool existsRefund = Logger.Instance.Activities.Where(activity => activity.Contains("CancelTransaction")).Any();
             Assert.IsTrue(existsRefund);
-        }
+        }*/
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
         [TestMethod]
@@ -136,12 +136,12 @@ namespace TradingSystemTests.IntegrationTests
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
-        [TestMethod]
+/*        [TestMethod]
         public async Task CheckLegalPurcahseEmptyShoppingCart()
         {
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsFalse(!v1.IsErr);
-        }
+        }*/
 
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, PaymentMethod, Guid, CreditCard, double, IShoppingBasket)"/>
         [TestMethod]
