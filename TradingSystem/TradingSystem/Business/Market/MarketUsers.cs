@@ -182,7 +182,6 @@ namespace TradingSystem.Business.Market
 
 
         //USER FUNCTIONALITY
-        //TODO Add all chain to db
         //use case 11 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/77
         public async Task<Result<bool>> PurchaseShoppingCart(string username, CreditCard bank, string phone, Address address)
         {
@@ -234,7 +233,7 @@ namespace TradingSystem.Business.Market
             MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
-            if (p.Quantity <= quantity || quantity < 1)
+            if (p.Quantity < quantity || quantity < 1)
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
 
@@ -290,7 +289,7 @@ namespace TradingSystem.Business.Market
             MarketStores.Instance.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
-            if (p.Quantity <= quantity || quantity < 1)
+            if (p.Quantity < quantity || quantity < 1)
                 return "product's quantity is insufficient";
             ShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
             if (basket == null)
@@ -362,7 +361,10 @@ namespace TradingSystem.Business.Market
                 }
                 await ProxyMarketContext.Instance.saveChanges();
                 if (!ProxyMarketContext.Instance.IsDebug)
+                {
                     transaction.Commit();
+                    transaction.Dispose();
+                }
             }
             catch (Exception ex)
             {

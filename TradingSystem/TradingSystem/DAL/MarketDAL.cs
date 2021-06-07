@@ -64,14 +64,19 @@ namespace TradingSystem.DAL
              await proxyMarketContext.RemoveProduct(p);
         }
 
-        public async Task removeManager(Manager manager)
+        public  void removeManager(Manager manager)
         {
-            await proxyMarketContext.removeManager(manager);
+            proxyMarketContext.removeManager(manager);
         }
 
         public void removeProductFromCart(ProductInCart productInCart)
         {
             proxyMarketContext.removeProductFromCart(productInCart);
+        }
+
+        internal void EmptyShppingCart(string username)
+        {
+            proxyMarketContext.EmptyShppingCart( username);
         }
 
         public async Task AddStore(Store store)
@@ -137,6 +142,12 @@ namespace TradingSystem.DAL
         public async Task AddRequestType6(MarketRulesRequestType6 req)
         {
             await proxyMarketContext.AddRequestType6(req);
+        }
+
+        public async Task<int> getRuleCounter()
+        {
+            
+            return await proxyMarketContext.getRuleCounter();
         }
     }
 }

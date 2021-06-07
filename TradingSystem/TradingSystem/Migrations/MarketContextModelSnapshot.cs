@@ -59,20 +59,31 @@ namespace TradingSystem.Migrations
                     b.Property<string>("Zip")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("_state")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("id");
 
                     b.ToTable("addresses");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidsManager", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("sid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("sid")
+                        .IsUnique();
+
+                    b.ToTable("BidsManager");
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.Category", b =>
                 {
                     b.Property<string>("Name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("nameId")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Name");
@@ -90,9 +101,6 @@ namespace TradingSystem.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("Storesid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("Storesid1")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("_name")
@@ -122,8 +130,6 @@ namespace TradingSystem.Migrations
 
                     b.HasIndex("Storesid");
 
-                    b.HasIndex("Storesid1");
-
                     b.ToTable("products");
                 });
 
@@ -147,7 +153,7 @@ namespace TradingSystem.Migrations
                     b.Property<string>("ShoppingCartusername")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("shoppingCartusername")
+                    b.Property<string>("ShoppingCartusername1")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("storesid")
@@ -157,7 +163,7 @@ namespace TradingSystem.Migrations
 
                     b.HasIndex("ShoppingCartusername");
 
-                    b.HasIndex("shoppingCartusername");
+                    b.HasIndex("ShoppingCartusername1");
 
                     b.HasIndex("storesid");
 
@@ -218,16 +224,9 @@ namespace TradingSystem.Migrations
             modelBuilder.Entity("TradingSystem.Business.Market.Store", b =>
                 {
                     b.Property<Guid>("sid")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("_addressid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("foundersid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("founderusername")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("name")
@@ -242,8 +241,6 @@ namespace TradingSystem.Migrations
 
                     b.HasIndex("purchasePolicyid");
 
-                    b.HasIndex("foundersid", "founderusername");
-
                     b.ToTable("stores");
                 });
 
@@ -253,10 +250,7 @@ namespace TradingSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("Appointersid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Appointerusername")
+                    b.Property<Guid?>("BidsManagerid")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Price")
@@ -276,9 +270,204 @@ namespace TradingSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Appointersid", "Appointerusername");
+                    b.HasIndex("BidsManagerid");
 
                     b.ToTable("Bid");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType1", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("discountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("storeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("marketRulesRequestType1");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType2", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("d1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("d2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("policyRuleRelation")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("productId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ruleContext")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ruleType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("storeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("username")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("valueGreaterEQThan")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("valueLessThan")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("id");
+
+                    b.ToTable("marketRulesRequestType2");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType3", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("storeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("marketRulesRequestType3");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType4", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("discountType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("precent")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("productId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("storeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("marketRulesRequestType4");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType5", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("decide")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("discountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("discountId2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("discountRuleRelation")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("storeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("marketRulesRequestType5");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType6", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("d1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("d2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("discountType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("precent")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("productId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ruleType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("storeId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("username")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("valueGreaterEQThan")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("valueLessThan")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("id");
+
+                    b.ToTable("marketRulesRequestType6");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Appointer", b =>
@@ -293,17 +482,35 @@ namespace TradingSystem.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("musername")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("sid", "username");
 
-                    b.HasIndex("musername");
+                    b.HasIndex("username");
 
                     b.ToTable("appointers");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Appointer");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.BidAcceptence", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("Appointersid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Appointerusername")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("accept")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("Appointersid", "Appointerusername");
+
+                    b.ToTable("BidAcceptence");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Manager", b =>
@@ -314,12 +521,12 @@ namespace TradingSystem.Migrations
                     b.Property<string>("username")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("musername")
+                    b.Property<string>("appointerID")
                         .HasColumnType("TEXT");
 
                     b.HasKey("sid", "username");
 
-                    b.HasIndex("musername");
+                    b.HasIndex("appointerID");
 
                     b.HasIndex("username");
 
@@ -397,9 +604,6 @@ namespace TradingSystem.Migrations
                     b.Property<Guid?>("ShoppingBasketid")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("ShoppingBasketid1")
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid?>("productid")
                         .HasColumnType("TEXT");
 
@@ -409,8 +613,6 @@ namespace TradingSystem.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("ShoppingBasketid");
-
-                    b.HasIndex("ShoppingBasketid1");
 
                     b.HasIndex("productid");
 
@@ -480,7 +682,10 @@ namespace TradingSystem.Migrations
                 {
                     b.HasBaseType("TradingSystem.Business.Market.StoreStates.Appointer");
 
-                    b.HasIndex("sid")
+                    b.Property<Guid?>("sid1")
+                        .HasColumnType("TEXT");
+
+                    b.HasIndex("sid1")
                         .IsUnique();
 
                     b.HasDiscriminator().HasValue("Founder");
@@ -490,12 +695,16 @@ namespace TradingSystem.Migrations
                 {
                     b.HasBaseType("TradingSystem.Business.Market.StoreStates.Appointer");
 
-                    b.Property<Guid?>("sid1")
+                    b.Property<string>("appointerID")
                         .HasColumnType("TEXT");
 
-                    b.HasIndex("sid1");
+                    b.Property<Guid?>("sid1")
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Owner_sid1");
 
-                    b.HasIndex("username");
+                    b.HasIndex("appointerID");
+
+                    b.HasIndex("sid1");
 
                     b.HasDiscriminator().HasValue("Owner");
                 });
@@ -507,6 +716,15 @@ namespace TradingSystem.Migrations
                     b.HasDiscriminator().HasValue("AdministratorState");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidsManager", b =>
+                {
+                    b.HasOne("TradingSystem.Business.Market.Store", "s")
+                        .WithOne("BidsManager")
+                        .HasForeignKey("TradingSystem.Business.Market.BidsPackage.BidsManager", "sid");
+
+                    b.Navigation("s");
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.Product", b =>
                 {
                     b.HasOne("TradingSystem.Business.Market.Category", null)
@@ -516,10 +734,6 @@ namespace TradingSystem.Migrations
                     b.HasOne("TradingSystem.Business.Market.Store", null)
                         .WithMany("_products")
                         .HasForeignKey("Storesid");
-
-                    b.HasOne("TradingSystem.Business.Market.Store", null)
-                        .WithMany("Products")
-                        .HasForeignKey("Storesid1");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.ShoppingBasket", b =>
@@ -528,15 +742,15 @@ namespace TradingSystem.Migrations
                         .WithMany("ShoppingBaskets")
                         .HasForeignKey("ShoppingCartusername");
 
-                    b.HasOne("TradingSystem.Business.Market.ShoppingCart", "shoppingCart")
+                    b.HasOne("TradingSystem.Business.Market.ShoppingCart", "ShoppingCart")
                         .WithMany("shoppingBaskets")
-                        .HasForeignKey("shoppingCartusername");
+                        .HasForeignKey("ShoppingCartusername1");
 
                     b.HasOne("TradingSystem.Business.Market.Store", "store")
                         .WithMany()
                         .HasForeignKey("storesid");
 
-                    b.Navigation("shoppingCart");
+                    b.Navigation("ShoppingCart");
 
                     b.Navigation("store");
                 });
@@ -558,40 +772,41 @@ namespace TradingSystem.Migrations
                         .WithMany()
                         .HasForeignKey("purchasePolicyid");
 
-                    b.HasOne("TradingSystem.Business.Market.StoreStates.Founder", "founder")
-                        .WithMany()
-                        .HasForeignKey("foundersid", "founderusername");
-
                     b.Navigation("_address");
-
-                    b.Navigation("founder");
 
                     b.Navigation("purchasePolicy");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.Bid", b =>
                 {
-                    b.HasOne("TradingSystem.Business.Market.StoreStates.Appointer", null)
-                        .WithMany("Bids")
-                        .HasForeignKey("Appointersid", "Appointerusername");
+                    b.HasOne("TradingSystem.Business.Market.BidsPackage.BidsManager", null)
+                        .WithMany("bids")
+                        .HasForeignKey("BidsManagerid");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Appointer", b =>
                 {
                     b.HasOne("TradingSystem.Business.Market.MemberState", "m")
                         .WithMany()
-                        .HasForeignKey("musername")
+                        .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("m");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.BidAcceptence", b =>
+                {
+                    b.HasOne("TradingSystem.Business.Market.StoreStates.Appointer", null)
+                        .WithMany("bidsAcceptence")
+                        .HasForeignKey("Appointersid", "Appointerusername");
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Manager", b =>
                 {
-                    b.HasOne("TradingSystem.Business.Market.MemberState", "m")
+                    b.HasOne("TradingSystem.Business.Market.MemberState", "appointer")
                         .WithMany()
-                        .HasForeignKey("musername");
+                        .HasForeignKey("appointerID");
 
                     b.HasOne("TradingSystem.Business.Market.Store", "s")
                         .WithMany("managers")
@@ -599,7 +814,7 @@ namespace TradingSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TradingSystem.Business.Market.MemberState", "appointer")
+                    b.HasOne("TradingSystem.Business.Market.MemberState", "m")
                         .WithMany()
                         .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -650,10 +865,6 @@ namespace TradingSystem.Migrations
                         .WithMany("_product_quantity")
                         .HasForeignKey("ShoppingBasketid");
 
-                    b.HasOne("TradingSystem.Business.Market.ShoppingBasket", null)
-                        .WithMany("Product_quantity")
-                        .HasForeignKey("ShoppingBasketid1");
-
                     b.HasOne("TradingSystem.Business.Market.Product", "product")
                         .WithMany()
                         .HasForeignKey("productid");
@@ -664,29 +875,30 @@ namespace TradingSystem.Migrations
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Founder", b =>
                 {
                     b.HasOne("TradingSystem.Business.Market.Store", "s")
-                        .WithOne()
-                        .HasForeignKey("TradingSystem.Business.Market.StoreStates.Founder", "sid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithOne("founder")
+                        .HasForeignKey("TradingSystem.Business.Market.StoreStates.Founder", "sid1");
 
                     b.Navigation("s");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Owner", b =>
                 {
+                    b.HasOne("TradingSystem.Business.Market.MemberState", "appointer")
+                        .WithMany()
+                        .HasForeignKey("appointerID");
+
                     b.HasOne("TradingSystem.Business.Market.Store", "s")
                         .WithMany("owners")
                         .HasForeignKey("sid1");
 
-                    b.HasOne("TradingSystem.Business.Market.MemberState", "appointer")
-                        .WithMany()
-                        .HasForeignKey("username")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("appointer");
 
                     b.Navigation("s");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidsManager", b =>
+                {
+                    b.Navigation("bids");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.Category", b =>
@@ -702,8 +914,6 @@ namespace TradingSystem.Migrations
             modelBuilder.Entity("TradingSystem.Business.Market.ShoppingBasket", b =>
                 {
                     b.Navigation("_product_quantity");
-
-                    b.Navigation("Product_quantity");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.ShoppingCart", b =>
@@ -717,16 +927,18 @@ namespace TradingSystem.Migrations
                 {
                     b.Navigation("_products");
 
+                    b.Navigation("BidsManager");
+
+                    b.Navigation("founder");
+
                     b.Navigation("managers");
 
                     b.Navigation("owners");
-
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Appointer", b =>
                 {
-                    b.Navigation("Bids");
+                    b.Navigation("bidsAcceptence");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Manager", b =>

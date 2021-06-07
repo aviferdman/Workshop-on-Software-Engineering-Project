@@ -66,7 +66,7 @@ namespace TradingSystem.Business.Market
             this.managers = new HashSet<Manager>();
             this.owners = new HashSet<Owner>();
             this.purchasePolicy = new PurchasePolicy();
-            this.bidsManager = new BidsManager(owners, founder);
+            this.bidsManager = new BidsManager(this);
         }
         public async Task<Result<Guid>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice)
         {
@@ -233,14 +233,12 @@ namespace TradingSystem.Business.Market
             return this.purchasePolicy.IsAvalable(purchaseKind);
         }
 
-        //TODO
         public virtual double CalcPrice(string username, ShoppingBasket shoppingBasket)
         {
             double paySum = CalcPaySum(shoppingBasket);
             return paySum - CalcBidNewSum(username, shoppingBasket);
         }
 
-        //TODO
         private double CalcBidNewSum(string username, ShoppingBasket shoppingBasket)
         {
             double sum = 0;
@@ -363,13 +361,11 @@ namespace TradingSystem.Business.Market
                 return "No permission";
             if (!validProduct(product))
                 return "Invalid product";
-            lock (_products)
-            {
-                if (_products.Where(p => p.Id.Equals(product.Id)).Any())
-                    return "Product exists";
-                _products.Add(product);
-                
-            }
+            if (_products.Where(p => p.Id.Equals(product.Id)).Any())
+                return "Product exists";
+            await ProxyMarketContext.Instance.AddProduct(product);
+            _products.Add(product);
+            await ProxyMarketContext.Instance.saveChanges();
             await MarketStores.Instance.addToCategory(product, product.Category);
             await ProxyMarketContext.Instance.saveChanges();
             return "Product added";
@@ -435,12 +431,12 @@ namespace TradingSystem.Business.Market
             string ret;
             if (assigner == null)
                 return "invalid assiner";
-            if (managers.Where(m=> m.username.Equals(assigner.Username)).Any())
+            if (managers.Where(m=> m.m.username.Equals(assigner.Username)).Any())
                 return "Invalid assigner";
-            else if (founder.Username.Equals(assigner.Username))
+            else if (founder.m.username.Equals(assigner.Username))
                 a = founder;
-            else if (owners.Where(p => p.username.Equals(assigner.Username)).Any())
-                a = owners.Where(p => p.username.Equals(assigner.Username)).First();
+            else if (owners.Where(p => p.m.username.Equals(assigner.Username)).Any())
+                a = owners.Where(p => p.m.username.Equals(assigner.Username)).First();
             else
                 return "Invalid assigner";
             assignee = await MarketDAL.Instance.getMemberState(assigneeID);
@@ -461,7 +457,7 @@ namespace TradingSystem.Business.Market
                 ret = "Success";
                         
             }
-            catch { ret = "this member is already assigned as a store owner or manager"; }
+            catch (Exception e) { ret = "this member is already assigned as a store owner or manager"; }
             
             return ret;
         }
@@ -626,7 +622,7 @@ namespace TradingSystem.Business.Market
                 _products.Remove(p);
             }
         }
-        //TODO
+
         public Guid AddDiscount(string userID, Discount discount)
         {
             var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
@@ -637,7 +633,6 @@ namespace TradingSystem.Business.Market
             return discount.Id;
         }
 
-        //TODO
         public Guid RemoveDiscount(string userID, Guid discountId)
         {
             var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
@@ -741,7 +736,7 @@ namespace TradingSystem.Business.Market
         public void SetFounder(Founder f)
         {
             this.founder = f;
-            this.bidsManager.founder = f;
+            
         }
         //TODO
 

@@ -43,7 +43,7 @@ namespace TradingSystem.Business.Market.StoreStates
             this.username = m.UserId;
             this.m = m;
             this.s = s;
-            this.sid = sid;
+            this.sid = s.sid;
             this.appointer = appointer;
             store_permission = new List<Prem>();
             store_permission.Add(new Prem(Permission.GetPersonnelInfo.ToString()));

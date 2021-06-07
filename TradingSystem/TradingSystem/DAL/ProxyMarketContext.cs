@@ -18,7 +18,7 @@ namespace TradingSystem.DAL
     {
         private bool isDebug;
 
-        public static string conString = "Data Source=marketDB.db";
+        public static string conString = $"Data Source=marketDBTests.db";
         private ConcurrentDictionary<string, DataUser> dataUsers;
         private ConcurrentDictionary<string, RegisteredAdmin> admins;
         private ConcurrentDictionary<string, MemberState> memberStates;
@@ -74,7 +74,30 @@ namespace TradingSystem.DAL
             }
         }
 
-       
+        internal void EmptyShppingCart(string username)
+        {
+            if (isDebug)
+            {
+                User u=MarketUsers.Instance.GetUserByUserName(username);
+                if (u != null)
+                {
+                    u.ShoppingCart = new ShoppingCart(u);
+                    if (!typeof(GuestState).IsInstanceOfType(u.State))
+                    {
+                        shoppingCarts.TryRemove(username, out _);
+                        shoppingCarts.TryAdd(username, u.ShoppingCart);
+                    }
+                }
+                
+            }
+            try
+            {
+                marketContext.EmptyShppingCart(username);
+            }
+            catch (Exception e)
+            {
+            }
+        }
 
         public async Task<ICollection<TransactionStatus>> getUserHistories(string username)
         {
@@ -279,18 +302,26 @@ namespace TradingSystem.DAL
 
         public void marketTearDown()
         {
-            dataUsers = new ConcurrentDictionary<string, DataUser>();
-            admins = new ConcurrentDictionary<string, RegisteredAdmin>();
-            memberStates = new ConcurrentDictionary<string, MemberState>();
-            shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
-            stores = new ConcurrentDictionary<Guid, Store>();
-            transactionStatuses = new HashSet<TransactionStatus>();
-            categories = new ConcurrentDictionary<string, Category>();
-            RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"), "0501234566");
-            dataUsers.TryAdd("DEFAULT_ADMIN", admin);
-            admins.TryAdd("DEFAULT_ADMIN", admin);
-            memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
-            shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
+            if (isDebug)
+            {
+                dataUsers = new ConcurrentDictionary<string, DataUser>();
+                admins = new ConcurrentDictionary<string, RegisteredAdmin>();
+                memberStates = new ConcurrentDictionary<string, MemberState>();
+                shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
+                stores = new ConcurrentDictionary<Guid, Store>();
+                transactionStatuses = new HashSet<TransactionStatus>();
+                categories = new ConcurrentDictionary<string, Category>();
+                RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"), "0501234566");
+                dataUsers.TryAdd("DEFAULT_ADMIN", admin);
+                admins.TryAdd("DEFAULT_ADMIN", admin);
+                memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
+                shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
+            }
+            else
+            {
+                marketContext.tearDown();
+            }
+            
         }
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
@@ -419,6 +450,14 @@ namespace TradingSystem.DAL
             }
         }
 
+        public async Task<int> getRuleCounter()
+        {
+            if (isDebug)
+            {
+                return 0;
+            }
+            return await marketContext.getRuleCounter();
+        }
         public async Task<Store> getStore(Guid storeId)
         {
             if (isDebug)
@@ -453,6 +492,21 @@ namespace TradingSystem.DAL
             {
                 return null;
             }
+        }
+
+        public async Task AddProduct(Product product)
+        {
+            if (!isDebug)
+            {
+                try
+                {
+                     await marketContext.AddProduct(product);
+                }
+                catch (Exception e)
+                {
+                }
+            }
+            
         }
 
         public async Task<DataUser> GetDataUser(string username)
@@ -520,13 +574,13 @@ namespace TradingSystem.DAL
             }
         }
 
-        public async Task removeManager(Manager manager)
+        public  void removeManager(Manager manager)
         {
             if (!isDebug)
             {
                 try
                 {
-                    await marketContext.removeManager( manager);
+                    marketContext.removeManager( manager);
                 }
                 catch (Exception e)
                 {

@@ -141,12 +141,19 @@ namespace TradingSystem.Business.Market
         public async Task<Result<Product>> AddProduct(ProductData productData, Guid storeID, String username)
         {
             Store store = await GetStoreById(storeID);
+            String res = "error";
             if (store == null)
                 return new Result<Product>(null, true, "Store doesn't exist");
             productData.StoreName = store.name;
             Product product = new Product(productData);
-           
-            String res = await store.AddProduct(product, username);
+            try
+            {
+                res = await store.AddProduct(product, username);
+            }
+            catch (Exception e)
+            {
+                return new Result<Product>(product, true, res);
+            }
             if (res.Equals("Product added"))
                 return new Result<Product>(product, false, res);
             return new Result<Product>(product, true, res);

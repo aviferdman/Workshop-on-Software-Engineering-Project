@@ -66,6 +66,8 @@ namespace TradingSystem.WebApi
             services.AddSingleton(MarketStoreGeneralService.Instance);
             services.AddSingleton(MarketStorePermissionsManagementService.Instance);
             services.AddSingleton(MarketUserService.Instance);
+            
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

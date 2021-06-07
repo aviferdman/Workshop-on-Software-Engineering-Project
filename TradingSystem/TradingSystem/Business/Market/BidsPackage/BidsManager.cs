@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,15 +13,17 @@ namespace TradingSystem.Business.Market.BidsPackage
 {
     public class BidsManager
     {
-        public HashSet<Owner> owners { get; set; }
-        public Founder founder { get; set; }
+        public Guid id { get; set; }
+        public Store s { get; set; }
         public ICollection<Bid> bids { get; set; }
-
-        public BidsManager(HashSet<Owner> owners, Founder founder)
+        public BidsManager(Store s)
         {
-            this.owners = owners;
-            this.founder = founder;
+            this.s = s;
             this.bids = new HashSet<Bid>();
+        }
+
+        public BidsManager()
+        {
         }
 
         public async Task AddBid(Bid bid)
@@ -62,10 +65,10 @@ namespace TradingSystem.Business.Market.BidsPackage
         public void NotifyOwners(EventType eventType, string message)
         {
             //notify the founder for a new purchase
-            PublisherManagement.Instance.EventNotification(founder.Username, eventType, message);
+            PublisherManagement.Instance.EventNotification(s.founder.Username, eventType, message);
 
             //notify the owners
-            foreach (var owner in owners)
+            foreach (var owner in s.owners)
             {
                 PublisherManagement.Instance.EventNotification(owner.Username, eventType, message);
             }
@@ -101,9 +104,9 @@ namespace TradingSystem.Business.Market.BidsPackage
 
         private bool AllOwnersAccept(Guid bidId)
         {
-            var bidAcceptence = founder.GetBidAcceptenceByBidId(bidId);
+            var bidAcceptence = s.founder.GetBidAcceptenceByBidId(bidId);
             bool allAccept = bidAcceptence != null && bidAcceptence.accept;
-            foreach (var owner in owners)
+            foreach (var owner in s.owners)
             {
                 bidAcceptence = owner.GetBidAcceptenceByBidId(bidId);
                 allAccept = allAccept && bidAcceptence != null && bidAcceptence.accept;
@@ -132,7 +135,7 @@ namespace TradingSystem.Business.Market.BidsPackage
 
         private Owner GetOwner(String name)
         {
-            foreach (Owner owner in owners)
+            foreach (Owner owner in s.owners)
             {
                 if (owner.Username.Equals(name))
                     return owner;
@@ -144,7 +147,7 @@ namespace TradingSystem.Business.Market.BidsPackage
             Appointer ret = GetOwner(appointerName);
             if (ret == null)
             {
-                ret = founder;
+                ret = s.founder;
             }
             return ret;
         }

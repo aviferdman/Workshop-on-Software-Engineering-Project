@@ -6,7 +6,7 @@ namespace TradingSystem.Business.Market.StorePackage
 {
     public class MarketRulesRequestType5: MarketRuleRequest
     {
-        public int counter { get; set; }
+        public int id { get; set; }
         public string functionName { get; set; }
         public string username { get; set; }
         public DiscountRuleRelation discountRuleRelation { get; set; }
@@ -17,7 +17,7 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public MarketRulesRequestType5(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide)
         {
-            this.counter = counter;
+            this.id = counter;
             this.functionName = functionName;
             this.username = username;
             this.discountRuleRelation = discountRuleRelation;
@@ -32,7 +32,7 @@ namespace TradingSystem.Business.Market.StorePackage
         }
         public int getCounter()
         {
-            return counter;
+            return id;
         }
 
         public async Task ActivateFunction()

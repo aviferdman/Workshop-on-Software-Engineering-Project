@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TradingSystem.Migrations
 {
-    public partial class firstMigration : Migration
+    public partial class DBMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,6 @@ namespace TradingSystem.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    _state = table.Column<string>(type: "TEXT", nullable: true),
                     State = table.Column<string>(type: "TEXT", nullable: true),
                     City = table.Column<string>(type: "TEXT", nullable: true),
                     Street = table.Column<string>(type: "TEXT", nullable: true),
@@ -28,8 +27,7 @@ namespace TradingSystem.Migrations
                 name: "categories",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    nameId = table.Column<string>(type: "TEXT", nullable: true)
+                    Name = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,6 +62,117 @@ namespace TradingSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_deliveryStatuses", x => x.PackageId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType1",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    functionName = table.Column<string>(type: "TEXT", nullable: true),
+                    username = table.Column<string>(type: "TEXT", nullable: true),
+                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType1", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType2",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    functionName = table.Column<string>(type: "TEXT", nullable: true),
+                    username = table.Column<string>(type: "TEXT", nullable: true),
+                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    policyRuleRelation = table.Column<int>(type: "INTEGER", nullable: false),
+                    ruleContext = table.Column<int>(type: "INTEGER", nullable: false),
+                    ruleType = table.Column<int>(type: "INTEGER", nullable: false),
+                    category = table.Column<string>(type: "TEXT", nullable: true),
+                    productId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    valueLessThan = table.Column<double>(type: "REAL", nullable: false),
+                    valueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
+                    d1 = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    d2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType2", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType3",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    functionName = table.Column<string>(type: "TEXT", nullable: true),
+                    username = table.Column<string>(type: "TEXT", nullable: true),
+                    storeId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType3", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType4",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    functionName = table.Column<string>(type: "TEXT", nullable: true),
+                    username = table.Column<string>(type: "TEXT", nullable: true),
+                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountType = table.Column<int>(type: "INTEGER", nullable: false),
+                    precent = table.Column<double>(type: "REAL", nullable: false),
+                    category = table.Column<string>(type: "TEXT", nullable: true),
+                    productId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType4", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType5",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    functionName = table.Column<string>(type: "TEXT", nullable: true),
+                    username = table.Column<string>(type: "TEXT", nullable: true),
+                    discountRuleRelation = table.Column<int>(type: "INTEGER", nullable: false),
+                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountId2 = table.Column<Guid>(type: "TEXT", nullable: false),
+                    decide = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType5", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType6",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false),
+                    functionName = table.Column<string>(type: "TEXT", nullable: true),
+                    username = table.Column<string>(type: "TEXT", nullable: true),
+                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountType = table.Column<int>(type: "INTEGER", nullable: false),
+                    ruleType = table.Column<int>(type: "INTEGER", nullable: false),
+                    precent = table.Column<double>(type: "REAL", nullable: false),
+                    category = table.Column<string>(type: "TEXT", nullable: true),
+                    productId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    valueLessThan = table.Column<double>(type: "REAL", nullable: false),
+                    valueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
+                    d1 = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    d2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType6", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -186,8 +295,6 @@ namespace TradingSystem.Migrations
                 columns: table => new
                 {
                     sid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    foundersid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    founderusername = table.Column<string>(type: "TEXT", nullable: true),
                     name = table.Column<string>(type: "TEXT", nullable: true),
                     _addressid = table.Column<Guid>(type: "TEXT", nullable: true),
                     purchasePolicyid = table.Column<Guid>(type: "TEXT", nullable: true)
@@ -215,19 +322,20 @@ namespace TradingSystem.Migrations
                 {
                     sid = table.Column<Guid>(type: "TEXT", nullable: false),
                     username = table.Column<string>(type: "TEXT", nullable: false),
-                    musername = table.Column<string>(type: "TEXT", nullable: false),
                     Discriminator = table.Column<string>(type: "TEXT", nullable: false),
-                    sid1 = table.Column<Guid>(type: "TEXT", nullable: true)
+                    sid1 = table.Column<Guid>(type: "TEXT", nullable: true),
+                    appointerID = table.Column<string>(type: "TEXT", nullable: true),
+                    Owner_sid1 = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_appointers", x => new { x.sid, x.username });
                     table.ForeignKey(
-                        name: "FK_appointers_states_musername",
-                        column: x => x.musername,
+                        name: "FK_appointers_states_appointerID",
+                        column: x => x.appointerID,
                         principalTable: "states",
                         principalColumn: "username",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_appointers_states_username",
                         column: x => x.username,
@@ -235,14 +343,32 @@ namespace TradingSystem.Migrations
                         principalColumn: "username",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_appointers_stores_sid",
-                        column: x => x.sid,
+                        name: "FK_appointers_stores_Owner_sid1",
+                        column: x => x.Owner_sid1,
                         principalTable: "stores",
                         principalColumn: "sid",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_appointers_stores_sid1",
                         column: x => x.sid1,
+                        principalTable: "stores",
+                        principalColumn: "sid",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BidsManager",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    sid = table.Column<Guid>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BidsManager", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_BidsManager_stores_sid",
+                        column: x => x.sid,
                         principalTable: "stores",
                         principalColumn: "sid",
                         onDelete: ReferentialAction.Restrict);
@@ -254,14 +380,14 @@ namespace TradingSystem.Migrations
                 {
                     username = table.Column<string>(type: "TEXT", nullable: false),
                     sid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    musername = table.Column<string>(type: "TEXT", nullable: true)
+                    appointerID = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_managers", x => new { x.sid, x.username });
                     table.ForeignKey(
-                        name: "FK_managers_states_musername",
-                        column: x => x.musername,
+                        name: "FK_managers_states_appointerID",
+                        column: x => x.appointerID,
                         principalTable: "states",
                         principalColumn: "username",
                         onDelete: ReferentialAction.Restrict);
@@ -284,15 +410,22 @@ namespace TradingSystem.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    shoppingCartusername = table.Column<string>(type: "TEXT", nullable: true),
-                    storesid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    storesid = table.Column<Guid>(type: "TEXT", nullable: true),
+                    ShoppingCartusername1 = table.Column<string>(type: "TEXT", nullable: true),
+                    ShoppingCartusername = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_membersShoppingBaskets", x => x.id);
                     table.ForeignKey(
-                        name: "FK_membersShoppingBaskets_membersShoppingCarts_shoppingCartusername",
-                        column: x => x.shoppingCartusername,
+                        name: "FK_membersShoppingBaskets_membersShoppingCarts_ShoppingCartusername",
+                        column: x => x.ShoppingCartusername,
+                        principalTable: "membersShoppingCarts",
+                        principalColumn: "username",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_membersShoppingBaskets_membersShoppingCarts_ShoppingCartusername1",
+                        column: x => x.ShoppingCartusername1,
                         principalTable: "membersShoppingCarts",
                         principalColumn: "username",
                         onDelete: ReferentialAction.Restrict);
@@ -317,8 +450,7 @@ namespace TradingSystem.Migrations
                     rating = table.Column<int>(type: "INTEGER", nullable: false),
                     _storeName = table.Column<string>(type: "TEXT", nullable: true),
                     CategoryName = table.Column<string>(type: "TEXT", nullable: true),
-                    Storesid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Storesid1 = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Storesid = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -335,11 +467,25 @@ namespace TradingSystem.Migrations
                         principalTable: "stores",
                         principalColumn: "sid",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BidAcceptence",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    accept = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Appointersid = table.Column<Guid>(type: "TEXT", nullable: true),
+                    Appointerusername = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BidAcceptence", x => x.id);
                     table.ForeignKey(
-                        name: "FK_products_stores_Storesid1",
-                        column: x => x.Storesid1,
-                        principalTable: "stores",
-                        principalColumn: "sid",
+                        name: "FK_BidAcceptence_appointers_Appointersid_Appointerusername",
+                        columns: x => new { x.Appointersid, x.Appointerusername },
+                        principalTable: "appointers",
+                        principalColumns: new[] { "sid", "username" },
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -353,17 +499,16 @@ namespace TradingSystem.Migrations
                     Price = table.Column<double>(type: "REAL", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     StoreId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Appointersid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Appointerusername = table.Column<string>(type: "TEXT", nullable: true)
+                    BidsManagerid = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bid", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bid_appointers_Appointersid_Appointerusername",
-                        columns: x => new { x.Appointersid, x.Appointerusername },
-                        principalTable: "appointers",
-                        principalColumns: new[] { "sid", "username" },
+                        name: "FK_Bid_BidsManager_BidsManagerid",
+                        column: x => x.BidsManagerid,
+                        principalTable: "BidsManager",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -402,8 +547,7 @@ namespace TradingSystem.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     productid = table.Column<Guid>(type: "TEXT", nullable: true),
                     quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    ShoppingBasketid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    ShoppingBasketid1 = table.Column<Guid>(type: "TEXT", nullable: true)
+                    ShoppingBasketid = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -411,12 +555,6 @@ namespace TradingSystem.Migrations
                     table.ForeignKey(
                         name: "FK_productInCarts_membersShoppingBaskets_ShoppingBasketid",
                         column: x => x.ShoppingBasketid,
-                        principalTable: "membersShoppingBaskets",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_productInCarts_membersShoppingBaskets_ShoppingBasketid1",
-                        column: x => x.ShoppingBasketid1,
                         principalTable: "membersShoppingBaskets",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -429,20 +567,20 @@ namespace TradingSystem.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_appointers_musername",
+                name: "IX_appointers_appointerID",
                 table: "appointers",
-                column: "musername");
+                column: "appointerID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_appointers_sid",
+                name: "IX_appointers_Owner_sid1",
                 table: "appointers",
-                column: "sid",
-                unique: true);
+                column: "Owner_sid1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_appointers_sid1",
                 table: "appointers",
-                column: "sid1");
+                column: "sid1",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_appointers_username",
@@ -450,25 +588,40 @@ namespace TradingSystem.Migrations
                 column: "username");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bid_Appointersid_Appointerusername",
+                name: "IX_Bid_BidsManagerid",
                 table: "Bid",
+                column: "BidsManagerid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BidAcceptence_Appointersid_Appointerusername",
+                table: "BidAcceptence",
                 columns: new[] { "Appointersid", "Appointerusername" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_managers_musername",
+                name: "IX_BidsManager_sid",
+                table: "BidsManager",
+                column: "sid",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_managers_appointerID",
                 table: "managers",
-                column: "musername");
+                column: "appointerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_managers_username",
                 table: "managers",
                 column: "username");
 
-
             migrationBuilder.CreateIndex(
                 name: "IX_membersShoppingBaskets_ShoppingCartusername",
                 table: "membersShoppingBaskets",
                 column: "ShoppingCartusername");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_membersShoppingBaskets_ShoppingCartusername1",
+                table: "membersShoppingBaskets",
+                column: "ShoppingCartusername1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_membersShoppingBaskets_storesid",
@@ -496,11 +649,6 @@ namespace TradingSystem.Migrations
                 column: "ShoppingBasketid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_productInCarts_ShoppingBasketid1",
-                table: "productInCarts",
-                column: "ShoppingBasketid1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_products_CategoryName",
                 table: "products",
                 column: "CategoryName");
@@ -511,11 +659,6 @@ namespace TradingSystem.Migrations
                 column: "Storesid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_products_Storesid1",
-                table: "products",
-                column: "Storesid1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_purchasedProducts_ProductHistoryDataid",
                 table: "purchasedProducts",
                 column: "ProductHistoryDataid");
@@ -524,11 +667,6 @@ namespace TradingSystem.Migrations
                 name: "IX_stores__addressid",
                 table: "stores",
                 column: "_addressid");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_stores_foundersid_founderusername",
-                table: "stores",
-                columns: new[] { "foundersid", "founderusername" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_stores_purchasePolicyid",
@@ -549,39 +687,36 @@ namespace TradingSystem.Migrations
                 name: "IX_transactionStatuses_productHistoriesid",
                 table: "transactionStatuses",
                 column: "productHistoriesid");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_stores_appointers_foundersid_founderusername",
-                table: "stores",
-                columns: new[] { "foundersid", "founderusername" },
-                principalTable: "appointers",
-                principalColumns: new[] { "sid", "username" },
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_appointers_states_musername",
-                table: "appointers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_appointers_states_username",
-                table: "appointers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_appointers_stores_sid",
-                table: "appointers");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_appointers_stores_sid1",
-                table: "appointers");
-
             migrationBuilder.DropTable(
                 name: "Bid");
 
             migrationBuilder.DropTable(
+                name: "BidAcceptence");
+
+            migrationBuilder.DropTable(
                 name: "dataUsers");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType1");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType2");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType3");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType4");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType5");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType6");
 
             migrationBuilder.DropTable(
                 name: "Prem");
@@ -594,6 +729,12 @@ namespace TradingSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "transactionStatuses");
+
+            migrationBuilder.DropTable(
+                name: "BidsManager");
+
+            migrationBuilder.DropTable(
+                name: "appointers");
 
             migrationBuilder.DropTable(
                 name: "managers");
@@ -614,22 +755,19 @@ namespace TradingSystem.Migrations
                 name: "productHistoryDatas");
 
             migrationBuilder.DropTable(
+                name: "states");
+
+            migrationBuilder.DropTable(
                 name: "membersShoppingCarts");
 
             migrationBuilder.DropTable(
                 name: "categories");
 
             migrationBuilder.DropTable(
-                name: "states");
-
-            migrationBuilder.DropTable(
                 name: "stores");
 
             migrationBuilder.DropTable(
                 name: "addresses");
-
-            migrationBuilder.DropTable(
-                name: "appointers");
 
             migrationBuilder.DropTable(
                 name: "PurchasePolicy");

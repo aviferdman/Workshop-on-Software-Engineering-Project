@@ -8,7 +8,7 @@ namespace TradingSystem.Business.Market
     public class Category
     {
         public List<Product> products { get; set; }
-        public string nameId { get; set; }
+        private string nameId { get; set; }
 
         [NotMapped]
         public List<Product> Products { get => products; set => products = value; }
