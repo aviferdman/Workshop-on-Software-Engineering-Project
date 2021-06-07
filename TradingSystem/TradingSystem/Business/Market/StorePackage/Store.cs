@@ -377,7 +377,7 @@ namespace TradingSystem.Business.Market
             Product toRem;
             if ((!founder.Username.Equals(userID)) && !(owners.Where(o => o.username.Equals(userID)).Any()) && !(managers.Where(m => m.username.Equals(userID)).Any()))
                 return "Invalid user";
-            if (!hasPremssion(userID, Permission.AddProduct))
+            if (!hasPremssion(userID, Permission.RemoveProduct))
                 return "No permission";
             lock (_products)
             {
