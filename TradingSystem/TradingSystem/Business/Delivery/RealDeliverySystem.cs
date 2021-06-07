@@ -40,7 +40,18 @@ namespace TradingSystem.Business.Payment
                 { "zip", zip }
             };
 
+            int numericValue;
             var responseString = await client.Send(postContent);
+            bool isNumber = int.TryParse(responseString, out numericValue);
+            if (!isNumber)
+            {
+                responseString = "-1";
+            }
+            else if (numericValue > 100000 || numericValue < 10000)
+            {
+                responseString = "-1";
+            }
+
             return responseString;
         }
     }
