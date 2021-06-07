@@ -6,11 +6,11 @@ If too many parameters are given to a command, only the first portion will be us
 Login and Signup will log in and sign up guests in FIFO order.
 
 API:
-  AddGuest(); - adds a guest to the system. **Enter**
-  Login(username, password); - logins a member into the system. **Enter**
-  Logout(username); - logs out the username from the system. **Enter**
-  Signup(username, password, phone); - signs up a new costumer. **Enter**
-  CreateStore(name, username, cardNumber, month, year, holderName, cvv, holderId, state, city, street, apartmentNum, zip); **Enter**
-  AddProduct(product name, quantity, weight, price, category, storeID, username); **Enter**
- **Enter**
+  AddGuest(); - adds a guest to the system. 
+  Login(username, password); - logins a member into the system. 
+  Logout(username); - logs out the username from the system. 
+  Signup(username, password, phone); - signs up a new costumer. 
+  CreateStore(name, username, cardNumber, month, year, holderName, cvv, holderId, state, city, street, apartmentNum, zip); 
+  AddProduct(product name, quantity, weight, price, category, storeID, username); 
+
 for more info- https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO
