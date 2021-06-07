@@ -26,9 +26,23 @@ namespace TradingSystem.DAL
         private ConcurrentDictionary<Guid, Store> stores;
         private ConcurrentDictionary<string, ShoppingCart> shoppingCarts;
         private HashSet<TransactionStatus> transactionStatuses;
+        private HashSet<Statistics> statistics;
 
         private string key = "b14ca5898a4e4133bbce2ea2315a1916";
         public bool IsDebug { get => isDebug; set => isDebug = value; }
+
+        public  Statistics getStatis(DateTime date)
+        {
+            if (isDebug)
+            {
+                if (statistics.Where(s => s.date.Day.Equals(date.Day)).Any())
+                    return statistics.Single(s => s.date.Day.Equals(date.Day));
+                Statistics s = new Statistics();
+                s.date = date;
+                return s;
+            }
+            return  marketContext.getStatis(date);
+        }
 
         private MarketContext marketContext;
         public static ProxyMarketContext Instance { get { return _lazy.Value; } }

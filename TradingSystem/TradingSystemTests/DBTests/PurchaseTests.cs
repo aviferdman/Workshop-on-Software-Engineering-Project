@@ -63,8 +63,6 @@ namespace TradingSystemTests.DBTests
             testUserAddress = new Address("1", "1", "1", "1", "1");
             testStoreAddress = new Address("2", "2", "2", "2", "2");
             testUserCreditCard = new CreditCard("1", "1", "1", "1", "1", "1");
-         
-          
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
@@ -230,8 +228,8 @@ namespace TradingSystemTests.DBTests
         [TestCleanup]
         public void DeleteAll()
         {
-            MarketUsers.Instance.tearDown();
-            Transaction.Instance.DeleteAllTests();
+            //MarketUsers.Instance.tearDown();
+            //Transaction.Instance.DeleteAllTests();
         }
     }
 }
