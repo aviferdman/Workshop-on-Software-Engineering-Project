@@ -32,6 +32,9 @@ namespace TradingSystem.WebApi.Controllers
             PublisherManagement.Instance.Subscribe(username, subRemoveAppointment, EventType.RemoveAppointment);
             Subscriber subRequestPurchase = new Subscriber(username, socket, false);
             PublisherManagement.Instance.Subscribe(username, subRequestPurchase, EventType.RequestPurchaseEvent);
+            // for admins stats:
+            // Subscriber subRequestStats = new Subscriber(username, socket, false);
+            // PublisherManagement.Instance.Subscribe(username, subRequestStats, EventType.Stats);
 
             PublisherManagement.Instance.BecomeLoggedIn(username);
         }
