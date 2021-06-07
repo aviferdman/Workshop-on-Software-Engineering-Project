@@ -12,7 +12,10 @@ class HomeProducts extends Component {
                         <ul className = "products">
                             {this.props.products.map((product) => (
                                 <li key={product.id}>
-                                    <HomeProduct product={product} addToCart={this.props.addToCart} history={this.props.history} />
+                                    <HomeProduct product={product}
+                                                 addToCart={this.props.addToCart}
+                                                 history={this.props.history}
+                                                 storeId={this.props.storeId} />
                                 </li>
                             ))}
                         </ul>
