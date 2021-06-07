@@ -60,7 +60,7 @@ namespace TradingSystem.Business.Market
             {
                 MarketDAL.Instance.EmptyShppingCart(username);
             }
-            return new Result<bool>(buyStatus.Status, !buyStatus.Status, "");
+            return new Result<bool>(buyStatus.Status, !buyStatus.Status, "Purchase failed.");
         }
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()

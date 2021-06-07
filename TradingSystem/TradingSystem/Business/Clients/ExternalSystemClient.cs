@@ -10,6 +10,12 @@ namespace TradingSystem.Business
     public class ExternalSystemClient
     {
         readonly HttpClient client = new HttpClient();
+
+        public ExternalSystemClient()
+        {
+            client.Timeout = TimeSpan.FromSeconds(3);
+        }
+
         public async Task<string> Send(Dictionary<string, string> postContent)
         {
             //var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
