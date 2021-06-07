@@ -40,27 +40,28 @@ export default class CartProduct extends React.Component {
         if (!this.state.quantity.trySetValueFromEvent(e)) {
             return;
         }
-        this.props.product.quantity = this.state.quantity.value;
         this.setState({
             ...this.state
         });
-        this.setTimeout(() => {
+        this.setTimeout(async () => {
             this.timeoutId = null;
-            this.sendUpdateCartProductRequest();
+            await this.sendUpdateCartProductRequest();
         });
     }
 
-    sendUpdateCartProductRequest = () => {
-        axios.post('/ShoppingCart/EditProduct', {
+    sendUpdateCartProductRequest = async () => {
+        await axios.post('/ShoppingCart/EditProduct', {
             username: this.context.username,
             productId: this.props.product.id,
             quantity: this.state.quantity.value,
         }).then(response => {
+            this.props.product.quantity = this.state.quantity.value;
+            this.props.onEditProduct(this.props.product);
         }, alertRequestError_default);
     }
 
-    onRemoveClick = () => {
-        axios.post('/ShoppingCart/RemoveProduct', {
+    onRemoveClick = async () => {
+        await axios.post('/ShoppingCart/RemoveProduct', {
             username: this.context.username,
             productId: this.props.product.id,
         }).then(response => {
