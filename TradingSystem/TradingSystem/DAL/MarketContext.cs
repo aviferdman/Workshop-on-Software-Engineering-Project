@@ -209,7 +209,7 @@ namespace TradingSystem.DAL
             Entry(sc).Reference(s => s._bank).Load();
             Entry(sc).Reference(s => s.BidsManager).Load();
             Entry(sc).Reference(s => s.purchasePolicy).Load();
-            Entry(sc.BidsManager).Collection(s => s.bids).Load();
+            //Entry(sc.BidsManager).Collection(s => s.bids).Load();
             Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
             Entry(sc).Collection(s => s.managers).Load();
             Entry(sc).Collection(s => s.owners).Load();
@@ -420,7 +420,7 @@ namespace TradingSystem.DAL
             await Entry(sc).Reference(s => s.BidsManager).LoadAsync();
             await Entry(sc).Reference(s => s.purchasePolicy).LoadAsync();
             await Entry(sc).Collection(s => s._products).LoadAsync();
-            Entry(sc.BidsManager).Collection(s => s.bids).Load();
+            //Entry(sc.BidsManager).Collection(s => s.bids).Load();
             Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
             await Entry(sc).Collection(s => s.managers).LoadAsync();
             await Entry(sc).Collection(s => s.owners).LoadAsync();

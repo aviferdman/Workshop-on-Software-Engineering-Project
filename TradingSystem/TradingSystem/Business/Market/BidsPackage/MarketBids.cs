@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market.StorePackage;
@@ -134,7 +135,7 @@ namespace TradingSystem.Business.Market
             {
                 if (store.Value.CheckPermission(ownerUsername, Permission.BidRequests))
                 {
-                    ICollection<Bid> tempBids = store.Value.BidsManager.bids;
+                    ICollection<Bid> tempBids = store.Value.BidsManager.bidsState.Select(state => state.Bid).ToList();
                     foreach (var bid in tempBids)
                     {
                         bids.Add(bid);
