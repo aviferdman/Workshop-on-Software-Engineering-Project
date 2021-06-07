@@ -19,14 +19,14 @@ namespace TradingSystem.DAL
         private bool isDebug;
 
         public static string conString = $"Data Source=marketDBTests.db";
-        private ConcurrentDictionary<string, DataUser> dataUsers;
-        private ConcurrentDictionary<string, RegisteredAdmin> admins;
-        private ConcurrentDictionary<string, MemberState> memberStates;
-        private ConcurrentDictionary<string, Category> categories;
-        private ConcurrentDictionary<Guid, Store> stores;
-        private ConcurrentDictionary<string, ShoppingCart> shoppingCarts;
-        private HashSet<TransactionStatus> transactionStatuses;
-        private HashSet<Statistics> statistics;
+        public ConcurrentDictionary<string, DataUser> dataUsers;
+        public ConcurrentDictionary<string, RegisteredAdmin> admins;
+        public ConcurrentDictionary<string, MemberState> memberStates;
+        public ConcurrentDictionary<string, Category> categories;
+        public ConcurrentDictionary<Guid, Store> stores;
+        public ConcurrentDictionary<string, ShoppingCart> shoppingCarts;
+        public HashSet<TransactionStatus> transactionStatuses;
+        public HashSet<Statistics> statistics;
 
         private string key = "b14ca5898a4e4133bbce2ea2315a1916";
         public bool IsDebug { get => isDebug; set => isDebug = value; }

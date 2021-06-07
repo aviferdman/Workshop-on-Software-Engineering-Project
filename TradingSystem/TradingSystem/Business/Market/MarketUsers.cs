@@ -348,6 +348,8 @@ namespace TradingSystem.Business.Market
                         if (ProxyMarketContext.Instance.IsDebug)
                         {
                             u.ShoppingCart = c;
+                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username, out _);
+                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -362,6 +364,8 @@ namespace TradingSystem.Business.Market
                         if (ProxyMarketContext.Instance.IsDebug)
                         {
                             u.ShoppingCart = c;
+                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username,out _);
+                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -376,6 +380,8 @@ namespace TradingSystem.Business.Market
                         if (ProxyMarketContext.Instance.IsDebug)
                         {
                             u.ShoppingCart = c;
+                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username, out _);
+                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
