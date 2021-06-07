@@ -1,0 +1,69 @@
+.policy-grid{
+    display: grid;
+    grid-template-rows: 1fr 0.3fr;
+    gap: 2%;
+}
+.policy-grid-button{
+    display: grid;
+    grid-template-areas:  "a a a a a a a a";
+    justify-content: space-between;
+    margin-bottom: 10rem;
+    border: 1px solid #1482cb;
+    width: auto;
+    height:  15rem;
+}
+
+.center-btn-st{
+    grid-area: a;
+    place-self: center;
+}
+
+.center-btn-nd{
+    grid-area: b;
+    place-self: center;
+    justify-self: start;
+
+}
+
+.policy-grid-simple{
+    display: grid;
+    border: 1px solid #1482cb;
+    width: auto;
+    height: auto;
+}
+
+.policy-grid-complex{
+    display: grid;
+    border: 1px solid #1482cb;
+    width: auto;
+    height:  auto ;
+}
+
+.simple-discount-ul{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+
+}
+
+.simple-discount-li-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 2rem;
+    outline: 1px solid #000;
+}
+
+.border-li{
+    box-sizing: border-box;
+    border: #1482cb;
+}
+
+.discName{
+    text-align: center;
+    flex: 1;
+}

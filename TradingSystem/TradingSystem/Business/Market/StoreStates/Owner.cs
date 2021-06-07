@@ -23,7 +23,7 @@ namespace TradingSystem.Business.Market.StoreStates
             this.m = m;
             this.s = s;
             this.appointer = appointer;
-            this.sid = sid;
+            this.sid = s.sid;
         }
 
         public Owner() : base()

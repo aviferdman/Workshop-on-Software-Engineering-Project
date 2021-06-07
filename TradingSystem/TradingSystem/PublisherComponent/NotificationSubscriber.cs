@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
+using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Notifications
 {
@@ -22,11 +23,11 @@ namespace TradingSystem.Notifications
             this.Messages = new List<String>();
         }
 
-        public virtual void Subscribe(IObservable<Event> provider)
+        public virtual void Subscribe(IDistinctObservable<Event> provider, EventType ev)
         {
             // Subscribe to the Observable
             if (provider != null)
-                _unsubscriber = provider.Subscribe(this);
+                _unsubscriber = provider.Subscribe(this, ev);
         }
 
         public virtual void OnCompleted()

@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage.Predicates;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
-    internal class MarketRulesRequestType5
+    public class MarketRulesRequestType5: MarketRuleRequest
     {
-        private int counter;
-        private string functionName;
-        private string username;
-        private DiscountRuleRelation discountRuleRelation;
-        private Guid storeId;
-        private Guid discountId;
-        private Guid discountId2;
-        private bool decide;
+        public int id { get; set; }
+        public string functionName { get; set; }
+        public string username { get; set; }
+        public DiscountRuleRelation discountRuleRelation { get; set; }
+        public Guid storeId { get; set; }
+        public Guid discountId { get; set; }
+        public Guid discountId2 { get; set; }
+        public bool decide { get; set; }
 
         public MarketRulesRequestType5(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide)
         {
-            this.counter = counter;
+            this.id = counter;
             this.functionName = functionName;
             this.username = username;
             this.discountRuleRelation = discountRuleRelation;
@@ -23,6 +25,19 @@ namespace TradingSystem.Business.Market.StorePackage
             this.discountId = discountId;
             this.discountId2 = discountId2;
             this.decide = decide;
+        }
+
+        public MarketRulesRequestType5()
+        {
+        }
+        public int getCounter()
+        {
+            return id;
+        }
+
+        public async Task ActivateFunction()
+        {
+            await MarketRules.Instance.GenerateConditionalDiscountsAsync(username, discountRuleRelation, storeId, discountId, discountId2, decide);
         }
     }
 }

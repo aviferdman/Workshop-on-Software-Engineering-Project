@@ -1,4 +1,5 @@
-﻿using NSubstitute.ReceivedExtensions;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using NSubstitute.ReceivedExtensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,10 +15,11 @@ namespace TradingSystem.Business.Market
     {
         public SortedSet<ShoppingBasket> shoppingBaskets { get; set; }
         public string username { get; set; }
-        
+        [NotMapped]
         private User _user;
 
         public SortedSet<ShoppingBasket> ShoppingBaskets { get => shoppingBaskets; set => shoppingBaskets = value; }
+        [NotMapped]
         public User User1 { get => _user; set => _user = value; }
 
         public ShoppingCart(User user)
@@ -86,24 +88,52 @@ namespace TradingSystem.Business.Market
 
         public async Task<BuyStatus> Purchase(PaymentMethod method, string clientPhone, Address clientAddress)
         {
-            //chcek is not empty
-            if (IsEmpty()) return new BuyStatus(false, null);
-            bool allStatusesOk = true;
-            ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
-            foreach (ShoppingBasket basket in shoppingBaskets)
+            IDbContextTransaction transaction = null;
+            if (!ProxyMarketContext.Instance.IsDebug)
+                transaction = MarketContext.Instance.Database.BeginTransaction();
+            try
             {
-                PurchaseStatus purchaseStatus = await basket.GetStore().Purchase(basket, clientPhone, clientAddress, method);
-                purchases.Add(purchaseStatus);
-                allStatusesOk = allStatusesOk && purchaseStatus.TransactionStatus != null && purchaseStatus.TransactionStatus.Status;
+                //chcek is not empty
+                if (IsEmpty()) 
+                {
+                    transaction.Commit();
+                    transaction.Dispose();
+                    return new BuyStatus(false, null); 
+                }
+                bool allStatusesOk = true;
+                ICollection<PurchaseStatus> purchases = new HashSet<PurchaseStatus>();
+                foreach (ShoppingBasket basket in shoppingBaskets)
+                {
+                    PurchaseStatus purchaseStatus = await basket.GetStore().Purchase(basket, clientPhone, clientAddress, method);
+                    purchases.Add(purchaseStatus);
+                    allStatusesOk = allStatusesOk && purchaseStatus.TransactionStatus != null && purchaseStatus.TransactionStatus.Status;
+                }
+                //If failed to make all the trasactions, need to cancel deliveries and payments
+                IEnumerable<PurchaseStatus> failedPayments = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.PaymentStatus != null && pur.TransactionStatus.PaymentStatus.Status == false);
+                IEnumerable<PurchaseStatus> failedDeliveries = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.DeliveryStatus != null && pur.TransactionStatus.DeliveryStatus.Status == false);
+                CancelPurchase(failedPayments, cancelPayments: true);
+                CancelPurchase(failedDeliveries, cancelDeliveries: true);
+                //means no transactions failed
+                bool allSuceeded = !failedDeliveries.Any() && !failedPayments.Any();
+                await ProxyMarketContext.Instance.saveChanges();
+                if (!ProxyMarketContext.Instance.IsDebug)
+                {
+                    transaction.Commit();
+                    transaction.Dispose();
+                }
+                    
+                return new BuyStatus(allSuceeded && allStatusesOk, purchases);
+                
             }
-            //If failed to make all the trasactions, need to cancel deliveries and payments
-            IEnumerable<PurchaseStatus> failedPayments = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.PaymentStatus != null && pur.TransactionStatus.PaymentStatus.Status == false);
-            IEnumerable<PurchaseStatus> failedDeliveries = purchases.Where(pur => pur.GetPreConditions() == true && pur.TransactionStatus.DeliveryStatus != null && pur.TransactionStatus.DeliveryStatus.Status == false);
-            CancelPurchase(failedPayments, cancelPayments: true);
-            CancelPurchase(failedDeliveries, cancelDeliveries: true);
-            //means no transactions failed
-            bool allSuceeded = !failedDeliveries.Any() && !failedPayments.Any();
-            return new BuyStatus(allSuceeded && allStatusesOk, purchases);
+            catch (Exception ex)
+            {
+                if (!ProxyMarketContext.Instance.IsDebug)
+                {
+                    transaction.Rollback();
+                    transaction.Dispose();
+                }
+                return new BuyStatus(true, null);
+            }
         }
 
         private void CancelPurchase(IEnumerable<PurchaseStatus> purchases, bool cancelDeliveries = false, bool cancelPayments = false)

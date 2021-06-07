@@ -1,0 +1,6 @@
+﻿AddGuest();
+Signup(Romi, 123, 052);
+Login(Romi, 123);
+CreateStore(Romi's Store, Romi, 1, 1, 2021, Romi, 1, 1, NY, NYC, street, 1, 1);
+AddProduct(product, 1, 1, 1, cat, 1, Romi);
+Logout(Romi);

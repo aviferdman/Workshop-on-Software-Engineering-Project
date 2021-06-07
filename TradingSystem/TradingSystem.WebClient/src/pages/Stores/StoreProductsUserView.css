@@ -2,5 +2,8 @@
 
 .products-view-flex{
     display: flex;
+    flex-direction: column;
+    place-self: center;
     flex: 3 60;
+
 }

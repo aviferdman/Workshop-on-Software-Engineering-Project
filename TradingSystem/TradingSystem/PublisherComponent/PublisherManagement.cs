@@ -18,6 +18,9 @@ namespace TradingSystem.PublisherComponent
             (() => new PublisherManagement());
 
         public static PublisherManagement Instance { get { return lazy.Value; } }
+
+        public bool TestMode { get => _testMode; set => _testMode = value; }
+
         private PublisherManagement()
         {
             this._testMode = false;
@@ -77,25 +80,33 @@ namespace TradingSystem.PublisherComponent
             var publisher = username_publisher[username];
             var subscribers = username_subscribers[username];
             NotificationSubscriber subscriber1 = new NotificationSubscriber(EventType.RemoveAppointment.ToString(), _testMode);
-            subscriber1.Subscribe(publisher);
+            subscriber1.Subscribe(publisher, EventType.RemoveAppointment);
             subscribers.Add(subscriber1);
             NotificationSubscriber subscriber2 = new NotificationSubscriber(EventType.OpenStoreEvent.ToString(), _testMode);
-            subscriber2.Subscribe(publisher);
+            subscriber2.Subscribe(publisher, EventType.OpenStoreEvent);
             subscribers.Add(subscriber2);
             NotificationSubscriber subscriber3 = new NotificationSubscriber(EventType.PurchaseEvent.ToString(), _testMode);
-            subscriber3.Subscribe(publisher);
+            subscriber3.Subscribe(publisher, EventType.PurchaseEvent);
             subscribers.Add(subscriber3);
             NotificationSubscriber subscriber4 = new NotificationSubscriber(EventType.AddAppointmentEvent.ToString(), _testMode);
-            subscriber4.Subscribe(publisher);
+            subscriber4.Subscribe(publisher, EventType.AddAppointmentEvent);
             subscribers.Add(subscriber4);
             NotificationSubscriber subscriber5 = new NotificationSubscriber(EventType.RequestPurchaseEvent.ToString(), _testMode);
-            subscriber5.Subscribe(publisher);
+            subscriber5.Subscribe(publisher, EventType.RequestPurchaseEvent);
             subscribers.Add(subscriber5);
         }
 
-        public void Subscribe(String username, NotificationSubscriber subscriber, EventType ev){
+        public void Subscribe(string username, NotificationSubscriber subscriber, EventType ev){
+            if (!username_publisher.Keys.Contains(username))
+            {
+                username_publisher.Add(username, new Publisher(username));
+            }
+            if (!username_subscribers.Keys.Contains(username))
+            {
+                username_subscribers.Add(username, new HashSet<NotificationSubscriber>());
+            }
             var publisher = username_publisher[username];
-            subscriber.Subscribe(publisher);
+            subscriber.Subscribe(publisher, ev);
             username_subscribers[username].Add(subscriber);
         }
 

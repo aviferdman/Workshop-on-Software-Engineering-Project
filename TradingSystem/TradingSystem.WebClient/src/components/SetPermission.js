@@ -128,23 +128,23 @@ class SetPermission extends React.Component {
                                 </div>
                             </div>
 
-                            <div>
-                                <div className= "col-grd-perm">
-                                    <div className="text-props">
-                                        <label>Appoint Manager</label>
-                                    </div>
+                            {/*<div>*/}
+                            {/*    <div className= "col-grd-perm">*/}
+                            {/*        <div className="text-props">*/}
+                            {/*            <label>Appoint Manager</label>*/}
+                            {/*        </div>*/}
 
-                                    <div >
-                                        <input
-                                            type="checkbox"
-                                            className="input-props"
-                                            value={api.data.stores.permissions.appointManger}
-                                            checked={this.isChecked(api.data.stores.permissions.appointManger)}
-                                            onChange={this.onCheckboxCheckedChange}
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                            {/*        <div >*/}
+                            {/*            <input*/}
+                            {/*                type="checkbox"*/}
+                            {/*                className="input-props"*/}
+                            {/*                value={api.data.stores.permissions.appointManger}*/}
+                            {/*                checked={this.isChecked(api.data.stores.permissions.appointManger)}*/}
+                            {/*                onChange={this.onCheckboxCheckedChange}*/}
+                            {/*            />*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
+                            {/*</div>*/}
 
                             <div>
                                 <div className= "col-grd-perm">
@@ -221,43 +221,43 @@ class SetPermission extends React.Component {
 
                             </div>
 
-                            <div>
-                                <div className= "col-grd-perm">
-                                    <div className="text-props">
-                                        <label>Edit Permissions</label>
-                                    </div>
+                            {/*<div>*/}
+                            {/*    <div className= "col-grd-perm">*/}
+                            {/*        <div className="text-props">*/}
+                            {/*            <label>Edit Permissions</label>*/}
+                            {/*        </div>*/}
 
-                                    <div >
-                                        <input
-                                            type="checkbox"
-                                            className="input-props"
-                                            value={api.data.stores.permissions.editPermissions}
-                                            checked={this.isChecked(api.data.stores.permissions.editPermissions)}
-                                            onChange={this.onCheckboxCheckedChange}
-                                        />
-                                    </div>
-                                </div>
+                            {/*        <div >*/}
+                            {/*            <input*/}
+                            {/*                type="checkbox"*/}
+                            {/*                className="input-props"*/}
+                            {/*                value={api.data.stores.permissions.editPermissions}*/}
+                            {/*                checked={this.isChecked(api.data.stores.permissions.editPermissions)}*/}
+                            {/*                onChange={this.onCheckboxCheckedChange}*/}
+                            {/*            />*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
 
-                            </div>
+                            {/*</div>*/}
 
-                            <div>
-                                <div className= "col-grd-perm">
-                                    <div className="text-props">
-                                        <label>Close Shop</label>
-                                    </div>
+                            {/*<div>*/}
+                            {/*    <div className= "col-grd-perm">*/}
+                            {/*        <div className="text-props">*/}
+                            {/*            <label>Close Shop</label>*/}
+                            {/*        </div>*/}
 
-                                    <div >
-                                        <input
-                                            type="checkbox"
-                                            className="input-props"
-                                            value={api.data.stores.permissions.closeShop}
-                                            checked={this.isChecked(api.data.stores.permissions.closeShop)}
-                                            onChange={this.onCheckboxCheckedChange}
-                                        />
-                                    </div>
-                                </div>
+                            {/*        <div >*/}
+                            {/*            <input*/}
+                            {/*                type="checkbox"*/}
+                            {/*                className="input-props"*/}
+                            {/*                value={api.data.stores.permissions.closeShop}*/}
+                            {/*                checked={this.isChecked(api.data.stores.permissions.closeShop)}*/}
+                            {/*                onChange={this.onCheckboxCheckedChange}*/}
+                            {/*            />*/}
+                            {/*        </div>*/}
+                            {/*    </div>*/}
 
-                            </div>
+                            {/*</div>*/}
 
                             <div>
                                 <div className= "col-grd-perm">

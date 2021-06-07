@@ -1,22 +1,38 @@
 ﻿using System;
+using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage.Predicates;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
-    internal class MarketRulesRequestType1
+    public class MarketRulesRequestType1: MarketRuleRequest
     {
-        private int counter;
-        private string functionName;
-        private string username;
-        private Guid storeId;
-        private Guid discountId;
+        public int id { get; set; }
+        public string functionName { get; set; }
+        public string username { get; set; }
+        public Guid storeId { get; set; }
+        public Guid discountId { get; set; } 
 
         public MarketRulesRequestType1(int counter, string functionName, string username, Guid storeId, Guid discountId)
         {
-            this.counter = counter;
+            this.id = counter;
             this.functionName = functionName;
             this.username = username;
             this.storeId = storeId;
             this.discountId = discountId;
+        }
+
+        public MarketRulesRequestType1()
+        {
+        }
+
+        public int getCounter()
+        {
+            return id;
+        }
+
+        public async Task ActivateFunction()
+        {
+            await MarketRules.Instance.RemoveDiscountAsync(username, storeId, discountId);      
         }
     }
 }

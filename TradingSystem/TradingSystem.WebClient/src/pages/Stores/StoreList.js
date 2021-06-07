@@ -15,7 +15,7 @@ class Stores extends Component {
 
     render() {
         return (
-            <div>
+            <div >
                 <ul className = "stores">
                     {this.props.stores.map((store) => (
                         <li key={store.id}>

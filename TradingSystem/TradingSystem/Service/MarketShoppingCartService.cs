@@ -43,6 +43,22 @@ namespace TradingSystem.Service
             return dataCart;
         }
 
+        public Dictionary<Guid, double> ViewShoppingCartsUpdatedPrice(string username)
+        {
+            var cart = marketUsers.viewShoppingCart(username);
+            if (cart == null)
+            {
+                return null;
+            }
+
+            var prices = new Dictionary<Guid, double>();
+            foreach (ShoppingBasket basket in cart.ShoppingBaskets)
+            {
+                prices.Add(basket.GetStore().GetId(), basket.GetStore().CalcPrice(username, basket));
+            }
+            return prices;
+        }
+
         public async Task<Result<Dictionary<Guid, Dictionary<ProductData, int>>>> EditShoppingCart(string username, List<Guid> products_removed, Dictionary<Guid, int> products_added, Dictionary<Guid, int> products_quan)
         {
             Result<ShoppingCart> res = await marketUsers.editShoppingCart(username, products_removed, products_added, products_quan);

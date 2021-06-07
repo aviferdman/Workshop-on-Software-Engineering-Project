@@ -93,8 +93,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckIllegalPurcahseStoreQuantityRemains()
         {
             int originQuantity = product.Quantity;
-            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
-            testStore.UpdateProduct(product);
+            var v = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
@@ -110,8 +109,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckIllegalPurcahseUserRefund()
         {
             Logger.Instance.CleanLogs();
-            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
-            testStore.UpdateProduct(product);
+            var v = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
             Transaction transaction = Transaction.Instance;
@@ -141,7 +139,6 @@ namespace TradingSystemTests.IntegrationTests
         [TestMethod]
         public async Task CheckLegalPurcahseEmptyShoppingCart()
         {
-            testStore.UpdateProduct(product);
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsFalse(!v1.IsErr);
         }
@@ -188,17 +185,6 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(transactionStatus.PaymentStatus.Status, true);
         }
 
-        /// test for function :<see cref="TradingSystem.Business.Market.Store.CancelTransaction(Dictionary{Product, int})"/>
-        [TestMethod]
-        public void CheckCancelTransactionUpdateQuantity()
-        {
-            int originalQuantity = product.Quantity;
-            testStore.UpdateProduct(product);
-            HashSet<ProductInCart> product_quantity = new HashSet<ProductInCart>();
-            product_quantity.Add(new ProductInCart(product, 10));
-            testStore.CancelTransaction(product_quantity);
-            Assert.AreEqual(product.Quantity, originalQuantity + 10);
-        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
         [TestMethod]
@@ -209,7 +195,6 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsFalse(testUser.ShoppingCart.IsEmpty());
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsTrue(!v1.IsErr);
-            Assert.IsTrue(testUser.ShoppingCart.IsEmpty());
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>

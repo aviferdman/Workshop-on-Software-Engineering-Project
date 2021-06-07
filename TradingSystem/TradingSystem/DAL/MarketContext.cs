@@ -14,6 +14,10 @@ using TradingSystem.Business.Market.UserPackage;
 using System.Linq;
 using TradingSystem.Business.Market.Statuses;
 using static TradingSystem.Business.Market.StoreStates.Manager;
+using TradingSystem.Business.Market.StorePackage;
+using TradingSystem.Business.Market.StorePackage.Predicates;
+using TradingSystem.Business.Market.BidsPackage;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TradingSystem.DAL
 {
@@ -30,6 +34,8 @@ namespace TradingSystem.DAL
         public DbSet<Founder> founders { get; set; }
         public DbSet<Owner> owners { get; set; }
         public DbSet<Store> stores { get; set; }
+        public DbSet<BidsManager> BidsManager { get; set; }
+        public DbSet<PurchasePolicy> PurchasePolicy { get; set; }
         public async Task AddHistory(TransactionStatus history)
         {
             transactionStatuses.Add(history);
@@ -37,6 +43,7 @@ namespace TradingSystem.DAL
         }
 
         public DbSet<Manager> managers { get; set; }
+        public DbSet<Prem> Prem { get; set; }
         public DbSet<TransactionStatus> transactionStatuses { get; set; }
         public DbSet<DeliveryStatus> deliveryStatuses { get; set; }
         public DbSet<PurchasedProduct> purchasedProducts { get; set; }
@@ -47,6 +54,20 @@ namespace TradingSystem.DAL
         public DbSet<Address> addresses { get; set; }
 
         public DbSet<Category> categories { get; set; }
+        public DbSet<MarketRulesRequestType1> marketRulesRequestType1 { get; set; }
+        public DbSet<MarketRulesRequestType2> marketRulesRequestType2 { get; set; }
+        public DbSet<MarketRulesRequestType3> marketRulesRequestType3 { get; set; }
+        public DbSet<MarketRulesRequestType4> marketRulesRequestType4 { get; set; }
+        public DbSet<MarketRulesRequestType5> marketRulesRequestType5 { get; set; }
+        public DbSet<MarketRulesRequestType6> marketRulesRequestType6 { get; set; }
+
+        internal void EmptyShppingCart(string username)
+        {
+            productInCarts.RemoveRange(membersShoppingBaskets.Include(s => s.ShoppingCart).Where(s => s.ShoppingCart.username.Equals(username)).SelectMany(s=>s._product_quantity).ToList()) ;
+            membersShoppingBaskets.RemoveRange(membersShoppingBaskets.Include(s=>s.ShoppingCart).Where(s => s.ShoppingCart.username.Equals(username)));
+            SaveChanges();
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
            => options.UseSqlite(@ProxyMarketContext.conString);
 
@@ -59,7 +80,7 @@ namespace TradingSystem.DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Store>()
-            .HasMany(b => b.Products)
+            .HasMany(b => b._products)
             .WithOne();
             modelBuilder.Entity<Store>()
             .HasMany(b => b.managers)
@@ -72,10 +93,8 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Store>()
             .HasMany(b => b.owners)
             .WithOne(m => m.s);
-            modelBuilder.Entity<Founder>()
-            .HasOne(f => f.s)
-            .WithOne()
-            .HasForeignKey<Founder>(f=>f.sid);
+            modelBuilder.Entity<Store>().HasOne(s => s.founder).WithOne(f=>f.s);
+            modelBuilder.Entity<Store>().HasOne(s => s.BidsManager).WithOne(f => f.s).HasForeignKey<BidsManager>("sid");
             modelBuilder.Entity<DataUser>()
                 .HasKey(d => d.username);
             modelBuilder.Entity<State>()
@@ -88,6 +107,8 @@ namespace TradingSystem.DAL
                .HasKey(s => s.username);
             modelBuilder.Entity<Store>()
               .HasKey(s => s.sid);
+            modelBuilder.Entity<Store>()
+              .Property(s=>s.sid).ValueGeneratedNever();
             modelBuilder.Entity<Appointer>()
               .HasKey(s => new { s.sid, s.username });
             modelBuilder.Entity<Manager>()
@@ -98,7 +119,7 @@ namespace TradingSystem.DAL
                .HasKey(s => s.Name);
             modelBuilder.Entity<ShoppingCart>()
                .HasMany(s => s.shoppingBaskets).
-               WithOne(s => s.shoppingCart);
+               WithOne(s => s.ShoppingCart);
             modelBuilder.Entity<ShoppingCart>()
                .Ignore(s => s.User1);
             modelBuilder.Entity<ShoppingBasket>()
@@ -109,23 +130,27 @@ namespace TradingSystem.DAL
             .WithMany();
             modelBuilder.Entity<Owner>()
             .HasOne(b => b.appointer)
-            .WithMany()
-            .HasForeignKey(pt => pt.username);
+            .WithMany().HasForeignKey("appointerID");
            
             modelBuilder.Entity<Manager>()
             .HasOne(b => b.appointer)
-            .WithMany()
-            .HasForeignKey(pt => pt.username);
+            .WithMany().HasForeignKey("appointerID");
+            modelBuilder.Entity<MarketRulesRequestType1>().Property(x => x.id).ValueGeneratedNever();
+            modelBuilder.Entity<MarketRulesRequestType2>().Property(x => x.id).ValueGeneratedNever();
+            modelBuilder.Entity<MarketRulesRequestType3>().Property(x => x.id).ValueGeneratedNever();
+            modelBuilder.Entity<MarketRulesRequestType4>().Property(x => x.id).ValueGeneratedNever();
+            modelBuilder.Entity<MarketRulesRequestType5>().Property(x => x.id).ValueGeneratedNever();
+            modelBuilder.Entity<MarketRulesRequestType6>().Property(x => x.id).ValueGeneratedNever();
         }
 
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
-            return await products.Where(p =>
-                                    (p.Name.Contains(keyword) || p.category.Contains(keyword))
-                                    &&(price_range_low==-1||price_range_low<=p.Price)
-                                    &&(price_range_high == -1 || price_range_high >= p.Price)
-                                    &&(rating == -1 || rating == p.Price)
-                                    &&(category != null || category.Equals(p.category))).ToListAsync();
+            return  products.Where(p =>
+                                    (p._name.Contains(keyword) || p.category.Contains(keyword))
+                                    &&(price_range_low==-1||price_range_low<=p._price)
+                                    &&(price_range_high == -1 || price_range_high >= p._price)
+                                    &&(rating == -1 || rating == p.rating)
+                                    &&(category == null || category.Equals(p.category))).ToList();
         }
 
         public async Task<Category> AddNewCategory(string category)
@@ -139,6 +164,7 @@ namespace TradingSystem.DAL
             {
                 c = new Category(category);
                 await categories.AddAsync(c);
+                await SaveChangesAsync();
             }
             return c;
         }
@@ -151,6 +177,10 @@ namespace TradingSystem.DAL
             Entry(sc.founder).Reference(s => s.m).Load();
             Entry(sc).Reference(s => s._address).Load();
             Entry(sc).Reference(s => s._bank).Load();
+            Entry(sc).Reference(s => s.BidsManager).Load();
+            Entry(sc).Reference(s => s.purchasePolicy).Load();
+            Entry(sc.BidsManager).Collection(s => s.bids).Load();
+            Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
             Entry(sc).Collection(s => s.managers).Load();
             Entry(sc).Collection(s => s.owners).Load();
             foreach (Manager m in sc.managers)
@@ -167,7 +197,7 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Store>> GetStoresByName(string name)
         {
-            ICollection<Store>  sc =  stores.Where(s => s.name.Equals(name)).ToList();
+            ICollection<Store>  sc =  stores.Where(s => s.name.ToLower().Contains(name)).ToList();
             
             foreach (Store s in sc)
             {
@@ -232,7 +262,43 @@ namespace TradingSystem.DAL
                                 .ToListAsync();
         }
 
-        
+        internal void tearDown()
+        {
+            try
+            {
+                dataUsers.RemoveRange(dataUsers.ToList());
+                states.RemoveRange(states.ToList());
+                productInCarts.RemoveRange(productInCarts.ToList());
+                membersShoppingBaskets.RemoveRange(membersShoppingBaskets.ToList());
+                membersShoppingCarts.RemoveRange(membersShoppingCarts.ToList());
+                appointers.RemoveRange(appointers.ToList());
+                Prem.RemoveRange(Prem.ToList());
+                managers.RemoveRange(managers.ToList());
+                products.RemoveRange(products.ToList());
+                addresses.RemoveRange(addresses.ToList());
+                BidsManager.RemoveRange(BidsManager.ToList());
+                transactionStatuses.RemoveRange(transactionStatuses.ToList());
+                deliveryStatuses.RemoveRange(deliveryStatuses.ToList());
+                purchasedProducts.RemoveRange(purchasedProducts.ToList());
+                productHistoryDatas.RemoveRange(productHistoryDatas.ToList());
+                paymentStatuses.RemoveRange(paymentStatuses.ToList());
+                stores.RemoveRange(stores.ToList());
+                PurchasePolicy.RemoveRange(PurchasePolicy.ToList());
+                categories.RemoveRange(categories.ToList());
+                marketRulesRequestType1.RemoveRange(marketRulesRequestType1.ToList());
+                marketRulesRequestType2.RemoveRange(marketRulesRequestType2.ToList());
+                marketRulesRequestType3.RemoveRange(marketRulesRequestType3.ToList());
+                marketRulesRequestType4.RemoveRange(marketRulesRequestType4.ToList());
+                marketRulesRequestType5.RemoveRange(marketRulesRequestType5.ToList());
+                marketRulesRequestType6.RemoveRange(marketRulesRequestType6.ToList());
+                SaveChanges();
+            }
+            catch (Exception e)
+            {
+
+            }
+            
+        }
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
         {
@@ -261,7 +327,7 @@ namespace TradingSystem.DAL
                 memberStates.Add(new MemberState(username));
                 await SaveChangesAsync();
             }
-            catch
+            catch(Exception e)
             {
             }
         }
@@ -274,7 +340,7 @@ namespace TradingSystem.DAL
                 await SaveChangesAsync();
                 return true;
             }
-            catch
+            catch(Exception e)
             {
                 return false;
             }
@@ -306,10 +372,10 @@ namespace TradingSystem.DAL
         {
             try
             {
-                memberStates.Add(new MemberState(username));
+                membersShoppingCarts.Add(new ShoppingCart(username));
                 await SaveChangesAsync();
             }
-            catch
+            catch(Exception e)
             {
             }
         }
@@ -321,7 +387,11 @@ namespace TradingSystem.DAL
             await Entry(sc.founder).Reference(s => s.m).LoadAsync();
             await Entry(sc).Reference(s => s._address).LoadAsync();
             await Entry(sc).Reference(s => s._bank).LoadAsync();
+            await Entry(sc).Reference(s => s.BidsManager).LoadAsync();
+            await Entry(sc).Reference(s => s.purchasePolicy).LoadAsync();
             await Entry(sc).Collection(s => s._products).LoadAsync();
+            Entry(sc.BidsManager).Collection(s => s.bids).Load();
+            Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
             await Entry(sc).Collection(s => s.managers).LoadAsync();
             await Entry(sc).Collection(s => s.owners).LoadAsync();
             foreach(Manager m in sc.managers)
@@ -332,7 +402,56 @@ namespace TradingSystem.DAL
             {
                 await Entry(m).Reference(s => s.m).LoadAsync();
             }
+            await getDiscoutsPolicies(storeId);
             return sc;
+        }
+
+        private async Task getDiscoutsPolicies(Guid storeId)
+        {
+            ICollection<MarketRulesRequestType1> type1 = await marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType2> type2 = await marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType3> type3 = await marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType4> type4 = await marketRulesRequestType4.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType5> type5 = await marketRulesRequestType5.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            ICollection<MarketRulesRequestType6> type6 = await marketRulesRequestType6.Where(r => r.storeId.Equals(storeId)).ToListAsync();
+            List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
+            ruleRequests.AddRange(type1);
+            ruleRequests.AddRange(type2);
+            ruleRequests.AddRange(type3);
+            ruleRequests.AddRange(type4);
+            ruleRequests.AddRange(type5);
+            ruleRequests.AddRange(type6);
+            ruleRequests.OrderBy(r => r.getCounter());
+            foreach(MarketRuleRequest r in ruleRequests)
+            {
+                await r.ActivateFunction();
+            }
+        }
+
+        public async Task AddProduct(Product product)
+        {
+            products.Add(product);
+            await SaveChangesAsync();
+        }
+
+        public async Task<int> getRuleCounter()
+        {
+            ICollection<MarketRulesRequestType1> type1 = await marketRulesRequestType1.ToListAsync();
+            ICollection<MarketRulesRequestType2> type2 = await marketRulesRequestType2.ToListAsync();
+            ICollection<MarketRulesRequestType3> type3 = await marketRulesRequestType3.ToListAsync();
+            ICollection<MarketRulesRequestType4> type4 = await marketRulesRequestType4.ToListAsync();
+            ICollection<MarketRulesRequestType5> type5 = await marketRulesRequestType5.ToListAsync();
+            ICollection<MarketRulesRequestType6> type6 = await marketRulesRequestType6.ToListAsync();
+            List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
+            ruleRequests.AddRange(type1);
+            ruleRequests.AddRange(type2);
+            ruleRequests.AddRange(type3);
+            ruleRequests.AddRange(type4);
+            ruleRequests.AddRange(type5);
+            ruleRequests.AddRange(type6);
+            if (ruleRequests.Count == 0)
+                return 0;
+            return ruleRequests.Max(m => m.getCounter());
         }
 
         public async Task<bool> RemoveDataUser(string userId)
@@ -363,16 +482,55 @@ namespace TradingSystem.DAL
             }
         }
 
-        public async Task removeManager(Manager manager)
+        public  void removeManager(Manager manager)
         {
             try
             {
+                Prem.RemoveRange(manager.store_permission);
                 managers.Remove(manager);
-                await SaveChangesAsync();
+                SaveChanges();
             }
-            catch
+            catch(Exception e)
             {
             }
         }
+
+        public async Task AddRequestType1(MarketRulesRequestType1 req)
+        {
+            await marketRulesRequestType1.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType2(MarketRulesRequestType2 req)
+        {
+            await marketRulesRequestType2.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType3(MarketRulesRequestType3 req)
+        {
+            await marketRulesRequestType3.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType4(MarketRulesRequestType4 req)
+        {
+            await marketRulesRequestType4.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType5(MarketRulesRequestType5 req)
+        {
+            await marketRulesRequestType5.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+        public async Task AddRequestType6(MarketRulesRequestType6 req)
+        {
+            await marketRulesRequestType6.AddAsync(req);
+            await SaveChangesAsync();
+        }
+
+
     }
 }

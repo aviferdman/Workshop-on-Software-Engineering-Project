@@ -1,26 +1,28 @@
 ﻿using System;
+using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage.Predicates;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
-    internal class MarketRulesRequestType2
+    public class MarketRulesRequestType2 : MarketRuleRequest
     {
-        private int counter;
-        private string functionName;
-        private string username;
-        private Guid storeId;
-        private PolicyRuleRelation policyRuleRelation;
-        private RuleContext ruleContext;
-        private RuleType ruleType;
-        private string category;
-        private Guid productId;
-        private double valueLessThan;
-        private double valueGreaterEQThan;
-        private DateTime d1;
-        private DateTime d2;
+        public int id { get; set; }
+        public string functionName { get; set; }
+        public string username { get; set; }
+        public Guid storeId { get; set; }
+        public PolicyRuleRelation policyRuleRelation { get; set; }
+        public RuleContext ruleContext { get; set; }
+        public RuleType ruleType { get; set; }
+        public string category { get; set; }
+        public Guid productId { get; set; }
+        public double valueLessThan { get; set; }
+        public double valueGreaterEQThan { get; set; }
+        public DateTime d1 { get; set; }
+        public DateTime d2 { get; set; }
 
         public MarketRulesRequestType2(int counter, string functionName, string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
         {
-            this.counter = counter;
+            this.id = counter;
             this.functionName = functionName;
             this.username = username;
             this.storeId = storeId;
@@ -33,6 +35,20 @@ namespace TradingSystem.Business.Market.StorePackage
             this.valueGreaterEQThan = valueGreaterEQThan;
             this.d1 = d1;
             this.d2 = d2;
+        }
+
+        public MarketRulesRequestType2()
+        {
+        }
+
+        public int getCounter()
+        {
+            return id;
+        }
+
+        public async Task ActivateFunction()
+        {
+            await MarketRules.Instance.AddPolicyRule(username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
         }
     }
 }

@@ -6,6 +6,7 @@ using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.Histories;
 using TradingSystem.Business.Notifications;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 
 namespace TradingSystem.Business.Market
@@ -57,13 +58,7 @@ namespace TradingSystem.Business.Market
             //empty the shopping cart after a successful purchase
             if (buyStatus.Status)
             {
-                foreach (var p in buyStatus.PurchaseStatuses)
-                {
-                    var h = new UserHistory(p);
-                    _state.AddHistory(h);
-                    HistoryManager.Instance.AddHistory(h._transactionStatus);
-                }
-                this.ShoppingCart = new ShoppingCart(this);
+                MarketDAL.Instance.EmptyShppingCart(username);
             }
             return new Result<bool>(buyStatus.Status, !buyStatus.Status, "");
         }

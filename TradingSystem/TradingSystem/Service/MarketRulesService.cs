@@ -6,10 +6,11 @@ using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StorePackage.PolicyPackage;
+using TradingSystem.DAL;
 
 namespace TradingSystem.Service
 {
-    class MarketRulesService
+    public class MarketRulesService
     {
         private static readonly Lazy<MarketRulesService> instanceLazy = new Lazy<MarketRulesService>(() => new MarketRulesService(), true);
 
@@ -18,14 +19,14 @@ namespace TradingSystem.Service
         private readonly PolicyManager policyManager;
         private IDictionary<string, ICollection<IRule>> user_rules;
         int counter;
-
+        public static MarketRulesService Instance { get { return instanceLazy.Value; } }
         private MarketRulesService()
         {
             marketRules = MarketRules.Instance;
             discountsManager = new DiscountsManager();
             policyManager = new PolicyManager();
             user_rules = new Dictionary<string, ICollection<IRule>>();
-            counter = 0;
+            counter = MarketDAL.Instance.getRuleCounter().Result;
         }
 <<<<<<< HEAD
         
