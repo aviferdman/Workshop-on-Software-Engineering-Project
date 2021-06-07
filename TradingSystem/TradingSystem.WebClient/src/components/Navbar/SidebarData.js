@@ -30,7 +30,8 @@ export const SidebarData = [
         title: 'Store Management',
         path: '/myStores',
         icon: <FaIcons.FaStore />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        permissions: [UserRole.member, UserRole.admin]
     },
     {
         title: 'Admin Actions',
@@ -49,7 +50,8 @@ export const SidebarData = [
         title: 'History',
         path: '/userHistory',
         icon: <AiIcons.AiOutlineHistory />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        permissions: [UserRole.member, UserRole.admin]
     },
     {
         title: 'Support',
