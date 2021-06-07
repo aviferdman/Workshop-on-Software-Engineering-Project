@@ -324,6 +324,7 @@ namespace TradingSystem.DAL
                 shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
                 stores = new ConcurrentDictionary<Guid, Store>();
                 transactionStatuses = new HashSet<TransactionStatus>();
+                statistics = new HashSet<Statistics>();
                 categories = new ConcurrentDictionary<string, Category>();
                 RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"), "0501234566");
                 dataUsers.TryAdd("DEFAULT_ADMIN", admin);
@@ -392,6 +393,7 @@ namespace TradingSystem.DAL
             stores = new ConcurrentDictionary<Guid, Store>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
+            statistics = new HashSet<Statistics>();
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"), "0501234566");
             admins.TryAdd("DEFAULT_ADMIN", admin);
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
@@ -437,6 +439,7 @@ namespace TradingSystem.DAL
             memberStates = new ConcurrentDictionary<string, MemberState>();
             shoppingCarts = new ConcurrentDictionary<string, ShoppingCart>();
             stores = new ConcurrentDictionary<Guid, Store>();
+            statistics = new HashSet<Statistics>();
             transactionStatuses = new HashSet<TransactionStatus>();
             categories = new ConcurrentDictionary<string, Category>();
             RegisteredAdmin admin = new RegisteredAdmin("DEFAULT_ADMIN", EncryptString(key, "ADMIN"),  "0501234566");
