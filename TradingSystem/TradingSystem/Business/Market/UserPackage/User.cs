@@ -65,7 +65,7 @@ namespace TradingSystem.Business.Market
                 }
                 this.ShoppingCart = new ShoppingCart(this);
             }
-            return new Result<bool>(buyStatus.Status, !buyStatus.Status, "");
+            return new Result<bool>(buyStatus.Status, !buyStatus.Status, "Purchase failed.");
         }
 
         public IDictionary<Guid, IDictionary<Guid, int>> GetShopingCartProducts()
