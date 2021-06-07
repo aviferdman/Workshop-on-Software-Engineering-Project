@@ -30,13 +30,14 @@ namespace TradingSystem.WebApi.Controllers
                 return BadRequest("Invalid username");
             }
 
+            Dictionary<Guid, double>? prices = MarketShoppingCartService.ViewShoppingCartsUpdatedPrice(usernameDTO.Username);
             Dictionary<NamedGuid, Dictionary<ProductData, int>>? result = MarketShoppingCartService.ViewShoppingCart(usernameDTO.Username);
-            if (result == null)
+            if (result == null || prices == null)
             {
                 return InternalServerError();
             }
 
-            return Ok(ShoppingCartDTO.FromDictionary(result));
+            return Ok(ShoppingCartDTO.FromDictionaries(result, prices));
         }
 
         [HttpPost]

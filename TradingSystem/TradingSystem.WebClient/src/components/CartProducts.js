@@ -8,7 +8,9 @@ class CartProducts extends Component {
                 <ul className = "products">
                     {this.props.products.map((product) => (
                         <li key={product.id}>
-                            <CartProduct product={product} onRemoveProduct={this.props.onRemoveProduct} />
+                            <CartProduct product={product}
+                                         onEditProduct={this.props.onEditProduct}
+                                         onRemoveProduct={this.props.onRemoveProduct} />
                         </li>
                     ))}
                 </ul>

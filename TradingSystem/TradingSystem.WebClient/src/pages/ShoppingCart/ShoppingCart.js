@@ -2,28 +2,39 @@ import React, {Component} from 'react';
 import './ShoppingCart.css';
 import CartProducts from "../../components/CartProducts";
 import Purchase from "../../components/Purchase";
-import formatCurrency from "../mainPage/currency";
 import {GlobalContext} from "../../globalContext";
 import axios from "axios";
 import {alertRequestError_default} from "../../utils";
 import Header from "../../header";
+import formatCurrency from "../mainPage/currency";
 
 export class ShoppingCart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: []
+            totalPrice: null,
+            products: [],
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await this.fetchShoppingCart();
+    }
+
+    fetchShoppingCart = async (errorFunc) => {
         axios.post('/ShoppingCart/MyShoppingCart', {
             username: this.context.username,
         }).then(response => {
             this.setState({
-                products: this.flattenShoppingBaskets(response.data),
+                totalPrice: response.data.totalPrice,
+                products: this.flattenShoppingBaskets(response.data.shoppingBaskets),
             });
-        }, alertRequestError_default);
+        }, (e) => {
+            if (errorFunc) {
+                errorFunc(e);
+            }
+            alertRequestError_default(e);
+        });
     }
 
     flattenShoppingBaskets(shoppingBaskets) {
@@ -35,6 +46,7 @@ export class ShoppingCart extends Component {
             };
             shoppingBasket.products.forEach(product => {
                 product.store = store;
+                product.__visible = true;
                 products.push(product);
             });
         });
@@ -46,10 +58,21 @@ export class ShoppingCart extends Component {
         this.props.history.push('/home');
     }
 
-    onRemoveProduct = product => {
+    onRemoveProduct = async product => {
+        product.__visible = false;
         this.setState({
-            products: this.state.products.filter(p => p.id !== product.id)
+            ...this.state
         });
+        await this.fetchShoppingCart(e => {
+            product.__visible = true;
+            this.setState({
+                ...this.state
+            });
+        });
+    }
+
+    onEditProduct = async product => {
+        await this.fetchShoppingCart();
     }
 
     render() {
@@ -60,13 +83,17 @@ export class ShoppingCart extends Component {
                 <main className="store-products-main-conatiner">
 
                     <div>
-                        <CartProducts products={this.state.products} onRemoveProduct={this.onRemoveProduct} />
+                        <CartProducts products={this.state.products}
+                                      onEditProduct={this.onEditProduct}
+                                      onRemoveProduct={this.onRemoveProduct} />
                     </div>
 
                     {/* TODO: get total price from server */}
                     <div className="total">
                         <h2>Total price of all products: </h2>
-                        <h1>{formatCurrency(this.state.products.reduce((a,c) => a + (c.price * c.quantity), 0))} </h1>
+                        {this.state.totalPrice == null ? null : (
+                            <h1>{formatCurrency(this.state.totalPrice)} </h1>
+                        )}
                     </div>
 
                     <div className="bottom-row">
