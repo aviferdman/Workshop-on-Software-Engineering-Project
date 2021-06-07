@@ -86,6 +86,7 @@ namespace TradingSystem.Business.Market
             Statistics s=UsersDAL.Instance.getStatis(DateTime.Now.Date);
             s.guestsNum++;
             ProxyMarketContext.Instance.saveChanges();
+            NotifyAdmins(EventType.Stats);
             return u.Username;
         }
 
@@ -172,8 +173,21 @@ namespace TradingSystem.Business.Market
                 stat.managersNum++;
             }
             await ProxyMarketContext.Instance.saveChanges();
+            NotifyAdmins(EventType.Stats);
             return "success";
         }
+
+        private void NotifyAdmins(EventType ev)
+        {
+            foreach (var u in activeUsers.Values)
+            {
+                if (u.State is AdministratorState)
+                {
+                    PublisherManagement.Instance.EventNotification(u.Username, ev, "");
+                }
+            }
+        }
+
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
         ///before logout checks  - <see cref="UserManagement.UserManagement.Logout(string)"/> 
         public async Task<string> logout(string username)
@@ -397,10 +411,10 @@ namespace TradingSystem.Business.Market
             
             return new Result<ShoppingCart>(u.ShoppingCart, false, null);
         }
-
-       
-
-        
+        public Statistics GetStats()
+        {
+            return UsersDAL.Instance.getStatis(DateTime.Now.Date);
+        }
 
         public void CleanMarketUsers()
         {
