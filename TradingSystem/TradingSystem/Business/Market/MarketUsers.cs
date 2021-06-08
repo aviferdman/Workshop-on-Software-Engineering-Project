@@ -115,8 +115,10 @@ namespace TradingSystem.Business.Market
             string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
+                activeUsers.TryAdd(guestusername,  u);
                 return loginmang;
             }
+            
             User guest;
             ShoppingCart s;
             string GuidString;
@@ -272,7 +274,6 @@ namespace TradingSystem.Business.Market
             if (p.Quantity < quantity || quantity < 1)
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
-
             return await basket.addProduct(p, quantity);
 
         }

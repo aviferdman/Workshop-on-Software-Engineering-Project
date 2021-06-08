@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 
@@ -15,7 +16,7 @@ namespace TradingSystem.Business.Market.BidsPackage
     {
         public Guid id { get; set; }
         public Store s { get; set; }
-        public ICollection<BidState> bidsState { get; set; }
+        public HashSet<BidState> bidsState { get; set; }
         public BidsManager(Store s)
         {
             this.s = s;
@@ -51,6 +52,7 @@ namespace TradingSystem.Business.Market.BidsPackage
             var bid = GetBidById(bidId);
             NotifyOwners(EventType.RequestPurchaseEvent, $"{bid.Username} denied the bid in store {storeName} for buying the product {bid.ProductId} for {bid.Price}$");
             bid.Status = BidStatus.Deny;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
@@ -58,6 +60,7 @@ namespace TradingSystem.Business.Market.BidsPackage
         {
             var bid = new Bid(username, storeId, productId, newBidPrice);
             this.bidsState.Add(new BidState(bid));
+            await ProxyMarketContext.Instance.saveChanges();
             NotifyOwners(EventType.RequestPurchaseEvent, $"You got new Bid in store {storeName}");
             return new Result<Guid>(bid.Id, false, "");
         }
@@ -81,6 +84,7 @@ namespace TradingSystem.Business.Market.BidsPackage
             NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Suggested to buy product {productName} for {newBidPrice} in store {storeName}");
             bid.Price = newBidPrice;
             bid.Status = BidStatus.CustomerNegotiate;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
@@ -94,22 +98,23 @@ namespace TradingSystem.Business.Market.BidsPackage
             var bid = GetBidById(bidId);
             var bidState = GetBidStateById(bidId);
             await bidState.AddAcceptence(ownerUsername);
-
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"We accepted your bid request.");
             if (AllOwnersAccept(bidId))
             {
                 bid.Status = BidStatus.Accept;
             }
+
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
         private bool AllOwnersAccept(Guid bidId)
         {
             var bidState = GetBidStateById(bidId);
-            bool allAccept = bidState.OwnersAccepted.Contains(s.founder.Username);
+            bool allAccept = bidState.OwnersAccepted.Where(p=>p.p.Equals(s.founder.Username)).Any();
             foreach (var owner in s.owners)
             {
-                allAccept = allAccept && bidState.OwnersAccepted.Contains(owner.Username);
+                allAccept = allAccept && bidState.OwnersAccepted.Where(p => p.p.Equals(owner.Username)).Any();
             }
             return allAccept;
         }
@@ -120,6 +125,7 @@ namespace TradingSystem.Business.Market.BidsPackage
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, We suggest another bid request for you.");
             bid.Price = newBidPrice;
             bid.Status = BidStatus.OwnerNegotiate;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
@@ -130,6 +136,7 @@ namespace TradingSystem.Business.Market.BidsPackage
             await bidState.RemoveAcceptence(ownerUsername);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, sorry, but we denied your bid request.");
             bid.Status = BidStatus.Deny;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
     }

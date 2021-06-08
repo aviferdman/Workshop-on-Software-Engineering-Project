@@ -69,6 +69,7 @@ namespace TradingSystem.Business.Market
         public int Rating { get => rating; set => rating = value; }
         [NotMapped]
         public string StoreName { get => _storeName; set => _storeName = value; }
+        [NotMapped]
         public double Discount { get => discount; set => discount = value; }
 
         public Product Clone()

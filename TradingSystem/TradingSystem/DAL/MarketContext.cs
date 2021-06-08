@@ -62,6 +62,8 @@ namespace TradingSystem.DAL
         public DbSet<Owner> owners { get; set; }
         public DbSet<Store> stores { get; set; }
         public DbSet<BidsManager> BidsManager { get; set; }
+        public DbSet<BidState> BidStates { get; set; }
+        public DbSet<Bid> Bids { get; set; }
         public DbSet<PurchasePolicy> PurchasePolicy { get; set; }
         public async Task AddHistory(TransactionStatus history)
         {
@@ -120,8 +122,12 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Store>()
             .HasMany(b => b.owners)
             .WithOne(m => m.s);
+            modelBuilder.Entity<BidState>().HasKey(s => s.id);
+            
             modelBuilder.Entity<Store>().HasOne(s => s.founder).WithOne(f=>f.s);
-            modelBuilder.Entity<Store>().HasOne(s => s.BidsManager).WithOne(f => f.s).HasForeignKey<BidsManager>("sid");
+            modelBuilder.Entity<Store>().HasOne(s => s.BidsManager).WithOne(f => f.s).HasForeignKey<BidsManager>("sid").OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<BidsManager>().HasMany(s => s.bidsState).WithOne().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<BidState>().HasOne(s => s.Bid).WithOne().HasForeignKey<Bid>("stateId").OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<DataUser>()
                 .HasKey(d => d.username);
             modelBuilder.Entity<State>()

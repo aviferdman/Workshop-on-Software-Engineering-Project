@@ -64,6 +64,22 @@ namespace TradingSystem.Migrations
                     b.ToTable("addresses");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidState", b =>
+                {
+                    b.Property<Guid>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("BidsManagerid")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("BidsManagerid");
+
+                    b.ToTable("BidStates");
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidsManager", b =>
                 {
                     b.Property<Guid>("id")
@@ -120,6 +136,9 @@ namespace TradingSystem.Migrations
 
                     b.Property<string>("category")
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("discount")
+                        .HasColumnType("REAL");
 
                     b.Property<int>("rating")
                         .HasColumnType("INTEGER");
@@ -196,6 +215,31 @@ namespace TradingSystem.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("State");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.Statistics", b =>
+                {
+                    b.Property<DateTime>("date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("adminNum")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("guestsNum")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("managersNum")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("membersNum")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ownersNum")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("date");
+
+                    b.ToTable("statistics");
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.Statuses.PurchasedProduct", b =>
                 {
                     b.Property<Guid>("id")
@@ -250,9 +294,6 @@ namespace TradingSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("BidsManagerid")
-                        .HasColumnType("TEXT");
-
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
 
@@ -268,11 +309,15 @@ namespace TradingSystem.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("stateId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BidsManagerid");
+                    b.HasIndex("stateId")
+                        .IsUnique();
 
-                    b.ToTable("Bid");
+                    b.ToTable("Bids");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType1", b =>
@@ -491,28 +536,6 @@ namespace TradingSystem.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Appointer");
                 });
 
-            modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.BidAcceptence", b =>
-                {
-                    b.Property<Guid>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid?>("Appointersid")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Appointerusername")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("accept")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("Appointersid", "Appointerusername");
-
-                    b.ToTable("BidAcceptence");
-                });
-
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Manager", b =>
                 {
                     b.Property<Guid>("sid")
@@ -539,6 +562,9 @@ namespace TradingSystem.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("BidStateid")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid?>("Managersid")
                         .HasColumnType("TEXT");
 
@@ -552,6 +578,8 @@ namespace TradingSystem.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("id");
+
+                    b.HasIndex("BidStateid");
 
                     b.HasIndex("PurchasePolicyid");
 
@@ -716,11 +744,20 @@ namespace TradingSystem.Migrations
                     b.HasDiscriminator().HasValue("AdministratorState");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidState", b =>
+                {
+                    b.HasOne("TradingSystem.Business.Market.BidsPackage.BidsManager", null)
+                        .WithMany("bidsState")
+                        .HasForeignKey("BidsManagerid")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidsManager", b =>
                 {
                     b.HasOne("TradingSystem.Business.Market.Store", "s")
                         .WithOne("BidsManager")
-                        .HasForeignKey("TradingSystem.Business.Market.BidsPackage.BidsManager", "sid");
+                        .HasForeignKey("TradingSystem.Business.Market.BidsPackage.BidsManager", "sid")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("s");
                 });
@@ -779,9 +816,10 @@ namespace TradingSystem.Migrations
 
             modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.Bid", b =>
                 {
-                    b.HasOne("TradingSystem.Business.Market.BidsPackage.BidsManager", null)
-                        .WithMany("bids")
-                        .HasForeignKey("BidsManagerid");
+                    b.HasOne("TradingSystem.Business.Market.BidsPackage.BidState", null)
+                        .WithOne("Bid")
+                        .HasForeignKey("TradingSystem.Business.Market.StorePackage.Bid", "stateId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Appointer", b =>
@@ -793,13 +831,6 @@ namespace TradingSystem.Migrations
                         .IsRequired();
 
                     b.Navigation("m");
-                });
-
-            modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.BidAcceptence", b =>
-                {
-                    b.HasOne("TradingSystem.Business.Market.StoreStates.Appointer", null)
-                        .WithMany("bidsAcceptence")
-                        .HasForeignKey("Appointersid", "Appointerusername");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Manager", b =>
@@ -829,6 +860,10 @@ namespace TradingSystem.Migrations
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Prem", b =>
                 {
+                    b.HasOne("TradingSystem.Business.Market.BidsPackage.BidState", null)
+                        .WithMany("OwnersAccepted")
+                        .HasForeignKey("BidStateid");
+
                     b.HasOne("TradingSystem.Business.Market.PurchasePolicy", null)
                         .WithMany("availablePurchaseKinds")
                         .HasForeignKey("PurchasePolicyid");
@@ -896,9 +931,16 @@ namespace TradingSystem.Migrations
                     b.Navigation("s");
                 });
 
+            modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidState", b =>
+                {
+                    b.Navigation("Bid");
+
+                    b.Navigation("OwnersAccepted");
+                });
+
             modelBuilder.Entity("TradingSystem.Business.Market.BidsPackage.BidsManager", b =>
                 {
-                    b.Navigation("bids");
+                    b.Navigation("bidsState");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.Category", b =>
@@ -934,11 +976,6 @@ namespace TradingSystem.Migrations
                     b.Navigation("managers");
 
                     b.Navigation("owners");
-                });
-
-            modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Appointer", b =>
-                {
-                    b.Navigation("bidsAcceptence");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Manager", b =>

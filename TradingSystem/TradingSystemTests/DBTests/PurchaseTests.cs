@@ -75,7 +75,7 @@ namespace TradingSystemTests.DBTests
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(testStore.GetFounder().Username, discount);
-            Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
+            Assert.AreEqual(PRICE1 * 5 * (1 - (DISCOUNT_VALUE / 100)), testUser.ShoppingCart.CalcPaySum());
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsTrue(!v1.IsErr);
         }
@@ -83,7 +83,8 @@ namespace TradingSystemTests.DBTests
         private DiscountOfProducts return15(ShoppingBasket arg)
         {
             var d = new DiscountOfProducts();
-            d.Discount = DISCOUNT_VALUE;
+            d.AddProduct(product.Id, product.Price - 15);
+            d.Discount = 15;
             return d;
         }
 
@@ -231,8 +232,8 @@ namespace TradingSystemTests.DBTests
         [TestCleanup]
         public void DeleteAll()
         {
-            //MarketUsers.Instance.tearDown();
-            //Transaction.Instance.DeleteAllTests();
+            MarketUsers.Instance.tearDown();
+            Transaction.Instance.DeleteAllTests();
         }
     }
 }
