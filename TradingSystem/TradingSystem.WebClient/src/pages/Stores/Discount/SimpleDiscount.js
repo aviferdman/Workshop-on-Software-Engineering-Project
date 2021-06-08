@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Discounts.css';
-import {formatDate} from "../../../utils";
+import {formatDate, formatFloat} from "../../../utils";
 import ConditionalRender from "../../../ConditionalRender";
 
 
@@ -26,7 +26,7 @@ class SimpleDiscount extends Component {
                                 <div className = "simple-discount-li-div">
                                     <p className= "discName">ID: {elem.id}  </p>
                                     <p className= "discName">creator: {elem.creator}  </p>
-                                    <p className= "discName">percent: {elem.percent * 100}%  </p>
+                                    <p className= "discName">percent: {formatFloat(elem.percent * 100)}%  </p>
                                     <p className= "discName">discountType: {elem.discountType} </p>
                                     <p className= "discName"> condition: {elem.conditionType || "None"}  </p>
                                     <ConditionalRender
