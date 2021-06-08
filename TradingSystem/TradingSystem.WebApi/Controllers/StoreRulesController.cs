@@ -80,20 +80,67 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<DiscountData>>> Discounts([FromBody] GuidDTO guidDTO)
+        public async Task<ActionResult<Guid>> AddCompoundDiscount([FromBody] DiscountCompoundParamsDTO discountCompoundParamsDTO)
+        {
+            DiscountRuleRelation discountRuleRelation;
+            if (string.IsNullOrWhiteSpace(discountCompoundParamsDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (!Enum.TryParse(discountCompoundParamsDTO.DiscountRuleRelation, out discountRuleRelation))
+            {
+                return BadRequest("Invalid rule relation");
+            }
+            if (discountCompoundParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store id");
+            }
+            if (discountCompoundParamsDTO.DiscountId1 == Guid.Empty || discountCompoundParamsDTO.DiscountId2 == Guid.Empty)
+            {
+                return BadRequest("Invalid store id");
+            }
+
+            Guid result = await MarketRulesService.AddDiscountRuleAsync
+            (
+                discountCompoundParamsDTO.Username,
+                discountRuleRelation,
+                discountCompoundParamsDTO.StoreId,
+                discountCompoundParamsDTO.DiscountId1,
+                discountCompoundParamsDTO.DiscountId2,
+                discountCompoundParamsDTO.Decide
+            );
+            if (result == Guid.Empty)
+            {
+                return InternalServerError();
+            }
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<AllDiscountsDTO>> Discounts([FromBody] GuidDTO guidDTO)
         {
             if (guidDTO.Id == Guid.Empty)
             {
                 return BadRequest("Invalid store ID");
             }
 
-            ICollection<DiscountData>? result = await MarketRulesService.GetAllDiscounts(guidDTO.Id);
-            if (result == null)
+            ICollection<DiscountData>? leafDiscounts = await MarketRulesService.GetAllDiscounts(guidDTO.Id);
+            if (leafDiscounts == null)
             {
                 return InternalServerError();
             }
 
-            return Ok(result.Select(DiscountDataDTO.FromDiscountData));
+            ICollection<DiscountsRelation>? discountsRelations = await MarketRulesService.GetAllDiscountsRelations(guidDTO.Id);
+            if (leafDiscounts == null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(new AllDiscountsDTO
+            {
+                 LeafDiscounts = leafDiscounts.Select(DiscountDataDTO.FromDiscountData),
+                 RelationDiscounts = discountsRelations.Select(DiscountDataCompundDTO.FromDiscountRelation),
+            });
         }
     }
 }

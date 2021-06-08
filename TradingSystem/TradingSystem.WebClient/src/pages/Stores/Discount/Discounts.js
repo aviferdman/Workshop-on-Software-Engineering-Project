@@ -1,10 +1,7 @@
 import React from "react";
 import './Discounts.css';
 import {GlobalContext} from "../../../globalContext";
-import Header from "../../../header";
 import SimpleDiscount from "./SimpleDiscount";
-import DataSimple from "../../../data/simpleDiscount.json"
-import DataComplex from "../../../data/complexDiscount.json"
 import AddSimpleDiscount from "./AddSimpleDiscount";
 import AddComplexDiscount from "./AddCopmlexDiscount";
 import ComplexDiscount from "./ComplexDiscount";
@@ -18,7 +15,7 @@ export class Discounts extends React.Component {
         this.state = {
             name: "",
             simpleDiscounts: null,
-            complexDiscounts:DataComplex.discounts,
+            complexDiscounts:null,
         };
         this.storeId = this.props.match.params.storeId;
     }
@@ -31,13 +28,21 @@ export class Discounts extends React.Component {
         await api.stores.discounts.fetchData(this.storeId)
             .then(discounts => {
                 this.setState({
-                    simpleDiscounts: discounts,
+                    simpleDiscounts: discounts.leafDiscounts,
+                    complexDiscounts: discounts.relationDiscounts,
                 });
             }, alertRequestError_default);
     }
 
     onSimpleDiscountAdd = discount => {
         this.state.simpleDiscounts.push(discount);
+        this.setState({
+            name: this.state.name,
+        });
+    }
+
+    onCompoundDiscountAdd = discount => {
+        this.state.complexDiscounts.push(discount);
         this.setState({
             name: this.state.name,
         });
@@ -58,7 +63,7 @@ export class Discounts extends React.Component {
                     {/*middle grid - complex discounts*/}
                     <div  className="discounts-grid-complex">
                         <h2> Complex Discounts </h2>
-                        <ComplexDiscount simpleDiscountRecords={this.state.complexDiscounts}  />
+                        <ComplexDiscount discountRecords={this.state.complexDiscounts}  />
                     </div>
 
                     {/*bottom grid - buttons*/}
@@ -68,7 +73,7 @@ export class Discounts extends React.Component {
                         </div>
 
                         <div className="center-btn-nd">
-                            <AddComplexDiscount />
+                            <AddComplexDiscount storeId={this.storeId} onSuccess={this.onCompoundDiscountAdd} />
                         </div>
 
                     </div>

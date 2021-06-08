@@ -7,6 +7,15 @@ export default class FormFieldInfo {
         this.isValidationOn = true;
     }
 
+    getValue() {
+        return this.value;
+    }
+
+    setValue(value, inputValue) {
+        this.value = value;
+        this.inputValue = inputValue === undefined ? (value == null ? '' : value) : inputValue;
+    }
+
     setError(msg) {
         this.isError = true;
         this.errorMessage = msg;
@@ -18,8 +27,7 @@ export default class FormFieldInfo {
     }
 
     trySetValueFromEvent(e) {
-        this.value = e.target.value;
-        this.inputValue = this.value;
+        this.setValue(e.target.value);
         return true;
     }
 
