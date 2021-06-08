@@ -115,8 +115,10 @@ namespace TradingSystem.Business.Market
             string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
+                activeUsers.TryAdd(guestusername, out u);
                 return loginmang;
             }
+            
             User guest;
             ShoppingCart s;
             string GuidString;
