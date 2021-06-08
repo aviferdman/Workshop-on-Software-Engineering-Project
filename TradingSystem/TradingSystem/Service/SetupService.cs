@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
 
 namespace TradingSystem.Service
 {
-    class SetupService
+    public class SetupService
     {
         private static readonly Lazy<SetupService> instanceLazy = new Lazy<SetupService>(() => new SetupService(), true);
         private Queue<String> guestnames;
@@ -21,7 +22,9 @@ namespace TradingSystem.Service
         {
             try
             {
-                String[] lines = System.IO.File.ReadAllLines(@"init.txt");
+                string fileName = "init.txt";
+                string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"TradingSystem\", fileName);
+                String[] lines = System.IO.File.ReadAllLines(path);
                 for (int i=0; i<lines.Length; i++)
                 {
                     Char[] delimiters = { '(', ',', ')', ';' };
