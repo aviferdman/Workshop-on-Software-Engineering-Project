@@ -231,8 +231,8 @@ namespace TradingSystemTests.DBTests
         [TestCleanup]
         public void DeleteAll()
         {
-            //MarketUsers.Instance.tearDown();
-            //Transaction.Instance.DeleteAllTests();
+            MarketUsers.Instance.tearDown();
+            Transaction.Instance.DeleteAllTests();
         }
     }
 }

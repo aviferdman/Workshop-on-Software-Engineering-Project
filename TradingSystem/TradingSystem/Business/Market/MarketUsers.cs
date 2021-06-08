@@ -115,7 +115,7 @@ namespace TradingSystem.Business.Market
             string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
-                activeUsers.TryAdd(guestusername, out u);
+                activeUsers.TryAdd(guestusername,  u);
                 return loginmang;
             }
             
