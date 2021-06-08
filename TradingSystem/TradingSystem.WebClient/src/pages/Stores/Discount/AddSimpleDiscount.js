@@ -9,10 +9,22 @@ import NumberFormField from "../../../formsUtil/NumberFormField";
 class AddSimpleDiscount extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.resetState(false);
+    }
+
+    resetState = set => {
+        let state = {
             show: false,
             discountFields: this.newFields(),
         };
+        if (!set) {
+            this.state = state;
+        }
+        this.state.discountFields.getField('conditionType').setValidationOff();
+        this.onDiscountTypeChangeCore();
+        if (set) {
+            this.setState(state);
+        }
     }
 
     newFields() {
@@ -49,64 +61,75 @@ class AddSimpleDiscount extends React.Component {
 
     onConditionTypeChange = e => {
         e.preventDefault();
-        if (!this.state.discountFields.conditionType.trySetValueFromEvent(e)) {
+        if (!this.state.discountFields.getField('conditionType').trySetValueFromEvent(e)) {
             return;
         }
 
-        if (!this.getInputValue('conditionType')) {
-            if (!this.getInputValue('discountType')) {
-                alert('Cannot set condition type to \'None\' when discount type is \'Rule\'');
-                return;
-            }
-        }
-
+        this.onConditionTypeChangeCore();
         this.setState({
             ...this.state
         });
+    }
+
+    onConditionTypeChangeCore = () => {
+        let conditionType = this.getInputValue('conditionType');
+        switch (conditionType) {
+            case '':
+                break;
+
+            case 'Time':
+                break;
+
+            default:
+                break;
+        }
     }
 
     onDiscountTypeChange = e => {
         e.preventDefault();
-        if (!this.state.discountFields.discountType.trySetValueFromEvent(e)) {
+        if (!this.state.discountFields.getField('discountType').trySetValueFromEvent(e)) {
             return;
         }
 
-        let fields = [
-            this.state.discountFields.percent,
-            this.state.discountFields.category,
-            this.state.discountFields.productId,
-        ];
-
-        if (!this.getInputValue('discountType')) {
-            if (!this.getInputValue('conditionType')) {
-                alert('Cannot set discount type to \'Rule\' when condition is \'None\'');
-                return;
-            }
-
-            for (let field of fields) {
-                field.pushValidationOff();
-            }
-        }
-        else {
-            for (let field of fields) {
-                field.popValidationOn();
-            }
-        }
-
+        this.onDiscountTypeChangeCore();
         this.setState({
             ...this.state
         });
     }
 
+    onDiscountTypeChangeCore = () => {
+        let discountType = this.getInputValue('discountType');
+        switch (discountType) {
+            case 'Product':
+                this.state.discountFields.fields.productId.setValidationOn();
+                this.state.discountFields.fields.category.setValidationOff();
+                break;
+
+            case 'Category':
+                this.state.discountFields.fields.productId.setValidationOff();
+                this.state.discountFields.fields.category.setValidationOn();
+                break;
+
+            case 'Store':
+                this.state.discountFields.fields.productId.setValidationOff();
+                this.state.discountFields.fields.category.setValidationOff();
+                break;
+
+            default:
+                throw new Error('Invalid discount type');
+        }
+    }
+
     onConfirm = async e => {
         e.preventDefault();
-        // if (!this.state.fields.discountFields.validate()) {
-        //     alert('Please fill all fields');
-        //     return;
-        // }
+        if (!this.state.discountFields.validate()) {
+            alert('Please fill all fields');
+            return;
+        }
 
         let discountObj = this.state.discountFields.valuesObject();
         let promise = null;
+
 
         if (this.getInputValue('conditionType')) {
             // TODO: remove later
@@ -116,23 +139,20 @@ class AddSimpleDiscount extends React.Component {
 
 
         discountObj.percent = discountObj.percent / 100;
-        promise = api.stores.discounts.addSimple({
-            username: this.context.username,
-            storeId: this.props.storeId,
-            discountType: discountObj.discountType,
-            percent: discountObj.percent,
-            category: discountObj.category,
-            productId: discountObj.productId ? discountObj.productId : null,
-        });
-        await promise.then(discountId => {
-            discountObj.id = discountId;
-            discountObj.creator = this.context.username;
-            this.props.onSuccess(discountObj);
-            this.setState({
-                show: false,
-                discountFields: this.newFields(),
-            });
-        }, alertRequestError_default);
+         promise = api.stores.discounts.addSimple({
+             username: this.context.username,
+             storeId: this.props.storeId,
+             discountType: discountObj.discountType,
+             percent: discountObj.percent,
+             category: discountObj.category,
+             productId: discountObj.productId ? discountObj.productId : null,
+         });
+         await promise.then(discountId => {
+             discountObj.id = discountId;
+             discountObj.creator = this.context.username;
+             this.props.onSuccess(discountObj);
+             this.resetState(true);
+         }, alertRequestError_default);
     }
 
     render() {
@@ -152,7 +172,7 @@ class AddSimpleDiscount extends React.Component {
                                     <select className="disc-input-props"
                                             required
                                             value={this.getInputValue('discountType')}
-                                            onChange={this.onInputChange('discountType')}>
+                                            onChange={this.onDiscountTypeChange}>
                                         <option value="Product">Product</option>
                                         <option value="Category">Category</option>
                                         <option value="Store">Store</option>
@@ -171,7 +191,7 @@ class AddSimpleDiscount extends React.Component {
                                     <select className="disc-input-props"
                                             required
                                             value={this.getInputValue('conditionType')}
-                                            onChange={this.onInputChange('conditionType')}>
+                                            onChange={this.onConditionTypeChange}>
                                         <option value="">None</option>
                                         <option value="Quantity">Quantity</option>
                                         <option value="Weight">Weight</option>

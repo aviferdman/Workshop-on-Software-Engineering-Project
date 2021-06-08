@@ -3,7 +3,7 @@ export default class FormFieldInfo {
         this.value = initValue === undefined ? '' : initValue;
         this.errorMessage = null;
         this.isError = false;
-        this.validationCounterPushCounter = 0;
+        this.isValidationOn = true;
     }
 
     setError(msg) {
@@ -21,16 +21,16 @@ export default class FormFieldInfo {
         return true;
     }
 
-    popValidationOn() {
-        this.validationCounterPushCounter--;
+    setValidationOn() {
+        this.isValidationOn = true;
     }
 
-    pushValidationOff() {
-        this.validationCounterPushCounter++;
+    setValidationOff() {
+        this.isValidationOn = false;
     }
 
     validate() {
-        if (this.validationCounterPushCounter > 0) {
+        if (!this.isValidationOn) {
             return true;
         }
 
