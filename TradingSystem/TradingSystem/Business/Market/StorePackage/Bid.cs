@@ -8,7 +8,8 @@ namespace TradingSystem.Business.Market.StorePackage
     {
         Accept,
         Deny,
-        Negotiate
+        CustomerNegotiate,
+        OwnerNegotiate
     }
     public class Bid
     {
@@ -26,7 +27,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.StoreId = storeId;
             this.ProductId = productId;
             this.Price = price;
-            this.Status = BidStatus.Negotiate;
+            this.Status = BidStatus.CustomerNegotiate;
         }
 
         public string Username { get => _username; set => _username = value; }

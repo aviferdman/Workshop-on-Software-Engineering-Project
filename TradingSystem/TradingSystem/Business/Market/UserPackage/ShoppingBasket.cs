@@ -144,5 +144,15 @@ namespace TradingSystem.Business.Market
         {
             return this.ShoppingCart.username;
         }
+
+        public ShoppingBasket Clone()
+        {
+            var basket = new ShoppingBasket(shoppingCart, store);
+            foreach (var p_q in _product_quantity)
+            {
+                basket.Product_quantity.Add(new ProductInCart(p_q.product.Clone(), p_q.quantity));
+            }
+            return basket;
+        }
     }
 }

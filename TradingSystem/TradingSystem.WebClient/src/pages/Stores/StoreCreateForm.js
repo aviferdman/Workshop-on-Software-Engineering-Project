@@ -7,6 +7,7 @@ import AddressFields from "../../formsUtil/addressFields";
 import CreditCardFields from "../../formsUtil/creditCardFields";
 import axios from "axios";
 import Header from "../../header";
+import {alertRequestError_default} from "../../utils";
 
 export default class StoreCreateForm extends React.Component {
     constructor(props) {
@@ -41,12 +42,7 @@ export default class StoreCreateForm extends React.Component {
             this.props.history.push('/myStores');
         }
         catch (e) {
-            let msg = (e.response && e.response.data) || e.message;
-            if (msg) {
-                msg = ': ' + msg;
-            }
-            alert('An error occurred' + msg);
-            console.error("search error occurred: ", e);
+            alertRequestError_default(e);
         }
     };
 

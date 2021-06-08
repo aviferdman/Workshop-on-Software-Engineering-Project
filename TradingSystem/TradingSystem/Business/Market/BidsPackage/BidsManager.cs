@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 
@@ -15,35 +16,35 @@ namespace TradingSystem.Business.Market.BidsPackage
     {
         public Guid id { get; set; }
         public Store s { get; set; }
-        public ICollection<Bid> bids { get; set; }
+        public HashSet<BidState> bidsState { get; set; }
         public BidsManager(Store s)
         {
             this.s = s;
-            this.bids = new HashSet<Bid>();
+            this.bidsState = new HashSet<BidState>();
         }
 
         public BidsManager()
         {
         }
 
-        public async Task AddBid(Bid bid)
-        {
-            this.bids.Add(bid);
-        }
-
         public ICollection<Bid> GetUserBids(string username)
         {
-            return bids.Where(b => b.Username.Equals(username)).ToHashSet();
+            return bidsState.Select(state => state.Bid).Where(b => b.Username.Equals(username)).ToHashSet();
         }
 
         public ICollection<Bid> GetUserAcceptedBids(string username)
         {
-            return bids.Where(b => b.Username.Equals(username) && b.Status.Equals(BidStatus.Accept)).ToHashSet();
+            return bidsState.Select(state => state.Bid).Where(b => b.Username.Equals(username) && b.Status.Equals(BidStatus.Accept)).ToHashSet();
         }
 
         public Bid GetBidById(Guid id)
         {
-            return bids.Where(b => b.Id.Equals(id)).FirstOrDefault();
+            return bidsState.Select(state => state.Bid).Where(b => b.Id.Equals(id)).FirstOrDefault();
+        }
+
+        public BidState GetBidStateById(Guid id)
+        {
+            return bidsState.Where(state => state.Bid.Id.Equals(id)).FirstOrDefault();
         }
 
         public async Task<Result<bool>> CustomerDenyBid(Guid bidId, string storeName)
@@ -51,13 +52,15 @@ namespace TradingSystem.Business.Market.BidsPackage
             var bid = GetBidById(bidId);
             NotifyOwners(EventType.RequestPurchaseEvent, $"{bid.Username} denied the bid in store {storeName} for buying the product {bid.ProductId} for {bid.Price}$");
             bid.Status = BidStatus.Deny;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
         public async Task<Result<Guid>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice, string storeName)
         {
             var bid = new Bid(username, storeId, productId, newBidPrice);
-            this.bids.Add(bid);
+            this.bidsState.Add(new BidState(bid));
+            await ProxyMarketContext.Instance.saveChanges();
             NotifyOwners(EventType.RequestPurchaseEvent, $"You got new Bid in store {storeName}");
             return new Result<Guid>(bid.Id, false, "");
         }
@@ -80,36 +83,38 @@ namespace TradingSystem.Business.Market.BidsPackage
             var username = bid.Username;
             NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Suggested to buy product {productName} for {newBidPrice} in store {storeName}");
             bid.Price = newBidPrice;
-            bid.Status = BidStatus.Negotiate;
+            bid.Status = BidStatus.CustomerNegotiate;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
         public Guid getProductIdByBidId(Guid bidId)
         {
-            return bids.Where(b => b.Id.Equals(bidId)).Select(b => b.ProductId).FirstOrDefault();
+            return bidsState.Select(state => state.Bid).Where(b => b.Id.Equals(bidId)).Select(b => b.ProductId).FirstOrDefault();
         }
 
         public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, Guid bidId)
         {
             var bid = GetBidById(bidId);
-            var owner = GetAppointer(ownerUsername);
-            await owner.AcceptBid(bidId);
+            var bidState = GetBidStateById(bidId);
+            await bidState.AddAcceptence(ownerUsername);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"We accepted your bid request.");
             if (AllOwnersAccept(bidId))
             {
                 bid.Status = BidStatus.Accept;
             }
+
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
         private bool AllOwnersAccept(Guid bidId)
         {
-            var bidAcceptence = s.founder.GetBidAcceptenceByBidId(bidId);
-            bool allAccept = bidAcceptence != null && bidAcceptence.accept;
+            var bidState = GetBidStateById(bidId);
+            bool allAccept = bidState.OwnersAccepted.Where(p=>p.p.Equals(s.founder.Username)).Any();
             foreach (var owner in s.owners)
             {
-                bidAcceptence = owner.GetBidAcceptenceByBidId(bidId);
-                allAccept = allAccept && bidAcceptence != null && bidAcceptence.accept;
+                allAccept = allAccept && bidState.OwnersAccepted.Where(p => p.p.Equals(owner.Username)).Any();
             }
             return allAccept;
         }
@@ -119,37 +124,20 @@ namespace TradingSystem.Business.Market.BidsPackage
             var bid = GetBidById(bidId);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, We suggest another bid request for you.");
             bid.Price = newBidPrice;
-            bid.Status = BidStatus.Negotiate;
+            bid.Status = BidStatus.OwnerNegotiate;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
 
         internal async Task<Result<bool>> OwnerDenyBid(string ownerUsername, Guid bidId)
         {
             var bid = GetBidById(bidId);
-            var owner = GetAppointer(ownerUsername);
-            await owner.DenyBid(bidId);
+            var bidState = GetBidStateById(bidId);
+            await bidState.RemoveAcceptence(ownerUsername);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, sorry, but we denied your bid request.");
             bid.Status = BidStatus.Deny;
+            await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
-        }
-
-        private Owner GetOwner(String name)
-        {
-            foreach (Owner owner in s.owners)
-            {
-                if (owner.Username.Equals(name))
-                    return owner;
-            }
-            return null;
-        }
-        private Appointer GetAppointer(string appointerName)
-        {
-            Appointer ret = GetOwner(appointerName);
-            if (ret == null)
-            {
-                ret = s.founder;
-            }
-            return ret;
         }
     }
 }

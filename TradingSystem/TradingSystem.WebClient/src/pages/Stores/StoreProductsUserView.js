@@ -49,7 +49,8 @@ export class StoreProductsUserView extends React.Component {
                     <div className="products-view-flex">
                         <HomeProducts  products={this.state.products}
                                        addToCart={this.onAddToCart}
-                                       history={this.props.history} />
+                                       history={this.props.history}
+                                       storeId={this.storeId} />
                     </div>
                 </main>
 

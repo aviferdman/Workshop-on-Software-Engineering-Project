@@ -83,6 +83,10 @@ namespace TradingSystem.Business.Market
                 GuidString = GuidString.Replace("+", "");
                 u.Username = GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
+            Statistics s=UsersDAL.Instance.getStatis(DateTime.Now.Date);
+            s.guestsNum++;
+            ProxyMarketContext.Instance.saveChanges();
+            NotifyAdmins(EventType.Stats);
             return u.Username;
         }
 
@@ -111,8 +115,10 @@ namespace TradingSystem.Business.Market
             string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
+                activeUsers.TryAdd(guestusername,  u);
                 return loginmang;
             }
+            
             User guest;
             ShoppingCart s;
             string GuidString;
@@ -148,10 +154,42 @@ namespace TradingSystem.Business.Market
             };
             if(PublisherManagement.Instance.TestMode)
                 PublisherManagement.Instance.BecomeLoggedIn(u.Username);
+            Statistics stat = UsersDAL.Instance.getStatis(DateTime.Now.Date);
             if (m is AdministratorState)
+            {
+                stat.adminNum++;
+                await ProxyMarketContext.Instance.saveChanges();
                 return "admin";
+            }
+            ICollection<Store> stores = await getUserStores(usrname);
+            if (stores == null || stores.Count == 0)
+            {
+                stat.membersNum++;
+            }
+            else if (stores.Where(s => s.founder.username.Equals(usrname) || s.GetOwner(usrname) != null).Any())
+            {
+                stat.ownersNum++;
+            }
+            else
+            {
+                stat.managersNum++;
+            }
+            await ProxyMarketContext.Instance.saveChanges();
+            NotifyAdmins(EventType.Stats);
             return "success";
         }
+
+        private void NotifyAdmins(EventType ev)
+        {
+            foreach (var u in activeUsers.Values)
+            {
+                if (u.State is AdministratorState)
+                {
+                    PublisherManagement.Instance.EventNotification(u.Username, ev, "");
+                }
+            }
+        }
+
         //use case 3 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/51
         ///before logout checks  - <see cref="UserManagement.UserManagement.Logout(string)"/> 
         public async Task<string> logout(string username)
@@ -236,7 +274,6 @@ namespace TradingSystem.Business.Market
             if (p.Quantity < quantity || quantity < 1)
                 return "product's quantity is insufficient";
             ShoppingBasket basket = await u.ShoppingCart.GetShoppingBasket(found);
-
             return await basket.addProduct(p, quantity);
 
         }
@@ -326,6 +363,8 @@ namespace TradingSystem.Business.Market
                         if (ProxyMarketContext.Instance.IsDebug)
                         {
                             u.ShoppingCart = c;
+                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username, out _);
+                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -340,6 +379,8 @@ namespace TradingSystem.Business.Market
                         if (ProxyMarketContext.Instance.IsDebug)
                         {
                             u.ShoppingCart = c;
+                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username,out _);
+                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -354,6 +395,8 @@ namespace TradingSystem.Business.Market
                         if (ProxyMarketContext.Instance.IsDebug)
                         {
                             u.ShoppingCart = c;
+                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username, out _);
+                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -375,10 +418,10 @@ namespace TradingSystem.Business.Market
             
             return new Result<ShoppingCart>(u.ShoppingCart, false, null);
         }
-
-       
-
-        
+        public Statistics GetStats()
+        {
+            return UsersDAL.Instance.getStatis(DateTime.Now.Date);
+        }
 
         public void CleanMarketUsers()
         {

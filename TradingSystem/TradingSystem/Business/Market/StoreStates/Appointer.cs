@@ -19,44 +19,9 @@ namespace TradingSystem.Business.Market.StoreStates
         public Guid sid { get; set; }
         public string username { get; set; }
 
-        public HashSet<BidAcceptence> bidsAcceptence { get; set; }
-
         public Appointer()
         {
-            this.bidsAcceptence = new HashSet<BidAcceptence>();
         }
-
-        public async Task AcceptBid(Guid bidId)
-        {
-            if (!Exists(bidId))
-            {
-                bidsAcceptence.Add(new BidAcceptence(bidId));
-            }
-            var bidAcceptence = GetBidAcceptenceByBidId(bidId);
-            bidAcceptence.accept = true;
-        }
-
-        public async Task DenyBid(Guid bidId)
-        {
-            if (!Exists(bidId))
-            {
-                bidsAcceptence.Add(new BidAcceptence(bidId));
-            }
-            var bidAcceptence = GetBidAcceptenceByBidId(bidId);
-            bidAcceptence.accept = false;
-        }
-
-        private bool Exists(Guid bidId)
-        {
-            return bidsAcceptence.Count(b => b.id.Equals(bidId)) > 0;
-        }
-
-        public BidAcceptence GetBidAcceptenceByBidId(Guid bidId)
-        {
-            return bidsAcceptence.Where(b => b.id.Equals(bidId)).FirstOrDefault();
-
-        }
-
 
         //appoint a new manager with memberStaste m to Store s adds to lists in store and memberState
         //use locks for store premmissions and memberState premissions

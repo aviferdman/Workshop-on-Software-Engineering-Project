@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.DiscountPackage;
 
 namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 {
@@ -10,12 +11,13 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         IDiscountCalculator discountCalculator;
         public CategoryDiscountCalculator(string category, double percent)
         {
-            Func<ShoppingBasket, double> f = new Func<ShoppingBasket, double>((ShoppingBasket basket) => Calc(basket, category, percent));
+            Func<ShoppingBasket, DiscountOfProducts> f = new Func<ShoppingBasket, DiscountOfProducts>((ShoppingBasket basket) => Calc(basket, category, percent));
             discountCalculator = new DiscountCalculator(f);
         }
 
-        private double Calc(ShoppingBasket basket, string category, double percent)
+        private DiscountOfProducts Calc(ShoppingBasket basket, string category, double percent)
         {
+            var ret = new DiscountOfProducts();
             double discount = 0;
             foreach (var p_q in basket.GetDictionaryProductQuantity())
             {
@@ -24,9 +26,15 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
                 if (product.Category.Equals(category))
                 {
                     discount += quantity * product.Price * percent;
+                    ret.Products.Add(product.Id, (1 - percent) * product.Price);
+                }
+                else
+                {
+                    ret.Products.Add(product.Id, product.Price);
                 }
             }
-            return discount;
+            ret.Discount = discount;
+            return ret;
         }
 
         public IDiscountCalculator Add(IDiscountCalculator otherDiscountCalc)
@@ -34,12 +42,12 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
             return discountCalculator.Add(otherDiscountCalc);
         }
 
-        public virtual double CalcDiscount(ShoppingBasket shoppingBasket)
+        public virtual DiscountOfProducts CalcDiscount(ShoppingBasket shoppingBasket)
         {
             return discountCalculator.CalcDiscount(shoppingBasket);
         }
 
-        public virtual Func<ShoppingBasket, double> GetFunction()
+        public virtual Func<ShoppingBasket, DiscountOfProducts> GetFunction()
         {
             return discountCalculator.GetFunction();
         }

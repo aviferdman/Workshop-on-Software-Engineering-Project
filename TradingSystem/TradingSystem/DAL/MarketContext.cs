@@ -29,12 +29,41 @@ namespace TradingSystem.DAL
         public DbSet<MemberState> memberStates { get; set; }
         public DbSet<State> states { get; set; }
         public DbSet<Product> products { get; set; }
+        public DbSet<Statistics> statistics { get; set; }
+        
         public DbSet<AdministratorState> administratorStates { get; set; }
         public DbSet<Appointer> appointers { get; set; }
+
+        public  Statistics getStatis(DateTime date)
+        {
+            Statistics s;
+            try{
+                s= statistics.Single(s => s.date.Day.Equals(date.Day));
+            }
+            catch(Exception e)
+            {
+                s = new Statistics();
+                s.date = date;
+                statistics.Add(s);
+                try
+                {
+                    SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    return null;
+                }
+                
+            }
+            return s;
+        }
+
         public DbSet<Founder> founders { get; set; }
         public DbSet<Owner> owners { get; set; }
         public DbSet<Store> stores { get; set; }
         public DbSet<BidsManager> BidsManager { get; set; }
+        public DbSet<BidState> BidStates { get; set; }
+        public DbSet<Bid> Bids { get; set; }
         public DbSet<PurchasePolicy> PurchasePolicy { get; set; }
         public async Task AddHistory(TransactionStatus history)
         {
@@ -93,8 +122,12 @@ namespace TradingSystem.DAL
             modelBuilder.Entity<Store>()
             .HasMany(b => b.owners)
             .WithOne(m => m.s);
+            modelBuilder.Entity<BidState>().HasKey(s => s.id);
+            
             modelBuilder.Entity<Store>().HasOne(s => s.founder).WithOne(f=>f.s);
-            modelBuilder.Entity<Store>().HasOne(s => s.BidsManager).WithOne(f => f.s).HasForeignKey<BidsManager>("sid");
+            modelBuilder.Entity<Store>().HasOne(s => s.BidsManager).WithOne(f => f.s).HasForeignKey<BidsManager>("sid").OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<BidsManager>().HasMany(s => s.bidsState).WithOne().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<BidState>().HasOne(s => s.Bid).WithOne().HasForeignKey<Bid>("stateId").OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<DataUser>()
                 .HasKey(d => d.username);
             modelBuilder.Entity<State>()
@@ -103,6 +136,9 @@ namespace TradingSystem.DAL
               .HasKey(s => s.PackageId);
             modelBuilder.Entity<PaymentStatus>()
               .HasKey(s => s.PaymentId);
+            modelBuilder.Entity<Statistics>()
+             .HasKey(s => s.date);
+            
             modelBuilder.Entity<ShoppingCart>()
                .HasKey(s => s.username);
             modelBuilder.Entity<Store>()
@@ -179,7 +215,7 @@ namespace TradingSystem.DAL
             Entry(sc).Reference(s => s._bank).Load();
             Entry(sc).Reference(s => s.BidsManager).Load();
             Entry(sc).Reference(s => s.purchasePolicy).Load();
-            Entry(sc.BidsManager).Collection(s => s.bids).Load();
+            //Entry(sc.BidsManager).Collection(s => s.bids).Load();
             Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
             Entry(sc).Collection(s => s.managers).Load();
             Entry(sc).Collection(s => s.owners).Load();
@@ -390,7 +426,7 @@ namespace TradingSystem.DAL
             await Entry(sc).Reference(s => s.BidsManager).LoadAsync();
             await Entry(sc).Reference(s => s.purchasePolicy).LoadAsync();
             await Entry(sc).Collection(s => s._products).LoadAsync();
-            Entry(sc.BidsManager).Collection(s => s.bids).Load();
+            //Entry(sc.BidsManager).Collection(s => s.bids).Load();
             Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
             await Entry(sc).Collection(s => s.managers).LoadAsync();
             await Entry(sc).Collection(s => s.owners).LoadAsync();
