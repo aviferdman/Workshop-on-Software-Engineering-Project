@@ -28,7 +28,7 @@ namespace TradingSystem.Business.Market.DiscountPackage
             this._category = category;
             this._productId = productId;
             this._valueLessThan = valueLessThan;
-            this._valueGreaterEQThan = ValueGreaterEQThan;
+            this._valueGreaterEQThan = valueGreaterEQThan;
             this._d1 = d1;
             this._d2 = d2;
         }

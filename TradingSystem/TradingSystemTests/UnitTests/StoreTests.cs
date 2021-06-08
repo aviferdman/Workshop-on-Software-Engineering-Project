@@ -156,7 +156,9 @@ namespace TradingSystemTests.MarketTests
             discount2.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(store.Founder.Username, discount1);
             store.AddDiscount(store.Founder.Username, discount2);
-            Assert.AreEqual(0.1 * product1.Price, store.ApplyDiscounts(shoppingBasket));
+            double d1 = 0.1 * product1.Price;
+            double d2 = store.ApplyDiscounts(shoppingBasket);
+            Assert.AreEqual(d1, d2);
         }
 
         public DiscountOfProducts return200(ShoppingBasket shoppingBasket)
