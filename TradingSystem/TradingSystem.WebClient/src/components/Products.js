@@ -78,9 +78,8 @@ class Products extends Component {
                     <li key={product.id}>
                         {this.renderControlButtonsElement(product)}
                         <div className = "store-product">
-                            <a>
-                                <p className= "productName">{product.name}</p>
-                            </a>
+                            <p className= "productName"> {<text style={{fontWeight: "bold"}}>{product.name} </text>}</p>
+                            <p className= "productName"> {<text style={{fontWeight: "bold"}}>Quantity in store: </text>} {product.quantity}  </p>
                             <div className="product-price">
                                 <div>{formatCurrency(product.price)}</div>
                             </div>
