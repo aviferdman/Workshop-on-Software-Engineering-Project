@@ -185,6 +185,12 @@ footer{
 
 .control-buttons{
     display: grid;
+    grid-template-columns: 4rem 4rem;
+
+}
+
+.control-buttons-bid{
+    display: grid;
     grid-template-columns: 1fr;
 
 }
