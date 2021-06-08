@@ -4,6 +4,7 @@ import {alertRequestError_default} from "../utils";
 import formatCurrency from "../pages/mainPage/currency";
 import React from "react";
 import {GlobalContext} from "../globalContext";
+import AddBid from "../pages/Stores/StoreBids/AddBid";
 
 export default class HomeProduct extends React.Component {
     constructor(props) {
