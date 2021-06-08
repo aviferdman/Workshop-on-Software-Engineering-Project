@@ -93,7 +93,7 @@ namespace TradingSystemTests.IntegrationTests
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
-/*        [TestMethod]
+        [TestMethod]
         public async Task CheckIllegalPurcahseStoreQuantityRemains()
         {
             int originQuantity = product.Quantity;
@@ -106,9 +106,9 @@ namespace TradingSystemTests.IntegrationTests
             bool successPurchase = !v1.IsErr;
             Assert.AreEqual(successPurchase, false);
             Assert.AreEqual(originQuantity, product.Quantity);
-        }*/
+        }
 
-/*        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
         [TestMethod]
         public async Task CheckIllegalPurcahseUserRefund()
         {
@@ -124,7 +124,7 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(successPurchase, false);
             bool existsRefund = Logger.Instance.Activities.Where(activity => activity.Contains("CancelTransaction")).Any();
             Assert.IsTrue(existsRefund);
-        }*/
+        }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
         [TestMethod]

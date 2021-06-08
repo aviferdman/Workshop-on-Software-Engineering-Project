@@ -96,8 +96,12 @@ namespace TradingSystem.Business.Market
                 //chcek is not empty
                 if (IsEmpty()) 
                 {
-                    transaction.Commit();
-                    transaction.Dispose();
+                    if (!ProxyMarketContext.Instance.IsDebug)
+                    {
+                        transaction.Commit();
+                        transaction.Dispose();
+                    }
+                        
                     return new BuyStatus(false, null); 
                 }
                 bool allStatusesOk = true;
