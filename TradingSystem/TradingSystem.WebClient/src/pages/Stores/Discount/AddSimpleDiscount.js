@@ -171,8 +171,27 @@ class AddSimpleDiscount extends React.Component {
         let discountObj = this.state.discountFields.valuesObject();
         discountObj.percent = discountObj.percent / 100;
 
+        switch (discountObj.discountType) {
+            case 'Product':
+                discountObj.category = "";
+                break;
+            case 'Category':
+                discountObj.productId = null;
+                break;
+            case 'Store':
+                discountObj.productId = null;
+                discountObj.category = "";
+                break;
+            default:
+                throw new Error('Invalid discount type');
+        }
+
         switch (discountObj.conditionType) {
             case '':
+                discountObj.minValue = null;
+                discountObj.maxValue = null;
+                discountObj.startDate = null;
+                discountObj.endDate = null;
                 break;
 
             case 'Time':
@@ -180,6 +199,8 @@ class AddSimpleDiscount extends React.Component {
                     alert('Please fill all required fields');
                     return;
                 }
+                discountObj.minValue = null;
+                discountObj.maxValue = null;
                 break;
 
             default:
@@ -187,6 +208,8 @@ class AddSimpleDiscount extends React.Component {
                     alert('Please fill all required fields');
                     return;
                 }
+                discountObj.startDate = null;
+                discountObj.endDate = null;
                 break;
         }
 

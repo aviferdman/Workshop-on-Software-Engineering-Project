@@ -1,7 +1,7 @@
 export default class FormFieldInfo {
     constructor(initValue) {
         this.value = initValue === undefined ? '' : initValue;
-        this.inputValue = this.value;
+        this.inputValue = initValue == null ? '' : initValue;
         this.errorMessage = null;
         this.isError = false;
         this.isValidationOn = true;
