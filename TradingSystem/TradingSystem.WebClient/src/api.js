@@ -145,6 +145,6 @@ export const stores = {
         fetchData: postCurry('/stores/rules/Discounts', storeId => ({
             id: storeId,
         })),
-        addSimple: postCurry('/stores/rules/AddSimpleDiscount'),
+        add: postCurry('/stores/rules/AddDiscount'),
     },
 };

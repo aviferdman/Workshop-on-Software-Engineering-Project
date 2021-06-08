@@ -33,7 +33,6 @@ export class StoreHistory extends Component {
                         <div className="history_s">
                             <History historyRecords={this.state.historyRecords} history={this.props.history} storeId={this.storeId} />
                         </div>
-
                     )}
                 </div>
 

@@ -1,6 +1,7 @@
 export default class FormFieldInfo {
     constructor(initValue) {
         this.value = initValue === undefined ? '' : initValue;
+        this.inputValue = this.value;
         this.errorMessage = null;
         this.isError = false;
         this.isValidationOn = true;
@@ -18,6 +19,7 @@ export default class FormFieldInfo {
 
     trySetValueFromEvent(e) {
         this.value = e.target.value;
+        this.inputValue = this.value;
         return true;
     }
 

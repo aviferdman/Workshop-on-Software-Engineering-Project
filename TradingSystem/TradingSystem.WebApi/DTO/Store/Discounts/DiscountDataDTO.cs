@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.DiscountPackage;
 
 namespace TradingSystem.WebApi.DTO.Store.Discounts
@@ -28,7 +29,7 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
                 Id = discountData.DiscountId,
                 Creator = discountData.Username,
                 DiscountType = discountData.DiscountType.ToString(),
-                ConditionType = discountData.RuleType.ToString(),
+                ConditionType = discountData.RuleType == RuleType.Simple ? null : discountData.RuleType.ToString(),
                 Percent = discountData.Precent,
                 Category = discountData.Category,
                 ProductId = discountData.ProductId,

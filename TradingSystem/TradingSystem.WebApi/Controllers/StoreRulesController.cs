@@ -26,23 +26,52 @@ namespace TradingSystem.WebApi.Controllers
         public MarketRulesService MarketRulesService { get; }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> AddSimpleDiscount([FromBody] SimpleDiscountParamsDTO simpleDiscountParamsDTO)
+        public async Task<ActionResult<Guid>> AddDiscount([FromBody] DiscountParamsDTO discountParamsDTO)
         {
             RuleContext ruleContext;
-            if (!Enum.TryParse(simpleDiscountParamsDTO.DiscountType, out ruleContext))
+            if (!Enum.TryParse(discountParamsDTO.DiscountType, out ruleContext))
             {
                 return BadRequest("Invalid discount type");
             }
 
-            Guid result = await MarketRulesService.AddSimpleDiscountAsync
-            (
-                simpleDiscountParamsDTO.Username,
-                simpleDiscountParamsDTO.StoreId,
-                ruleContext,
-                simpleDiscountParamsDTO.Percent,
-                simpleDiscountParamsDTO.Category,
-                simpleDiscountParamsDTO.ProductId ?? Guid.Empty
-            );
+            Task<Guid> task;
+            if (string.IsNullOrEmpty(discountParamsDTO.ConditionType))
+            {
+                task = MarketRulesService.AddSimpleDiscountAsync
+                (
+                    discountParamsDTO.Username,
+                    discountParamsDTO.StoreId,
+                    ruleContext,
+                    discountParamsDTO.Percent,
+                    discountParamsDTO.Category,
+                    discountParamsDTO.ProductId ?? Guid.Empty
+                );
+            }
+            else
+            {
+                RuleType ruleType;
+                if (!Enum.TryParse(discountParamsDTO.ConditionType, out ruleType))
+                {
+                    return BadRequest("Invalid condition type");
+                }
+
+                task = MarketRulesService.AddConditionalDiscountAsync
+                (
+                    discountParamsDTO.Username,
+                    discountParamsDTO.StoreId,
+                    ruleContext,
+                    ruleType,
+                    discountParamsDTO.Percent,
+                    discountParamsDTO.Category,
+                    discountParamsDTO.ProductId ?? Guid.Empty,
+                    discountParamsDTO.MaxValue ?? int.MaxValue,
+                    discountParamsDTO.MinValue ?? 0,
+                    discountParamsDTO.StartDate ?? default,
+                    discountParamsDTO.EndDate ?? default
+                );
+            }
+
+            Guid result = await task;
             if (result == Guid.Empty)
             {
                 return InternalServerError();
