@@ -61,5 +61,10 @@ namespace TradingSystem.Service
             }
             return dataStores;
         }
+
+        public Statistics GetStats()
+        {
+            return marketUsers.GetStats();
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
@@ -65,14 +66,32 @@ namespace TradingSystemTests.IntegrationTests
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(testStore.GetFounder().Username, discount);
-            Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
+            Assert.AreEqual(PRICE1 * 5 * (1 - (DISCOUNT_VALUE / 100)), testUser.ShoppingCart.CalcPaySum());
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsTrue(!v1.IsErr);
         }
 
-        private double return15(ShoppingBasket arg)
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
+        [TestMethod]
+        public async Task CheckLegalPurcahseWithDiscountPriceRemains()
         {
-            return DISCOUNT_VALUE;
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            ConditionDiscount discount = new ConditionDiscount(new DiscountCalculator(return15));
+            IRule rule = new Rule(CheckTotalWeightMoreThan400);
+            discount.AddRule(rule);
+            testStore.AddDiscount(testStore.GetFounder().Username, discount);
+            var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
+            Assert.AreEqual(PRICE1, product.Price);
+            Assert.IsTrue(!v1.IsErr);
+        }
+
+        private DiscountOfProducts return15(ShoppingBasket arg)
+        {
+            var d = new DiscountOfProducts();
+            d.AddProduct(product.Id, product.Price - 15);
+            d.Discount = 15;
+            return d;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
@@ -109,6 +128,8 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckIllegalPurcahseUserRefund()
         {
             Logger.Instance.CleanLogs();
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
             var v = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
@@ -136,12 +157,12 @@ namespace TradingSystemTests.IntegrationTests
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
-        [TestMethod]
+/*        [TestMethod]
         public async Task CheckLegalPurcahseEmptyShoppingCart()
         {
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsFalse(!v1.IsErr);
-        }
+        }*/
 
         /// test for function :<see cref="TradingSystem.Business.Market.Transaction.ActivateTransaction(string, string, double, Address, Address, PaymentMethod, Guid, CreditCard, double, IShoppingBasket)"/>
         [TestMethod]

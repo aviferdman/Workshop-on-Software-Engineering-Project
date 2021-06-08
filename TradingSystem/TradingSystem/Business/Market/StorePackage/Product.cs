@@ -17,6 +17,8 @@ namespace TradingSystem.Business.Market
 
         public string _storeName { get; set; }
 
+        public double discount { get; set; }
+
         public Product(String name, int quantity, double weight, double price, String category, string storeName = "")
         {
             this._name = name;
@@ -67,5 +69,15 @@ namespace TradingSystem.Business.Market
         public int Rating { get => rating; set => rating = value; }
         [NotMapped]
         public string StoreName { get => _storeName; set => _storeName = value; }
+        [NotMapped]
+        public double Discount { get => discount; set => discount = value; }
+
+        public Product Clone()
+        {
+            var p = new Product(_name, _quantity, _weight, _price, category, _storeName);
+            p.Discount = discount;
+            p.Id = id;
+            return p;
+        }
     }
 }

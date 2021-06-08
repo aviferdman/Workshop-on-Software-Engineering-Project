@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.DAL;
 
@@ -22,10 +23,14 @@ namespace TradingSystemTests.UnitTests
         {
             discountCalc1 = new Mock<IDiscountCalculator>();
             discountCalc2 = new Mock<IDiscountCalculator>();
-            discountCalc1.Setup(d => d.CalcDiscount(It.IsAny<ShoppingBasket>())).Returns(15);
-            discountCalc1.Setup(d => d.GetFunction()).Returns(new Func<ShoppingBasket, double>((ShoppingBasket shoppingBasket) => 15));
-            discountCalc2.Setup(d => d.CalcDiscount(It.IsAny<ShoppingBasket>())).Returns(20);
-            discountCalc2.Setup(d => d.GetFunction()).Returns(new Func<ShoppingBasket, double>((ShoppingBasket shoppingBasket) => 20));
+            var d1 = new DiscountOfProducts();
+            d1.Discount = 15;
+            var d2 = new DiscountOfProducts();
+            d2.Discount = 20;
+            discountCalc1.Setup(d => d.CalcDiscount(It.IsAny<ShoppingBasket>())).Returns(d1);
+            discountCalc1.Setup(d => d.GetFunction()).Returns(new Func<ShoppingBasket, DiscountOfProducts>((ShoppingBasket shoppingBasket) => d1));
+            discountCalc2.Setup(d => d.CalcDiscount(It.IsAny<ShoppingBasket>())).Returns(d2);
+            discountCalc2.Setup(d => d.GetFunction()).Returns(new Func<ShoppingBasket, DiscountOfProducts>((ShoppingBasket shoppingBasket) => d2));
             User u = new User();
             Store store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(u), store);
@@ -70,7 +75,7 @@ namespace TradingSystemTests.UnitTests
         public void CheckApplyDiscounts()
         {
             ConditionDiscount discount = new ConditionDiscount(discountCalc1.Object);
-            Assert.AreEqual(15, discount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(15, discount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.And(ICollection{IRule})"/>
@@ -84,7 +89,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             ConditionDiscount addedDiscount = discount.And(rule2.Object);
-            Assert.AreEqual(15, addedDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(15, addedDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.And(ICollection{IRule})"/>
@@ -98,7 +103,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             ConditionDiscount addedDiscount = discount.And(rule2.Object);
-            Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.And(ICollection{IRule})"/>
@@ -112,7 +117,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             ConditionDiscount addedDiscount = discount.And(rule2.Object);
-            Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.And(ICollection{IRule})"/>
@@ -126,7 +131,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             ConditionDiscount addedDiscount = discount.And(rule2.Object);
-            Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0, addedDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Or(ICollection{IRule})"/>
@@ -140,7 +145,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             ConditionDiscount orDiscount = discount.Or(rule2.Object);
-            Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Or(ICollection{IRule})"/>
@@ -154,7 +159,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             ConditionDiscount orDiscount = discount.Or(rule2.Object);
-            Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Or(ICollection{IRule})"/>
@@ -168,7 +173,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             ConditionDiscount orDiscount = discount.Or(rule2.Object);
-            Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(15, orDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Or(ICollection{IRule})"/>
@@ -182,7 +187,7 @@ namespace TradingSystemTests.UnitTests
             Mock<IRule> rule2 = new Mock<IRule>();
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             ConditionDiscount orDiscount = discount.Or(rule2.Object);
-            Assert.AreEqual(0, orDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0, orDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Xor(Discount, bool)"/>
@@ -198,7 +203,7 @@ namespace TradingSystemTests.UnitTests
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
             ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
-            Assert.AreEqual(15, xorDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(15, xorDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Xor(Discount, bool)"/>
@@ -214,7 +219,7 @@ namespace TradingSystemTests.UnitTests
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
             ConditionDiscount xorDiscount = discount1.Xor(discount2, false);
-            Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Xor(Discount, bool)"/>
@@ -230,7 +235,7 @@ namespace TradingSystemTests.UnitTests
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
             ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
-            Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Xor(Discount, bool)"/>
@@ -246,7 +251,7 @@ namespace TradingSystemTests.UnitTests
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(true);
             discount2.AddRule(rule2.Object);
             ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
-            Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(20, xorDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.Discount.Xor(Discount, bool)"/>
@@ -262,7 +267,7 @@ namespace TradingSystemTests.UnitTests
             rule2.Setup(r => r.Check(It.IsAny<ShoppingBasket>())).Returns(false);
             discount2.AddRule(rule2.Object);
             ConditionDiscount xorDiscount = discount1.Xor(discount2, true);
-            Assert.AreEqual(0, xorDiscount.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0, xorDiscount.ApplyDiscounts(shoppingBasket).Discount);
         }
     }
 }

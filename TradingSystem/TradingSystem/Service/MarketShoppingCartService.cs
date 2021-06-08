@@ -54,7 +54,8 @@ namespace TradingSystem.Service
             var prices = new Dictionary<Guid, double>();
             foreach (ShoppingBasket basket in cart.ShoppingBaskets)
             {
-                prices.Add(basket.GetStore().GetId(), basket.GetStore().CalcPrice(username, basket));
+                var clonedBasket = basket.Clone();
+                prices.Add(basket.GetStore().GetId(), basket.GetStore().CalcPrice(username, clonedBasket));
             }
             return prices;
         }

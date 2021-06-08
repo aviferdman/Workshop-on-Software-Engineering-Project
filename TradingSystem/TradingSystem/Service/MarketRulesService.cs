@@ -71,7 +71,13 @@ namespace TradingSystem.Service
 
         public async Task<ICollection <DiscountData>> GetAllDiscounts(Guid storeId)
         {
-            return await this.discountsManager.GetAllDiscounts(storeId);
+            int serialN = 1;
+            var discounts = await this.discountsManager.GetAllDiscounts(storeId);
+            foreach (var d in discounts)
+            {
+                d.SerialNumber = serialN++;
+            }
+            return discounts;
         }
 
         public async Task<ICollection<DiscountsRelation>> GetAllDiscountsRelations(Guid storeId)

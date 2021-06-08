@@ -10,7 +10,8 @@ namespace TradingSystem.Notifications
         PurchaseEvent,
         AddAppointmentEvent,
         RemoveAppointment,
-        RequestPurchaseEvent
+        RequestPurchaseEvent,
+        Stats
     }
     public class Event
     {

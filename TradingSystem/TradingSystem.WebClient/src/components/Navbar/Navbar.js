@@ -18,16 +18,23 @@ function Navbar() {
             {context => (
                 <IconContext.Provider value={{ color: '#fff' }}>
                     <div className='navbar'>
-                        <Link to='#' className='menu-bars'>
-                            <FaIcons.FaBars onClick={showSidebar} />
-                        </Link>
+
+
+                        {/*<Link to='#' className='menu-bars'>*/}
+                        <div className='menu-bars icons'>
+                            <FaIcons.FaBars  onClick={showSidebar} />
+                        </div>
+                        {/*</Link>*/}
                     </div>
                     <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
                         <ul className='nav-menu-items' onClick={showSidebar}>
                             <li className='navbar-toggle'>
-                                <Link to='#' className='menu-bars'>
+                                {/*<Link to='#' className='menu-bars'>*/}
+                                <div className='menu-bars icons'>
                                     <AiIcons.AiOutlineClose />
-                                </Link>
+                                </div>
+
+                                {/*</Link>*/}
                             </li>
                             {SidebarData.map((item, index) => {
                                 if (item.permissions && context.role != null && item.permissions.find(p => p === context.role) == null) {

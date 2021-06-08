@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.DiscountPackage;
 
 namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 {
@@ -30,20 +31,20 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
         {
             _rule = new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => true));
         }
-        public override double ApplyDiscounts(ShoppingBasket shoppingBasket)
+        public override DiscountOfProducts ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             if (Available(shoppingBasket))
             {
                 return base.Calc.CalcDiscount(shoppingBasket);
             }
-            return 0;
+            return new DiscountOfProducts();
         }
 
         public bool Available(ShoppingBasket shoppingBasket)
         {
             return _rule == null || _rule.Check(shoppingBasket);
         }
-        public double XorHelper(ShoppingBasket shoppingBasket, ConditionDiscount d1, ConditionDiscount d2, bool decide)
+        public DiscountOfProducts XorHelper(ShoppingBasket shoppingBasket, ConditionDiscount d1, ConditionDiscount d2, bool decide)
         {
             bool available1 = d1.Available(shoppingBasket);
             bool available2 = d2.Available(shoppingBasket);
@@ -71,7 +72,7 @@ namespace TradingSystem.Business.Market.StorePackage.DiscountPackage
 
         public ConditionDiscount Xor(ConditionDiscount d, bool decide)
         {
-            Func<ShoppingBasket, double> f = new Func<ShoppingBasket, double>
+            Func<ShoppingBasket, DiscountOfProducts> f = new Func<ShoppingBasket, DiscountOfProducts>
                 ((ShoppingBasket shoppingBasket) => XorHelper(shoppingBasket, this, d, decide)
                 );
 

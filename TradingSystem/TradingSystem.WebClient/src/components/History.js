@@ -32,11 +32,11 @@ class History extends Component {
                                 {/*<a href={"#" + elem.id}>*/}
                                 {/*    <p className= "histName">History:  {elem.id}</p>*/}
                                 {/*</a>*/}
-                                <p className= "histName"> name id: {elem.paymentId}</p>
-                                <p className= "histName">store id: {elem.paymentId}</p>
-                                <p className= "histName">reception id: {elem.paymentId}</p>
+                                <p className= "histName"> {<text style={{fontWeight: "bold"}}>Customer: </text>} {elem.username}</p>
+                                <p className= "histName"> {<text style={{fontWeight: "bold"}}>Store: </text>} {elem.storeName}</p>
+                                <p className= "histName">{<text style={{fontWeight: "bold"}}>Reception: </text>} {elem.paymentId}</p>
 
-                                    <p className= "histName"> delivery id: {elem.deliveryId} </p>
+                                    <p className= "histName"> {<text style={{fontWeight: "bold"}}>Delivery: </text>}{elem.deliveryId} </p>
 
                                 <button className= "button primary" onClick={this.directToProductsPage(elem.paymentId)}> Show Products </button>
                             </div>

@@ -4,6 +4,8 @@ namespace TradingSystem.Business.Market.DiscountPackage
 {
     public class DiscountData
     {
+        private int _serialNumber;
+
         private Guid _discountId;
         private string _username;
         private Guid _storeId;
@@ -28,7 +30,7 @@ namespace TradingSystem.Business.Market.DiscountPackage
             this._category = category;
             this._productId = productId;
             this._valueLessThan = valueLessThan;
-            this._valueGreaterEQThan = ValueGreaterEQThan;
+            this._valueGreaterEQThan = valueGreaterEQThan;
             this._d1 = d1;
             this._d2 = d2;
         }
@@ -45,5 +47,6 @@ namespace TradingSystem.Business.Market.DiscountPackage
         public double ValueGreaterEQThan { get => _valueGreaterEQThan; set => _valueGreaterEQThan = value; }
         public DateTime D1 { get => _d1; set => _d1 = value; }
         public DateTime D2 { get => _d2; set => _d2 = value; }
+        public int SerialNumber { get => _serialNumber; set => _serialNumber = value; }
     }
 }

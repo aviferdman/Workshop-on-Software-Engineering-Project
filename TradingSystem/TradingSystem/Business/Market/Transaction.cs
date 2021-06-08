@@ -20,7 +20,7 @@ namespace TradingSystem.Business.Market
 
         public static Transaction Instance { get { return _lazy.Value; } }
 
-        private const bool enableExternal = false;
+        private const bool enableExternal = true;
 
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }

@@ -15,8 +15,7 @@ export class searchStore extends React.Component {
         };
     }
 
-<<<<<<< HEAD
-=======
+
     onSearchInputChange = e => {
         this.setState({
             name: e.target.value
@@ -35,7 +34,7 @@ export class searchStore extends React.Component {
             });
     }
 
->>>>>>> 57af47a845ea08f75fce195f1c8a2b7c6ad94348
+
     render() {
         return (
             <div className="grid-container">

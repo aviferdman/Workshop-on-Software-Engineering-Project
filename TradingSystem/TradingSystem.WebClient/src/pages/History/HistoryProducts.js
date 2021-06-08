@@ -8,7 +8,7 @@ class HistoryProducts extends Component {
                 <ul className = "products">
                     {this.props.products.map((product) => (
                         <li key={product.id}>
-                            <HistoryProduct product={product}   />
+                            <HistoryProduct product={product} />
                         </li>
                     ))}
                 </ul>
