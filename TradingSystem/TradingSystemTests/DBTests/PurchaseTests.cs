@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
@@ -79,9 +80,11 @@ namespace TradingSystemTests.DBTests
             Assert.IsTrue(!v1.IsErr);
         }
 
-        private double return15(ShoppingBasket arg)
+        private DiscountOfProducts return15(ShoppingBasket arg)
         {
-            return DISCOUNT_VALUE;
+            var d = new DiscountOfProducts();
+            d.Discount = DISCOUNT_VALUE;
+            return d;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>

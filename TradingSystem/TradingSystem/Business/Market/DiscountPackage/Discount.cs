@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TradingSystem.Business.Interfaces;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 
 namespace TradingSystem.Business.Market
@@ -21,7 +22,7 @@ namespace TradingSystem.Business.Market
         public Guid Id { get => _id; set => _id = value; }
         public IDiscountCalculator Calc { get => _calc; set => _calc = value; }
 
-        public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
+        public virtual DiscountOfProducts ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             return _calc.CalcDiscount(shoppingBasket);
         }

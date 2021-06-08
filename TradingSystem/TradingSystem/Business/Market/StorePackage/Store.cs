@@ -182,10 +182,11 @@ namespace TradingSystem.Business.Market
         }
 
         //TODO
-        public virtual async Task<PurchaseStatus> Purchase(ShoppingBasket shoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
+        public virtual async Task<PurchaseStatus> Purchase(ShoppingBasket originShoppingBasket, string clientPhone, Address clientAddress, PaymentMethod method)
         {
             bool enoughtQuantity;
             TransactionStatus transactionStatus;
+            var shoppingBasket = originShoppingBasket.Clone();
             HashSet<ProductInCart> product_quantity = shoppingBasket.GetDictionaryProductQuantity();
             string username = shoppingBasket.GetShoppingCart().GetUser().Username;
             double weight = product_quantity.Aggregate(0.0, (total, next) => total + next.product.Weight * next.quantity);
@@ -235,33 +236,33 @@ namespace TradingSystem.Business.Market
 
         public virtual double CalcPrice(string username, ShoppingBasket shoppingBasket)
         {
-            double paySum = CalcPaySum(shoppingBasket);
-            return paySum - CalcBidNewSum(username, shoppingBasket);
+            CalcBidNewSum(username, shoppingBasket);
+            return CalcPaySum(shoppingBasket);
         }
 
-        private double CalcBidNewSum(string username, ShoppingBasket shoppingBasket)
+        private void CalcBidNewSum(string username, ShoppingBasket shoppingBasket)
         {
-            double sum = 0;
+            //double sum = 0;
             foreach (var p_q in shoppingBasket.GetDictionaryProductQuantity())
             {
-                sum += GetProductBid(username, p_q.product) * p_q.quantity;
+                GetProductBid(username, p_q.product);
             }
-            return sum;
+            //return sum;
         }
 
         //TODO
-        private double GetProductBid(string username, Product p)
+        private void GetProductBid(string username, Product p)
         {
-            double sum = 0;
+            //double sum = 0;
             var acceptedBids = bidsManager.GetUserAcceptedBids(username);
             foreach (var bid in acceptedBids)
             {
-                if (bid.Username.Equals(username) && bid.ProductId.Equals(p.Id))
+                if (bid.Username.Equals(username) && bid.ProductId.Equals(p.Id) && bid.Price < p.Price)
                 {
-                    sum += bid.Price < p.Price ? p.Price - bid.Price : 0;
+                    p.Price = bid.Price;
                 }
             }
-            return sum;
+            //return sum;
         }
 
         private void AddToHistory(TransactionStatus transactionStatus)
@@ -291,19 +292,26 @@ namespace TradingSystem.Business.Market
         public double CalcPaySum(ShoppingBasket shoppingBasket)
         {
             double discount = ApplyDiscounts(shoppingBasket);
-            double cost = shoppingBasket.CalcCost();
-            return cost - discount;
+            return shoppingBasket.CalcCost();
+            //return cost - discount;
         }
         //TODO
         //use case 13 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/76
         public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
-            var availableDiscounts = discounts.Select(d=>d.ApplyDiscounts(shoppingBasket));
+            var availableDiscounts = discounts.Select(d=>d.ApplyDiscounts(shoppingBasket).Discount);
             //chose the max value of an available discount
             try
             {
-                return availableDiscounts.Max();
+                double maxDiscount = availableDiscounts.Max();
+                var chosenDiscount = discounts.Where(d => d.ApplyDiscounts(shoppingBasket).Discount >= maxDiscount).FirstOrDefault();
+                var discountOfProducts = chosenDiscount.Calc.CalcDiscount(shoppingBasket);
+                foreach (var product in shoppingBasket.GetProducts())
+                {
+                    product.Price = discountOfProducts.Products[product.Id];
+                }
+                return maxDiscount;
             }
             catch   // no discount is available
             {
