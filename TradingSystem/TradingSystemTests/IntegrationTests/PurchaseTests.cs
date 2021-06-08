@@ -113,6 +113,8 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckIllegalPurcahseUserRefund()
         {
             Logger.Instance.CleanLogs();
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
             var v = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Mock<ExternalPaymentSystem> paymentSystem = new Mock<ExternalPaymentSystem>();
             paymentSystem.Setup(p => p.CreatePaymentAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(Task.FromResult("-1"));
