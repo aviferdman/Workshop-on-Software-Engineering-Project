@@ -56,7 +56,7 @@ class Purchase extends React.Component {
         });
     }
 
-    onConfirm = e => {
+    onConfirm = async e => {
         e.preventDefault();
         if (!this.state.fields.phoneNumber.validate()) {
             alert('Please fill all fields');
@@ -68,7 +68,7 @@ class Purchase extends React.Component {
             return;
         }
 
-        axios.post('/ShoppingCart/Purchase', {
+        await axios.post('/ShoppingCart/Purchase', {
             username: this.context.username,
             phoneNumber: this.state.fields.phoneNumber.value,
             address: this.state.fields.address.valuesObject(),

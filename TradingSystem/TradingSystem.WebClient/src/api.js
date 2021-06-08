@@ -10,6 +10,32 @@ export const post = async (...args) => {
     return response.data;
 }
 
+export const postCurry = (url, fData, fConfig) => async (...params) => {
+    let config = fConfig ? fConfig.apply(this, params) : undefined;
+
+    let data;
+    if (fData) {
+        if (params.length === 0) {
+            data = fData;
+        }
+        else {
+            data = fData.apply(this, params);
+        }
+    }
+    else if (params.length === 1) {
+        data = params[0];
+    }
+    else if (params.length === 0) {
+        throw new Error('No data specified to send');
+    }
+    else {
+        throw new Error('Must specify params selector function if more than 1 params have been passed');
+    }
+
+    let response = await axios.post(url, data, config);
+    return response.data;
+}
+
 const permissionInfoRequest = action => async (username, storeId) => {
     return post(`/stores/permissions/${action}`, {
         username: username,
@@ -113,5 +139,12 @@ export const stores = {
                 permissions: permissions
             });
         },
-    }
+    },
+
+    discounts: {
+        fetchData: postCurry('/stores/rules/Discounts', storeId => ({
+            id: storeId,
+        })),
+        addSimple: postCurry('/stores/rules/AddSimpleDiscount'),
+    },
 };

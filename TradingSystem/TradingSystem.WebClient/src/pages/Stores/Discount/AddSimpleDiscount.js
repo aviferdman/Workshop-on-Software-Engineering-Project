@@ -2,13 +2,27 @@ import React from "react";
 import './AddSimpleDiscount.css';
 import { GlobalContext } from "../../../globalContext";
 import * as api from "../../../api";
+import FormFields from "../../../formsUtil/formFields";
+import {alertRequestError_default} from "../../../utils";
+import NumberFormField from "../../../formsUtil/NumberFormField";
 
 class AddSimpleDiscount extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: false
-        }
+            show: false,
+            discountFields: this.newFields(),
+        };
+    }
+
+    newFields() {
+        return new FormFields({
+            discountType: 'Product',
+            conditionType: '',
+            percent: new NumberFormField(''),
+            productId: '',
+            category: '',
+        });
     }
 
     showModal = () => {
@@ -19,11 +33,112 @@ class AddSimpleDiscount extends React.Component {
         this.setState({ show: false });
     }
 
+    getInputValue = field => {
+        return this.state.discountFields.getValue(field);
+    }
+
+    onInputChange = field => e => {
+        e.preventDefault();
+        if (!this.state.discountFields.getField(field).trySetValueFromEvent(e)) {
+            return;
+        }
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onConditionTypeChange = e => {
+        e.preventDefault();
+        if (!this.state.discountFields.conditionType.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        if (!this.getInputValue('conditionType')) {
+            if (!this.getInputValue('discountType')) {
+                alert('Cannot set condition type to \'None\' when discount type is \'Rule\'');
+                return;
+            }
+        }
+
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onDiscountTypeChange = e => {
+        e.preventDefault();
+        if (!this.state.discountFields.discountType.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        let fields = [
+            this.state.discountFields.percent,
+            this.state.discountFields.category,
+            this.state.discountFields.productId,
+        ];
+
+        if (!this.getInputValue('discountType')) {
+            if (!this.getInputValue('conditionType')) {
+                alert('Cannot set discount type to \'Rule\' when condition is \'None\'');
+                return;
+            }
+
+            for (let field of fields) {
+                field.pushValidationOff();
+            }
+        }
+        else {
+            for (let field of fields) {
+                field.popValidationOn();
+            }
+        }
+
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onConfirm = async e => {
+        e.preventDefault();
+        // if (!this.state.fields.discountFields.validate()) {
+        //     alert('Please fill all fields');
+        //     return;
+        // }
+
+        let discountObj = this.state.discountFields.valuesObject();
+        let promise = null;
+
+        if (this.getInputValue('conditionType')) {
+            // TODO: remove later
+            alert('TODO: condition discount');
+            return;
+        }
+
+
+        discountObj.percent = discountObj.percent / 100;
+        promise = api.stores.discounts.addSimple({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            discountType: discountObj.discountType,
+            percent: discountObj.percent,
+            category: discountObj.category,
+            productId: discountObj.productId ? discountObj.productId : null,
+        });
+        await promise.then(discountId => {
+            discountObj.id = discountId;
+            discountObj.creator = this.context.username;
+            this.props.onSuccess(discountObj);
+            this.setState({
+                show: false,
+                discountFields: this.newFields(),
+            });
+        }, alertRequestError_default);
+    }
 
     render() {
         return (
             <main className="items">
-                <Modal show={this.state.show} handleClose={this.hideModal}  >
+                <Modal show={this.state.show} handleClose={this.hideModal} handleConfirm={this.onConfirm}  >
 
                     <div className="disc-check-line-grid">
 
@@ -34,10 +149,13 @@ class AddSimpleDiscount extends React.Component {
                                 </div>
 
                                 <div>
-                                    <select className="disc-input-props">
-                                            <option value="Product">Product</option>
-                                            <option value="Category">Category</option>
-                                            <option value="Store">Store</option>
+                                    <select className="disc-input-props"
+                                            required
+                                            value={this.getInputValue('discountType')}
+                                            onChange={this.onInputChange('discountType')}>
+                                        <option value="Product">Product</option>
+                                        <option value="Category">Category</option>
+                                        <option value="Store">Store</option>
                                     </select>
                                 </div>
                             </div>
@@ -50,8 +168,11 @@ class AddSimpleDiscount extends React.Component {
                                 </div>
 
                                 <div>
-                                    <select className="disc-input-props">
-                                        <option value="Simple">Simple</option>
+                                    <select className="disc-input-props"
+                                            required
+                                            value={this.getInputValue('conditionType')}
+                                            onChange={this.onInputChange('conditionType')}>
+                                        <option value="">None</option>
                                         <option value="Quantity">Quantity</option>
                                         <option value="Weight">Weight</option>
                                         <option value="Price">Price</option>
@@ -72,6 +193,9 @@ class AddSimpleDiscount extends React.Component {
                                         type="number"
                                         step="0.01"
                                         className="disc-input-props"
+                                        required
+                                        value={this.getInputValue('percent')}
+                                        onChange={this.onInputChange('percent')}
                                     />
                                 </div>
                             </div>
@@ -87,6 +211,9 @@ class AddSimpleDiscount extends React.Component {
                                     <input
                                         type="text"
                                         className="disc-input-props"
+                                        required
+                                        value={this.getInputValue('productId')}
+                                        onChange={this.onInputChange('productId')}
                                     />
                                 </div>
                             </div>
@@ -102,6 +229,9 @@ class AddSimpleDiscount extends React.Component {
                                     <input
                                         type="text"
                                         className="disc-input-props"
+                                        required
+                                        value={this.getInputValue('category')}
+                                        onChange={this.onInputChange('category')}
                                     />
                                 </div>
                             </div>
