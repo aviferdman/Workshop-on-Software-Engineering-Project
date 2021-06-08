@@ -33,11 +33,7 @@ export class StoreBids extends React.Component {
 
                         </div>
 
-                        <div className="store-bids-grid-button">
-                            <div className="center-btn-st">
-                                <AddBid />
-                            </div>
-                        </div>
+
 
                     </div>
 
