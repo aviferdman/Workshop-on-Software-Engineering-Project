@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using TradingSystem.Business;
 using TradingSystem.Business.Delivery;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
@@ -65,14 +66,17 @@ namespace TradingSystemTests.IntegrationTests
             IRule rule = new Rule(CheckTotalWeightMoreThan400);
             discount.AddRule(rule);
             testStore.AddDiscount(testStore.GetFounder().Username, discount);
-            Assert.AreEqual(PRICE1 * 5 - DISCOUNT_VALUE, testUser.ShoppingCart.CalcPaySum());
+            Assert.AreEqual(PRICE1 * 5 * (1 - (DISCOUNT_VALUE / 100)), testUser.ShoppingCart.CalcPaySum());
             var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
             Assert.IsTrue(!v1.IsErr);
         }
 
-        private double return15(ShoppingBasket arg)
+        private DiscountOfProducts return15(ShoppingBasket arg)
         {
-            return DISCOUNT_VALUE;
+            var d = new DiscountOfProducts();
+            d.AddProduct(product.Id, product.Price - 15);
+            d.Discount = 15;
+            return d;
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>

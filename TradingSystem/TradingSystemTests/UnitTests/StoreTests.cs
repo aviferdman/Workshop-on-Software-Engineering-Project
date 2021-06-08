@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.DiscountPackage;
 using TradingSystem.Business.Market.StoreStates;
 using TradingSystem.Business.Market.UserPackage;
@@ -22,6 +23,7 @@ namespace TradingSystemTests.MarketTests
         private Store store;
         private ShoppingBasket shoppingBasket;
         private User testUser;
+        private Product product1;
 
         public StoreTests()
         {
@@ -29,7 +31,8 @@ namespace TradingSystemTests.MarketTests
             this.shoppingCart = new ShoppingCart(testUser);
             this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
-            
+            product1 = new Product("1", 10, 10, 10, "category");
+
         }
 
         [TestInitialize]
@@ -99,20 +102,19 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void ApplyTwoRelevantDiscounts()
         {
-            Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 30);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Store store = new Store("testStore", card, address);
             store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             store.UpdateProduct(product1);
-            ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
+            ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return10));
             discount1.AddRule(new Rule(MoreThan10Products));
-            ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return200));
+            ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return20));
             discount2.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(store.Founder.Username, discount1);
             store.AddDiscount(store.Founder.Username, discount2);
-            Assert.AreEqual(200, store.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0.2 * product1.Price, store.ApplyDiscounts(shoppingBasket));
         }
 
         public bool MoreThan10Products(ShoppingBasket shoppingBasket)
@@ -142,30 +144,51 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void ApplyOneRelevantDiscount()
         {
-            Product product1 = new Product("1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 19);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Store store = new Store("testStore", card, address);
             store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             store.UpdateProduct(product1);
-            ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return100));
+            ConditionDiscount discount1 = new ConditionDiscount(new DiscountCalculator(return10));
             discount1.AddRule(new Rule(MoreThan10Products));
-            ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return200));
+            ConditionDiscount discount2 = new ConditionDiscount(new DiscountCalculator(return20));
             discount2.AddRule(new Rule(MoreThan20Products));
             store.AddDiscount(store.Founder.Username, discount1);
             store.AddDiscount(store.Founder.Username, discount2);
-            Assert.AreEqual(100, store.ApplyDiscounts(shoppingBasket));
+            Assert.AreEqual(0.1 * product1.Price, store.ApplyDiscounts(shoppingBasket));
         }
 
-        public double return200(ShoppingBasket shoppingBasket)
+        public DiscountOfProducts return200(ShoppingBasket shoppingBasket)
         {
-            return 200;
+            var d = new DiscountOfProducts();
+            d.AddProduct(product1.Id, product1.Price);
+            d.Discount = 200;
+            return d;
         }
 
-        public double return100(ShoppingBasket shoppingBasket)
+        public DiscountOfProducts return100(ShoppingBasket shoppingBasket)
         {
-            return 100;
+            var d = new DiscountOfProducts();
+            d.AddProduct(product1.Id, product1.Price);
+            d.Discount = 100;
+            return d;
+        }
+
+        public DiscountOfProducts return20(ShoppingBasket shoppingBasket)
+        {
+            var d = new DiscountOfProducts();
+            d.AddProduct(product1.Id, 0.8 * product1.Price);
+            d.Discount = 0.2 * product1.Price;
+            return d;
+        }
+
+        public DiscountOfProducts return10(ShoppingBasket shoppingBasket)
+        {
+            var d = new DiscountOfProducts();
+            d.AddProduct(product1.Id, 0.9 * product1.Price);
+            d.Discount = 0.1 * product1.Price;
+            return d;
         }
 
         [TestCleanup]
