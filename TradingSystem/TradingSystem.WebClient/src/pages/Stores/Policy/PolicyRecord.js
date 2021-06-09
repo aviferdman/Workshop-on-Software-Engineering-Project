@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './PolicyRecord.css';
-import {formatDate} from "../../../utils";
+import {formatDate, formatFloat} from "../../../utils";
 import ConditionalRender from "../../../ConditionalRender";
 
 class PolicyRecord extends Component {
@@ -40,11 +40,11 @@ class PolicyRecord extends Component {
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType != null && elem.ruleType !== 'Time' && elem.minValue != null}
-                                        render={() => (<p className="discName">min value: {elem.minValue} </p>)}
+                                        render={() => (<p className="discName">min value: {elem.ruleType === 'Quantity' ? elem.minValue : formatFloat(elem.minValue)} </p>)}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType != null && elem.ruleType !== 'Time' && elem.maxValue != null}
-                                        render={() => (<p className="discName">max value: {elem.maxValue} </p>)}
+                                        render={() => (<p className="discName">max value: {elem.ruleType === 'Quantity' ? elem.maxValue : formatFloat(elem.maxValue)} </p>)}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType === 'Time' && elem.startDate != null}

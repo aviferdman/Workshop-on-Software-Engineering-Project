@@ -29,7 +29,7 @@ class AddPolicy extends React.Component {
         return new FormFields({
             ruleRelation: 'Simple',
             ruleContext: 'Product',
-            ruleType: '',
+            ruleType: 'Quantity',
 
             productId: new NullFormField(),
             category: '',
@@ -102,10 +102,11 @@ class AddPolicy extends React.Component {
 
     onRuleTypeChangeCore = () => {
         let ruleType = this.getFieldValue('ruleType');
-        switch (ruleType) {
-            case '':
-                break;
+        if (!ruleType) {
+            throw new Error('Rule type is falsy');
+        }
 
+        switch (ruleType) {
             case 'Time':
                 break;
 
@@ -279,7 +280,6 @@ class AddPolicy extends React.Component {
                                             required
                                             value={this.getInputValue('ruleType')}
                                             onChange={this.onRuleTypeChange}>
-                                        <option value="">Simple</option>
                                         <option value="Quantity">Quantity</option>
                                         <option value="Weight">Weight</option>
                                         <option value="Price">Price</option>
@@ -349,7 +349,7 @@ class AddPolicy extends React.Component {
                                         <div >
                                             <input
                                                 type="number"
-                                                step="0.01"
+                                                step={this.state.minMaxStep}
                                                 className="disc-input-props"
                                                 value={this.getInputValue('minValue')}
                                                 onChange={this.onInputChange('minValue')}
@@ -372,7 +372,7 @@ class AddPolicy extends React.Component {
                                         <div >
                                             <input
                                                 type="number"
-                                                step="0.01"
+                                                step={this.state.minMaxStep}
                                                 className="disc-input-props"
                                                 value={this.getInputValue('maxValue')}
                                                 onChange={this.onInputChange('maxValue')}
