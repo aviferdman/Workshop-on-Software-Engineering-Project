@@ -11,10 +11,15 @@ namespace TradingSystem.Service
     {
         private static readonly Lazy<SetupService> instanceLazy = new Lazy<SetupService>(() => new SetupService(), true);
         private Queue<String> guestnames;
+        private Dictionary<string, string> username_guest;
+        string username;
+        string password;
+        StoreData storeData;
 
         private SetupService()
         {
             guestnames = new Queue<string>();
+            username_guest = new Dictionary<string, string>();
         }
         public static SetupService Instance => instanceLazy.Value;
 
@@ -22,7 +27,7 @@ namespace TradingSystem.Service
         {
             try
             {
-                string path = Directory.GetCurrentDirectory();
+                var path = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName).FullName);
                 string fileName = "init.txt";
                 String[] lines = File.ReadAllLines($@"{path}\{fileName}");
                 for (int i=0; i<lines.Length; i++)
@@ -47,43 +52,64 @@ namespace TradingSystem.Service
                 switch (command[0].Trim())
                 {
                     case "AddGuest":
-                        guestnames.Enqueue(MarketUserService.Instance.AddGuest());
+                        var guest = MarketUserService.Instance.AddGuest();
+                        guestnames.Enqueue(guest);
                         return new Result<string>("success", false, "success");
                     case "Login":
-                        return Determine(await MarketUserService.Instance.loginAsync(command[1].Trim(), command[2].Trim(), guestnames.Dequeue()));
+                        username = command[1].Trim();
+                        password = command[2].Trim();
+                        var guestname = username_guest[username];
+                        var loginRes = await MarketUserService.Instance.loginAsync(username, password, guestname);
+                        return Determine(loginRes);
                     case "Logout":
-                        String res = await MarketUserService.Instance.logoutAsync(command[1].Trim());
-                        if (res == null)
-                        {
-                            return new Result<string>("something went wrong", true, "invalid input");
-                        }
-                        return new Result<string>("success", false, "success");
+                        username = command[1].Trim();
+                        var logoutRes = await MarketUserService.Instance.logoutAsync(username);
+                        return CheckNotNull(logoutRes);
                     case "Signup":
-                        return Determine(await UserService.Instance.SignupAsync(guestnames.Dequeue(), command[1].Trim(), command[2].Trim(), command[3].Trim()));
+                        var guestusername = guestnames.Dequeue();
+                        username = command[1].Trim();
+                        password = command[2].Trim();
+                        var phone = command[3].Trim();
+                        username_guest.Add(username, guestusername);
+                        var signupRes = await UserService.Instance.SignupAsync(guestusername, username, password, phone);
+                        return Determine(signupRes);
                     case "CreateStore":
-                        StoreData storeData = await MarketStoreGeneralService.Instance.CreateStoreAsync(command[1].Trim(), command[2].Trim(), command[3].Trim(), command[4].Trim(), command[5].Trim(), command[6].Trim(),
+                        username = command[2].Trim();
+                        storeData = await MarketStoreGeneralService.Instance.CreateStoreAsync(command[1].Trim(), username, command[3].Trim(), command[4].Trim(), command[5].Trim(), command[6].Trim(),
                             command[7].Trim(), command[8].Trim(), command[9].Trim(), command[10].Trim(), command[11].Trim(), command[12].Trim(), command[13].Trim());
-                        if (storeData == null)
-                        {
-                            return new Result<string>("something went wrong", true, "invalid input");
-                        }
-                        return new Result<string>("success", false, "success");
+                        return CheckNotNull(storeData);
                     case "AddProduct":
+                        username = command[7].Trim();
                         ProductData productData = new ProductData(command[1].Trim(), int.Parse(command[2]), double.Parse(command[3]), double.Parse(command[4]), command[5].Trim());
-                        return Determine(MarketProductsService.Instance.AddProduct(productData, Guid.Parse(command[6]), command[7].Trim()).Result.Mess);
+                        var addProductRes = await MarketProductsService.Instance.AddProduct(productData, storeData.Id, username);
+                        return Determine(addProductRes.Mess);
+                    case "MakeOwner":
+                        var assigneeName = command[1].Trim();
+                        var assignerName = command[3].Trim();
+                        var makeOwnerRes = await MarketStores.Instance.makeOwner(assigneeName, storeData.Id, assignerName);
+                        return Determine(makeOwnerRes);
                     default:
                         return new Result<string>("bad paramaters", true, "some command has bad paramaters");
                 }
-            } catch { return new Result<string>("bad paramaters", true, "some command has bad paramaters"); }
+            } catch(Exception e) { return new Result<string>("bad paramaters", true, "some command has bad paramaters"); }
         }
 
         private Result<String> Determine(String res)
         {
-            if (res.Equals("success") || res.Equals("Product added"))
+            if (res.ToLower().Equals("success") || res.Equals("Product added"))
             {
                 return new Result<string>("success", false, "success");
             }
             return new Result<string>("something went wrong", true, "action failed");
+        }
+
+        private Result<string> CheckNotNull(object s)
+        {
+            if (s == null)
+            {
+                return new Result<string>("something went wrong", true, "action failed");
+            }
+            return new Result<string>("success", false, "success");
         }
     }
 }
