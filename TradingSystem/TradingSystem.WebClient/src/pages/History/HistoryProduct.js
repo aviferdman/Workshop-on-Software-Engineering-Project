@@ -14,7 +14,6 @@ export default class HistoryProduct extends React.Component {
                 <a href={"#" + this.product.id}>
                     <p className= "productName">{this.product.name}</p>
                 </a>
-                <p className= "productName"> store: {this.product.storeName}</p>
 
                 <p className= "productName"> quantity: {this.product.quantity}</p>
 

@@ -82,7 +82,23 @@ namespace TradingSystem.WebApi.Controllers
             {
                 Id = store.Id,
                 Name = store.Name,
-                Products = store.Products.Select(ProductDTO.FromProductData)
+            });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<StoreInfoWithProductsDTO>> InfoWithProducts([FromQuery] Guid storeId)
+        {
+            StoreData? store = await MarketStoreGeneralService.getStoreById(storeId);
+            if (store == null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(new StoreInfoWithProductsDTO
+            {
+                Id = store.Id,
+                Name = store.Name,
+                Products = store.Products.Select(ProductDTO.FromProductData),
             });
         }
 

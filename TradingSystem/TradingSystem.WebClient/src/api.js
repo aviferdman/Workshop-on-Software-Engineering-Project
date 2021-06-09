@@ -1,20 +1,13 @@
 import axios from "axios";
 
-export const get = async (...args) => {
-    let response = await axios.get.apply(axios, args);
-    return response.data;
-}
-
 export const post = async (...args) => {
     let response = await axios.post.apply(axios, args);
     return response.data;
 }
 
-export const postCurry = (url, fData, fConfig) => async (...params) => {
-    let config = fConfig ? fConfig.apply(this, params) : undefined;
-
+const getDataForRequest = (fData, params) => {
     let data;
-    if (fData) {
+    if (fData != null) {
         if (params.length === 0) {
             data = fData;
         }
@@ -32,6 +25,25 @@ export const postCurry = (url, fData, fConfig) => async (...params) => {
         throw new Error('Must specify params selector function if more than 1 params have been passed');
     }
 
+    return data;
+}
+
+export const getCurry = (url, fParams, fConfig) => async (...params) => {
+    let config = fConfig ? fConfig.apply(this, params) : {};
+    let data = getDataForRequest(fParams, params);
+
+    if (config.params != null && typeof config.params === "object") {
+        data = Object.assign(data, config.params);
+    }
+    config.params = data;
+
+    let response = await axios.get(url, config);
+    return response.data;
+}
+
+export const postCurry = (url, fData, fConfig) => async (...params) => {
+    let config = fConfig ? fConfig.apply(this, params) : undefined;
+    let data = getDataForRequest(fData, params);
     let response = await axios.post(url, data, config);
     return response.data;
 }
@@ -106,17 +118,13 @@ export const history = {
     },
 };
 
-let storesInfo = async storeId => {
-    return get('/Stores/Info', {
-        params: {
-            storeId: storeId
-        }
-    });
-};
-
 export const stores = {
-    info: storesInfo,
-    infoWithProducts: storesInfo,
+    info: getCurry('/Stores/Info', storeId => ({
+        storeId: storeId,
+    })),
+    infoWithProducts: getCurry('/Stores/InfoWithProducts', storeId => ({
+        storeId: storeId,
+    })),
 
     search: async storeName => {
         return post('/Stores/Search', {
