@@ -313,6 +313,7 @@ namespace TradingSystem.DAL
             {
                 dataUsers.RemoveRange(dataUsers.ToList());
                 states.RemoveRange(states.ToList());
+                statistics.RemoveRange(statistics.ToList());
                 productInCarts.RemoveRange(productInCarts.ToList());
                 membersShoppingBaskets.RemoveRange(membersShoppingBaskets.ToList());
                 membersShoppingCarts.RemoveRange(membersShoppingCarts.ToList());

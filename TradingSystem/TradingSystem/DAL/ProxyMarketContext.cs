@@ -18,8 +18,8 @@ namespace TradingSystem.DAL
     public class ProxyMarketContext
     {
         private bool isDebug;
-        public static string conType = ConfigurationManager.AppSettings["ConnectionType"];
-        public static string conString = ConfigurationManager.AppSettings["ConnectionString"];
+        public static string conType = "SQLite";
+        public static string conString = "Data Source=marketDBTests.db";
         public ConcurrentDictionary<string, DataUser> dataUsers;
         public ConcurrentDictionary<string, RegisteredAdmin> admins;
         public ConcurrentDictionary<string, MemberState> memberStates;
