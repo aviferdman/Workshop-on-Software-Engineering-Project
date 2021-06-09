@@ -28,6 +28,10 @@ namespace TradingSystem.Service
             user_rules = new Dictionary<string, ICollection<IRule>>();
             counter = MarketDAL.Instance.getRuleCounter().Result;
         }
+<<<<<<< HEAD
+        
+=======
+>>>>>>> 57af47a845ea08f75fce195f1c8a2b7c6ad94348
 
         //Add New / Complex Discounts
         public async Task<Guid> AddSimpleDiscountAsync(string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
