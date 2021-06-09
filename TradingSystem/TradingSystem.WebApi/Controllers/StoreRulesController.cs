@@ -131,7 +131,7 @@ namespace TradingSystem.WebApi.Controllers
             }
 
             ICollection<DiscountsRelation>? discountsRelations = await MarketRulesService.GetAllDiscountsRelations(guidDTO.Id);
-            if (leafDiscounts == null)
+            if (discountsRelations == null)
             {
                 return InternalServerError();
             }

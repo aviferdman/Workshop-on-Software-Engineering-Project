@@ -30,29 +30,50 @@ export class Discounts extends React.Component {
     fetchDiscounts = async () => {
         await api.stores.discounts.fetchData(this.storeId)
             .then(discounts => {
-                let maps = this.buildMaps(discounts.leafDiscounts);
+                let serialNumber = this.setSerialNumbersAll(discounts);
+                let maps = this.buildMaps(discounts);
                 this.setSerialNumberOnCompoundDiscounts(discounts.relationDiscounts, maps.simpleDiscountsIdMap);
                 this.setState({
                     simpleDiscounts: discounts.leafDiscounts,
                     complexDiscounts: discounts.relationDiscounts,
                     simpleDiscountsSerialNumberMap: maps.simpleDiscountsSerialNumberMap,
                     simpleDiscountsIdMap: maps.simpleDiscountsIdMap,
-                    nextSerialNumber: discounts.leafDiscounts.length + 1,
+                    nextSerialNumber: serialNumber,
                 });
             }, alertRequestError_default);
     }
 
-    buildMaps(simpleDiscounts) {
+    setSerialNumbersAll(discounts) {
+        let serialNumber = 1;
+        serialNumber = this.setSerialNumbers(discounts.leafDiscounts, serialNumber);
+        serialNumber = this.setSerialNumbers(discounts.relationDiscounts, serialNumber);
+        return serialNumber;
+    }
+
+    setSerialNumbers(discounts, initialValue) {
+        let nextSerialNumber = initialValue;
+        discounts.forEach(discount => {
+            discount.serialNumber = nextSerialNumber++;
+        });
+        return nextSerialNumber;
+    }
+
+    buildMaps(discounts) {
         let simpleDiscountsSerialNumberMap = {};
         let simpleDiscountsIdMap = {};
-        for (let simpleDiscount of simpleDiscounts) {
-            simpleDiscountsSerialNumberMap[simpleDiscount.serialNumber] = simpleDiscount
-            simpleDiscountsIdMap[simpleDiscount.id] = simpleDiscount;
-        }
+        this.updateMaps(discounts.leafDiscounts, simpleDiscountsSerialNumberMap, simpleDiscountsIdMap);
+        this.updateMaps(discounts.relationDiscounts, simpleDiscountsSerialNumberMap, simpleDiscountsIdMap);
         return {
             simpleDiscountsSerialNumberMap: simpleDiscountsSerialNumberMap,
             simpleDiscountsIdMap: simpleDiscountsIdMap,
         };
+    }
+
+    updateMaps(discounts, simpleDiscountsSerialNumberMap, simpleDiscountsIdMap) {
+        for (let discount of discounts) {
+            simpleDiscountsSerialNumberMap[discount.serialNumber] = discount
+            simpleDiscountsIdMap[discount.id] = discount;
+        }
     }
 
     setSerialNumberOnCompoundDiscounts(compoundDiscounts, simpleDiscountsIdMap) {
@@ -63,20 +84,21 @@ export class Discounts extends React.Component {
     }
 
     onSimpleDiscountAdd = discount => {
+       this.onDiscountAddCore(this.state.simpleDiscounts, discount);
+    }
+
+    onCompoundDiscountAdd = discount => {
+        this.onDiscountAddCore(this.state.complexDiscounts, discount);
+    }
+
+    onDiscountAddCore(discounts, discount) {
         let serialNumber = this.state.nextSerialNumber;
         discount.serialNumber = serialNumber;
         this.state.simpleDiscountsSerialNumberMap[serialNumber] = discount;
         this.state.simpleDiscountsIdMap[discount.id] = discount;
-        this.state.simpleDiscounts.push(discount);
+        discounts.push(discount);
         this.setState({
             nextSerialNumber: serialNumber + 1,
-        });
-    }
-
-    onCompoundDiscountAdd = discount => {
-        this.state.complexDiscounts.push(discount);
-        this.setState({
-            name: this.state.name,
         });
     }
 
