@@ -159,4 +159,11 @@ export const stores = {
         add: postCurry('/stores/rules/AddDiscount'),
         addCompound: postCurry('/stores/rules/AddCompoundDiscount'),
     },
+
+    policies: {
+        fetchAll: postCurry('/stores/rules/Policies', storeId => ({
+            id: storeId,
+        })),
+        add: postCurry('/stores/rules/AddPolicy'),
+    }
 };
