@@ -48,7 +48,6 @@ export default function Routes() {
             <Route path={"/historyProducts"} component={HistoryProductsList} />
             <Route path={"/adminActions"} component={AdminActions} />
             <Route path={"/adminHistory"} component={AdminHistory} />
-            <Route path={"/Policy"} component={Policy} />
             <Route path={"/userBids"} component={UserBids} />
             <Route path={"/storeBids"} component={StoreBids} />
             <Route path={"/statistics"} component={Statistics} />
