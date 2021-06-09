@@ -11,12 +11,12 @@ namespace TradingSystem.Migrations
                 name: "addresses",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    State = table.Column<string>(type: "TEXT", nullable: true),
-                    City = table.Column<string>(type: "TEXT", nullable: true),
-                    Street = table.Column<string>(type: "TEXT", nullable: true),
-                    ApartmentNum = table.Column<string>(type: "TEXT", nullable: true),
-                    Zip = table.Column<string>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApartmentNum = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Zip = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -27,7 +27,7 @@ namespace TradingSystem.Migrations
                 name: "categories",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "TEXT", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,11 +38,11 @@ namespace TradingSystem.Migrations
                 name: "dataUsers",
                 columns: table => new
                 {
-                    username = table.Column<string>(type: "TEXT", nullable: false),
-                    password = table.Column<string>(type: "TEXT", nullable: true),
-                    IsLoggedin = table.Column<bool>(type: "INTEGER", nullable: false),
-                    phone = table.Column<string>(type: "TEXT", nullable: true),
-                    isAdmin = table.Column<bool>(type: "INTEGER", nullable: false)
+                    username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    password = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsLoggedin = table.Column<bool>(type: "bit", nullable: false),
+                    phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isAdmin = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,11 +53,11 @@ namespace TradingSystem.Migrations
                 name: "deliveryStatuses",
                 columns: table => new
                 {
-                    PackageId = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StoreId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Username = table.Column<string>(type: "TEXT", nullable: true),
-                    StoreName = table.Column<string>(type: "TEXT", nullable: true)
+                    PackageId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StoreName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -68,11 +68,11 @@ namespace TradingSystem.Migrations
                 name: "marketRulesRequestType1",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    functionName = table.Column<string>(type: "TEXT", nullable: true),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false),
+                    functionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    storeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    discountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,19 +83,19 @@ namespace TradingSystem.Migrations
                 name: "marketRulesRequestType2",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    functionName = table.Column<string>(type: "TEXT", nullable: true),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    policyRuleRelation = table.Column<int>(type: "INTEGER", nullable: false),
-                    ruleContext = table.Column<int>(type: "INTEGER", nullable: false),
-                    ruleType = table.Column<int>(type: "INTEGER", nullable: false),
-                    category = table.Column<string>(type: "TEXT", nullable: true),
-                    productId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    valueLessThan = table.Column<double>(type: "REAL", nullable: false),
-                    valueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
-                    d1 = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    d2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false),
+                    functionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    storeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    policyRuleRelation = table.Column<int>(type: "int", nullable: false),
+                    ruleContext = table.Column<int>(type: "int", nullable: false),
+                    ruleType = table.Column<int>(type: "int", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    productId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    valueLessThan = table.Column<double>(type: "float", nullable: false),
+                    valueGreaterEQThan = table.Column<double>(type: "float", nullable: false),
+                    d1 = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    d2 = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,10 +106,10 @@ namespace TradingSystem.Migrations
                 name: "marketRulesRequestType3",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    functionName = table.Column<string>(type: "TEXT", nullable: true),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    storeId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false),
+                    functionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    storeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,14 +120,14 @@ namespace TradingSystem.Migrations
                 name: "marketRulesRequestType4",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    functionName = table.Column<string>(type: "TEXT", nullable: true),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountType = table.Column<int>(type: "INTEGER", nullable: false),
-                    precent = table.Column<double>(type: "REAL", nullable: false),
-                    category = table.Column<string>(type: "TEXT", nullable: true),
-                    productId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false),
+                    functionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    storeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    discountType = table.Column<int>(type: "int", nullable: false),
+                    precent = table.Column<double>(type: "float", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    productId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,14 +138,14 @@ namespace TradingSystem.Migrations
                 name: "marketRulesRequestType5",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    functionName = table.Column<string>(type: "TEXT", nullable: true),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    discountRuleRelation = table.Column<int>(type: "INTEGER", nullable: false),
-                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountId2 = table.Column<Guid>(type: "TEXT", nullable: false),
-                    decide = table.Column<bool>(type: "INTEGER", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false),
+                    functionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    discountRuleRelation = table.Column<int>(type: "int", nullable: false),
+                    storeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    discountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    discountId2 = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    decide = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -156,19 +156,19 @@ namespace TradingSystem.Migrations
                 name: "marketRulesRequestType6",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false),
-                    functionName = table.Column<string>(type: "TEXT", nullable: true),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountType = table.Column<int>(type: "INTEGER", nullable: false),
-                    ruleType = table.Column<int>(type: "INTEGER", nullable: false),
-                    precent = table.Column<double>(type: "REAL", nullable: false),
-                    category = table.Column<string>(type: "TEXT", nullable: true),
-                    productId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    valueLessThan = table.Column<double>(type: "REAL", nullable: false),
-                    valueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
-                    d1 = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    d2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false),
+                    functionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    storeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    discountType = table.Column<int>(type: "int", nullable: false),
+                    ruleType = table.Column<int>(type: "int", nullable: false),
+                    precent = table.Column<double>(type: "float", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    productId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    valueLessThan = table.Column<double>(type: "float", nullable: false),
+                    valueGreaterEQThan = table.Column<double>(type: "float", nullable: false),
+                    d1 = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    d2 = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -179,7 +179,7 @@ namespace TradingSystem.Migrations
                 name: "membersShoppingCarts",
                 columns: table => new
                 {
-                    username = table.Column<string>(type: "TEXT", nullable: false)
+                    username = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -190,10 +190,10 @@ namespace TradingSystem.Migrations
                 name: "paymentStatuses",
                 columns: table => new
                 {
-                    PaymentId = table.Column<string>(type: "TEXT", nullable: false),
-                    Status = table.Column<bool>(type: "INTEGER", nullable: false),
-                    StoreId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Username = table.Column<string>(type: "TEXT", nullable: true)
+                    PaymentId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
+                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -204,7 +204,7 @@ namespace TradingSystem.Migrations
                 name: "productHistoryDatas",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -215,7 +215,7 @@ namespace TradingSystem.Migrations
                 name: "PurchasePolicy",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,8 +226,8 @@ namespace TradingSystem.Migrations
                 name: "states",
                 columns: table => new
                 {
-                    username = table.Column<string>(type: "TEXT", nullable: false),
-                    Discriminator = table.Column<string>(type: "TEXT", nullable: false)
+                    username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -238,12 +238,12 @@ namespace TradingSystem.Migrations
                 name: "statistics",
                 columns: table => new
                 {
-                    date = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    guestsNum = table.Column<int>(type: "INTEGER", nullable: false),
-                    membersNum = table.Column<int>(type: "INTEGER", nullable: false),
-                    ownersNum = table.Column<int>(type: "INTEGER", nullable: false),
-                    managersNum = table.Column<int>(type: "INTEGER", nullable: false),
-                    adminNum = table.Column<int>(type: "INTEGER", nullable: false)
+                    date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    guestsNum = table.Column<int>(type: "int", nullable: false),
+                    membersNum = table.Column<int>(type: "int", nullable: false),
+                    ownersNum = table.Column<int>(type: "int", nullable: false),
+                    managersNum = table.Column<int>(type: "int", nullable: false),
+                    adminNum = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -254,11 +254,11 @@ namespace TradingSystem.Migrations
                 name: "purchasedProducts",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    price = table.Column<double>(type: "REAL", nullable: false),
-                    name = table.Column<string>(type: "TEXT", nullable: true),
-                    quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    ProductHistoryDataid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    price = table.Column<double>(type: "float", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    quantity = table.Column<int>(type: "int", nullable: false),
+                    ProductHistoryDataid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -275,13 +275,13 @@ namespace TradingSystem.Migrations
                 name: "transactionStatuses",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    username = table.Column<string>(type: "TEXT", nullable: true),
-                    storeID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    _paymentStatusPaymentId = table.Column<string>(type: "TEXT", nullable: true),
-                    _deliveryStatusPackageId = table.Column<string>(type: "TEXT", nullable: true),
-                    productHistoriesid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    _status = table.Column<bool>(type: "INTEGER", nullable: false)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    storeID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    _paymentStatusPaymentId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    _deliveryStatusPackageId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    productHistoriesid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    _status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -310,10 +310,10 @@ namespace TradingSystem.Migrations
                 name: "stores",
                 columns: table => new
                 {
-                    sid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    name = table.Column<string>(type: "TEXT", nullable: true),
-                    _addressid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    purchasePolicyid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    sid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    _addressid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    purchasePolicyid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -336,12 +336,12 @@ namespace TradingSystem.Migrations
                 name: "appointers",
                 columns: table => new
                 {
-                    sid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    username = table.Column<string>(type: "TEXT", nullable: false),
-                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
-                    sid1 = table.Column<Guid>(type: "TEXT", nullable: true),
-                    appointerID = table.Column<string>(type: "TEXT", nullable: true),
-                    Owner_sid1 = table.Column<Guid>(type: "TEXT", nullable: true)
+                    sid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    sid1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    appointerID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Owner_sid1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -376,8 +376,8 @@ namespace TradingSystem.Migrations
                 name: "BidsManager",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    sid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    sid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -394,9 +394,9 @@ namespace TradingSystem.Migrations
                 name: "managers",
                 columns: table => new
                 {
-                    username = table.Column<string>(type: "TEXT", nullable: false),
-                    sid = table.Column<Guid>(type: "TEXT", nullable: false),
-                    appointerID = table.Column<string>(type: "TEXT", nullable: true)
+                    username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    sid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    appointerID = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -425,10 +425,10 @@ namespace TradingSystem.Migrations
                 name: "membersShoppingBaskets",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    storesid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    ShoppingCartusername1 = table.Column<string>(type: "TEXT", nullable: true),
-                    ShoppingCartusername = table.Column<string>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    storesid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ShoppingCartusername1 = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ShoppingCartusername = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -457,17 +457,17 @@ namespace TradingSystem.Migrations
                 name: "products",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    _name = table.Column<string>(type: "TEXT", nullable: true),
-                    _quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    _weight = table.Column<double>(type: "REAL", nullable: false),
-                    _price = table.Column<double>(type: "REAL", nullable: false),
-                    category = table.Column<string>(type: "TEXT", nullable: true),
-                    rating = table.Column<int>(type: "INTEGER", nullable: false),
-                    _storeName = table.Column<string>(type: "TEXT", nullable: true),
-                    discount = table.Column<double>(type: "REAL", nullable: false),
-                    CategoryName = table.Column<string>(type: "TEXT", nullable: true),
-                    Storesid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    _name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    _quantity = table.Column<int>(type: "int", nullable: false),
+                    _weight = table.Column<double>(type: "float", nullable: false),
+                    _price = table.Column<double>(type: "float", nullable: false),
+                    category = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    rating = table.Column<int>(type: "int", nullable: false),
+                    _storeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    discount = table.Column<double>(type: "float", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Storesid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -490,8 +490,8 @@ namespace TradingSystem.Migrations
                 name: "BidStates",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    BidsManagerid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BidsManagerid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -508,11 +508,11 @@ namespace TradingSystem.Migrations
                 name: "productInCarts",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    productid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    quantity = table.Column<int>(type: "INTEGER", nullable: false),
-                    ShoppingBasketid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    productid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    quantity = table.Column<int>(type: "int", nullable: false),
+                    ShoppingBasketid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -535,13 +535,13 @@ namespace TradingSystem.Migrations
                 name: "Bids",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Username = table.Column<string>(type: "TEXT", nullable: true),
-                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Price = table.Column<double>(type: "REAL", nullable: false),
-                    Status = table.Column<int>(type: "INTEGER", nullable: false),
-                    StoreId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    stateId = table.Column<Guid>(type: "TEXT", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    StoreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    stateId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -558,12 +558,12 @@ namespace TradingSystem.Migrations
                 name: "Prem",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    p = table.Column<string>(type: "TEXT", nullable: true),
-                    BidStateid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Managersid = table.Column<Guid>(type: "TEXT", nullable: true),
-                    Managerusername = table.Column<string>(type: "TEXT", nullable: true),
-                    PurchasePolicyid = table.Column<Guid>(type: "TEXT", nullable: true)
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    p = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BidStateid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Managersid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Managerusername = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PurchasePolicyid = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -602,7 +602,8 @@ namespace TradingSystem.Migrations
                 name: "IX_appointers_sid1",
                 table: "appointers",
                 column: "sid1",
-                unique: true);
+                unique: true,
+                filter: "[sid1] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_appointers_username",
@@ -613,13 +614,15 @@ namespace TradingSystem.Migrations
                 name: "IX_Bids_stateId",
                 table: "Bids",
                 column: "stateId",
-                unique: true);
+                unique: true,
+                filter: "[stateId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BidsManager_sid",
                 table: "BidsManager",
                 column: "sid",
-                unique: true);
+                unique: true,
+                filter: "[sid] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BidStates_BidsManagerid",

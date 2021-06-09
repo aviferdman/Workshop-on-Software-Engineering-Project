@@ -234,6 +234,8 @@ namespace TradingSystemTests.DBTests
         {
             MarketUsers.Instance.tearDown();
             Transaction.Instance.DeleteAllTests();
+            MarketStores.Instance.tearDown();
+            UserManagement.Instance.tearDown();
         }
     }
 }
