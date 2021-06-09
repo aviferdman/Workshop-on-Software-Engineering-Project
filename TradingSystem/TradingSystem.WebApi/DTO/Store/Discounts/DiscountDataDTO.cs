@@ -11,6 +11,7 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
     public class DiscountDataDTO
     {
         public Guid Id { get; set; }
+        public int SerialNumber { get; set; }
         public string Creator { get; set; } = "";
         public string DiscountType { get; set; } = "";
         public string? ConditionType { get; set; }
@@ -27,6 +28,7 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
             return new DiscountDataDTO
             {
                 Id = discountData.DiscountId,
+                SerialNumber = discountData.SerialNumber,
                 Creator = discountData.Username,
                 DiscountType = discountData.DiscountType.ToString(),
                 ConditionType = discountData.RuleType == RuleType.Simple ? null : discountData.RuleType.ToString(),

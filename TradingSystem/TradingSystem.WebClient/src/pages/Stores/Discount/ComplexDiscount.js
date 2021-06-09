@@ -17,8 +17,8 @@ class ComplexDiscount extends Component {
                             <div className = "simple-discount-li-div">
                                 <p className= "discName">creator: {elem.creator}  </p>
                                 <p className= "discName">discountRelation: {elem.discountRuleRelation} </p>
-                                <p className= "discName"> First Discount: {elem.discountId1}  </p>
-                                <p className= "discName"> Second Discount: {elem.discountId2} </p>
+                                <p className= "discName"> First Discount: {elem.discount1_serialNumber}  </p>
+                                <p className= "discName"> Second Discount: {elem.discount2_serialNumber} </p>
 
                                 <ConditionalRender
                                     condition={elem.discountRuleRelation === 'Xor'}

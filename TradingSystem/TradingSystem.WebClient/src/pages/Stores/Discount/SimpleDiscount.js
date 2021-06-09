@@ -24,7 +24,7 @@ class SimpleDiscount extends Component {
                         return (
                             <li  key={elem.id}>
                                 <div className = "simple-discount-li-div">
-                                    <p className= "discName">ID: {elem.id}  </p>
+                                    <p className= "discName">ID: {elem.serialNumber}  </p>
                                     <p className= "discName">creator: {elem.creator}  </p>
                                     <p className= "discName">percent: {formatFloat(elem.percent * 100)}%  </p>
                                     <p className= "discName">discountType: {elem.discountType} </p>

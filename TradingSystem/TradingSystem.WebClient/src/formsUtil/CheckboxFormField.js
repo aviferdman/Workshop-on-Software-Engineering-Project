@@ -3,7 +3,6 @@ import FormFieldInfo from "./formFieldInfo";
 export default class CheckboxFormField extends FormFieldInfo {
     constructor(initValue) {
         super(initValue === undefined ? false : initValue);
-        this.inputValue = 'off';
     }
 
     trySetValueFromEvent(e) {

@@ -33,7 +33,7 @@ class AddComplexDiscount extends React.Component {
                 discountRuleRelation: 'Xor',
                 discountId1: '',
                 discountId2: '',
-                decision: new CheckboxFormField(),
+                decision: new CheckboxFormField(true),
             }),
             showDecision: true
         };
@@ -83,6 +83,19 @@ class AddComplexDiscount extends React.Component {
         }
 
         let discountObj = this.state.discountFields.valuesObject();
+        let discount1_serialNumber = discountObj.discountId1;
+        let discount2_serialNumber = discountObj.discountId2;
+        discountObj.discountId1 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId1].id;
+        if (discountObj.discountId1 == null) {
+            alert(`Discount with serial number ${discount1_serialNumber} was not found`);
+            return;
+        }
+        discountObj.discountId2 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId2].id;
+        if (discountObj.discountId2 == null) {
+            alert(`Discount with serial number ${discount2_serialNumber} was not found`);
+            return;
+        }
+
         let reqData = Object.assign({}, discountObj, {
             username: this.context.username,
             storeId: this.props.storeId,
@@ -91,6 +104,8 @@ class AddComplexDiscount extends React.Component {
             .then(discountId => {
                 discountObj.id = discountId;
                 discountObj.creator = this.context.username;
+                discountObj.discount1_serialNumber = discount1_serialNumber;
+                discountObj.discount2_serialNumber = discount2_serialNumber;
                 this.props.onSuccess(discountObj);
                 this.resetState(true);
             }, alertRequestError_default)
