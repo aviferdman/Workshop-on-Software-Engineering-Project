@@ -98,7 +98,16 @@ namespace TradingSystem.DAL
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-           => options.UseSqlite(@ProxyMarketContext.conString);
+        {
+            if (ProxyMarketContext.conType.Equals("SQLite"))
+            {
+                options.UseSqlite(@ProxyMarketContext.conString);
+            }
+            else
+            {
+                options.UseSqlServer(@ProxyMarketContext.conString);
+            }
+        }
 
         public static MarketContext Instance { get { return _lazy.Value; } }
 

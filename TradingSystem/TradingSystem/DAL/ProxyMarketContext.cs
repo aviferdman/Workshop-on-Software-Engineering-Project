@@ -11,14 +11,15 @@ using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Business.Market.StorePackage;
 using System.Security.Cryptography;
 using System.IO;
+using System.Configuration;
 
 namespace TradingSystem.DAL
 {
     public class ProxyMarketContext
     {
         private bool isDebug;
-
-        public static string conString = $"Data Source=marketDBTests.db";
+        public static string conType = ConfigurationManager.AppSettings["ConnectionType"];
+        public static string conString = ConfigurationManager.AppSettings["ConnectionString"];
         public ConcurrentDictionary<string, DataUser> dataUsers;
         public ConcurrentDictionary<string, RegisteredAdmin> admins;
         public ConcurrentDictionary<string, MemberState> memberStates;
