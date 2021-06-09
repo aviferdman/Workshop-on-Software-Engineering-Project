@@ -6,6 +6,9 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
 {
     public class DiscountDataCompundDTO
     {
+        public Guid Id { get; set; }
+        public int SerialNumber { get; set; }
+
         public string? Creator { get; set; } = "";
         public string? DiscountRuleRelation { get; set; } = "";
         public Guid DiscountId1 { get; set; }
@@ -16,6 +19,9 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
         {
             return new DiscountDataCompundDTO
             {
+                Id = discountsRelation.Id,
+                SerialNumber = discountsRelation.SerialNumber,
+
                 Creator = discountsRelation.Username,
                 DiscountRuleRelation = discountsRelation.DiscountRuleRelation.ToString(),
                 DiscountId1 = discountsRelation.DiscountId1,

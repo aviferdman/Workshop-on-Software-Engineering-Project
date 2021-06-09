@@ -15,6 +15,7 @@ class ComplexDiscount extends Component {
                     {this.props.discountRecords.map((elem) => (
                         <li  key={elem.id}>
                             <div className = "simple-discount-li-div">
+                                <p className= "discName">ID: {elem.serialNumber}  </p>
                                 <p className= "discName">creator: {elem.creator}  </p>
                                 <p className= "discName">discountRelation: {elem.discountRuleRelation} </p>
                                 <p className= "discName"> First Discount: {elem.discount1_serialNumber}  </p>
@@ -22,7 +23,7 @@ class ComplexDiscount extends Component {
 
                                 <ConditionalRender
                                     condition={elem.discountRuleRelation === 'Xor'}
-                                    render={() => (<p className= "discName">Decide: {elem.decide} </p>)}
+                                    render={() => (<p className= "discName">Decide: {elem.decide ? 'First' : 'Second'} </p>)}
                                 />
 
                             </div>

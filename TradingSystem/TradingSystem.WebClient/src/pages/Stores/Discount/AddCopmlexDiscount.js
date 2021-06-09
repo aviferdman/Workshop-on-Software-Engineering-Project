@@ -83,18 +83,22 @@ class AddComplexDiscount extends React.Component {
         }
 
         let discountObj = this.state.discountFields.valuesObject();
+
         let discount1_serialNumber = discountObj.discountId1;
-        let discount2_serialNumber = discountObj.discountId2;
-        discountObj.discountId1 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId1].id;
-        if (discountObj.discountId1 == null) {
+        let discount1 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId1];
+        if (discount1 == null) {
             alert(`Discount with serial number ${discount1_serialNumber} was not found`);
             return;
         }
-        discountObj.discountId2 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId2].id;
-        if (discountObj.discountId2 == null) {
+        discountObj.discountId1 = discount1.id;
+
+        let discount2_serialNumber = discountObj.discountId2;
+        let discount2 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId2];
+        if (discount2 == null) {
             alert(`Discount with serial number ${discount2_serialNumber} was not found`);
             return;
         }
+        discountObj.discountId2 = discount2.id;
 
         let reqData = Object.assign({}, discountObj, {
             username: this.context.username,
@@ -106,6 +110,7 @@ class AddComplexDiscount extends React.Component {
                 discountObj.creator = this.context.username;
                 discountObj.discount1_serialNumber = discount1_serialNumber;
                 discountObj.discount2_serialNumber = discount2_serialNumber;
+                discountObj.decide = discountObj.decision;
                 this.props.onSuccess(discountObj);
                 this.resetState(true);
             }, alertRequestError_default)
