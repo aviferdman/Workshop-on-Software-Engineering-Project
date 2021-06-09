@@ -20,7 +20,8 @@ namespace TradingSystem.Business
         {
             //var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
 
-            var url = "https://cs-bgu-wsep.herokuapp.com/";
+            var url = MyConfig.Get<string>("ExternalSystemsURL");
+            Console.WriteLine("url is : "+ url);
 
             var content = new FormUrlEncodedContent(postContent);
 
