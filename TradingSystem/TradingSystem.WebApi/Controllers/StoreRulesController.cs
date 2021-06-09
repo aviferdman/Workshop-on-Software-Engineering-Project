@@ -152,19 +152,19 @@ namespace TradingSystem.WebApi.Controllers
             RuleContext ruleContext;
             if (!Enum.TryParse(policyParamsDTO.RuleContext, out ruleContext))
             {
-                return BadRequest("Invalid discount type");
+                return BadRequest("Invalid rule context");
             }
 
             RuleType ruleType;
             if (!Enum.TryParse(policyParamsDTO.RuleType, out ruleType))
             {
-                return BadRequest("Invalid condition type");
+                return BadRequest("Invalid rule type");
             }
 
             PolicyRuleRelation policyRuleRelation;
             if (!Enum.TryParse(policyParamsDTO.RuleRelation, out policyRuleRelation))
             {
-                return BadRequest("Invalid condition type");
+                return BadRequest("Invalid rule relation");
             }
 
             await MarketRulesService.AddPolicyRule

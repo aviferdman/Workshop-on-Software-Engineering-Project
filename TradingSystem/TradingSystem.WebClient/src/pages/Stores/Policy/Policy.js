@@ -60,13 +60,13 @@ export class Policy extends React.Component {
                     {/*top grid - simple discounts*/}
                     <div  className="policy-grid-simple">
                         <h2> Store Policy </h2>
-                        <PolicyRecord policyRecords={this.state.policy}  />
+                        <PolicyRecord policyRecords={this.state.policies} storeProductsMap={this.state.storeProductsMap} />
                     </div>
 
                     {/*bottom grid - buttons*/}
                     <div className="policy-grid-button">
                         <div className="center-btn-st">
-                            <AddPolicy storeId={this.storeId} onSuccess={this.onPolicyAdd} />
+                            <AddPolicy storeId={this.storeId} storeProducts={this.state.storeProducts} onSuccess={this.onPolicyAdd} />
                         </div>
                     </div>
 
