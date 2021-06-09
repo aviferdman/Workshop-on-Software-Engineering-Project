@@ -72,6 +72,29 @@ namespace TradingSystem.Business.Market
             return store.AddDiscount(username, discount);
         }
 
+        public async System.Threading.Tasks.Task<Result<Guid>> UpdateSimpleDiscountAsync(Guid discountId, string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
+        {
+            Store store = await marketStores.GetStoreById(storeId);
+            var d = CreateCalculator(discountType, precent, category, productId);
+            Discount discount = new Discount(d);
+            store.RemoveDiscount(username, discountId);
+            store.AddDiscount(username, discount);
+            return new Result<Guid>(discountId, false, "");
+        }
+
+        public async System.Threading.Tasks.Task<Result<Guid>> UpdateConditionalDiscountAsync(Guid discountId, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
+            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
+        {
+            Store store = await marketStores.GetStoreById(storeId);
+            var d = CreateCalculator(discountType, precent, category, productId);
+            var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            ConditionDiscount discount = new ConditionDiscount(d);
+            discount.AddRule(r);
+            store.RemoveDiscount(username, discountId);
+            store.AddDiscount(username, discount);
+            return new Result<Guid>(discountId, false, "");
+        }
+
         public async Task<Guid> GenerateConditionalDiscountsAsync(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
         {
             switch (discountRuleRelation)
