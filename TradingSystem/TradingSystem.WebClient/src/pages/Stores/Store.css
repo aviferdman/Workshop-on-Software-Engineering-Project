@@ -7,7 +7,7 @@
 
 .internal-conatiner.store-container {
     display: grid;
-    grid-template-rows: 20% 20% 20% 20% 20%;
+    grid-template-rows: 16.666% 16.666% 16.666% 16.666% 16.666%;
 }
 
 .store-container .button-view{

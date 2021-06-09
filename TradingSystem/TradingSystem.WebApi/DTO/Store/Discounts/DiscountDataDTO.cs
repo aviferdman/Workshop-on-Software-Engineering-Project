@@ -18,8 +18,8 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
         public double Percent { get; set; }
         public string? Category { get; set; }
         public Guid ProductId { get; set; }
-        public double? MaxValue { get; set; }
         public double? MinValue { get; set; }
+        public double? MaxValue { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
