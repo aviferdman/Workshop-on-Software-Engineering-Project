@@ -22,7 +22,7 @@ class ComplexDiscount extends Component {
 
                                 <ConditionalRender
                                     condition={elem.discountRuleRelation === 'Xor'}
-                                    render={() => (<p className= "discName">Decide: {elem.decide} </p>)}
+                                    render={() => (<p className= "discName">Decide: {elem.decide ? 'First' : 'Second'} </p>)}
                                 />
 
                             </div>

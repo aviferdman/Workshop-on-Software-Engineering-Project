@@ -106,6 +106,7 @@ class AddComplexDiscount extends React.Component {
                 discountObj.creator = this.context.username;
                 discountObj.discount1_serialNumber = discount1_serialNumber;
                 discountObj.discount2_serialNumber = discount2_serialNumber;
+                discountObj.decide = discountObj.decision;
                 this.props.onSuccess(discountObj);
                 this.resetState(true);
             }, alertRequestError_default)
