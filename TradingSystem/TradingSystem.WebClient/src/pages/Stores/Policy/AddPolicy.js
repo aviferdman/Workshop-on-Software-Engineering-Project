@@ -23,7 +23,7 @@ class AddPolicy extends React.Component {
     render() {
         return (
             <main className="items">
-                <Modal show={this.state.show} handleClose={this.hideModal}  >
+                <Modal show={this.state.show} handleClose={this.hideModal} handleConfirm={this.onConfirm}  >
 
                     <div className="disc-check-line-grid">
 

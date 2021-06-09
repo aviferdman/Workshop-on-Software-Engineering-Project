@@ -3,14 +3,45 @@ import './Policy.css';
 import {GlobalContext} from "../../../globalContext";
 import AddPolicy from "./AddPolicy";
 import PolicyRecord from "./PolicyRecord";
+import * as api from "../../../api";
+import {alertRequestError_default} from "../../../utils";
+import * as util from "../../../utils";
 
 
 export class Policy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            policies: [],
+            policies: null,
+            storeProducts: null,
+            storeProductsMap: null,
         };
+        this.storeId = this.props.match.params.storeId;
+    }
+
+    async componentDidMount() {
+        let promise_storeProducts = this.fetchStoreProducts();
+        let promise_policies = this.fetchPolicies();
+        await Promise.all([promise_storeProducts, promise_policies]);
+    }
+
+    async fetchStoreProducts() {
+        await api.stores.infoWithProducts(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    storeProducts: storeInfo.products,
+                    storeProductsMap: util.arrayToMap(storeInfo.products, p => p.id),
+                });
+            }, alertRequestError_default);
+    }
+
+    async fetchPolicies() {
+        await api.stores.policies.fetchAll(this.storeId)
+            .then(policies => {
+                this.setState({
+                    policies: policies,
+                });
+            }, alertRequestError_default);
     }
 
     onPolicyAdd = policy => {

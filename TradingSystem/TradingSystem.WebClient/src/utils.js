@@ -13,6 +13,10 @@ export const arrayToHashset = array => {
     return Object.fromEntries(array.map(key => [key, {}]));
 }
 
+export const arrayToMap = (array, fKey) => {
+    return Object.fromEntries(array.map(item => [fKey(item), item]));
+}
+
 export function formatFloat(float) {
     return float.toFixed(1).toLocaleString();
 }

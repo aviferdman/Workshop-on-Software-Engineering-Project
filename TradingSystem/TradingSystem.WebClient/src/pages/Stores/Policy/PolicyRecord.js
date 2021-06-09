@@ -1,11 +1,14 @@
 import React, {Component} from 'react';
 import './PolicyRecord.css';
 
-
 class PolicyRecord extends Component {
 
 
     render() {
+        if (this.props.policyRecords == null) {
+            return null;
+        }
+
         return (
             <div>
                 <ul className = "simple-discount-ul">
