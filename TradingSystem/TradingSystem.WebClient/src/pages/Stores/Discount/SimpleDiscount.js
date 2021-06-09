@@ -55,8 +55,8 @@ class SimpleDiscount extends Component {
                                     />
                                 </div>
                             </li>
-                        )}
-                    )}
+                        )
+                    })}
                 </ul>
             </div>
         );

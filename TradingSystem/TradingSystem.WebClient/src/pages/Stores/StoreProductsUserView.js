@@ -19,7 +19,7 @@ export class StoreProductsUserView extends React.Component {
     }
 
     async componentDidMount() {
-        await api.stores.info(this.storeId)
+        await api.stores.infoWithProducts(this.storeId)
             .then(storeInfo => {
                 this.setState({
                     products: storeInfo.products

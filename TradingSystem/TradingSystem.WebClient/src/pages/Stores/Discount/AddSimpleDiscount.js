@@ -16,11 +16,16 @@ class AddSimpleDiscount extends React.Component {
         this.resetState(false);
     }
 
+    async componentDidMount() {
+        await this.fetchStoreProducts();
+    }
+
     resetState = set => {
         let state = {
             show: false,
             discountFields: this.newFields(),
             minMaxStep: 1,
+            storeProducts: null,
         };
         if (!set) {
             this.state = state;
@@ -235,6 +240,15 @@ class AddSimpleDiscount extends React.Component {
         }, alertRequestError_default);
     }
 
+    async fetchStoreProducts() {
+        await api.stores.infoWithProducts(this.props.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    storeProducts: storeInfo.products
+                });
+            }, alertRequestError_default);
+    }
+
     render() {
         return (
             <main className="items">
@@ -310,14 +324,18 @@ class AddSimpleDiscount extends React.Component {
                                             <label>Product</label>
                                         </div>
 
-                                        <div >
-                                            <input
-                                                type="text"
-                                                className="disc-input-props"
+                                        <select className="disc-input-props"
+                                                required
                                                 value={this.getInputValue('productId')}
-                                                onChange={this.onInputChange('productId')}
+                                                onChange={this.onInputChange('productId')}>
+                                            <option value=""/>
+                                            <ConditionalRender
+                                                condition={this.state.storeProducts != null}
+                                                render={() => this.state.storeProducts.map(product => {
+                                                    return (<option value={product.id} key={product.id}>{product.name}</option>);
+                                                })}
                                             />
-                                        </div>
+                                        </select>
                                     </div>
                                 </div>
                             )}

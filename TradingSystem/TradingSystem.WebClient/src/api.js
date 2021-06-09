@@ -106,14 +106,17 @@ export const history = {
     },
 };
 
+let storesInfo = async storeId => {
+    return get('/Stores/Info', {
+        params: {
+            storeId: storeId
+        }
+    });
+};
+
 export const stores = {
-    info: async storeId => {
-        return get('/Stores/Info', {
-            params: {
-                storeId: storeId
-            }
-        });
-    },
+    info: storesInfo,
+    infoWithProducts: storesInfo,
 
     search: async storeName => {
         return post('/Stores/Search', {
