@@ -52,7 +52,7 @@ namespace TradingSystem.Service
         {
             await StorePredicatesManager.Instance.SaveRequest(counter++, "GenerateConditionalDiscountsAsync", username, discountRuleRelation, storeId, discountId1, discountId2, decide);
             Guid discountId = await marketRules.GenerateConditionalDiscountsAsync(username, discountRuleRelation, storeId, discountId1, discountId2, decide);
-            var discountRelation = new DiscountsRelation(username, discountRuleRelation, storeId, discountId1, discountId2, decide);
+            var discountRelation = new DiscountsRelation(username, discountId, discountRuleRelation, storeId, discountId1, discountId2, decide);
             await discountsManager.AddRelation(discountRelation);
             return discountId;
         }
