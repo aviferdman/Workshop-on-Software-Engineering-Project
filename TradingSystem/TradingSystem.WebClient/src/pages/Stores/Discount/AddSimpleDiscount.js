@@ -16,8 +16,12 @@ class AddSimpleDiscount extends React.Component {
         this.resetState(false);
     }
 
-    async componentDidMount() {
-        await this.fetchStoreProducts();
+    showModal = () => {
+        this.setState({ show: true });
+    }
+
+    hideModal = () => {
+        this.setState({ show: false });
     }
 
     resetState = set => {
@@ -25,7 +29,6 @@ class AddSimpleDiscount extends React.Component {
             show: false,
             discountFields: this.newFields(),
             minMaxStep: 1,
-            storeProducts: null,
         };
         if (!set) {
             this.state = state;
@@ -61,14 +64,6 @@ class AddSimpleDiscount extends React.Component {
             startDate: new DateFormField(),
             endDate: new DateFormField(),
         });
-    }
-
-    showModal = () => {
-        this.setState({ show: true });
-    }
-
-    hideModal = () => {
-        this.setState({ show: false });
     }
 
     getField = field => {
@@ -240,15 +235,6 @@ class AddSimpleDiscount extends React.Component {
         }, alertRequestError_default);
     }
 
-    async fetchStoreProducts() {
-        await api.stores.infoWithProducts(this.props.storeId)
-            .then(storeInfo => {
-                this.setState({
-                    storeProducts: storeInfo.products
-                });
-            }, alertRequestError_default);
-    }
-
     render() {
         return (
             <main className="items">
@@ -330,8 +316,8 @@ class AddSimpleDiscount extends React.Component {
                                                 onChange={this.onInputChange('productId')}>
                                             <option value=""/>
                                             <ConditionalRender
-                                                condition={this.state.storeProducts != null}
-                                                render={() => this.state.storeProducts.map(product => {
+                                                condition={this.props.storeProducts != null}
+                                                render={() => this.props.storeProducts.map(product => {
                                                     return (<option value={product.id} key={product.id}>{product.name}</option>);
                                                 })}
                                             />

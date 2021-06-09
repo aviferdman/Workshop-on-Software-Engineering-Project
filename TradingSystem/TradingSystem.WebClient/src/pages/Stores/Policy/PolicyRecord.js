@@ -4,8 +4,6 @@ import {formatDate, formatFloat} from "../../../utils";
 import ConditionalRender from "../../../ConditionalRender";
 
 class PolicyRecord extends Component {
-
-
     render() {
         if (this.props.policyRecords == null) {
             return null;
@@ -35,8 +33,10 @@ class PolicyRecord extends Component {
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleContext === 'Product'}
-                                        render={() => (
-                                            <p className="discName">product: {this.props.storeProductsMap[elem.productId].name} </p>)}
+                                        render={() => {
+                                            let product = this.props.storeProductsMap[elem.productId];
+                                            return (<p className="discName">product: {(product && product.name) || "<deleted>"} </p>);
+                                        }}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType != null && elem.ruleType !== 'Time' && elem.minValue != null}

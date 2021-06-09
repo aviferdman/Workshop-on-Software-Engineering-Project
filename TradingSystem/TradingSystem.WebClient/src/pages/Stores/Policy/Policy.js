@@ -15,6 +15,7 @@ export class Policy extends React.Component {
             policies: null,
             storeProducts: null,
             storeProductsMap: null,
+            nextId: 0,
         };
         this.storeId = this.props.match.params.storeId;
     }
@@ -45,9 +46,11 @@ export class Policy extends React.Component {
     }
 
     onPolicyAdd = policy => {
+        let id = this.state.nextId;
+        policy.id = id;
         this.state.policies.push(policy);
         this.setState({
-            ...this.state
+            nextId: id + 1
         });
     }
 
