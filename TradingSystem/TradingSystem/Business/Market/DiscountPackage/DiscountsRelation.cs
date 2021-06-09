@@ -14,9 +14,9 @@ namespace TradingSystem.Business.Market.DiscountPackage
         private Guid _discountId1;
         private Guid _discountId2;
         private bool _decide;
-        public DiscountsRelation(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
+        public DiscountsRelation(string username, Guid discountId, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
         {
-            this.Id = Guid.NewGuid();
+            this.Id = discountId;
             this.Username = username;
             this.DiscountRuleRelation = discountRuleRelation;
             this.StoreId = storeId;

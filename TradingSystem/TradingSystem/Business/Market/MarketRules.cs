@@ -226,10 +226,17 @@ namespace TradingSystem.Business.Market
         private async Task<Guid> AddDiscountXorRuleAsync(string username, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
         {
             Store store = await marketStores.GetStoreById(storeId);
-            var discount1 = (ConditionDiscount)store.GetDiscountById(discountId1);
-            var discount2 = (ConditionDiscount)store.GetDiscountById(discountId2);
-            var xorDiscount = discount1.Xor(discount2, decide);
-            return store.AddDiscount(username, xorDiscount);
+            try
+            {
+                var discount1 = (ConditionDiscount)store.GetDiscountById(discountId1);
+                var discount2 = (ConditionDiscount)store.GetDiscountById(discountId2);
+                var xorDiscount = discount1.Xor(discount2, decide);
+                return store.AddDiscount(username, xorDiscount);
+            }
+            catch
+            {
+                return new Guid();
+            }
         }
         private IDiscountCalculator CreateCalculator(RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
         {
