@@ -35,7 +35,10 @@ class SimpleDiscount extends Component {
                                     />
                                     <ConditionalRender
                                         condition={elem.discountType === 'Product'}
-                                        render={() => (<p className= "discName">product: {elem.productId} </p>)}
+                                        render={() => {
+                                            let product = this.props.storeProductsMap[elem.productId];
+                                            return (<p className="discName">product: {(product && product.name) || "<deleted>"} </p>);
+                                        }}
                                     />
                                     <ConditionalRender
                                         condition={elem.conditionType != null && elem.conditionType !== 'Time' && elem.minValue != null}

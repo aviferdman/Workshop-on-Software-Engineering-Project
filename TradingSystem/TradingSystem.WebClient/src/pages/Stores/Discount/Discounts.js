@@ -7,6 +7,7 @@ import AddComplexDiscount from "./AddCopmlexDiscount";
 import ComplexDiscount from "./ComplexDiscount";
 import * as api from "../../../api";
 import {alertRequestError_default} from "../../../utils";
+import * as util from "../../../utils";
 
 
 export class Discounts extends React.Component {
@@ -18,12 +19,29 @@ export class Discounts extends React.Component {
             simpleDiscountsSerialNumberMap: null,
             simpleDiscountsIdMap: null,
             nextSerialNumber: null,
+            storeProducts: null,
+            storeProductsMap: null,
         };
         this.storeId = this.props.match.params.storeId;
     }
 
     async componentDidMount() {
-        await this.fetchDiscounts();
+        let promise_storeProducts = this.fetchStoreProducts();
+        let promise_discounts = this.fetchDiscounts();
+        await Promise.all([
+            promise_storeProducts,
+            promise_discounts
+        ]);
+    }
+
+    async fetchStoreProducts() {
+        await api.stores.infoWithProducts(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    storeProducts: storeInfo.products,
+                    storeProductsMap: util.arrayToMap(storeInfo.products, p => p.id),
+                });
+            }, alertRequestError_default);
     }
 
     fetchDiscounts = async () => {
@@ -110,7 +128,7 @@ export class Discounts extends React.Component {
                     {/*top grid - simple discounts*/}
                     <div  className="discounts-grid-simple">
                         <h2> Simple Discounts </h2>
-                        <SimpleDiscount simpleDiscountRecords={this.state.simpleDiscounts}  />
+                        <SimpleDiscount simpleDiscountRecords={this.state.simpleDiscounts} storeProductsMap={this.state.storeProductsMap} />
                     </div>
 
                     {/*middle grid - complex discounts*/}
@@ -123,7 +141,8 @@ export class Discounts extends React.Component {
                     {/*bottom grid - buttons*/}
                     <div className="discounts-grid-button">
                         <div className="center-btn-st">
-                            <AddSimpleDiscount storeId={this.storeId} onSuccess={this.onSimpleDiscountAdd} />
+                            <AddSimpleDiscount storeId={this.storeId} onSuccess={this.onSimpleDiscountAdd}
+                                               storeProducts={this.state.storeProducts} />
                         </div>
 
                         <div className="center-btn-nd">
