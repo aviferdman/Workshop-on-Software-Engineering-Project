@@ -10,7 +10,7 @@ using TradingSystem.PublisherComponent;
 
 namespace TradingSystem.Service
 {
-    class MarketBidsService
+    public class MarketBidsService
     {
         private static readonly Lazy<MarketBidsService> instanceLazy = new Lazy<MarketBidsService>(() => new MarketBidsService(), true);
         static SemaphoreSlim semaphoreSlim;

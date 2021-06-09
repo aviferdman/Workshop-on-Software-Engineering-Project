@@ -12,3 +12,21 @@ export function alertRequestError_default(e) {
 export const arrayToHashset = array => {
     return Object.fromEntries(array.map(key => [key, {}]));
 }
+
+export function formatFloat(float) {
+    return float.toFixed(1).toLocaleString();
+}
+
+function formatNum_leadingZero(n) {
+    if (n < 10) {
+        return '0' + n;
+    }
+    return '' + n;
+}
+
+export function formatDate(date) {
+    let dayInMonth = formatNum_leadingZero(date.getDate());
+    let month = formatNum_leadingZero(date.getMonth() + 1);
+    let year = date.getFullYear();
+    return `${dayInMonth}/${month}/${year}`;
+}

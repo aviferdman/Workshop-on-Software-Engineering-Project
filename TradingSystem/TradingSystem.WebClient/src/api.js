@@ -1,12 +1,50 @@
 import axios from "axios";
 
-export const get = async (...args) => {
-    let response = await axios.get.apply(axios, args);
+export const post = async (...args) => {
+    let response = await axios.post.apply(axios, args);
     return response.data;
 }
 
-export const post = async (...args) => {
-    let response = await axios.post.apply(axios, args);
+const getDataForRequest = (fData, params) => {
+    let data;
+    if (fData != null) {
+        if (params.length === 0) {
+            data = fData;
+        }
+        else {
+            data = fData.apply(this, params);
+        }
+    }
+    else if (params.length === 1) {
+        data = params[0];
+    }
+    else if (params.length === 0) {
+        throw new Error('No data specified to send');
+    }
+    else {
+        throw new Error('Must specify params selector function if more than 1 params have been passed');
+    }
+
+    return data;
+}
+
+export const getCurry = (url, fParams, fConfig) => async (...params) => {
+    let config = fConfig ? fConfig.apply(this, params) : {};
+    let data = getDataForRequest(fParams, params);
+
+    if (config.params != null && typeof config.params === "object") {
+        data = Object.assign(data, config.params);
+    }
+    config.params = data;
+
+    let response = await axios.get(url, config);
+    return response.data;
+}
+
+export const postCurry = (url, fData, fConfig) => async (...params) => {
+    let config = fConfig ? fConfig.apply(this, params) : undefined;
+    let data = getDataForRequest(fData, params);
+    let response = await axios.post(url, data, config);
     return response.data;
 }
 
@@ -81,13 +119,12 @@ export const history = {
 };
 
 export const stores = {
-    info: async storeId => {
-        return get('/Stores/Info', {
-            params: {
-                storeId: storeId
-            }
-        });
-    },
+    info: getCurry('/Stores/Info', storeId => ({
+        storeId: storeId,
+    })),
+    infoWithProducts: getCurry('/Stores/InfoWithProducts', storeId => ({
+        storeId: storeId,
+    })),
 
     search: async storeName => {
         return post('/Stores/Search', {
@@ -113,5 +150,13 @@ export const stores = {
                 permissions: permissions
             });
         },
-    }
+    },
+
+    discounts: {
+        fetchData: postCurry('/stores/rules/Discounts', storeId => ({
+            id: storeId,
+        })),
+        add: postCurry('/stores/rules/AddDiscount'),
+        addCompound: postCurry('/stores/rules/AddCompoundDiscount'),
+    },
 };

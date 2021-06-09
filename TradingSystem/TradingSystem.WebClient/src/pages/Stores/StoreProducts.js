@@ -26,7 +26,7 @@ export class StoreProducts extends Component {
     }
 
     async fetchProducts() {
-        let promise_storeInfo = api.stores.info(this.storeId)
+        let promise_storeInfo = api.stores.infoWithProducts(this.storeId)
             .then(storeInfo => {
                 this.setState({
                     products: storeInfo.products

@@ -44,12 +44,10 @@ export default function Routes() {
             <Route path={"/storeCreate"} component={StoreCreateForm} />
             <Route path={"/ShoppingCart"} component={ShoppingCart} />
             <Route path={"/searchStore"} component={searchStore} />
-            <Route path={"/storeProductsUserView"} component={StoreProductsUserView} />
             <Route path={"/userHistory"} component={UserHistory} />
             <Route path={"/historyProducts"} component={HistoryProductsList} />
             <Route path={"/adminActions"} component={AdminActions} />
             <Route path={"/adminHistory"} component={AdminHistory} />
-            <Route path={"/Discounts"} component={Discounts} />
             <Route path={"/Policy"} component={Policy} />
             <Route path={"/userBids"} component={UserBids} />
             <Route path={"/storeBids"} component={StoreBids} />

@@ -1,11 +1,15 @@
 import FormFieldInfo from "./formFieldInfo";
 
-export default class NumberFormField extends FormFieldInfo {
+export default class NullableNumberFormField extends FormFieldInfo {
+    constructor(initValue) {
+        super(initValue === undefined || initValue === '' ? null : initValue);
+    }
+
     trySetValueFromEvent(e) {
         let value = e.target.value;
         if (value === '') {
-            this.value = '';
-            this.inputValue = value;
+            this.value = null;
+            this.inputValue = '';
             return true;
         }
 

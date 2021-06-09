@@ -1,8 +1,19 @@
 export default class FormFieldInfo {
     constructor(initValue) {
         this.value = initValue === undefined ? '' : initValue;
+        this.inputValue = initValue == null ? '' : initValue;
         this.errorMessage = null;
         this.isError = false;
+        this.isValidationOn = true;
+    }
+
+    getValue() {
+        return this.value;
+    }
+
+    setValue(value, inputValue) {
+        this.value = value;
+        this.inputValue = inputValue === undefined ? (value == null ? '' : value) : inputValue;
     }
 
     setError(msg) {
@@ -16,11 +27,23 @@ export default class FormFieldInfo {
     }
 
     trySetValueFromEvent(e) {
-        this.value = e.target.value;
+        this.setValue(e.target.value);
         return true;
     }
 
+    setValidationOn() {
+        this.isValidationOn = true;
+    }
+
+    setValidationOff() {
+        this.isValidationOn = false;
+    }
+
     validate() {
+        if (!this.isValidationOn) {
+            return true;
+        }
+
         return this.validate_required();
     }
 
