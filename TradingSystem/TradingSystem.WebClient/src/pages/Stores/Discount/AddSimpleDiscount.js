@@ -20,6 +20,14 @@ class AddSimpleDiscount extends React.Component {
         await this.fetchStoreProducts();
     }
 
+    showModal = () => {
+        this.setState({ show: true });
+    }
+
+    hideModal = () => {
+        this.setState({ show: false });
+    }
+
     resetState = set => {
         let state = {
             show: false,
@@ -61,14 +69,6 @@ class AddSimpleDiscount extends React.Component {
             startDate: new DateFormField(),
             endDate: new DateFormField(),
         });
-    }
-
-    showModal = () => {
-        this.setState({ show: true });
-    }
-
-    hideModal = () => {
-        this.setState({ show: false });
     }
 
     getField = field => {

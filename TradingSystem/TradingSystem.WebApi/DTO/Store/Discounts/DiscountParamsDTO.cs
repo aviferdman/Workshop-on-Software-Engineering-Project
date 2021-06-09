@@ -21,8 +21,8 @@ namespace TradingSystem.WebApi.DTO.Store.Discounts
 
         public string? ConditionType { get; set; }
 
-        public int? MinValue { get; set; }
-        public int? MaxValue { get; set; }
+        public double? MinValue { get; set; }
+        public double? MaxValue { get; set; }
 
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }

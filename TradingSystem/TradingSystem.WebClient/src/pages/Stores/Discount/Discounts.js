@@ -13,7 +13,6 @@ export class Discounts extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
             simpleDiscounts: null,
             complexDiscounts:null,
             simpleDiscountsSerialNumberMap: null,
