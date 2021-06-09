@@ -20,8 +20,8 @@ namespace TradingSystem.WebApi.DTO.Store.Policy
 
         public string? Category { get; set; }
         public Guid ProductId { get; set; }
-        public double? MaxValue { get; set; }
         public double? MinValue { get; set; }
+        public double? MaxValue { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 

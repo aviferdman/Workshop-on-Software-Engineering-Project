@@ -1,8 +1,6 @@
 import React from "react";
 import './Policy.css';
 import {GlobalContext} from "../../../globalContext";
-import Header from "../../../header";
-import DataSimple from "../../../data/policyData.json"
 import AddPolicy from "./AddPolicy";
 import PolicyRecord from "./PolicyRecord";
 
@@ -11,9 +9,15 @@ export class Policy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
-            policy: DataSimple.policies,
+            policies: [],
         };
+    }
+
+    onPolicyAdd = policy => {
+        this.state.policies.push(policy);
+        this.setState({
+            ...this.state
+        });
     }
 
     render() {
@@ -31,7 +35,7 @@ export class Policy extends React.Component {
                     {/*bottom grid - buttons*/}
                     <div className="policy-grid-button">
                         <div className="center-btn-st">
-                            <AddPolicy  />
+                            <AddPolicy storeId={this.storeId} onSuccess={this.onPolicyAdd} />
                         </div>
                     </div>
 
