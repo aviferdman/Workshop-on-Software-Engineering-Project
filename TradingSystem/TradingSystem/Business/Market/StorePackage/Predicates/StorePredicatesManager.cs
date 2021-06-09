@@ -108,5 +108,19 @@ namespace TradingSystem.Business.Market.StorePackage
             var marketRulesRequest = new MarketRulesRequestType6(counter, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             await marketDAL.AddRequestType6(marketRulesRequest);
         }
+
+
+        public async Task SaveRequest(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId)
+        {
+            var marketRulesRequest = new MarketRulesRequestType7(counter, existingDiscountId, functionName, username, storeId, discountType, precent, category, productId);
+            // await marketDAL.AddRequestType7(marketRulesRequest);
+        }
+
+        public async Task SaveRequest(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        {
+            var marketRulesRequest = new MarketRulesRequestType8(counter, existingDiscountId, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            // await marketDAL.AddRequestType8(marketRulesRequest);
+        }
+
     }
 }
