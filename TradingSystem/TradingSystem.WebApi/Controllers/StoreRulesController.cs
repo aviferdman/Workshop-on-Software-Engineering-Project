@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.DiscountPackage;
+using TradingSystem.Business.Market.StorePackage.PolicyPackage;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
 using TradingSystem.WebApi.DTO.Store.Discounts;
+using TradingSystem.WebApi.DTO.Store.Policy;
 
 namespace TradingSystem.WebApi.Controllers
 {
@@ -141,6 +143,63 @@ namespace TradingSystem.WebApi.Controllers
                  LeafDiscounts = leafDiscounts.Select(DiscountDataDTO.FromDiscountData),
                  RelationDiscounts = discountsRelations.Select(DiscountDataCompundDTO.FromDiscountRelation),
             });
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> AddPolicy([FromBody] PolicyParamsDTO policyParamsDTO)
+        {
+            RuleContext ruleContext;
+            if (!Enum.TryParse(policyParamsDTO.RuleContext, out ruleContext))
+            {
+                return BadRequest("Invalid discount type");
+            }
+
+            RuleType ruleType;
+            if (!Enum.TryParse(policyParamsDTO.RuleType, out ruleType))
+            {
+                return BadRequest("Invalid condition type");
+            }
+
+            PolicyRuleRelation policyRuleRelation;
+            if (!Enum.TryParse(policyParamsDTO.RuleRelation, out policyRuleRelation))
+            {
+                return BadRequest("Invalid condition type");
+            }
+
+            await MarketRulesService.AddPolicyRule
+            (
+                policyParamsDTO.Username,
+                policyParamsDTO.StoreId,
+                policyRuleRelation,
+                ruleContext,
+                ruleType,
+                policyParamsDTO.Category,
+                policyParamsDTO.ProductId ?? Guid.Empty,
+                policyParamsDTO.MaxValue ?? int.MaxValue,
+                policyParamsDTO.MinValue ?? 0,
+                policyParamsDTO.StartDate ?? default,
+                policyParamsDTO.EndDate ?? default
+            );
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<PolicyDataDTO>>> Policies([FromBody] GuidDTO guidDTO)
+        {
+            if (guidDTO.Id == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+
+            List<PolicyData>? policies = await MarketRulesService.GetAllPolicies(guidDTO.Id);
+            if (policies == null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(policies.Select(PolicyDataDTO.FromPolicyData));
         }
     }
 }
