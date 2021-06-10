@@ -127,22 +127,28 @@ namespace TradingSystem.Business.Market
             return await store.OwnerDenyBid(ownerUsername, bidId);
         }
 
-        public Result<ICollection<Bid>> GetOwnerBids(string ownerUsername)
+        public Result<ICollection<Bid>> GetStoreBids(Guid storeId, string ownerUsername)
         {
-            ICollection<Bid> bids = new HashSet<Bid>();
             var stores = marketStores.LoadedStores;
-            foreach (var store in stores)
+            var id_store = stores.Where(s => s.Key.Equals(storeId)).FirstOrDefault();
+            if (id_store.Equals(default(KeyValuePair<Guid, Store>)))
             {
-                if (store.Value.CheckPermission(ownerUsername, Permission.BidRequests))
-                {
-                    ICollection<Bid> tempBids = store.Value.BidsManager.bidsState.Select(state => state.Bid).ToList();
-                    foreach (var bid in tempBids)
-                    {
-                        bids.Add(bid);
-                    }
-                }
+                return new Result<ICollection<Bid>>(new HashSet<Bid>(), true, "No such store.");
             }
-            return new Result<ICollection<Bid>>(bids, false, "");
+            var store = id_store.Value;
+            return store.GetBids(ownerUsername);
+        }
+
+        public Result<ICollection<Bid>> GetOwnerAcceptedBids(Guid storeId, string ownerUsername)
+        {
+            var stores = marketStores.LoadedStores;
+            var id_store = stores.Where(s => s.Key.Equals(storeId)).FirstOrDefault();
+            if (id_store.Equals(default(KeyValuePair<Guid, Store>)))
+            {
+                return new Result<ICollection<Bid>>(new HashSet<Bid>(), true, "No such store.");
+            }
+            var store = id_store.Value;
+            return store.GetOwnerAcceptedBids(ownerUsername);
         }
     }
 }

@@ -84,5 +84,17 @@ namespace TradingSystem.Business.Market.StoreStates
 
         public Guid id { get; set; }
         public string p { get; set; }
+
+        public bool ExistsInCollection(ICollection<Prem> collection)
+        {
+            foreach (var c in collection)
+            {
+                if (c.p.Equals(p))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
