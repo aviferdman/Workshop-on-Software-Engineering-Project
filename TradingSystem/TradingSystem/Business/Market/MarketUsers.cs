@@ -83,7 +83,7 @@ namespace TradingSystem.Business.Market
                 GuidString = GuidString.Replace("+", "");
                 u.Username = GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
-            Statistics s=UsersDAL.Instance.getStatis(DateTime.Now.Date);
+            Statistics s = UsersDAL.Instance.getStatis(DateTime.Now.Date);
             s.guestsNum++;
             ProxyMarketContext.Instance.saveChanges();
             NotifyAdmins(EventType.Stats);

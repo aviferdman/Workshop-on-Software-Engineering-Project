@@ -6,7 +6,7 @@ namespace TradingSystem.Business.Market.StorePackage
 {
     public class MarketRulesRequestType7: MarketRuleRequest
     {
-        private int id;
+        private int counter;
         private Guid existingDiscountId;
         private string functionName;
         private string username;
@@ -33,7 +33,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.ProductId = productId;
         }
 
-        public int Id { get => id; set => id = value; }
+        public int Id { get => counter; set => counter = value; }
         public Guid ExistingDiscountId { get => existingDiscountId; set => existingDiscountId = value; }
         public string FunctionName { get => functionName; set => functionName = value; }
         public string Username { get => username; set => username = value; }
@@ -50,7 +50,7 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public int getCounter()
         {
-            return id;
+            return Id;
         }
     }
 }

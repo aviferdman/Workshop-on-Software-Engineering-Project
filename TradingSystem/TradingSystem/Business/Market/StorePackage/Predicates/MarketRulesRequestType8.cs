@@ -6,6 +6,7 @@ namespace TradingSystem.Business.Market.StorePackage
 {
     public class MarketRulesRequestType8: MarketRuleRequest
     {
+        private int counter;
         private int id;
         private Guid existingDiscountId;
         private string functionName;
