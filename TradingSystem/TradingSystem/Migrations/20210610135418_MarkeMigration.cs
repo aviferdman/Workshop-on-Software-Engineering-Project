@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TradingSystem.Migrations
 {
-    public partial class MarketMigration : Migration
+    public partial class MarkeMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -173,6 +173,51 @@ namespace TradingSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_marketRulesRequestType6", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType7",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ExistingDiscountId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FunctionName = table.Column<string>(type: "TEXT", nullable: true),
+                    Username = table.Column<string>(type: "TEXT", nullable: true),
+                    StoreId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DiscountType = table.Column<int>(type: "INTEGER", nullable: false),
+                    Precent = table.Column<double>(type: "REAL", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: true),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType7", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "marketRulesRequestType8",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ExistingDiscountId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    FunctionName = table.Column<string>(type: "TEXT", nullable: true),
+                    Username = table.Column<string>(type: "TEXT", nullable: true),
+                    StoreId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    DiscountType = table.Column<int>(type: "INTEGER", nullable: false),
+                    RuleType = table.Column<int>(type: "INTEGER", nullable: false),
+                    Precent = table.Column<double>(type: "REAL", nullable: false),
+                    Category = table.Column<string>(type: "TEXT", nullable: true),
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ValueLessThan = table.Column<double>(type: "REAL", nullable: false),
+                    ValueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
+                    D1 = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    D2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_marketRulesRequestType8", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -745,6 +790,12 @@ namespace TradingSystem.Migrations
 
             migrationBuilder.DropTable(
                 name: "marketRulesRequestType6");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType7");
+
+            migrationBuilder.DropTable(
+                name: "marketRulesRequestType8");
 
             migrationBuilder.DropTable(
                 name: "Prem");

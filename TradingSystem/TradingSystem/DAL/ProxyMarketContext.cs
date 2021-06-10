@@ -11,14 +11,15 @@ using TradingSystem.Business.Market.UserPackage;
 using TradingSystem.Business.Market.StorePackage;
 using System.Security.Cryptography;
 using System.IO;
+using System.Configuration;
 
 namespace TradingSystem.DAL
 {
     public class ProxyMarketContext
     {
         private bool isDebug;
-
-        public static string conString = $"Data Source=marketDBTests.db";
+        public static string conType = "SQLite";
+        public static string conString = "Data Source=marketDBTests.db";
         public ConcurrentDictionary<string, DataUser> dataUsers;
         public ConcurrentDictionary<string, RegisteredAdmin> admins;
         public ConcurrentDictionary<string, MemberState> memberStates;
@@ -610,6 +611,20 @@ namespace TradingSystem.DAL
             if (!IsDebug)
             {
                 await marketContext.AddRequestType1(req);
+            }
+        }
+        public async Task AddRequestType7(MarketRulesRequestType7 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType7(req);
+            }
+        }
+        public async Task AddRequestType8(MarketRulesRequestType8 req)
+        {
+            if (!IsDebug)
+            {
+                await marketContext.AddRequestType8(req);
             }
         }
 

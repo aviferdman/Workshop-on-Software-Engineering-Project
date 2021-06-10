@@ -13,7 +13,7 @@ class HomeProducts extends Component {
                         <ul className = "products">
                             {this.props.products.map((product) => (
                                 <li key={product.id} >
-                                    <div className="control-buttons" >
+                                    <div className="control-buttons-bid" >
                                             <AddBid  />
                                     </div>
 

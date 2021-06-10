@@ -30,6 +30,11 @@ namespace TradingSystem.Business.Market.DiscountPackage
             this.DiscountsData.RemoveWhere(d => d.DiscountId.Equals(discountId));
         }
 
+        public async Task<DiscountData> GetDiscountById(Guid discountId)
+        {
+            return this.DiscountsData.Where(d => d.DiscountId.Equals(discountId)).FirstOrDefault();
+        }
+
         public async Task AddRelation(DiscountsRelation discountsRelation)
         {
             this.DiscountsRelations.Add(discountsRelation);
@@ -48,6 +53,18 @@ namespace TradingSystem.Business.Market.DiscountPackage
         public async Task<ICollection<DiscountsRelation>> GetAllDiscountsRelations(Guid storeId)
         {
             return this.DiscountsRelations.Where(d => d.StoreId.Equals(storeId)).ToList();
+        }
+
+        public bool IsComplexed(Guid discountId)
+        {
+            foreach(var relation in DiscountsRelations)
+            {
+                if (relation.DiscountId1.Equals(discountId) || relation.DiscountId2.Equals(discountId))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

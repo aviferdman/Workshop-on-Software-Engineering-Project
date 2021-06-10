@@ -26,6 +26,7 @@ namespace TradingSystemTests.DBTests
         public async Task Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = false;
+           
             String guestName = marketUsers.AddGuest();
             await userManagement.SignUp("founder", "123", null);
             await marketUsers.AddMember("founder", "123", guestName);

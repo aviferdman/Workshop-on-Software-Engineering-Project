@@ -21,6 +21,7 @@ namespace TradingSystemTests.DBTests
         public MarketIntegrationTests()
         {
             ProxyMarketContext.Instance.IsDebug = false;
+           
         }
         [TestInitialize]
         public async Task Initialize()

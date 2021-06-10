@@ -27,6 +27,7 @@ namespace TradingSystemTests.DBTests
         User customer;
         User owner;
         Product product;
+        ProductData dataproduct;
 
         public BidTests()
         {
@@ -38,7 +39,6 @@ namespace TradingSystemTests.DBTests
             ProxyMarketContext.Instance.IsDebug = false;
 
             PublisherManagement.Instance.DeleteAll();
-            marketUsers.CleanMarketUsers();
             publisherManagement = PublisherManagement.Instance;
             publisherManagement.SetTestMode(true);
             String guestName = marketUsers.AddGuest();
@@ -56,10 +56,12 @@ namespace TradingSystemTests.DBTests
             await market.makeOwner("OwnerTest1", store.Id, "FounderTest1");
             owner = marketUsers.ActiveUsers.GetOrAdd("OwnerTest1", owner);
             customer = marketUsers.ActiveUsers.GetOrAdd("ManagerTest1", customer);
-            product = new Product(100, 100, 100);
+            
+            dataproduct = new ProductData("lala",100, 100, 100, "cat");
             var shoppingCart = new ShoppingCart(customer);
-            await customer.UpdateProductInShoppingBasket(store, product, QUANTITY);
-            store.UpdateProduct(product);
+            Result<Product> res=await market.AddProduct(dataproduct, store.Id, "FounderTest1");
+            product = res.Ret;
+            await marketUsers.AddProductToCart(customer.Username, product.id, QUANTITY);
 
         }
 
@@ -89,7 +91,7 @@ namespace TradingSystemTests.DBTests
             await marketBids.CustomerCreateBid(customer.Username, store.Id, product.Id, BID_PRICE);
             Assert.AreEqual(originMessages + 1, subscriber.Messages.Count);
         }
-        
+
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.OwnerAcceptBid(string, string, Guid, Guid, double)"/>
         [TestMethod]
         public async Task TestNotAllOwnersAcceptBid()
@@ -133,11 +135,11 @@ namespace TradingSystemTests.DBTests
             Assert.AreEqual(originPrice, bidPrice);
         }
 
-        
+
         /// test for function :<see cref="TradingSystem.Service.MarketShoppingCartService.OwnerAnswerBid(string, TradingSystem.Service.Answer, string, Guid, Guid, double)">
         [TestMethod]
         public async Task TestOwnerAnswerDenyBid()
-        {            
+        {
             NotificationSubscriber subscriber = PublisherManagement.Instance.FindSubscriber(customer.Username, EventType.RequestPurchaseEvent);
             subscriber.TestMode = true;
             int originMessages = subscriber.Messages.Count;
@@ -148,7 +150,7 @@ namespace TradingSystemTests.DBTests
             await marketBids.OwnerDenyBid(owner.Username, store.Id, bidId);
             Assert.AreEqual(originMessages + 1, subscriber.Messages.Count);
         }
-        
+
         /// test for function :<see cref="TradingSystem.Service.MarketShoppingCartService.OwnerAnswerBid(string, TradingSystem.Service.Answer, string, Guid, Guid, double)">
         [TestMethod]
         public async Task TestOwnerAnswerNewBid()
@@ -163,15 +165,15 @@ namespace TradingSystemTests.DBTests
             await marketBids.OwnerNegotiateBid(owner.Username, store.Id, bidId, 1.2 * BID_PRICE);
             Assert.AreEqual(originMessages + 1, subscriber.Messages.Count);
         }
-        
+
+
         [TestCleanup]
         public async Task DeleteAll()
         {
-            await UserManagement.Instance.DeleteUser("FounderTest1");
-            await UserManagement.Instance.DeleteUser("ManagerTest1");
-            await UserManagement.Instance.DeleteUser("OwnerTest1");
+            UserManagement.Instance.tearDown();
             PublisherManagement.Instance.DeleteAll();
-            marketUsers.CleanMarketUsers();
+            market.tearDown();
+            marketUsers.tearDown();
         }
     }
 }

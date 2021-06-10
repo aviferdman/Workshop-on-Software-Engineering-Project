@@ -58,8 +58,18 @@ namespace TradingSystem.Business.Market.BidsPackage
 
         public async Task<Result<Guid>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice, string storeName)
         {
-            var bid = new Bid(username, storeId, productId, newBidPrice);
-            this.bidsState.Add(new BidState(bid));
+            Bid bid = new Bid(username, storeId, productId, newBidPrice);
+            BidState b = new BidState(bid);
+            if (!ProxyMarketContext.Instance.IsDebug)
+            {
+                MarketContext.Instance.Bids.Add(bid);
+                await ProxyMarketContext.Instance.saveChanges();
+                MarketContext.Instance.BidStates.Add(b);
+                await ProxyMarketContext.Instance.saveChanges();
+            }
+           
+            this.bidsState.Add(b);
+           
             await ProxyMarketContext.Instance.saveChanges();
             NotifyOwners(EventType.RequestPurchaseEvent, $"You got new Bid in store {storeName}");
             return new Result<Guid>(bid.Id, false, "");

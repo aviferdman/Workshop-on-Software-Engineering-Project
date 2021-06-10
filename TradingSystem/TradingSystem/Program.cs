@@ -3,6 +3,7 @@ using System.Threading;
 using TradingSystem.Business;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.Service;
 
 namespace TradingSystem
 {
@@ -11,6 +12,7 @@ namespace TradingSystem
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World");
+            // SetupService.Instance.Initialize();
         }
     }
 }

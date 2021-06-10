@@ -9,14 +9,14 @@ using TradingSystem.DAL;
 namespace TradingSystem.Migrations
 {
     [DbContext(typeof(MarketContext))]
-    [Migration("20210608170531_MarketMigration")]
-    partial class MarketMigration
+    [Migration("20210610135418_MarkeMigration")]
+    partial class MarkeMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.6");
+                .HasAnnotation("ProductVersion", "5.0.7");
 
             modelBuilder.Entity("TradingSystem.Business.Delivery.DeliveryStatus", b =>
                 {
@@ -515,6 +515,91 @@ namespace TradingSystem.Migrations
                     b.HasKey("id");
 
                     b.ToTable("marketRulesRequestType6");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType7", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DiscountType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ExistingDiscountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FunctionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Precent")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("StoreId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("marketRulesRequestType7");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.Market.StorePackage.MarketRulesRequestType8", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("D1")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("D2")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DiscountType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ExistingDiscountId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FunctionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Precent")
+                        .HasColumnType("REAL");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RuleType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("StoreId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("ValueGreaterEQThan")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("ValueLessThan")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("marketRulesRequestType8");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.StoreStates.Appointer", b =>

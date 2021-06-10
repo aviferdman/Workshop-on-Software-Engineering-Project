@@ -1,14 +1,21 @@
 import React from "react";
 import './AddSimpleDiscount.css';
 import { GlobalContext } from "../../../globalContext";
+import FormFields from "../../../formsUtil/formFields";
+import * as api from "../../../api";
+import {alertRequestError_default} from "../../../utils";
+import CheckboxFormField from "../../../formsUtil/CheckboxFormField";
+import ConditionalRender from "../../../ConditionalRender";
 
 
 class AddComplexDiscount extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            show: false
-        }
+        this.resetState(false);
+    }
+
+    componentDidMount() {
+        this.resetState(true);
     }
 
     showModal = () => {
@@ -19,11 +26,100 @@ class AddComplexDiscount extends React.Component {
         this.setState({ show: false });
     }
 
+    resetState(set) {
+        let state = {
+            show: false,
+            discountFields: new FormFields({
+                discountRuleRelation: 'Xor',
+                discountId1: '',
+                discountId2: '',
+                decision: new CheckboxFormField(true),
+            }),
+            showDecision: true
+        };
+        if (set) {
+            this.setState(state);
+        }
+        else {
+            this.state = state;
+        }
+    }
+
+    getField = field => {
+        return this.state.discountFields.getField(field);
+    }
+
+    getInputValue = field => {
+        return this.getField(field).inputValue;
+    }
+
+    onRelationChange = e => {
+        e.preventDefault();
+        let relationField = this.state.discountFields.fields.discountRuleRelation;
+        if (!relationField.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        let relation = relationField.getValue();
+        this.setState({
+            showDecision: relation === 'Xor',
+        });
+    }
+
+    onInputChange = field => e => {
+        if (!this.state.discountFields.getField(field).trySetValueFromEvent(e)) {
+            return;
+        }
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onConfirm = async e => {
+        e.preventDefault();
+        if (!this.state.discountFields.validate()) {
+            alert('Please fill all required fields');
+            return;
+        }
+
+        let discountObj = this.state.discountFields.valuesObject();
+
+        let discount1_serialNumber = discountObj.discountId1;
+        let discount1 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId1];
+        if (discount1 == null) {
+            alert(`Discount with serial number ${discount1_serialNumber} was not found`);
+            return;
+        }
+        discountObj.discountId1 = discount1.id;
+
+        let discount2_serialNumber = discountObj.discountId2;
+        let discount2 = this.props.simpleDiscountsSerialNumberMap[discountObj.discountId2];
+        if (discount2 == null) {
+            alert(`Discount with serial number ${discount2_serialNumber} was not found`);
+            return;
+        }
+        discountObj.discountId2 = discount2.id;
+
+        let reqData = Object.assign({}, discountObj, {
+            username: this.context.username,
+            storeId: this.props.storeId,
+        });
+        await api.stores.discounts.addCompound(reqData)
+            .then(discountId => {
+                discountObj.id = discountId;
+                discountObj.creator = this.context.username;
+                discountObj.discount1_serialNumber = discount1_serialNumber;
+                discountObj.discount2_serialNumber = discount2_serialNumber;
+                discountObj.decide = discountObj.decision;
+                this.props.onSuccess(discountObj);
+                this.resetState(true);
+            }, alertRequestError_default)
+    }
 
     render() {
         return (
             <main className="items">
-                <Modal show={this.state.show} handleClose={this.hideModal}  >
+                <Modal show={this.state.show} handleClose={this.hideModal} handleConfirm={this.onConfirm} >
 
                     <div className="disc-comp-check-line-grid">
 
@@ -34,7 +130,10 @@ class AddComplexDiscount extends React.Component {
                                 </div>
 
                                 <div>
-                                    <select className="disc-input-props">
+                                    <select className="disc-input-props"
+                                            required
+                                            value={this.getInputValue('discountRuleRelation')}
+                                            onChange={this.onRelationChange}>
                                         <option value="Xor">Xor</option>
                                         <option value="Or">Or</option>
                                         <option value="And">And</option>
@@ -53,6 +152,9 @@ class AddComplexDiscount extends React.Component {
                                     <input
                                         type="text"
                                         className="disc-input-props"
+                                        required
+                                        value={this.getInputValue('discountId1')}
+                                        onChange={this.onInputChange('discountId1')}
                                     />
                                 </div>
                             </div>
@@ -68,25 +170,36 @@ class AddComplexDiscount extends React.Component {
                                     <input
                                         type="text"
                                         className="disc-input-props"
+                                        required
+                                        value={this.getInputValue('discountId2')}
+                                        onChange={this.onInputChange('discountId2')}
                                     />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="center-item">
-                            <div className= "disc-col-grd-perm">
-                                <div className="disc-text-props">
-                                    <label>Decision</label>
-                                </div>
+                        <ConditionalRender
+                            condition={this.getField('discountRuleRelation').getValue() === 'Xor'}
+                            render={() => (
+                                <div className="center-item">
+                                    <div className= "disc-col-grd-perm">
+                                        <div className="disc-text-props">
+                                            <label>Decision</label>
+                                        </div>
 
-                                <div >
-                                    <input
-                                        type="checkbox"
-                                        className="disc-input-props"
-                                    />
+                                        <div >
+                                            <input
+                                                type="checkbox"
+                                                className="disc-input-props"
+                                                value={'decision'}
+                                                checked={this.getInputValue('decision')}
+                                                onChange={this.onInputChange('decision')}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            )}
+                        />
 
                     </div>
 

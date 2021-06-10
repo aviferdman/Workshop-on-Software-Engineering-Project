@@ -84,6 +84,15 @@ namespace TradingSystemTests.IntegrationTests
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
         [TestMethod]
+        public async Task CheckConditionalStoreQuantityDiscount()
+        {
+            Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
+            await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Quantity, 0.2, productId: product.Id, valueLessThan: 12, valueGreaterEQThan: 20);
+            Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
+        }
+
+        /// test for function :<see cref="TradingSystem.Business.Market.MarketRules.CreateConditionalDiscount(Guid, RuleContext, RuleType, double, string, Guid, string, double, double, DateTime, DateTime)"/>
+        [TestMethod]
         public async Task CheckConditionalProductQuantityDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
@@ -126,9 +135,6 @@ namespace TradingSystemTests.IntegrationTests
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
             Guid discount1 = await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Store, RuleType.Price, 0.2, valueGreaterEQThan: 100);
             Guid discount2 = await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
-            // var rule1 = store.GetDiscountById(discount1).GetRule();
-            // var rule2 = store.GetDiscountById(discount2).GetRule();
-            // Guid storeId, Guid ruleId1, Guid ruleId2, Guid discountId
             await marketRules.GenerateConditionalDiscountsAsync(store.GetFounder().Username, DiscountRuleRelation.And, store.GetId(), discount1, discount2, false);
             store.RemoveDiscount(store.GetFounder().Username, discount2);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));

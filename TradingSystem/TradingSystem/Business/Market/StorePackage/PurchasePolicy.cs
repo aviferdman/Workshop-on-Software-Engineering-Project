@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 
 namespace TradingSystem.Business.Market
 {
@@ -24,6 +25,7 @@ namespace TradingSystem.Business.Market
             if (!Contains(toAdd))
             {
                 availablePurchaseKinds.Add(new Prem(toAdd));
+                await ProxyMarketContext.Instance.saveChanges();
             };
         }
 

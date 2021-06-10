@@ -300,12 +300,13 @@ namespace TradingSystem.Business.Market
         public virtual double ApplyDiscounts(ShoppingBasket shoppingBasket)
         {
             var discounts = StorePredicatesManager.Instance.GetDiscounts(Id);
-            var availableDiscounts = discounts.Select(d=>d.ApplyDiscounts(shoppingBasket).Discount);
+            var availableDiscountsValues = discounts.Where(d=>d.GetRule().Check(shoppingBasket)).Select(d=>d.ApplyDiscounts(shoppingBasket).Discount);
+            var availableDiscounts = discounts.Where(d => d.GetRule().Check(shoppingBasket));
             //chose the max value of an available discount
             try
             {
-                double maxDiscount = availableDiscounts.Max();
-                var chosenDiscount = discounts.Where(d => d.ApplyDiscounts(shoppingBasket).Discount >= maxDiscount).FirstOrDefault();
+                double maxDiscount = availableDiscountsValues.Max();
+                var chosenDiscount = availableDiscounts.Where(d => d.ApplyDiscounts(shoppingBasket).Discount >= maxDiscount).FirstOrDefault();
                 var discountOfProducts = chosenDiscount.Calc.CalcDiscount(shoppingBasket);
                 foreach (var product in shoppingBasket.GetProducts())
                 {
