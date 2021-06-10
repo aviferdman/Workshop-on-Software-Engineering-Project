@@ -12,8 +12,7 @@ namespace TradingSystem
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World");
-            SetupService.Instance.Initialize();
-            var t = Transaction.Instance;
+            //SetupService.Instance.Initialize();
         }
     }
 }
