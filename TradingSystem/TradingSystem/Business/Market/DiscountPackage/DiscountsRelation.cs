@@ -6,14 +6,17 @@ namespace TradingSystem.Business.Market.DiscountPackage
 {
     public class DiscountsRelation
     {
+        private int serialNumber;
+        private Guid id;
         private string _username;
         private DiscountRuleRelation _discountRuleRelation;
         private Guid _storeId;
         private Guid _discountId1;
         private Guid _discountId2;
         private bool _decide;
-        public DiscountsRelation(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
+        public DiscountsRelation(string username, Guid discountId, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
         {
+            this.Id = discountId;
             this.Username = username;
             this.DiscountRuleRelation = discountRuleRelation;
             this.StoreId = storeId;
@@ -28,5 +31,7 @@ namespace TradingSystem.Business.Market.DiscountPackage
         public Guid DiscountId1 { get => _discountId1; set => _discountId1 = value; }
         public Guid DiscountId2 { get => _discountId2; set => _discountId2 = value; }
         public bool Decide { get => _decide; set => _decide = value; }
+        public Guid Id { get => id; set => id = value; }
+        public int SerialNumber { get => serialNumber; set => serialNumber = value; }
     }
 }

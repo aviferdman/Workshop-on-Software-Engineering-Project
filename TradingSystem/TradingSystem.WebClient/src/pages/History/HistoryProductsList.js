@@ -6,6 +6,7 @@ import HistoryProducts from "./HistoryProducts";
 import formatCurrency from "../mainPage/currency";
 import * as api from "../../api";
 import {alertRequestError_default} from "../../utils";
+import ConditionalRender from "../../ConditionalRender";
 
 export class HistoryProductsList extends React.Component {
     constructor(props) {
@@ -60,7 +61,9 @@ export class HistoryProductsList extends React.Component {
                 <Header />
 
                 <main>
-
+                    <h3>Store: {this.state.storeName}</h3>
+                    <ConditionalRender condition={this.state.username != null}
+                                       render={() => (<h3>Username: {this.state.username}</h3>)} />
                     {this.state.products == null ? null : (
                         <div className="history-products-grid">
                             <div className="history-products-view-flex">

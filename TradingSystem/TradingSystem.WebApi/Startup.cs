@@ -59,6 +59,9 @@ namespace TradingSystem.WebApi
 
             services.AddControllers();
 
+            // TODO: remove later
+            MarketGeneralService.Instance.SetDbDebugMode(true);
+
             services.AddSingleton(CurrentEnvironment.ContentRootFileProvider);
             services.AddSingleton(MarketGeneralService.Instance);
             services.AddSingleton(MarketProductsService.Instance);
@@ -66,8 +69,8 @@ namespace TradingSystem.WebApi
             services.AddSingleton(MarketStoreGeneralService.Instance);
             services.AddSingleton(MarketStorePermissionsManagementService.Instance);
             services.AddSingleton(MarketUserService.Instance);
-            
-           
+            services.AddSingleton(MarketRulesService.Instance);
+            services.AddSingleton(MarketBidsService.Instance);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,9 +97,6 @@ namespace TradingSystem.WebApi
             app.UseWebSockets();
 
             app.UseWebSocketNotifications();
-
-            // TODO: remove later
-            MarketGeneralService.Instance.SetDbDebugMode(true);
         }
     }
 

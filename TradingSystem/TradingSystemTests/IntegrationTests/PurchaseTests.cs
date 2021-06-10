@@ -71,6 +71,21 @@ namespace TradingSystemTests.IntegrationTests
             Assert.IsTrue(!v1.IsErr);
         }
 
+        /// test for function :<see cref="TradingSystem.Business.Market.User.PurchaseShoppingCart(CreditCard, string, Address)"/>
+        [TestMethod]
+        public async Task CheckLegalPurcahseWithDiscountPriceRemains()
+        {
+            await testUser.UpdateProductInShoppingBasket(testStore, product, 5);
+            testStore.UpdateProduct(product);
+            ConditionDiscount discount = new ConditionDiscount(new DiscountCalculator(return15));
+            IRule rule = new Rule(CheckTotalWeightMoreThan400);
+            discount.AddRule(rule);
+            testStore.AddDiscount(testStore.GetFounder().Username, discount);
+            var v1 = await testUser.PurchaseShoppingCart(testUserCreditCard, "0544444444", testUserAddress);
+            Assert.AreEqual(PRICE1, product.Price);
+            Assert.IsTrue(!v1.IsErr);
+        }
+
         private DiscountOfProducts return15(ShoppingBasket arg)
         {
             var d = new DiscountOfProducts();

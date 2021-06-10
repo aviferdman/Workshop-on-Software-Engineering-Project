@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import HomeProduct from "./HomeProduct";
+import AddBid from "../pages/Stores/StoreBids/AddBid";
 
 class HomeProducts extends Component {
     render() {
@@ -11,7 +12,11 @@ class HomeProducts extends Component {
                     ) : (
                         <ul className = "products">
                             {this.props.products.map((product) => (
-                                <li key={product.id}>
+                                <li key={product.id} >
+                                    <div className="control-buttons-bid" >
+                                            <AddBid  />
+                                    </div>
+
                                     <HomeProduct product={product}
                                                  addToCart={this.props.addToCart}
                                                  history={this.props.history}

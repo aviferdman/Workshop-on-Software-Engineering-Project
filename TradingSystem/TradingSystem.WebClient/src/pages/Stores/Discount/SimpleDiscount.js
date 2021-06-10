@@ -1,31 +1,62 @@
 import React, {Component} from 'react';
 import './Discounts.css';
+import {formatDate, formatFloat} from "../../../utils";
+import ConditionalRender from "../../../ConditionalRender";
 
 
 class SimpleDiscount extends Component {
-
-
     render() {
+        if (this.props.simpleDiscountRecords == null) {
+            return null;
+        }
+
         return (
             <div>
                 <ul className = "simple-discount-ul">
-                    {this.props.simpleDiscountRecords.map((elem) => (
-                        <li  key={elem.id}>
-                            <div className = "simple-discount-li-div">
-                                <p className= "discName">ID: {elem.id}  </p>
-                                <p className= "discName">creator: {elem.creator}  </p>
-                                <p className= "discName">discountType: {elem.discountType} </p>
-                                <p className= "discName"> condition: {elem.condition}  </p>
-                                <p className= "discName"> category: {elem.category} </p>
-                                <p className= "discName">product: {elem.product} </p>
-                                <p className= "discName">min value: {elem.minVal} </p>
-                                <p className= "discName"> max value: {elem.maxVal}  </p>
-                                <p className= "discName">initialDate: {elem.initialDate} </p>
-                                <p className= "discName">endDate: {elem.endDate} </p>
+                    {this.props.simpleDiscountRecords.map((elem) => {
+                        if (typeof elem.startDate === 'string') {
+                            elem.startDate = new Date(elem.startDate);
+                        }
+                        if (typeof elem.endDate === 'string') {
+                            elem.endDate = new Date(elem.endDate);
+                        }
 
-                            </div>
-                        </li>
-                    ))}
+                        return (
+                            <li  key={elem.id}>
+                                <div className = "simple-discount-li-div">
+                                    <p className= "discName">ID: {elem.serialNumber}  </p>
+                                    <p className= "discName">creator: {elem.creator}  </p>
+                                    <p className= "discName">percent: {formatFloat(elem.percent * 100)}%  </p>
+                                    <p className= "discName">discountType: {elem.discountType} </p>
+                                    <p className= "discName"> condition: {elem.conditionType || "None"}  </p>
+                                    <ConditionalRender
+                                        condition={elem.discountType === 'Category'}
+                                        render={() => (<p className= "discName"> category: {elem.category} </p>)}
+                                    />
+                                    <ConditionalRender
+                                        condition={elem.discountType === 'Product'}
+                                        render={() => (<p className= "discName">product: {elem.productId} </p>)}
+                                    />
+                                    <ConditionalRender
+                                        condition={elem.conditionType != null && elem.conditionType !== 'Time' && elem.minValue != null}
+                                        render={() => (<p className= "discName">min value: {elem.minValue} </p>)}
+                                    />
+                                    <ConditionalRender
+                                        condition={elem.conditionType != null && elem.conditionType !== 'Time' && elem.maxValue != null}
+                                        render={() => (<p className= "discName">max value: {elem.maxValue} </p>)}
+                                    />
+                                    <ConditionalRender
+                                        condition={elem.conditionType === 'Time' && elem.startDate != null}
+                                        render={() => (<p className= "discName">start date: {formatDate(elem.startDate)} </p>)}
+                                    />
+                                    <ConditionalRender
+                                        condition={elem.conditionType === 'Time' && elem.endDate != null}
+                                        render={() => (<p className= "discName">end date: {formatDate(elem.endDate)} </p>)}
+                                    />
+                                </div>
+                            </li>
+                        )
+                    })}
                 </ul>
             </div>
         );

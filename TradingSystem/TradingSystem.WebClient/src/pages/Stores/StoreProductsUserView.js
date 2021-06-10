@@ -19,7 +19,7 @@ export class StoreProductsUserView extends React.Component {
     }
 
     async componentDidMount() {
-        await api.stores.info(this.storeId)
+        await api.stores.infoWithProducts(this.storeId)
             .then(storeInfo => {
                 this.setState({
                     products: storeInfo.products
@@ -43,7 +43,7 @@ export class StoreProductsUserView extends React.Component {
 
                 <main>
                     <div>
-                        <h2> "Store Name" Store Products </h2>
+                        <h2> Store Products </h2>
                     </div>
 
                     <div className="products-view-flex">

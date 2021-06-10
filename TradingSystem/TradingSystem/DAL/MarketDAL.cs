@@ -118,6 +118,14 @@ namespace TradingSystem.DAL
         {
             await proxyMarketContext.AddRequestType1(req);
         }
+        public async Task AddRequestType7(MarketRulesRequestType7 req)
+        {
+            await proxyMarketContext.AddRequestType7(req);
+        }
+        public async Task AddRequestType8(MarketRulesRequestType8 req)
+        {
+            await proxyMarketContext.AddRequestType8(req);
+        }
 
         public async Task AddRequestType2(MarketRulesRequestType2 req)
         {

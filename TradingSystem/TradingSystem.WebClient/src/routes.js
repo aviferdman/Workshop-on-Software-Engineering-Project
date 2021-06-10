@@ -18,6 +18,7 @@ import {Discounts} from "./pages/Stores/Discount/Discounts";
 import {Policy} from "./pages/Stores/Policy/Policy";
 import {UserBids} from "./pages/UserBids/userBids";
 import {StoreBids} from "./pages/Stores/StoreBids/storeBids";
+import {Statistics} from "./pages/Admin/Statistics";
 
 class DefaultRoute extends React.Component {
     render() {
@@ -43,15 +44,13 @@ export default function Routes() {
             <Route path={"/storeCreate"} component={StoreCreateForm} />
             <Route path={"/ShoppingCart"} component={ShoppingCart} />
             <Route path={"/searchStore"} component={searchStore} />
-            <Route path={"/storeProductsUserView"} component={StoreProductsUserView} />
             <Route path={"/userHistory"} component={UserHistory} />
             <Route path={"/historyProducts"} component={HistoryProductsList} />
             <Route path={"/adminActions"} component={AdminActions} />
             <Route path={"/adminHistory"} component={AdminHistory} />
-            <Route path={"/Discounts"} component={Discounts} />
-            <Route path={"/Policy"} component={Policy} />
             <Route path={"/userBids"} component={UserBids} />
             <Route path={"/storeBids"} component={StoreBids} />
+            <Route path={"/statistics"} component={Statistics} />
         </Switch>
     );
 }

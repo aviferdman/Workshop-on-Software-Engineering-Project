@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.UserManagement;
 using TradingSystem.DAL;
 using TradingSystem.Service;
 
@@ -35,6 +36,7 @@ namespace TradingSystemTests.DBTests
         public void Initialize()
         {
             ProxyMarketContext.Instance.IsDebug = false;
+           
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market..MarketStores.CreateStore(string, string, BankAccount, Address)"/>
@@ -60,6 +62,9 @@ namespace TradingSystemTests.DBTests
         public void DeleteAll()
         {
             MarketUsers.Instance.tearDown();
+
+            MarketStores.Instance.tearDown();
+            UserManagement.Instance.tearDown();
         }
     }
 }

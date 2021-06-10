@@ -125,7 +125,7 @@ footer{
 
 .products li{
     flex:0 1 29rem;
-    height: 25rem;
+    height: 30rem;
     border: 1px solid #ddd;
     padding: 1rem;
 
@@ -186,6 +186,13 @@ footer{
 .control-buttons{
     display: grid;
     grid-template-columns: 4rem 4rem;
+
+}
+
+.control-buttons-bid{
+    display: grid;
+    grid-template-columns: 1fr;
+
 }
 
 .exit-button{

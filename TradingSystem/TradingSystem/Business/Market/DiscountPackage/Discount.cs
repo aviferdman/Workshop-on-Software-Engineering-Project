@@ -28,7 +28,7 @@ namespace TradingSystem.Business.Market
         }
         public virtual IRule GetRule()
         {
-            return null;
+            return new Rule(new Func<ShoppingBasket, bool>((ShoppingBasket basket) => true));
         }
     }
 }

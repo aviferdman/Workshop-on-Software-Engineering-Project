@@ -1,6 +1,8 @@
 import React from "react";
 import '../Discount/AddSimpleDiscount.css';
 import { GlobalContext } from "../../../globalContext";
+import * as GiIcons from "react-icons/gi";
+import * as AiIcons from "react-icons/ai";
 
 
 class AddBid extends React.Component {
@@ -27,23 +29,6 @@ class AddBid extends React.Component {
 
                     <div className="disc-comp-check-line-grid">
 
-
-
-                        <div className="center-item">
-                            <div className= "disc-col-grd-perm">
-                                <div className="disc-text-props">
-                                    <label>Product</label>
-                                </div>
-
-                                <div >
-                                    <input
-                                        type="text"
-                                        className="disc-input-props"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="center-item">
                             <div className= "disc-col-grd-perm">
                                 <div className="disc-text-props">
@@ -60,13 +45,11 @@ class AddBid extends React.Component {
                             </div>
                         </div>
 
-
-
                     </div>
 
                 </Modal>
 
-                <button className= "store-products-button-view" onClick={this.showModal}> Add Bid </button>
+                <button  style={{cursor: "pointer", width:"4rem",}} onClick={this.showModal}> <GiIcons.GiTakeMyMoney /> </button>
             </main>
         )
     }
@@ -80,7 +63,7 @@ const Modal = ({ handleClose, handleConfirm, show, children }) => {
             <section className='disc-comp-modal-main'>
 
                 <div className="lines-props">
-                    <h2 className="comp-center-text">Add Bid</h2>
+                    <h2 className="bidName">Add Bid</h2>
                     {children}
                 </div>
 

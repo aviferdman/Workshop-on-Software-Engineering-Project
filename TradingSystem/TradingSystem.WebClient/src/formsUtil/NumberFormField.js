@@ -2,8 +2,10 @@ import FormFieldInfo from "./formFieldInfo";
 
 export default class NumberFormField extends FormFieldInfo {
     trySetValueFromEvent(e) {
-        if (e.target.value === '') {
+        let value = e.target.value;
+        if (value === '') {
             this.value = '';
+            this.inputValue = value;
             return true;
         }
 
@@ -13,6 +15,7 @@ export default class NumberFormField extends FormFieldInfo {
         }
 
         this.value = number;
+        this.inputValue = value;
         return true;
     }
 }

@@ -11,6 +11,8 @@ import * as api from "../../api";
 import * as util from "../../utils";
 import {alertRequestError_default} from "../../utils";
 import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
+import {Discounts} from "./Discount/Discounts";
+import {Policy} from "./Policy/Policy";
 
 class StoreContent extends Component {
     constructor(props) {
@@ -56,7 +58,6 @@ class StoreContent extends Component {
                 </div>
 
                 <div className="internal-conatiner store-container">
-                    <button className="button-view" onClick={this.onNavigationButtonClick('productsView')}>Store Products</button>
                     <StoreRestrictedComponentCustom
                         permissions={this.state.myPermissions}
                         allowedActions={[
@@ -66,6 +67,19 @@ class StoreContent extends Component {
                         ]}
                         render={() => (
                             <button className="button-view" onClick={this.onNavigationButtonClick('products')}>Store Products Management</button>
+                        )} />
+                    <button className="button-view" onClick={this.onNavigationButtonClick('productsView')}>Store Products</button>
+                    <StoreRestrictedComponentCustom
+                        permissions={this.state.myPermissions}
+                        allowedActions={[api.data.stores.permissions.editDiscount,]}
+                        render={() => (
+                            <button className="button-view" onClick={this.onNavigationButtonClick('discounts')}>Store Discounts</button>
+                        )} />
+                    <StoreRestrictedComponentCustom
+                        permissions={this.state.myPermissions}
+                        allowedActions={[api.data.stores.permissions.editPolicy,]}
+                        render={() => (
+                            <button className="button-view" onClick={this.onNavigationButtonClick('policy')}>Store Policy</button>
                         )} />
                     <StoreRestrictedComponentCustom
                         permissions={this.state.myPermissions}
@@ -96,6 +110,8 @@ export class Store extends Component {
                     <Route path={`${this.props.match.path}/productsView/:storeId`} component={StoreProductsUserView} />
                     <Route path={`${this.props.match.path}/staff/:storeId`} component={StoreStaff} />
                     <Route path={`${this.props.match.path}/history/:storeId`} component={StoreHistory} />
+                    <Route path={`${this.props.match.path}/discounts/:storeId`} component={Discounts} />
+                    <Route path={`${this.props.match.path}/policy/:storeId`} component={Policy} />
                     <Route path={`${this.props.match.path}/:storeId`} component={StoreContent} />
                     <Route path={this.props.match.path}>
                         <h3 className='center-screen'>No store selected</h3>

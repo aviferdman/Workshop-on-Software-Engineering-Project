@@ -15,6 +15,7 @@ export class searchStore extends React.Component {
         };
     }
 
+
     onSearchInputChange = e => {
         this.setState({
             name: e.target.value
@@ -32,6 +33,7 @@ export class searchStore extends React.Component {
                 });
             });
     }
+
 
     render() {
         return (

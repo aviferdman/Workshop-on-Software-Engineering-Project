@@ -16,24 +16,30 @@ export class StoreHistory extends Component {
     }
 
     async componentDidMount() {
-        await api.history.ofStore(this.context.username, this.storeId)
+        let promise_history = api.history.ofStore(this.context.username, this.storeId)
             .then(historyRecords => {
                 this.setState({
                     historyRecords: historyRecords,
                 });
             }, alertRequestError_default);
+        let promise_info = api.stores.info(this.storeId)
+            .then(storeInfo => {
+                this.setState({
+                    name: storeInfo.name,
+                });
+            }, alertRequestError_default);
+        await Promise.all([promise_info, promise_history]);
     }
 
     render() {
         return (
             <main className="store-products-main-conatiner">
-
+                <h2>'{this.state.name}' History</h2>
                 <div>
                     {this.state.historyRecords == null ? null : (
                         <div className="history_s">
                             <History historyRecords={this.state.historyRecords} history={this.props.history} storeId={this.storeId} />
                         </div>
-
                     )}
                 </div>
 

@@ -1,22 +1,57 @@
 import React, {Component} from 'react';
 import './History.css';
+import ConditionalRender from "../ConditionalRender";
 
+export const HistoryContext = {
+    User: 'User',
+    Store: 'Store',
+    Admin: 'Admin',
+};
 
 class History extends Component {
-    directToProductsPage = paymentId => () => {
-        let params;
+    constructor(props) {
+        super(props);
+        this.state = {
+            historyContext: null,
+        };
+    }
+
+    componentDidMount() {
+        let historyContext;
         if (this.props.storeId != null && this.props.username != null) {
             console.error('invalid history type');
             return;
         }
         else if (this.props.storeId == null && this.props.username != null) {
-            params = `&user=1`;
+            historyContext = HistoryContext.User;
         }
         else if (this.props.storeId != null && this.props.username == null) {
-            params = `&storeId=${this.props.storeId}`;
+            historyContext = HistoryContext.Store;
         }
         else {
+            historyContext = HistoryContext.Admin;
+        }
+
+        this.setState({
+            historyContext: historyContext,
+        })
+    }
+
+    directToProductsPage = paymentId => () => {
+        let historyContext = this.state.historyContext;
+
+        let params;
+        if (historyContext === HistoryContext.User) {
+            params = `&user=1`;
+        }
+        else if (historyContext === HistoryContext.Store) {
+            params = `&storeId=${this.props.storeId}`;
+        }
+        else if (historyContext === HistoryContext.Admin) {
             params = '';
+        }
+        else {
+            return;
         }
 
         this.props.history.push(`/historyProducts?paymentId=${paymentId}${params}`);
@@ -29,14 +64,16 @@ class History extends Component {
                     {this.props.historyRecords.map((elem) => (
                         <li key={elem.paymentId}>
                             <div className = "history_s">
-                                {/*<a href={"#" + elem.id}>*/}
-                                {/*    <p className= "histName">History:  {elem.id}</p>*/}
-                                {/*</a>*/}
-                                <p className= "histName"> name id: {elem.paymentId}</p>
-                                <p className= "histName">store id: {elem.paymentId}</p>
-                                <p className= "histName">reception id: {elem.paymentId}</p>
-
-                                    <p className= "histName"> delivery id: {elem.deliveryId} </p>
+                                <ConditionalRender
+                                    condition={this.state.historyContext !== HistoryContext.User}
+                                    render={() => (<p className= "histName"> {<text style={{fontWeight: "bold"}}>Customer: </text>} {elem.username}</p>)}
+                                />
+                                <ConditionalRender
+                                    condition={this.state.historyContext !== HistoryContext.Store}
+                                    render={() => (<p className= "histName"> {<text style={{fontWeight: "bold"}}>Store: </text>} {elem.storeName}</p>)}
+                                />
+                                <p className= "histName">{<text style={{fontWeight: "bold"}}>Reception: </text>} {elem.paymentId}</p>
+                                <p className= "histName"> {<text style={{fontWeight: "bold"}}>Delivery: </text>}{elem.deliveryId} </p>
 
                                 <button className= "button primary" onClick={this.directToProductsPage(elem.paymentId)}> Show Products </button>
                             </div>
