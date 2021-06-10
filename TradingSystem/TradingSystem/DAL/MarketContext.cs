@@ -219,11 +219,10 @@ namespace TradingSystem.DAL
         public void findStoreProduct(out Store found, out Product p, Guid pid)
         {
             Store sc =  stores.Include(s=> s._products)
-                .Single(s => s._products.Where(p=>p.Id.Equals(pid)).Any());
+                .Single(s => s._products.Where(p=>p.id.Equals(pid)).Any());
             Entry(sc).Reference(s => s.founder).Load();
             Entry(sc.founder).Reference(s => s.m).Load();
             Entry(sc).Reference(s => s._address).Load();
-            Entry(sc).Reference(s => s._bank).Load();
             Entry(sc).Reference(s => s.BidsManager).Load();
             Entry(sc).Reference(s => s.purchasePolicy).Load();
             Entry(sc.BidsManager).Collection(s => s.bidsState).Load();
@@ -356,7 +355,7 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
         {
-            return await stores.Include(s => s.Products)
+            return await stores.Include(s => s._products)
                                 .Include(s => s.owners)
                                 .Include(s => s.managers)
                                 .Include(s => s.founder)
@@ -440,7 +439,6 @@ namespace TradingSystem.DAL
             await Entry(sc).Reference(s => s.founder).LoadAsync();
             await Entry(sc.founder).Reference(s => s.m).LoadAsync();
             await Entry(sc).Reference(s => s._address).LoadAsync();
-            await Entry(sc).Reference(s => s._bank).LoadAsync();
             await Entry(sc).Reference(s => s.BidsManager).LoadAsync();
             await Entry(sc).Reference(s => s.purchasePolicy).LoadAsync();
             await Entry(sc).Collection(s => s._products).LoadAsync();
