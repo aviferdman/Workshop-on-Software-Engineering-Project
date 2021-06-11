@@ -3,7 +3,7 @@ import './userBids.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
 import DataSimple from "../../data/bidsData.json"
-import BidRecord from "./BidRecord";
+import BidRecords from "./BidRecords";
 
 export class UserBids extends React.Component {
     constructor(props) {
@@ -26,7 +26,7 @@ export class UserBids extends React.Component {
                         {/*top grid - simple discounts*/}
                         <div  className="user-bids-grid-simple">
                             <h2> My Bids </h2>
-                            <BidRecord bidRecords={this.state.bids}  />
+                            <BidRecords bidRecords={this.state.bids}  />
                         </div>
 
                     </div>

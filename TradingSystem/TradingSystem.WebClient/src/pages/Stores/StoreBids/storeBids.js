@@ -3,7 +3,7 @@ import './storeBids.css';
 import {GlobalContext} from "../../../globalContext";
 import Header from "../../../header";
 import DataSimple from "../../../data/bidsData.json"
-import BidRecord from "../../UserBids/BidRecord";
+import BidRecords from "../../UserBids/BidRecords";
 import AddPolicy from "../Policy/AddPolicy";
 import AddBid from "./AddBid";
 
@@ -29,7 +29,7 @@ export class StoreBids extends React.Component {
                         {/*top grid - simple discounts*/}
                         <div  className="store-bids-grid-simple">
                             <h2> Store Bids </h2>
-                            <BidRecord bidRecords={this.state.bids}  />
+                            <BidRecords bidRecords={this.state.bids}  />
 
                         </div>
 
