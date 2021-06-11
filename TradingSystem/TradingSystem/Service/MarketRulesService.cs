@@ -32,7 +32,7 @@ namespace TradingSystem.Service
         //Add New / Complex Discounts
         public async Task<Guid> AddSimpleDiscountAsync(string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, "CreateSimpleDiscountAsync", username, storeId, discountType, precent, category, productId);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, "CreateSimpleDiscountAsync", username, storeId, discountType, precent, category, productId);
             Guid discountId =  await marketRules.CreateSimpleDiscountAsync(await MarketStores.Instance.GetStoreById(storeId),username, storeId, discountType, precent, category, productId);
             var discountData = new DiscountData(discountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
             await discountsManager.AddDiscount(discountData);
@@ -41,7 +41,7 @@ namespace TradingSystem.Service
         public async Task<Guid> AddConditionalDiscountAsync(string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
                                         double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = default(DateTime), DateTime d2 = default(DateTime))
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, "CreateConditionalDiscountAsync", username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, "CreateConditionalDiscountAsync", username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             Guid discountId = await marketRules.CreateConditionalDiscountAsync(await MarketStores.Instance.GetStoreById(storeId),username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             var discountData = new DiscountData(discountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             await discountsManager.AddDiscount(discountData);
@@ -50,7 +50,7 @@ namespace TradingSystem.Service
 
         public async Task<Guid> AddDiscountRuleAsync(string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide = false)
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, "GenerateConditionalDiscountsAsync", username, discountRuleRelation, storeId, discountId1, discountId2, decide);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, "GenerateConditionalDiscountsAsync", username, discountRuleRelation, storeId, discountId1, discountId2, decide);
             Guid discountId = await marketRules.GenerateConditionalDiscountsAsync(await MarketStores.Instance.GetStoreById(storeId),username, discountRuleRelation, storeId, discountId1, discountId2, decide);
             var discountRelation = new DiscountsRelation(username, discountId, discountRuleRelation, storeId, discountId1, discountId2, decide);
             await discountsManager.AddRelation(discountRelation);
@@ -60,7 +60,7 @@ namespace TradingSystem.Service
         //Update Simple / Complex Discounts
         public async Task<Result<Guid>> UpdateSimpleDiscountAsync(Guid existingDiscountId, string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, existingDiscountId, "UpdateSimpleDiscountAsync", username, storeId, discountType, precent, category, productId);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateSimpleDiscountAsync", username, storeId, discountType, precent, category, productId);
             if (discountsManager.IsComplexed(existingDiscountId))
             {
                 return new Result<Guid>(new Guid(), true, "Impossible to update a discount which other discounts are complexed on.");
@@ -75,7 +75,7 @@ namespace TradingSystem.Service
         public async Task<Result<Guid>> UpdateConditionalDiscountAsync(Guid existingDiscountId, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
                                         double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = default(DateTime), DateTime d2 = default(DateTime))
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, existingDiscountId, "UpdateConditionalDiscountAsync", username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, existingDiscountId, "UpdateConditionalDiscountAsync", username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             if (discountsManager.IsComplexed(existingDiscountId))
             {
                 return new Result<Guid>(new Guid(), true, "Impossible to update a discount which other discounts are complexed on.");
@@ -90,7 +90,7 @@ namespace TradingSystem.Service
 
         public async Task<Result<Guid>> RemoveDiscountAsync(string username, Guid storeId, Guid discountId)
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, "RemoveDiscountAsync", username, storeId, discountId);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, "RemoveDiscountAsync", username, storeId, discountId);
             if (discountsManager.IsComplexed(discountId))
             {
                 return new Result<Guid>(new Guid(), true, "Impossible to remove a discount which other discounts are complexed on.");
@@ -126,14 +126,14 @@ namespace TradingSystem.Service
         public async Task AddPolicyRule(string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(),
                                         double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = default(DateTime), DateTime d2 = default(DateTime))
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, "AddPolicyRule", username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, "AddPolicyRule", username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             await marketRules.AddPolicyRule(await MarketStores.Instance.GetStoreById(storeId),username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             var policyData = new PolicyData(username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             await this.policyManager.AddPolicy(policyData);
         }
         public async Task RemovePolicyRule(string username, Guid storeId)
         {
-            await StorePredicatesManager.Instance.SaveRequest(counter++, "RemovePolicyRuleAsync", username, storeId);
+            await StorePredicatesManager.Instance.SaveRequest(++counter, "RemovePolicyRuleAsync", username, storeId);
             await marketRules.RemovePolicyRuleAsync(await MarketStores.Instance.GetStoreById(storeId), username, storeId);
             await policyManager.RemovePolicy(storeId);
         }

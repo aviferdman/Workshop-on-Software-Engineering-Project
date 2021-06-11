@@ -19,6 +19,7 @@ using TradingSystem.Business.Market.StorePackage.Predicates;
 using TradingSystem.Business.Market.BidsPackage;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading;
+using TradingSystem.Service;
 
 namespace TradingSystem.DAL
 {
@@ -32,7 +33,7 @@ namespace TradingSystem.DAL
         public DbSet<State> states { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<Statistics> statistics { get; set; }
-        
+        public static Semaphore sam=new Semaphore(1,1);
         public DbSet<AdministratorState> administratorStates { get; set; }
         public DbSet<Appointer> appointers { get; set; }
 
@@ -525,8 +526,7 @@ namespace TradingSystem.DAL
         public async Task<Store> getStore(Guid storeId)
         {
             Store sc;
-            lock (this)
-            {
+            sam.WaitOne();
                 sc = stores.Single(s => s.sid.Equals(storeId));
                 Entry(sc).Reference(s => s.founder).Load();
                 Entry(sc.founder).Reference(s => s.m).Load();
@@ -553,15 +553,16 @@ namespace TradingSystem.DAL
 
                  getDiscoutsPolicies(storeId, sc);
 
-            }
+            sam.Release();
 
             return sc;
         }
 
         private   void  getDiscoutsPolicies(Guid storeId, Store s)
         {
+            if (MarketRulesService.Instance.policyManager.GetAllPolicies(storeId).Result.Any() || MarketRulesService.Instance.discountsManager.GetAllDiscounts(storeId).Result.Any())
+                return;
             List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
-            lock (this){
                 ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToList();
                 ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToList();
                 ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToList();
@@ -580,7 +581,6 @@ namespace TradingSystem.DAL
                 ruleRequests.AddRange(type8);
                 ruleRequests.AddRange(type6);
                 ruleRequests.OrderBy(r => r.getCounter());
-            }
            
             foreach(MarketRuleRequest r in ruleRequests)
             {

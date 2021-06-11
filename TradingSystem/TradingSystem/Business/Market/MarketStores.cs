@@ -113,7 +113,7 @@ namespace TradingSystem.Business.Market
             Store s = null;
             if(!loadedStores.TryGetValue(storeId, out s))
             {
-                s= await MarketDAL.Instance.getStore(storeId);
+                s= MarketDAL.Instance.getStore(storeId).Result;
                 loadedStores.TryAdd(storeId, s);
             }
             return s;
