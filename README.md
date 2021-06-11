@@ -10,7 +10,9 @@ API: \
   Login(username, password); - logins a member into the system. \
   Logout(username); - logs out the username from the system. \
   Signup(username, password, phone); - signs up a new costumer. \
+  AdminSignup(adminUsername, password, phone); - signs up a new Admin. \
   CreateStore(name, username, cardNumber, month, year, holderName, cvv, holderId, state, city, street, apartmentNum, zip); \
+  MakeOwner(assignee, storeId, assigner); if assigner has permissions, assignee becomes a manager\
   AddProduct(product name, quantity, weight, price, category, storeID, username); \
 \
 for more info- https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO
