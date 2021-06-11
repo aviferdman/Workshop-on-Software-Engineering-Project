@@ -45,13 +45,13 @@ namespace TradingSystem.Business.Market.StorePackage
         public string Category { get => category; set => category = value; }
         public Guid ProductId { get => productId; set => productId = value; }
 
-        public async Task ActivateFunction(Store s)
+        public  void ActivateFunction(Store s)
         {
-            var res = await MarketRules.Instance.UpdateSimpleDiscountAsync(s,existingDiscountId, username, storeId, discountType, precent, category, productId);
+            var res =  MarketRules.Instance.UpdateSimpleDiscountAsync(s,existingDiscountId, username, storeId, discountType, precent, category, productId).Result;
             Guid discountId = res.Ret;
             var discountData = new DiscountData(discountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
-            await MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId);
-            await MarketRulesService.Instance.discountsManager.AddDiscount(discountData);
+             MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
+             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
 
         public int getCounter()

@@ -48,11 +48,11 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction(Store s)
+        public  void ActivateFunction(Store s)
         {
-            await MarketRules.Instance.AddPolicyRule(s,username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+             MarketRules.Instance.AddPolicyRule(s,username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Wait();
             var policyData = new PolicyData(username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
-            await MarketRulesService.Instance.policyManager.AddPolicy(policyData);
+             MarketRulesService.Instance.policyManager.AddPolicy(policyData).Wait();
         }
     }
 }

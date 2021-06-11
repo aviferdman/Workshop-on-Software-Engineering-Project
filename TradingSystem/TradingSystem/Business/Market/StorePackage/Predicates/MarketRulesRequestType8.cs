@@ -61,13 +61,13 @@ namespace TradingSystem.Business.Market.StorePackage
         public DateTime D1 { get => d1; set => d1 = value; }
         public DateTime D2 { get => d2; set => d2 = value; }
 
-        public async Task ActivateFunction(Store s)
+        public  void ActivateFunction(Store s)
         {
-            var res = await MarketRules.Instance.UpdateConditionalDiscountAsync(s, existingDiscountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            var res =  MarketRules.Instance.UpdateConditionalDiscountAsync(s, existingDiscountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Result;
             Guid discountId = res.Ret;
             var discountData = new DiscountData(discountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
-            await MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId);
-            await MarketRulesService.Instance.discountsManager.AddDiscount(discountData);
+             MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
+             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
 
         public int getCounter()

@@ -47,11 +47,11 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction(Store s)
+        public  void ActivateFunction(Store s)
         {
-            var discountId= await MarketRules.Instance.CreateConditionalDiscountAsync(s,username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            var discountId=  MarketRules.Instance.CreateConditionalDiscountAsync(s,username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Result;
             var discountData = new DiscountData(discountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
-            await MarketRulesService.Instance.discountsManager.AddDiscount(discountData);
+             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
     }
 }

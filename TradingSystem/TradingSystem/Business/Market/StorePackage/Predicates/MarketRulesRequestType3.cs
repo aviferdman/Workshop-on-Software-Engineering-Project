@@ -28,10 +28,10 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction(Store s)
+        public  void ActivateFunction(Store s)
         {
-            await MarketRules.Instance.RemovePolicyRuleAsync(s,username, storeId);
-            await MarketRulesService.Instance.policyManager.RemovePolicy(storeId);
+             MarketRules.Instance.RemovePolicyRuleAsync(s,username, storeId).Wait();
+             MarketRulesService.Instance.policyManager.RemovePolicy(storeId).Wait();
         }
     }
 }

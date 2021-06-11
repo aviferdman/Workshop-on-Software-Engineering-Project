@@ -31,10 +31,10 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction(Store s)
+        public void ActivateFunction(Store s)
         {
-            await MarketRules.Instance.RemoveDiscountAsync(s,username, storeId, discountId);
-            await MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId);
+             MarketRules.Instance.RemoveDiscountAsync(s,username, storeId, discountId).Wait();
+             MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
         }
     }
 }

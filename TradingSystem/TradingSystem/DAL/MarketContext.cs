@@ -524,9 +524,10 @@ namespace TradingSystem.DAL
 
         public async Task<Store> getStore(Guid storeId)
         {
+            Store sc;
             lock (this)
             {
-                Store sc = stores.Single(s => s.sid.Equals(storeId));
+                sc = stores.Single(s => s.sid.Equals(storeId));
                 Entry(sc).Reference(s => s.founder).Load();
                 Entry(sc.founder).Reference(s => s.m).Load();
                 Entry(sc).Reference(s => s._address).Load();
@@ -549,34 +550,41 @@ namespace TradingSystem.DAL
                 {
                     Entry(m).Reference(s => s.m).Load();
                 }
-                getDiscoutsPolicies(storeId, sc);
-                return sc;
+
+                 getDiscoutsPolicies(storeId, sc);
+
             }
+
+            return sc;
         }
 
-        private async Task getDiscoutsPolicies(Guid storeId, Store s)
+        private   void  getDiscoutsPolicies(Guid storeId, Store s)
         {
-            ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.Where(r => r.storeId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.Where(r => r.storeId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.Where(r => r.storeId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.Where(r => r.StoreId.Equals(storeId)).ToList();
-            ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.Where(r => r.StoreId.Equals(storeId)).ToList();
             List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
-            ruleRequests.AddRange(type1);
-            ruleRequests.AddRange(type2);
-            ruleRequests.AddRange(type3);
-            ruleRequests.AddRange(type4);
-            ruleRequests.AddRange(type5);
-            ruleRequests.AddRange(type7);
-            ruleRequests.AddRange(type8);
-            ruleRequests.AddRange(type6);
-            ruleRequests.OrderBy(r => r.getCounter());
+            lock (this){
+                ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.Where(r => r.StoreId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.Where(r => r.StoreId.Equals(storeId)).ToList();
+               
+                ruleRequests.AddRange(type1);
+                ruleRequests.AddRange(type2);
+                ruleRequests.AddRange(type3);
+                ruleRequests.AddRange(type4);
+                ruleRequests.AddRange(type5);
+                ruleRequests.AddRange(type7);
+                ruleRequests.AddRange(type8);
+                ruleRequests.AddRange(type6);
+                ruleRequests.OrderBy(r => r.getCounter());
+            }
+           
             foreach(MarketRuleRequest r in ruleRequests)
             {
-                await r.ActivateFunction(s);
+                r.ActivateFunction(s);
             }
         }
 

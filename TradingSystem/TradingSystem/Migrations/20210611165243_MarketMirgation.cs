@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TradingSystem.Migrations
 {
-    public partial class MarketMigration : Migration
+    public partial class MarketMirgation : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,8 @@ namespace TradingSystem.Migrations
                     password = table.Column<string>(type: "TEXT", nullable: true),
                     IsLoggedin = table.Column<bool>(type: "INTEGER", nullable: false),
                     phone = table.Column<string>(type: "TEXT", nullable: true),
-                    isAdmin = table.Column<bool>(type: "INTEGER", nullable: false)
+                    isAdmin = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Discriminator = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
