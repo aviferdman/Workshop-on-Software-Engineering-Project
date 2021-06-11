@@ -139,6 +139,7 @@ namespace TradingSystem.Business.UserManagement
                 if (u.IsLoggedin == false)
                     return false;
                 u.IsLoggedin = false;
+                ProxyMarketContext.Instance.saveChanges();
                 return true;
             }
             return false;
