@@ -50,6 +50,11 @@ namespace TradingSystem.DAL
             await proxyMarketContext.AddNewMemberState(username);
         }
 
+        internal async Task AddNewAdminState(string username, string password, string phone)
+        {
+            await proxyMarketContext.AddNewAdminState(username, password, phone);
+        }
+
         public async Task AddNewShoppingCart(string username)
         {
             await proxyMarketContext.AddNewShoppingCart(username);

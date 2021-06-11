@@ -24,6 +24,7 @@ namespace TradingSystem.DAL
 {
     class MarketContext : DbContext
     {
+        public DbSet<RegisteredAdmin> adminUsers { get; set; }
         public DbSet<DataUser> dataUsers { get; set; }
         public DbSet<ShoppingCart> membersShoppingCarts { get; set; }
         public DbSet<ShoppingBasket> membersShoppingBaskets { get; set; }
@@ -365,6 +366,7 @@ namespace TradingSystem.DAL
             try
             {
                 dataUsers.RemoveRange(dataUsers.ToList());
+                adminUsers.RemoveRange(adminUsers.ToList());
                 states.RemoveRange(states.ToList());
                 statistics.RemoveRange(statistics.ToList());
                 productInCarts.RemoveRange(productInCarts.ToList());
@@ -435,6 +437,22 @@ namespace TradingSystem.DAL
                 try
                 {
                     memberStates.Add(new MemberState(username));
+                    SaveChanges();
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
+
+        internal async Task AddNewAdminState(string username, string password, string phone)
+        {
+            lock (this)
+            {
+                try
+                {
+                    memberStates.Add(new AdministratorState(username));
+                    adminUsers.Add(new RegisteredAdmin(username, password, phone));
                     SaveChanges();
                 }
                 catch (Exception e)

@@ -420,6 +420,22 @@ namespace TradingSystem.DAL
             }
         }
 
+        public async Task AddNewAdminState(string username, string password, string phone)
+        {
+            if (isDebug)
+            {
+                admins.TryAdd(username, new RegisteredAdmin(username, password, phone));
+                memberStates.TryAdd(username, new AdministratorState(username));
+            }
+            try
+            {
+                await marketContext.AddNewAdminState(username, password, phone );
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
         public async Task AddNewShoppingCart(string username)
         {
             if (isDebug)

@@ -84,7 +84,21 @@ namespace TradingSystem.Business.UserManagement
             return "username: "+username+" is already taken please choose a different one";
         }
 
-        
+        public async Task<string> AdminSignUp(string username, string password, string phone)
+        {
+            if (username == null)
+                return "username cannot be null";
+            if (await usersDAL.AddDataUser(new RegisteredAdmin(username, EncryptString(key, password), phone)))
+            {
+                await usersDAL.AddNewAdminState(username, EncryptString(key, password), phone);
+                await usersDAL.AddNewShoppingCart(username);
+                return "success";
+            }
+
+            return "username: " + username + " is already taken please choose a different one";
+        }
+
+
         public async Task<string> LogIn(string username, string password)
         {
             DataUser u = await usersDAL.GetDataUser(username);
