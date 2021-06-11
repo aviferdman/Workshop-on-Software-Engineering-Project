@@ -187,5 +187,12 @@ export const stores = {
         })),
         changeBidPolicy: postCurry('/stores/bids/ChangeBidPolicy'),
         createCustomerBid: postCurry('/stores/bids/CreateCustomerBid'),
+
+        customerAcceptBid: postCurry('/stores/bids/CustomerAcceptBid'),
+        customerNegotiateBid: postCurry('/stores/bids/CustomerNegotiateBid'),
+        customerDenyBid: postCurry('/stores/bids/CustomerDenyBid'),
+        ownerAcceptBid: postCurry('/stores/bids/OwnerAcceptBid'),
+        ownerNegotiateBid: postCurry('/stores/bids/OwnerNegotiateBid'),
+        ownerDenyBid: postCurry('/stores/bids/OwnerDenyBid'),
     },
 };

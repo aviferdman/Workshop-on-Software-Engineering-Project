@@ -164,5 +164,182 @@ namespace TradingSystem.WebApi.Controllers
 
             return Ok(result.Ret);
         }
+
+        public async Task<ActionResult> CustomerAcceptBid([FromBody] CustomerBidParamsDTO customerBidParamsDTO)
+        {
+            if (customerBidParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (customerBidParamsDTO.BidId == Guid.Empty)
+            {
+                return BadRequest("Invalid bid ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.CustomerAcceptBid(customerBidParamsDTO.StoreId, customerBidParamsDTO.BidId);
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        public async Task<ActionResult> CustomerNegotiateBid([FromBody] CustomerNegotiateBidParamsDTO customerNegotiateBidParamsDTO)
+        {
+            if (customerNegotiateBidParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (customerNegotiateBidParamsDTO.BidId == Guid.Empty)
+            {
+                return BadRequest("Invalid bid ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.CustomerNegotiateBid
+            (
+                customerNegotiateBidParamsDTO.StoreId,
+                customerNegotiateBidParamsDTO.BidId,
+                customerNegotiateBidParamsDTO.NewPrice
+            );
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        public async Task<ActionResult> CustomerDenyBid([FromBody] CustomerBidParamsDTO customerBidParamsDTO)
+        {
+            if (customerBidParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (customerBidParamsDTO.BidId == Guid.Empty)
+            {
+                return BadRequest("Invalid bid ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.CustomerDenyBid(customerBidParamsDTO.StoreId, customerBidParamsDTO.BidId);
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        public async Task<ActionResult> OwnerAcceptBid([FromBody] OwnerBidParamsDTO ownerBidParamsDTO)
+        {
+            if (string.IsNullOrWhiteSpace(ownerBidParamsDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (ownerBidParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (ownerBidParamsDTO.BidId == Guid.Empty)
+            {
+                return BadRequest("Invalid bid ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.OwnerAcceptBid
+            (
+                ownerBidParamsDTO.Username,
+                ownerBidParamsDTO.StoreId,
+                ownerBidParamsDTO.BidId
+            );
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        public async Task<ActionResult> OwnerNegotiateBid([FromBody] OwnerNegotiateParamsDTO ownerNegotiateParamsDTO)
+        {
+            if (string.IsNullOrWhiteSpace(ownerNegotiateParamsDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (ownerNegotiateParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (ownerNegotiateParamsDTO.BidId == Guid.Empty)
+            {
+                return BadRequest("Invalid bid ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.OwnerNegotiateBid
+            (
+                ownerNegotiateParamsDTO.Username,
+                ownerNegotiateParamsDTO.StoreId,
+                ownerNegotiateParamsDTO.BidId,
+                ownerNegotiateParamsDTO.NewPrice
+            );
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        public async Task<ActionResult> OwnerDenyBid([FromBody] OwnerBidParamsDTO ownerBidParamsDTO)
+        {
+            if (string.IsNullOrWhiteSpace(ownerBidParamsDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (ownerBidParamsDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (ownerBidParamsDTO.BidId == Guid.Empty)
+            {
+                return BadRequest("Invalid bid ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.OwnerDenyBid
+            (
+                ownerBidParamsDTO.Username,
+                ownerBidParamsDTO.StoreId,
+                ownerBidParamsDTO.BidId
+            );
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
     }
 }
