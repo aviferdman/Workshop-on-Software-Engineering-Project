@@ -20,11 +20,9 @@ namespace TradingSystem.Business.Market
 
         public static Transaction Instance { get { return _lazy.Value; } }
 
-        private const bool enableExternal = true;
+        // private const bool enableExternal = true;
 
-        // private bool enableExternal = ConfigurationManager.AppSettings["EnableRealExternalSystems"].Equals("true");
-
-        // private int check = Int32.Parse(ConfigurationManager.AppSettings["ExternalSystemsTimeout"]);
+        private bool enableExternal = ConfigurationManager.AppSettings["EnableRealExternalSystems"].Equals("true");
 
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }
@@ -32,8 +30,6 @@ namespace TradingSystem.Business.Market
 
         private Transaction()
         {
-            //string enabled = ConfigurationManager.AppSettings["EnableRealExternalSystems"]; 
-            //bool enableExternal = enabled != null? enabled.ToLower().Equals("true") : false;
             if (enableExternal)
             {
                 this.PaymentAdapter = new PaymentImpl(new RealPaymentSystem());
