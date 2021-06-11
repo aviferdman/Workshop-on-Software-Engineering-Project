@@ -145,6 +145,7 @@ namespace TradingSystem.Business.Market
             if (store == null)
                 return new Result<Product>(null, true, "Store doesn't exist");
             productData.StoreName = store.name;
+            productData._storeId = storeID;
             Product product = new Product(productData);
             try
             {
