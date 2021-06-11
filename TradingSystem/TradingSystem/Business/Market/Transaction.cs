@@ -22,6 +22,10 @@ namespace TradingSystem.Business.Market
 
         private const bool enableExternal = true;
 
+        // private bool enableExternal = ConfigurationManager.AppSettings["EnableRealExternalSystems"].Equals("true");
+
+        // private int check = Int32.Parse(ConfigurationManager.AppSettings["ExternalSystemsTimeout"]);
+
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }
         public HandshakeAdapter HandshakeAdapter { get => _handshakeAdapter; set => _handshakeAdapter = value; }

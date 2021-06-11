@@ -60,7 +60,7 @@ namespace TradingSystem.WebApi
             services.AddControllers();
 
             // TODO: remove later
-            MarketGeneralService.Instance.SetDbDebugMode(false);
+            //MarketGeneralService.Instance.SetDbDebugMode(true);
 
             services.AddSingleton(CurrentEnvironment.ContentRootFileProvider);
             services.AddSingleton(MarketGeneralService.Instance);

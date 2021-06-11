@@ -114,9 +114,14 @@ namespace TradingSystem.Service
                 semaphoreSlim.Release();
             }
         }
-        public Result<ICollection<Bid>> GetOwnerBids(string ownerUsername)
+        public Result<ICollection<Bid>> GetStoreBids(Guid storeId, string ownerUsername)
         {
-            return MarketBids.Instance.GetOwnerBids(ownerUsername);
+            return MarketBids.Instance.GetStoreBids(storeId, ownerUsername);
+        }
+
+        public Result<ICollection<Bid>> GetOwnerAcceptedBids(Guid storeId, string ownerUsername)
+        {
+            return MarketBids.Instance.GetOwnerAcceptedBids(storeId, ownerUsername);
         }
     }
 }

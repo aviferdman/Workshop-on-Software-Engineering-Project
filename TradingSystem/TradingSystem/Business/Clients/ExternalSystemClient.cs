@@ -13,12 +13,14 @@ namespace TradingSystem.Business
 
         public ExternalSystemClient()
         {
-            client.Timeout = TimeSpan.FromSeconds(3);
+            int timeout = 3;
+            // int timeout = Int32.Parse(ConfigurationManager.AppSettings["ExternalSystemsTimeout"]);
+            client.Timeout = TimeSpan.FromSeconds(timeout);
         }
 
         public async Task<string> Send(Dictionary<string, string> postContent)
         {
-            //var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
+            // var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
 
             var url = "https://cs-bgu-wsep.herokuapp.com/";
 

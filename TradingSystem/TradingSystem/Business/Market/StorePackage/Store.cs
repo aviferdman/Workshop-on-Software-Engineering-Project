@@ -138,6 +138,35 @@ namespace TradingSystem.Business.Market
             return await bidsManager.OwnerDenyBid(ownerUsername, bidId);
         }
 
+        public Result<ICollection<Bid>> GetBids(string ownerUsername)
+        {
+            if (!CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<ICollection<Bid>>(new HashSet<Bid>(), true, "No permission to accept Bid");
+            }
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<ICollection<Bid>>(new HashSet<Bid>(), true, "Bids are not supported in this store");
+            }
+            var bids = bidsManager.bidsState.Select(b => b.Bid);
+            return new Result<ICollection<Bid>>(bids.ToList(), false, "");
+        }
+
+        public Result<ICollection<Bid>> GetOwnerAcceptedBids(string ownerUsername)
+        {
+            if (!CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<ICollection<Bid>>(new HashSet<Bid>(), true, "No permission to accept Bid");
+            }
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<ICollection<Bid>>(new HashSet<Bid>(), true, "Bids are not supported in this store");
+            }
+            var acceptedBidsState = bidsManager.bidsState.Where(b => new Prem(ownerUsername).ExistsInCollection(b.OwnersAccepted));
+            var acceptedBids = acceptedBidsState.Select(b => b.Bid);
+            return new Result<ICollection<Bid>>(acceptedBids.ToList(), false, "");
+        }
+
         public virtual Guid GetId()
         {
             return sid;
