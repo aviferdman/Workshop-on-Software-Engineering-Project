@@ -101,6 +101,10 @@ namespace TradingSystem.Business.Market.BidsPackage
         internal async Task<Result<bool>> CustomerAcceptBid(Guid bidId, string storeName, string productName)
         {
             var bid = GetBidById(bidId);
+            if (bid.Status.Equals(BidStatus.CustomerNegotiate))
+            {
+                return new Result<bool>(false, true, "You cant accept your own suggestion.");
+            }
             var username = bid.Username;
             NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Accepted to buy product {productName} for {bid.Price} in store {storeName}");
             bid.Status = BidStatus.Accept;
@@ -116,6 +120,10 @@ namespace TradingSystem.Business.Market.BidsPackage
         public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, Guid bidId)
         {
             var bid = GetBidById(bidId);
+            if (bid.Status.Equals(BidStatus.OwnerNegotiate))
+            {
+                return new Result<bool>(false, true, "You cant accept your own suggestion.");
+            }
             var bidState = GetBidStateById(bidId);
             await bidState.AddAcceptence(ownerUsername);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"We accepted your bid request.");
