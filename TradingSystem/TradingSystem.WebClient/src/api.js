@@ -76,8 +76,14 @@ export const data = {
             editDiscount: 'EditDiscount',
             editPolicy: 'EditPolicy',
             bidRequests: 'BidRequests',
-        }
-    }
+        },
+    },
+    bids: {
+        approved: 1,
+        declined: 2,
+        customerNegotiate: 3,
+        ownerNegotiate: 4,
+    },
 };
 
 export const history = {
@@ -165,5 +171,15 @@ export const stores = {
             id: storeId,
         })),
         add: postCurry('/stores/rules/AddPolicy'),
-    }
+    },
+
+    bids: {
+        mine: postCurry('api/stores/bids/Mine', username => ({
+            username: username,
+        })),
+        ofStore: postCurry('api/stores/bids/OfStore', (username, storeId) => ({
+            username: username,
+            storeId: storeId,
+        })),
+    },
 };

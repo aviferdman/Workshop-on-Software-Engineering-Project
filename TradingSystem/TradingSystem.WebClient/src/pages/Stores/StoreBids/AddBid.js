@@ -56,10 +56,12 @@ class AddBid extends React.Component {
 }
 
 const Modal = ({ handleClose, handleConfirm, show, children }) => {
-    const showHideClassName = show ? 'modal display-block' : 'modal display-none';
+    if (!show) {
+        return null;
+    }
 
     return (
-        <div className={showHideClassName}>
+        <div className='modal display-block'>
             <section className='disc-comp-modal-main'>
 
                 <div className="lines-props">

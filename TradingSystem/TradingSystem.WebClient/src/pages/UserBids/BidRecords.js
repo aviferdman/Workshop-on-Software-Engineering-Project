@@ -5,6 +5,10 @@ import BidRecord from "./BidRecord";
 
 export default class BidRecords extends React.Component {
     render() {
+        if (this.props.bidRecords == null) {
+            return null;
+        }
+
         return (
             <div>
                 <ul className = "simple-bids-ul">
