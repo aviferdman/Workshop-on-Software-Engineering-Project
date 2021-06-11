@@ -126,7 +126,7 @@ namespace TradingSystemTests.DBTests
         public async Task CheckConditionalCategoryQuantityDiscount()
         {
             Assert.AreEqual(1000, store.CalcPaySum(shoppingBasket));
-            await marketRules.CreateConditionalDiscountAsync(store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
+            await marketRules.CreateConditionalDiscountAsync(store,store.GetFounder().Username, store.GetId(), RuleContext.Category, RuleType.Quantity, 0.2, category: "CategoryName", valueGreaterEQThan: 5);
             Assert.AreEqual(800, store.CalcPaySum(shoppingBasket));
         }
 
@@ -187,8 +187,8 @@ namespace TradingSystemTests.DBTests
         public async Task CheckAndProductPolicyAsync()
         {
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
-            await marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
-            await marketRules.AddPolicyRule(store.GetFounder().Username, store.GetId(), PolicyRuleRelation.And, RuleContext.Product, RuleType.Weight, productId: product.Id, valueGreaterEQThan: 100);
+            await marketRules.AddPolicyRule(store,store.GetFounder().Username, store.GetId(), PolicyRuleRelation.Simple, RuleContext.Product, RuleType.Quantity, productId: product.Id, valueGreaterEQThan: 5);
+            await marketRules.AddPolicyRule(store, store.GetFounder().Username, store.GetId(), PolicyRuleRelation.And, RuleContext.Product, RuleType.Weight, productId: product.Id, valueGreaterEQThan: 100);
             Assert.AreEqual(true, store.CheckPolicy(shoppingBasket));
         }
 

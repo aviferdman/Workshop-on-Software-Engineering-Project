@@ -531,12 +531,12 @@ namespace TradingSystem.DAL
                 {
                     Entry(m).Reference(s => s.m).Load();
                 }
-                getDiscoutsPolicies(storeId);
+                getDiscoutsPolicies(storeId, sc);
                 return sc;
             }
         }
 
-        private async Task getDiscoutsPolicies(Guid storeId)
+        private async Task getDiscoutsPolicies(Guid storeId, Store s)
         {
             ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToList();
             ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToList();
@@ -558,7 +558,7 @@ namespace TradingSystem.DAL
             ruleRequests.OrderBy(r => r.getCounter());
             foreach(MarketRuleRequest r in ruleRequests)
             {
-                await r.ActivateFunction();
+                await r.ActivateFunction(s);
             }
         }
 
