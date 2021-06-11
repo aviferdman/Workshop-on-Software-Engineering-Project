@@ -28,8 +28,8 @@ namespace TradingSystemTests
         public PolicyTests()
         {
             this.policyTest = new Policy();
-            this.product1 = new Product(QUANTITY1, WEIGHT1, PRICE1);
-            this.product2 = new Product(QUANTITY2, WEIGHT2, PRICE2);
+            this.product1 = new Product(new Guid(), QUANTITY1, WEIGHT1, PRICE1);
+            this.product2 = new Product(new Guid(), QUANTITY2, WEIGHT2, PRICE2);
             this.product_quantity = new Dictionary<Product, int>();
             User u = new User();
             Store store = new Store("teststore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));

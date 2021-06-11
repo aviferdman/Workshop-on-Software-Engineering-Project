@@ -27,7 +27,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
@@ -51,7 +51,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", card, address);
             MemberState memberState = new MemberState(user.Username);
@@ -82,7 +82,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);
@@ -100,7 +100,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
@@ -124,7 +124,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
@@ -156,7 +156,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             MemberState memberState = new MemberState(user.Username);
             user.ChangeState(memberState);
@@ -179,7 +179,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             MemberState adminState = new AdministratorState(user.Username);
             user.ChangeState(adminState);
@@ -204,7 +204,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             Address address = new Address("1", "1", "1", "1", "1");
-            Product product = new Product(100, 100, 100);
+            Product product = new Product(new Guid(), 100, 100, 100);
             User user = new User("testUser");
             Store store = new Store("storeTest", card, address);
             store.Founder = Founder.makeFounder(new MemberState("userTest"), store);

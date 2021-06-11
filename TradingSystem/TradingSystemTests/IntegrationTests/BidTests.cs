@@ -56,7 +56,7 @@ namespace TradingSystemTests.IntegrationTests
             await market.makeOwner("OwnerTest1", store.Id, "FounderTest1");
             owner = marketUsers.ActiveUsers.GetOrAdd("OwnerTest1", owner);
             customer = marketUsers.ActiveUsers.GetOrAdd("ManagerTest1", customer);
-            product = new Product(100, 100, 100);
+            product = new Product(new Guid(), 100, 100, 100);
             var shoppingCart = new ShoppingCart(customer);
             await customer.UpdateProductInShoppingBasket(store, product, QUANTITY);
             store.UpdateProduct(product);

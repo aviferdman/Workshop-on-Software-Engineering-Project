@@ -8,6 +8,8 @@ namespace TradingSystem.Business.Market
     public class Product
     {
         public Guid id { get; set; }
+
+        public Guid _storeId { get; set; }
         public String _name { get; set; }
         public int _quantity { get; set; }
         public double _weight { get; set; }
@@ -19,8 +21,9 @@ namespace TradingSystem.Business.Market
 
         public double discount { get; set; }
 
-        public Product(String name, int quantity, double weight, double price, String category, string storeName = "")
+        public Product(Guid storeId, String name, int quantity, double weight, double price, String category, string storeName = "")
         {
+            _storeId = storeId;
             this._name = name;
             this._quantity = quantity;
             this._weight = weight;
@@ -31,8 +34,9 @@ namespace TradingSystem.Business.Market
             this.StoreName = storeName;
         }
 
-        public Product(int quantity, double weight, double price)
+        public Product(Guid storeId, int quantity, double weight, double price)
         {
+            this._storeId = storeId;
             this._name = "test";
             this._quantity = quantity;
             this._weight = weight;
@@ -44,6 +48,7 @@ namespace TradingSystem.Business.Market
 
         public Product(ProductData data)
         {
+            this._storeId = data._storeId;
             this._name = data._name;
             this._quantity = data._quantity;
             this._weight = data._weight;
@@ -74,7 +79,7 @@ namespace TradingSystem.Business.Market
 
         public Product Clone()
         {
-            var p = new Product(_name, _quantity, _weight, _price, category, _storeName);
+            var p = new Product(_storeId, _name, _quantity, _weight, _price, category, _storeName);
             p.Discount = discount;
             p.Id = id;
             return p;

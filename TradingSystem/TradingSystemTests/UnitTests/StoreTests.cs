@@ -31,7 +31,7 @@ namespace TradingSystemTests.MarketTests
             this.shoppingCart = new ShoppingCart(testUser);
             this.store = new Store("tets", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.shoppingBasket = new ShoppingBasket(shoppingCart, store);
-            product1 = new Product("1", 10, 10, 10, "category");
+            product1 = new Product(new Guid(), "1", 10, 10, 10, "category");
 
         }
 
@@ -49,8 +49,8 @@ namespace TradingSystemTests.MarketTests
             string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            Product product1 = new Product("1", 10, 10, 10, "category");
-            Product product2 = new Product("2", 20, 20, 20, "category");
+            Product product1 = new Product(new Guid(), "1", 10, 10, 10, "category");
+            Product product2 = new Product(new Guid(), "2", 20, 20, 20, "category");
             product_quantity.Add(new ProductInCart(product1, 1));
             product_quantity.Add(new ProductInCart(product2, 2));
             shoppingBasket.Product_quantity = product_quantity;
@@ -70,8 +70,8 @@ namespace TradingSystemTests.MarketTests
             HashSet<ProductInCart> product_quantity = new HashSet<ProductInCart>(); string clientPhone = "0544444444";
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            Product product1 = new Product("1", 10, 10, 10, "category");
-            Product product2 = new Product("2", 20, 20, 20, "category");
+            Product product1 = new Product(new Guid(), "1", 10, 10, 10, "category");
+            Product product2 = new Product(new Guid(), "2", 20, 20, 20, "category");
             product_quantity.Add(new ProductInCart(product1, 11));
             product_quantity.Add(new ProductInCart(product2, 22));
             Store store = new Store("testStore", card, address);
@@ -88,7 +88,7 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void ApplyDiscountsNoDiscounts()
         {
-            Product product1 = new Product("1", 10, 10, 10, "category");
+            Product product1 = new Product(new Guid(), "1", 10, 10, 10, "category");
             shoppingBasket.UpdateProduct(product1, 5);
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
