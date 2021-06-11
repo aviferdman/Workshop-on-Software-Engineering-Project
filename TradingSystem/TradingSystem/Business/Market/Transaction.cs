@@ -24,16 +24,12 @@ namespace TradingSystem.Business.Market
 
         private bool enableExternal = ConfigurationManager.AppSettings["EnableRealExternalSystems"].Equals("true");
 
-        private int check = Int32.Parse(ConfigurationManager.AppSettings["ExternalSystemsTimeout"]);
-
         public PaymentAdapter PaymentAdapter { get => _paymentAdapter; set => _paymentAdapter = value; }
         public DeliveryAdapter DeliveryAdapter { get => _deliveryAdapter; set => _deliveryAdapter = value; }
         public HandshakeAdapter HandshakeAdapter { get => _handshakeAdapter; set => _handshakeAdapter = value; }
 
         private Transaction()
         {
-            //string enabled = ConfigurationManager.AppSettings["EnableRealExternalSystems"]; 
-            //bool enableExternal = enabled != null? enabled.ToLower().Equals("true") : false;
             if (enableExternal)
             {
                 this.PaymentAdapter = new PaymentImpl(new RealPaymentSystem());

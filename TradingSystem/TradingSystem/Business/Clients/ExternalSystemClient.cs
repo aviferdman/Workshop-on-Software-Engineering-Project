@@ -14,7 +14,9 @@ namespace TradingSystem.Business
         public ExternalSystemClient()
         {
             // int timeout = 3;
+            
             int timeout = Int32.Parse(ConfigurationManager.AppSettings["ExternalSystemsTimeout"]);
+            
             client.Timeout = TimeSpan.FromSeconds(timeout);
         }
 
@@ -22,7 +24,7 @@ namespace TradingSystem.Business
         {
             var url = ConfigurationManager.AppSettings["ExternalSystemsURL"];
 
-            //var url = "https://cs-bgu-wsep.herokuapp.com/";
+            // var url = "https://cs-bgu-wsep.herokuapp.com/";
 
             var content = new FormUrlEncodedContent(postContent);
 
