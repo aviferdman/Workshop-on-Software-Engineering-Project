@@ -39,7 +39,7 @@ export class UserBids extends React.Component {
                         {/*top grid - simple discounts*/}
                         <div  className="user-bids-grid-simple">
                             <h2> My Bids </h2>
-                            <BidRecordsUser bidRecords={this.state.bids} />
+                            <BidRecordsUser bidRecords={this.state.bids} history={this.props.history} />
                         </div>
 
                     </div>

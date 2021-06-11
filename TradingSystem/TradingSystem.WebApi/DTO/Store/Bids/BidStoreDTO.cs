@@ -14,7 +14,7 @@ namespace TradingSystem.WebApi.DTO.Store.Bids
         public string? Username { get; set; }
 
         public double Price { get; set; }
-        public BidStatus Status { get; set; }
+        public BidStatus_Api Status { get; set; }
         public bool ApprovedByMe { get; set; }
 
         public static BidStoreDTO FromBid(Bid bid)
@@ -25,7 +25,7 @@ namespace TradingSystem.WebApi.DTO.Store.Bids
                 ProductId = bid.ProductId,
                 Username = bid.Username,
                 Price = bid.Price,
-                Status = (BidStatus)bid.Status,
+                Status = BidStatus_Api_Funcs.ConvertStatus(bid.Status),
             };
         }
     }

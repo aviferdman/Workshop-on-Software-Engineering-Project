@@ -13,7 +13,7 @@ export default class BidRecordsUser extends React.Component {
                 <ul className = "simple-bids-ul">
                     {this.props.bidRecords.map((elem) => (
                         <li  key={elem.id}>
-                            <BidRecordUser bid={elem} />
+                            <BidRecordUser bid={elem} history={this.props.history} />
                         </li>
                     ))}
                 </ul>

@@ -99,14 +99,11 @@ namespace TradingSystem.WebApi.Controllers
                 myApprovedBids.Ret,
                 bid => bid.Id,
                 bid => bid.Id,
-                (bid, approvedBid) => new BidStoreDTO
+                (bid, approvedBid) =>
                 {
-                    Id = bid.Id,
-                    ProductId = bid.ProductId,
-                    Username = bid.Username,
-                    Price = bid.Price,
-                    Status = (DTO.Store.Bids.BidStatus)bid.Status,
-                    ApprovedByMe = approvedBid.Any(),
+                    var bidStoreDTO = BidStoreDTO.FromBid(bid);
+                    bidStoreDTO.ApprovedByMe = approvedBid.Any();
+                    return bidStoreDTO;
                 }
             );
             return Ok(result);
@@ -165,7 +162,7 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError(result.Mess);
             }
 
-            return result.Ret;
+            return Ok(result.Ret);
         }
     }
 }

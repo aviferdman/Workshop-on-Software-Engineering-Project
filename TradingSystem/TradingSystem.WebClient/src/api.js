@@ -79,11 +79,15 @@ export const data = {
         },
     },
     bids: {
-        approved: 1,
-        declined: 2,
-        customerNegotiate: 3,
-        ownerNegotiate: 4,
+        approved: 0,
+        declined: 1,
+        customerNegotiate: 2,
+        ownerNegotiate: 3,
     },
+};
+
+export const shoppingCart = {
+    addProduct: postCurry('/ShoppingCart/AddProduct'),
 };
 
 export const history = {
