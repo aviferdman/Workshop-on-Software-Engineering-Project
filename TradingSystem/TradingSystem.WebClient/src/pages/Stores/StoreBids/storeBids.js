@@ -13,6 +13,7 @@ export class StoreBids extends React.Component {
             bids: null,
             storeName: null,
             storeProductsMap: null,
+            ready: false,
         };
         this.storeId = this.props.match.params.storeId;
     }
@@ -24,6 +25,9 @@ export class StoreBids extends React.Component {
             promise_storeProducts,
             promise_bids
         ]);
+        this.setState({
+            ready: true,
+        });
     }
 
     async fetchBids() {
@@ -46,6 +50,10 @@ export class StoreBids extends React.Component {
     }
 
     render() {
+        if (!this.state.ready) {
+            return null;
+        }
+
         return (
             <main>
 
