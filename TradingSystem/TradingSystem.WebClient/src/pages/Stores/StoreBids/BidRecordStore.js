@@ -74,11 +74,6 @@ export default class BidRecordStore extends React.Component {
         });
     }
 
-    approveBid = () => {
-        // TODO: complete
-        console.log('Approve');
-    }
-
     openNegotiateBidModal() {
         this.setState({
             showNegotiateModal: true,
@@ -89,11 +84,6 @@ export default class BidRecordStore extends React.Component {
         this.setState({
             showNegotiateModal: false,
         });
-    }
-
-    negotiateBid = () => {
-        // TODO: complete
-        console.log('negotiate', this.state.bidPrice.getValue());
     }
 
     openDeclineBidModal() {
@@ -108,9 +98,19 @@ export default class BidRecordStore extends React.Component {
         });
     }
 
+    approveBid = () => {
+        // TODO: complete
+        console.log('Approve', this.props.bid.productId);
+    }
+
+    negotiateBid = () => {
+        // TODO: complete
+        console.log('negotiate', this.state.bidPrice.getValue(), this.props.bid.productId);
+    }
+
     declineBid = () => {
         // TODO: complete
-        console.log('Decline');
+        console.log('Decline', this.props.bid.productId);
     }
 
     render() {
