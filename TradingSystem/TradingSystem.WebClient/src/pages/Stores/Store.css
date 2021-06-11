@@ -8,10 +8,14 @@
 .internal-conatiner.store-container {
     display: grid;
     grid-template-rows: 14.285% 14.285% 14.285% 14.285% 14.285% 14.285% 14.285%;
+    /* TODO: figure out how to change it later */
+    /*grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;*/
 }
 
 .store-container .button-view{
     cursor: pointer;
     font-size: 6rem;
+    /*margin: 2rem;*/
     background-color: #ECCC77FF;
 }

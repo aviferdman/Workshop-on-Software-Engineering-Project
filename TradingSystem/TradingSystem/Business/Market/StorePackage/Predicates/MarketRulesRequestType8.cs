@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.Predicates;
+using TradingSystem.Service;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
@@ -59,9 +61,13 @@ namespace TradingSystem.Business.Market.StorePackage
         public DateTime D1 { get => d1; set => d1 = value; }
         public DateTime D2 { get => d2; set => d2 = value; }
 
-        public async Task ActivateFunction()
+        public  void ActivateFunction(Store s)
         {
-            await MarketRules.Instance.UpdateConditionalDiscountAsync(existingDiscountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            var res =  MarketRules.Instance.UpdateConditionalDiscountAsync(s, existingDiscountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Result;
+            Guid discountId = res.Ret;
+            var discountData = new DiscountData(discountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+             MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
+             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
 
         public int getCounter()

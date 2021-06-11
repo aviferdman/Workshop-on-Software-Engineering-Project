@@ -9,7 +9,7 @@ namespace TradingSystem.Service
     {
         public StoreData(Store store) {
             this.Id = store.Id;
-            this.Name = store.Name;
+            this.Name = store.name;
             Products = new List<ProductData>();
             foreach (Product p in store.Products)
             {

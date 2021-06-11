@@ -1,4 +1,6 @@
 ﻿AddGuest();
+AdminSignup(A1, 123, 052)
+AddGuest();
 Signup(U1, 123, 052);
 AddGuest();
 Signup(U2, 123, 052);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market.StorePackage.Predicates;
+using TradingSystem.Service;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
@@ -30,9 +31,10 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction()
+        public void ActivateFunction(Store s)
         {
-            await MarketRules.Instance.RemoveDiscountAsync(username, storeId, discountId);      
+             MarketRules.Instance.RemoveDiscountAsync(s,username, storeId, discountId).Wait();
+             MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
         }
     }
 }

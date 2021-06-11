@@ -9,8 +9,8 @@ using TradingSystem.DAL;
 namespace TradingSystem.Migrations
 {
     [DbContext(typeof(MarketContext))]
-    [Migration("20210610135418_MarkeMigration")]
-    partial class MarkeMigration
+    [Migration("20210611165243_MarketMirgation")]
+    partial class MarketMirgation
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -129,6 +129,9 @@ namespace TradingSystem.Migrations
 
                     b.Property<int>("_quantity")
                         .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("_storeId")
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("_storeName")
                         .HasColumnType("TEXT");
@@ -769,6 +772,10 @@ namespace TradingSystem.Migrations
                     b.Property<string>("username")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("IsLoggedin")
                         .HasColumnType("INTEGER");
 
@@ -784,6 +791,8 @@ namespace TradingSystem.Migrations
                     b.HasKey("username");
 
                     b.ToTable("dataUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("DataUser");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.MemberState", b =>
@@ -822,6 +831,13 @@ namespace TradingSystem.Migrations
                     b.HasIndex("sid1");
 
                     b.HasDiscriminator().HasValue("Owner");
+                });
+
+            modelBuilder.Entity("TradingSystem.Business.UserManagement.RegisteredAdmin", b =>
+                {
+                    b.HasBaseType("TradingSystem.Business.UserManagement.DataUser");
+
+                    b.HasDiscriminator().HasValue("RegisteredAdmin");
                 });
 
             modelBuilder.Entity("TradingSystem.Business.Market.AdministratorState", b =>

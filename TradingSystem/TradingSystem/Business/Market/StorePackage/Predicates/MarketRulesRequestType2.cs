@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TradingSystem.Business.Market.StorePackage.PolicyPackage;
 using TradingSystem.Business.Market.StorePackage.Predicates;
+using TradingSystem.Service;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
@@ -46,9 +48,11 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction()
+        public  void ActivateFunction(Store s)
         {
-            await MarketRules.Instance.AddPolicyRule(username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+             MarketRules.Instance.AddPolicyRule(s,username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Wait();
+            var policyData = new PolicyData(username, storeId, policyRuleRelation, ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+             MarketRulesService.Instance.policyManager.AddPolicy(policyData).Wait();
         }
     }
 }

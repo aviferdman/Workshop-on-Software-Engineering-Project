@@ -61,7 +61,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckLoggedInUserNotifyPurchase()
         {
             founderUser.IsLoggedIn = true;
-            Product p = new Product(100, 100, 100);
+            Product p = new Product(new Guid(), 100, 100, 100);
             store.UpdateProduct(p);
             marketStores.LoadedStores.TryAdd(store.Id, store);
             await marketUsers.AddProductToCart(user.Username, p.Id, 5);
@@ -81,7 +81,7 @@ namespace TradingSystemTests.IntegrationTests
             dataUser.IsLoggedin = false;
             await ProxyMarketContext.Instance.GetDataUser(founder.Username);
             //UserManagement.Instance.DataUsers[founder.Username] = dataUser;
-            Product p = new Product(100, 100, 100);
+            Product p = new Product(new Guid(), 100, 100, 100);
             store.UpdateProduct(p);
             marketStores.LoadedStores.TryAdd(store.Id, store);
             await marketUsers .AddProductToCart(user.Username, p.Id, 5);

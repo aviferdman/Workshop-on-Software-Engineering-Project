@@ -36,6 +36,18 @@ namespace TradingSystem.Service
             }
 
         }
+        public async Task<Result<bool>> CustomerAcceptBid(Guid storeId, Guid bidId)
+        {
+            await semaphoreSlim.WaitAsync();
+            try
+            {
+                return await MarketBids.Instance.CustomerAcceptBid(storeId, bidId);
+            }
+            finally
+            {
+                semaphoreSlim.Release();
+            }
+        }
         public async Task<Result<bool>> CustomerNegotiateBid(Guid storeId, Guid bidId, double newBidPrice)
         {
             await semaphoreSlim.WaitAsync();

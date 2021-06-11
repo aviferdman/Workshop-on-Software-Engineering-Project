@@ -8,6 +8,6 @@ namespace TradingSystem.Business.Market.StorePackage.Predicates
     public interface MarketRuleRequest
     {
         public int getCounter();
-        public Task ActivateFunction();
+        public void ActivateFunction(Store s);
     }
 }

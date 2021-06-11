@@ -36,7 +36,7 @@ namespace TradingSystemTests.DBTests
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             store = await market.CreateStore("testStore", "founder", card, address);
             await market.makeManager("manager", store.Id, "founder");
-            product1 = new ProductData("1", 10, 10, 10, "c");
+            product1 = new ProductData(new Guid(), "1", 10, 10, 10, "c");
         }
         /// test for function :<see cref="TradingSystem.Business.Market.MarketUsers.AddProductToCart(string, Guid, string, int)"/>
         [TestMethod]
@@ -60,7 +60,7 @@ namespace TradingSystemTests.DBTests
             string username = marketUsers.AddGuest();
             User u = marketUsers.GetUserByUserName(username);
             ShoppingCart cart = u.ShoppingCart;
-            Product p = new Product("llll", 8, 50, 500,"category");
+            Product p = new Product(new Guid(), "llll", 8, 50, 500,"category");
             Assert.AreEqual("product doesn't exist", await marketUsers.AddProductToCart(username, p.Id, 5));
             foreach(ShoppingBasket b in cart.ShoppingBaskets)
             {
@@ -153,7 +153,7 @@ namespace TradingSystemTests.DBTests
         {
             string username = marketUsers.AddGuest();
             User u = marketUsers.GetUserByUserName(username);
-            Product p = new Product("llll8", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "llll8", 8, 50, 500, "category");
             Assert.AreEqual("product doesn't exist", marketUsers.ChangeProductQuanInCart(username, p.Id, 5));
         }
 
@@ -188,10 +188,10 @@ namespace TradingSystemTests.DBTests
         [TestCategory("uc4")]
         public async Task findProductsuccess()
         {
-            ProductData p = new ProductData("soy milk", 8, 50, 500, "vegan");
+            ProductData p = new ProductData(new Guid(), "soy milk", 8, 50, 500, "vegan");
             Store s = store = await market.CreateStore("Vegan store12", "founder", null, null);
             Result<Product> result1 = await MarketStores.Instance.AddProduct(p, store.Id, "founder");
-            ProductData p2 = new ProductData("soy milk diff", 8, 50, 500, "vegan");
+            ProductData p2 = new ProductData(new Guid(), "soy milk diff", 8, 50, 500, "vegan");
             Store s2 = await market.CreateStore("vegan store 2", "founder", null, null);
             Result<Product> result2 = await MarketStores.Instance.AddProduct(p2, store.Id, "founder");
             ICollection<Product> ret= await market.findProducts("soy milk", -1, -1, -1, "vegan");
@@ -205,10 +205,10 @@ namespace TradingSystemTests.DBTests
         [TestCategory("uc4")]
         public async Task findProductsuccess2()
         {
-            ProductData p = new ProductData("tofu", 8, 50, 500, "vegan");
+            ProductData p = new ProductData(new Guid(), "tofu", 8, 50, 500, "vegan");
             Store s = store = await market.CreateStore("vegan store3", "founder", null, null);
             Result<Product> result1 = await MarketStores.Instance.AddProduct(p, store.Id, "founder");
-            ProductData p2 = new ProductData("hummus tofu", 8, 50, 500, "vegan");
+            ProductData p2 = new ProductData(new Guid(), "hummus tofu", 8, 50, 500, "vegan");
             Store s2 = await market.CreateStore("vegan store 4", "founder", null, null);
             Result<Product> result2 = await MarketStores.Instance.AddProduct(p2, store.Id, "founder");
             ICollection<Product> ret =await market.findProducts("tofu", -1, -1, -1, null);
@@ -223,10 +223,10 @@ namespace TradingSystemTests.DBTests
         [TestCategory("uc4")]
         public async Task findProductsuccess3()
         {
-            ProductData p = new ProductData("watermelon exp", 8, 50, 500.0, "vegatables");
+            ProductData p = new ProductData(new Guid(), "watermelon exp", 8, 50, 500.0, "vegatables");
             Store s = store = await market.CreateStore("vegan store5", "founder", null, null);
             Result<Product> result1 = await MarketStores.Instance.AddProduct(p, store.Id, "founder");
-            ProductData p2 = new ProductData("watermelon cheep", 8, 50, 5.0, "vegatables");
+            ProductData p2 = new ProductData(new Guid(), "watermelon cheep", 8, 50, 5.0, "vegatables");
             Store s2 = await market.CreateStore("vegan store 6", "founder", null, null);
             Result<Product> result2 = await MarketStores.Instance.AddProduct(p2, store.Id, "founder");
             ICollection<Product> ret = await market.findProducts("watermelon", 4, 20, -1, null);
@@ -241,11 +241,11 @@ namespace TradingSystemTests.DBTests
         [TestCategory("uc4")]
         public async Task findProductsuccess4()
         {
-            ProductData p = new ProductData("cucumber high rating", 8, 50, 500.0, "vegatables");
+            ProductData p = new ProductData(new Guid(), "cucumber high rating", 8, 50, 500.0, "vegatables");
             p.rating = 5;
             Store s = store = await market.CreateStore("vegan store7", "founder", null, null);
             Result<Product> result1 = await MarketStores.Instance.AddProduct(p, store.Id, "founder");
-            ProductData p2 = new ProductData("cucumber low rating", 8, 50, 5.0, "vegatables");
+            ProductData p2 = new ProductData(new Guid(), "cucumber low rating", 8, 50, 5.0, "vegatables");
             p2.rating = 2;
             Store s2 = await market.CreateStore("vegan store 8", "founder", null, null);
             Result<Product> result2 = await MarketStores.Instance.AddProduct(p2, store.Id, "founder");

@@ -45,6 +45,7 @@ namespace TradingSystem.Business.Market
         public CreditCard Bank { get => _bank; set => _bank = value; }
         [NotMapped]
         public HashSet<Manager> Managers { get => managers; set => managers = value; }
+
         [NotMapped]
         public HashSet<Owner> Owners { get => owners; set => owners = value; }
         [NotMapped]
@@ -95,6 +96,16 @@ namespace TradingSystem.Business.Market
             }
             var productId = bidsManager.getProductIdByBidId(bidId);
             return await bidsManager.CustomerNegotiateBid(bidId, newBidPrice, Name, GetProduct(productId).Name);
+        }
+
+        public async Task<Result<bool>> CustomerAcceptBid(Guid bidId)
+        {
+            if (!IsPurchaseKindAvailable(PurchaseKind.Bid))
+            {
+                return new Result<bool>(false, true, "Bids are not supported in this store");
+            }
+            var productId = bidsManager.getProductIdByBidId(bidId);
+            return await bidsManager.CustomerAcceptBid(bidId, Name, GetProduct(productId).Name);
         }
 
         public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, Guid bidId)

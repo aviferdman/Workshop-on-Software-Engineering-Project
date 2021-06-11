@@ -70,8 +70,8 @@ namespace TradingSystemTests.MarketTests
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            Product product1 = new Product(10, 10, 10);
-            Product product2 = new Product(20, 20, 20);
+            Product product1 = new Product(new Guid(), 10, 10, 10);
+            Product product2 = new Product(new Guid(), 20, 20, 20);
             product_quantity.Add(new ProductInCart(product1, 1));
             product_quantity.Add(new ProductInCart(product2, 2));
             PurchaseStatus purchaseStatus = new PurchaseStatus(false, new TransactionStatus("Testusername", storeId, null, null, null, true), storeId);
@@ -97,8 +97,8 @@ namespace TradingSystemTests.MarketTests
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            Product product1 = new Product(10, 10, 10);
-            Product product2 = new Product(20, 20, 20);
+            Product product1 = new Product(new Guid(), 10, 10, 10);
+            Product product2 = new Product(new Guid(), 20, 20, 20);
             product_quantity.Add(new ProductInCart(product1, 1));
             product_quantity.Add(new ProductInCart(product2, 2));
             DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, "storeName", false);
@@ -126,8 +126,8 @@ namespace TradingSystemTests.MarketTests
             string clientPhone = "0544444444";
             Address clientAddress = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
-            Product product1 = new Product(10, 10, 10);
-            Product product2 = new Product(20, 20, 20);
+            Product product1 = new Product(new Guid(), 10, 10, 10);
+            Product product2 = new Product(new Guid(), 20, 20, 20);
             product_quantity.Add(new ProductInCart(product1, 1));
             product_quantity.Add(new ProductInCart(product2, 2));
             DeliveryStatus deliveryStatus = new DeliveryStatus(Guid.NewGuid().ToString(), testUser.Username, storeId, "storeName", true);

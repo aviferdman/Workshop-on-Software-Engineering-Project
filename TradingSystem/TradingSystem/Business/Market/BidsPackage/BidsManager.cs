@@ -62,10 +62,14 @@ namespace TradingSystem.Business.Market.BidsPackage
             BidState b = new BidState(bid);
             if (!ProxyMarketContext.Instance.IsDebug)
             {
-                MarketContext.Instance.Bids.Add(bid);
-                await ProxyMarketContext.Instance.saveChanges();
-                MarketContext.Instance.BidStates.Add(b);
-                await ProxyMarketContext.Instance.saveChanges();
+                lock (MarketContext.Instance)
+                {
+                    MarketContext.Instance.Bids.Add(bid);
+                    MarketContext.Instance.SaveChanges();
+                    MarketContext.Instance.BidStates.Add(b);
+                    MarketContext.Instance.SaveChanges();
+                }
+               
             }
            
             this.bidsState.Add(b);
@@ -98,6 +102,20 @@ namespace TradingSystem.Business.Market.BidsPackage
             return new Result<bool>(true, false, "");
         }
 
+        internal async Task<Result<bool>> CustomerAcceptBid(Guid bidId, string storeName, string productName)
+        {
+            var bid = GetBidById(bidId);
+            if (bid.Status.Equals(BidStatus.CustomerNegotiate))
+            {
+                return new Result<bool>(false, true, "You cant accept your own suggestion.");
+            }
+            var username = bid.Username;
+            NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Accepted to buy product {productName} for {bid.Price} in store {storeName}");
+            bid.Status = BidStatus.Accept;
+            await ProxyMarketContext.Instance.saveChanges();
+            return new Result<bool>(true, false, "");
+        }
+
         public Guid getProductIdByBidId(Guid bidId)
         {
             return bidsState.Select(state => state.Bid).Where(b => b.Id.Equals(bidId)).Select(b => b.ProductId).FirstOrDefault();
@@ -106,6 +124,10 @@ namespace TradingSystem.Business.Market.BidsPackage
         public async Task<Result<bool>> OwnerAcceptBid(string ownerUsername, Guid bidId)
         {
             var bid = GetBidById(bidId);
+            if (bid.Status.Equals(BidStatus.OwnerNegotiate))
+            {
+                return new Result<bool>(false, true, "You cant accept your own suggestion.");
+            }
             var bidState = GetBidStateById(bidId);
             await bidState.AddAcceptence(ownerUsername);
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"We accepted your bid request.");

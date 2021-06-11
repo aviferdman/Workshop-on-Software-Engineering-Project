@@ -55,7 +55,7 @@ namespace TradingSystemTests.DBTests
             Address address = new Address("1", "1", "1", "1", "1");
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             testStore = await MarketStores.Instance.CreateStore("testStore", "founder", card, address);
-            product1 = new ProductData("test",QUANTITY1, WEIGHT1, PRICE1,"lala");
+            product1 = new ProductData(new Guid(), "test", QUANTITY1, WEIGHT1, PRICE1,"lala");
             testUser = MarketUsers.Instance.GetUserByUserName("testUser");
             shoppingCart = testUser.ShoppingCart;
             shoppingBasket = await shoppingCart.GetShoppingBasket(testStore);
@@ -204,7 +204,7 @@ namespace TradingSystemTests.DBTests
         {
             bool val1 = false;
             bool val2 = false;
-            ProductData oneProduct = new ProductData("name22",1, 100, 100, "cat");
+            ProductData oneProduct = new ProductData(new Guid(), "name22", 1, 100, 100, "cat");
             Result<Product> result = await MarketStores.Instance.AddProduct(oneProduct, testStore.Id, "founder");
             await MarketUsers.Instance.AddProductToCart(testUser.Username, result.Ret.id, 1);
             await MarketUsers.Instance.AddProductToCart("founder", result.Ret.id, 1);

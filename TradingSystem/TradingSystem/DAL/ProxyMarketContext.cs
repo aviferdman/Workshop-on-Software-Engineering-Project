@@ -50,8 +50,11 @@ namespace TradingSystem.DAL
 
         public async Task saveChanges()
         {
-            if (!isDebug)
-                await marketContext.SaveChangesAsync();
+            lock (marketContext)
+            {
+                if (!isDebug)
+                    marketContext.SaveChanges();
+            }
         }
         public async Task AddHistory(TransactionStatus history)
         {
@@ -379,7 +382,7 @@ namespace TradingSystem.DAL
             }
             catch (Exception e)
             {
-                return null;
+                return new List<Store>();
             }
         }
 
@@ -411,6 +414,22 @@ namespace TradingSystem.DAL
             try
             {
                 await marketContext.AddNewMemberState(username);
+            }
+            catch (Exception e)
+            {
+            }
+        }
+
+        public async Task AddNewAdminState(string username, string password, string phone)
+        {
+            if (isDebug)
+            {
+                admins.TryAdd(username, new RegisteredAdmin(username, password, phone));
+                memberStates.TryAdd(username, new AdministratorState(username));
+            }
+            try
+            {
+                await marketContext.AddNewAdminState(username, password, phone );
             }
             catch (Exception e)
             {

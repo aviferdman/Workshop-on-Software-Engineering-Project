@@ -37,7 +37,7 @@ namespace TradingSystemTests.IntegrationTests
 
         public PurchaseTests()
         {
-            product = new Product(QUANTITY1, WEIGHT1, PRICE1);
+            product = new Product(new Guid(), QUANTITY1, WEIGHT1, PRICE1);
             testUserAddress = new Address("1", "1", "1", "1", "1");
             testStoreAddress = new Address("2", "2", "2", "2", "2");
             testUserCreditCard = new CreditCard("1", "1", "1", "1", "1", "1");
@@ -240,7 +240,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             bool val1 = false;
             bool val2 = false;
-            Product oneProduct = new Product(1, 100, 100);
+            Product oneProduct = new Product(new Guid(), 1, 100, 100);
             User secondTestUser = new User("second test user");
             testStore.UpdateProduct(oneProduct);
             await testUser.UpdateProductInShoppingBasket(testStore, oneProduct, 1);

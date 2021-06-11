@@ -24,7 +24,7 @@ namespace TradingSystemTests.MarketTests
 
         public UserTests()
         {
-            product = new Product(QUANTITY1, WEIGHT1, PRICE1);
+            product = new Product(new Guid(), QUANTITY1, WEIGHT1, PRICE1);
             testStoreAddress = new Address("2", "2", "2", "2", "2");
             testStoreCreditCard = new CreditCard("1", "1", "1", "1", "1", "1");
             testUser = new User("testUser");

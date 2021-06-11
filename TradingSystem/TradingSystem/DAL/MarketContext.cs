@@ -18,11 +18,14 @@ using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StorePackage.Predicates;
 using TradingSystem.Business.Market.BidsPackage;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading;
+using TradingSystem.Service;
 
 namespace TradingSystem.DAL
 {
     class MarketContext : DbContext
     {
+        public DbSet<RegisteredAdmin> adminUsers { get; set; }
         public DbSet<DataUser> dataUsers { get; set; }
         public DbSet<ShoppingCart> membersShoppingCarts { get; set; }
         public DbSet<ShoppingBasket> membersShoppingBaskets { get; set; }
@@ -30,32 +33,37 @@ namespace TradingSystem.DAL
         public DbSet<State> states { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<Statistics> statistics { get; set; }
-        
+        public static Semaphore sam=new Semaphore(1,1);
         public DbSet<AdministratorState> administratorStates { get; set; }
         public DbSet<Appointer> appointers { get; set; }
 
         public  Statistics getStatis(DateTime date)
         {
-            Statistics s;
-            try{
-                s= statistics.Single(s => s.date.Day.Equals(date.Day));
-            }
-            catch(Exception e)
+            lock (this)
             {
-                s = new Statistics();
-                s.date = date;
-                statistics.Add(s);
+                Statistics s;
                 try
                 {
-                    SaveChanges();
+                    s = statistics.Single(s => s.date.Day.Equals(date.Day));
                 }
-                catch(Exception ex)
+                catch (Exception e)
                 {
-                    return null;
+                    s = new Statistics();
+                    s.date = date;
+                    statistics.Add(s);
+                    try
+                    {
+                        SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        return null;
+                    }
+
                 }
-                
+                return s;
             }
-            return s;
+           
         }
 
         public DbSet<Founder> founders { get; set; }
@@ -67,8 +75,11 @@ namespace TradingSystem.DAL
         public DbSet<PurchasePolicy> PurchasePolicy { get; set; }
         public async Task AddHistory(TransactionStatus history)
         {
-            transactionStatuses.Add(history);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                transactionStatuses.Add(history);
+                SaveChanges();
+            }
         }
 
         public DbSet<Manager> managers { get; set; }
@@ -94,9 +105,12 @@ namespace TradingSystem.DAL
 
         internal void EmptyShppingCart(string username)
         {
-            productInCarts.RemoveRange(membersShoppingBaskets.Include(s => s.ShoppingCart).Where(s => s.ShoppingCart.username.Equals(username)).SelectMany(s=>s._product_quantity).ToList()) ;
-            membersShoppingBaskets.RemoveRange(membersShoppingBaskets.Include(s=>s.ShoppingCart).Where(s => s.ShoppingCart.username.Equals(username)));
-            SaveChanges();
+            lock (this)
+            {
+                productInCarts.RemoveRange(membersShoppingBaskets.Include(s => s.ShoppingCart).Where(s => s.ShoppingCart.username.Equals(username)).SelectMany(s => s._product_quantity).ToList());
+                membersShoppingBaskets.RemoveRange(membersShoppingBaskets.Include(s => s.ShoppingCart).Where(s => s.ShoppingCart.username.Equals(username)));
+                SaveChanges();
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -192,124 +206,160 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
-            return  products.Where(p =>
-                                    (p._name.Contains(keyword) || p.category.Contains(keyword))
-                                    &&(price_range_low==-1||price_range_low<=p._price)
-                                    &&(price_range_high == -1 || price_range_high >= p._price)
-                                    &&(rating == -1 || rating == p.rating)
-                                    &&(category == null || category.Equals(p.category))).ToList();
+            lock (this)
+            {
+                var rt = products.Where(p =>
+                                  (p._name.Contains(keyword) || p.category.Contains(keyword))
+                                  && (price_range_low == -1 || price_range_low <= p._price)
+                                  && (price_range_high == -1 || price_range_high >= p._price)
+                                  && (rating == -1 || rating == p.rating)
+                                  && (category == null || category.Equals(p.category))).ToList();
+
+                return rt;
+            }
+          
         }
 
         public async Task<Category> AddNewCategory(string category)
         {
-            Category c;
-            if (categories.Where(c => c.Name.Equals(category)).Any())
+            lock (this)
             {
-                c = categories.Single(c => c.Name.Equals(category));
+                Category c;
+                if (categories.Where(c => c.Name.Equals(category)).Any())
+                {
+                    c = categories.Single(c => c.Name.Equals(category));
+                }
+                else
+                {
+                    c = new Category(category);
+                    categories.Add(c);
+                    SaveChanges();
+                }
+                return c;
             }
-            else
-            {
-                c = new Category(category);
-                await categories.AddAsync(c);
-                await SaveChangesAsync();
-            }
-            return c;
         }
 
         public void findStoreProduct(out Store found, out Product p, Guid pid)
         {
-            Store sc =  stores.Include(s=> s._products)
-                .Single(s => s._products.Where(p=>p.id.Equals(pid)).Any());
-            Entry(sc).Reference(s => s.founder).Load();
-            Entry(sc.founder).Reference(s => s.m).Load();
-            Entry(sc).Reference(s => s._address).Load();
-            Entry(sc).Reference(s => s.BidsManager).Load();
-            Entry(sc).Reference(s => s.purchasePolicy).Load();
-            Entry(sc.BidsManager).Collection(s => s.bidsState).Load();
-            foreach (BidState state in sc.BidsManager.bidsState)
+            lock (this)
             {
-                Entry(state).Reference(s => s.Bid).Load();
+                Store sc = stores.Include(s => s._products)
+                .Single(s => s._products.Where(p => p.id.Equals(pid)).Any());
+                Entry(sc).Reference(s => s.founder).Load();
+                Entry(sc.founder).Reference(s => s.m).Load();
+                Entry(sc).Reference(s => s._address).Load();
+                Entry(sc).Reference(s => s.BidsManager).Load();
+                Entry(sc).Reference(s => s.purchasePolicy).Load();
+                Entry(sc.BidsManager).Collection(s => s.bidsState).Load();
+                foreach (BidState state in sc.BidsManager.bidsState)
+                {
+                    Entry(state).Reference(s => s.Bid).Load();
+                }
+                Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
+                Entry(sc).Collection(s => s.managers).Load();
+                Entry(sc).Collection(s => s.owners).Load();
+                foreach (Manager m in sc.managers)
+                {
+                    Entry(m).Reference(s => s.m).Load();
+                }
+                foreach (Owner m in sc.owners)
+                {
+                    Entry(m).Reference(s => s.m).Load();
+                }
+                found = sc;
+                p = sc.Products.Single(p => p.Id.Equals(pid));
             }
-            Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
-            Entry(sc).Collection(s => s.managers).Load();
-            Entry(sc).Collection(s => s.owners).Load();
-            foreach (Manager m in sc.managers)
-            {
-                Entry(m).Reference(s => s.m).Load();
-            }
-            foreach (Owner m in sc.owners)
-            {
-                Entry(m).Reference(s => s.m).Load();
-            }
-            found = sc;
-            p = sc.Products.Single(p => p.Id.Equals(pid));
         }
 
         public async Task<ICollection<Store>> GetStoresByName(string name)
         {
-            ICollection<Store>  sc =  stores.Where(s => s.name.ToLower().Contains(name)).ToList();
-            
-            foreach (Store s in sc)
+            lock (this)
             {
-                await Entry(s).Collection(s => s._products).LoadAsync();
+                ICollection<Store> sc = stores.Where(s => s.name.ToLower().Contains(name)).ToList();
+
+                foreach (Store s in sc)
+                {
+                    Entry(s).Collection(s => s._products).Load();
+                }
+                return sc;
             }
-            return sc;
         }
 
         public async Task removeOwner(Owner ownerToRemove)
         {
-            try
+            lock (this)
             {
-                owners.Remove(ownerToRemove);
-                await SaveChangesAsync();
-            }
-            catch
-            {
+                try
+                {
+                    owners.Remove(ownerToRemove);
+                    SaveChanges();
+                }
+                catch
+                {
+                }
             }
         }
 
         public async Task AddStore(Store store)
         {
-            await stores.AddAsync(store);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                stores.Add(store);
+                SaveChanges();
+            }
         }
 
         public void removeProductFromCart(ProductInCart productInCart)
         {
-            try
+            lock (this)
             {
-                productInCarts.Remove(productInCart);
-            }
-            catch
-            {
+                try
+                {
+                    productInCarts.Remove(productInCart);
+                }
+                catch
+                {
+                }
             }
         }
 
         public async Task<ICollection<TransactionStatus>> getAllHistories()
         {
-            return await transactionStatuses
+            lock (this)
+            {
+                var rt =  transactionStatuses
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
-                                .Include(s => s.productHistories).ThenInclude(h=> h.productId_quantity)
-                                .ToListAsync();
+                                .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
+                                .ToList();
+                return rt;
+            }
         }
 
         public async Task<ICollection<TransactionStatus>> getUserHistories(string username)
         {
-            return await transactionStatuses.Where(s=> s.username.Equals(username))
+            lock (this)
+            {
+                var rt =  transactionStatuses.Where(s => s.username.Equals(username))
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
-                                .ToListAsync();
+                                .ToList();
+                return rt;
+            }
         }
 
         public async Task<ICollection<TransactionStatus>> getStoreHistories(Guid storeId)
         {
-            return await transactionStatuses.Where(s => s.storeID.Equals(storeId))
+            lock (this)
+            {
+                var rt = transactionStatuses.Where(s => s.storeID.Equals(storeId))
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
-                                .ToListAsync();
+                                .ToList();
+                return rt;
+            }
         }
 
         internal void tearDown()
@@ -317,6 +367,7 @@ namespace TradingSystem.DAL
             try
             {
                 dataUsers.RemoveRange(dataUsers.ToList());
+                adminUsers.RemoveRange(adminUsers.ToList());
                 states.RemoveRange(states.ToList());
                 statistics.RemoveRange(statistics.ToList());
                 productInCarts.RemoveRange(productInCarts.ToList());
@@ -355,250 +406,344 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
         {
-            return await stores.Include(s => s._products)
+            lock (this)
+            {
+                var rt =  stores.Include(s => s._products)
                                 .Include(s => s.owners)
                                 .Include(s => s.managers)
                                 .Include(s => s.founder)
-                                .Where(s=> s.founder.username.Equals(usrname)||
-                                            s.managers.Where(m=>m.username.Equals(usrname)).Any()||
+                                .Where(s => s.founder.username.Equals(usrname) ||
+                                            s.managers.Where(m => m.username.Equals(usrname)).Any() ||
                                             s.owners.Where(m => m.username.Equals(usrname)).Any())
-                                .ToListAsync();
+                                .ToList();
+                return rt;
+            }
         }
 
         public MarketContext(): base(){}
 
         public async Task<DataUser> GetDataUser(string username)
         {
-           return await dataUsers.SingleAsync(u => u.username.Equals(username));
-            
+            lock (this)
+            {
+                var rt =  dataUsers.Single(u => u.username.Equals(username));
+                return rt;
+            }
         }
 
         public async Task AddNewMemberState(string username)
         {
-            try
+            lock (this)
             {
-                memberStates.Add(new MemberState(username));
-                await SaveChangesAsync();
+                try
+                {
+                    memberStates.Add(new MemberState(username));
+                    SaveChanges();
+                }
+                catch (Exception e)
+                {
+                }
             }
-            catch(Exception e)
+        }
+
+        internal async Task AddNewAdminState(string username, string password, string phone)
+        {
+            lock (this)
             {
+                try
+                {
+                    memberStates.Add(new AdministratorState(username));
+                    adminUsers.Add(new RegisteredAdmin(username, password, phone));
+                    SaveChanges();
+                }
+                catch (Exception e)
+                {
+                }
             }
         }
 
         public async Task<bool> AddDataUser(DataUser u)
         {
-            try
+            lock (this)
             {
-                dataUsers.Add(u);
-                await SaveChangesAsync();
-                return true;
+                try
+                {
+                    dataUsers.Add(u);
+                    SaveChanges();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
             }
-            catch(Exception e)
-            {
-                return false;
-            }
+            
         }
 
         public async Task<MemberState> getMemberState(string usrname)
         {
-            MemberState mem=await memberStates.SingleAsync(m => m.username.Equals(usrname));
-            return mem;
+            lock (this)
+            {
+                MemberState mem =  memberStates.Single(m => m.username.Equals(usrname));
+                return mem;
+            }
         }
 
         public async Task<ShoppingCart> getShoppingCart(string usrname)
         {
-            ShoppingCart sc= await membersShoppingCarts.SingleAsync(s => s.username.Equals(usrname));
-            await Entry(sc).Collection(s => s.shoppingBaskets).LoadAsync();
-            foreach(ShoppingBasket sb in sc.shoppingBaskets)
+            lock (this)
             {
-                await Entry(sb).Collection(s => s._product_quantity).LoadAsync();
-                await Entry(sb).Reference(s => s.store).LoadAsync();
-                foreach (ProductInCart pr in sb._product_quantity)
+                ShoppingCart sc =  membersShoppingCarts.Single(s => s.username.Equals(usrname));
+                 Entry(sc).Collection(s => s.shoppingBaskets).Load();
+                foreach (ShoppingBasket sb in sc.shoppingBaskets)
                 {
-                   Entry(pr).Reference(p => p.product).Load();
+                     Entry(sb).Collection(s => s._product_quantity).Load();
+                     Entry(sb).Reference(s => s.store).Load();
+                    foreach (ProductInCart pr in sb._product_quantity)
+                    {
+                        Entry(pr).Reference(p => p.product).Load();
+                    }
                 }
+                return sc;
             }
-            return sc;
         }
 
         public async Task AddNewShoppingCart(string username)
         {
-            try
+            lock (this)
             {
-                membersShoppingCarts.Add(new ShoppingCart(username));
-                await SaveChangesAsync();
-            }
-            catch(Exception e)
-            {
+                try
+                {
+                    membersShoppingCarts.Add(new ShoppingCart(username));
+                    SaveChanges();
+                }
+                catch (Exception e)
+                {
+                }
             }
         }
 
         public async Task<Store> getStore(Guid storeId)
         {
-            Store sc = await stores.SingleAsync(s => s.sid.Equals(storeId));
-            await Entry(sc).Reference(s => s.founder).LoadAsync();
-            await Entry(sc.founder).Reference(s => s.m).LoadAsync();
-            await Entry(sc).Reference(s => s._address).LoadAsync();
-            await Entry(sc).Reference(s => s.BidsManager).LoadAsync();
-            await Entry(sc).Reference(s => s.purchasePolicy).LoadAsync();
-            await Entry(sc).Collection(s => s._products).LoadAsync();
-            Entry(sc.BidsManager).Collection(s => s.bidsState).Load();
-            foreach(BidState state in sc.BidsManager.bidsState)
-            {
-                Entry(state).Reference(s => s.Bid).Load();
-            }
-            Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
-            await Entry(sc).Collection(s => s.managers).LoadAsync();
-            await Entry(sc).Collection(s => s.owners).LoadAsync();
-            foreach(Manager m in sc.managers)
-            {
-                await Entry(m).Reference(s => s.m).LoadAsync();
-            }
-            foreach (Owner m in sc.owners)
-            {
-                await Entry(m).Reference(s => s.m).LoadAsync();
-            }
-            await getDiscoutsPolicies(storeId);
+            Store sc;
+            sam.WaitOne();
+                sc = stores.Single(s => s.sid.Equals(storeId));
+                Entry(sc).Reference(s => s.founder).Load();
+                Entry(sc.founder).Reference(s => s.m).Load();
+                Entry(sc).Reference(s => s._address).Load();
+                Entry(sc).Reference(s => s.BidsManager).Load();
+                Entry(sc).Reference(s => s.purchasePolicy).Load();
+                Entry(sc).Collection(s => s._products).Load();
+                Entry(sc.BidsManager).Collection(s => s.bidsState).Load();
+                foreach (BidState state in sc.BidsManager.bidsState)
+                {
+                    Entry(state).Reference(s => s.Bid).Load();
+                }
+                Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
+                Entry(sc).Collection(s => s.managers).Load();
+                Entry(sc).Collection(s => s.owners).Load();
+                foreach (Manager m in sc.managers)
+                {
+                    Entry(m).Reference(s => s.m).Load();
+                }
+                foreach (Owner m in sc.owners)
+                {
+                    Entry(m).Reference(s => s.m).Load();
+                }
+
+                 getDiscoutsPolicies(storeId, sc);
+
+            sam.Release();
+
             return sc;
         }
 
-        private async Task getDiscoutsPolicies(Guid storeId)
+        private   void  getDiscoutsPolicies(Guid storeId, Store s)
         {
-            ICollection<MarketRulesRequestType1> type1 = await marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType2> type2 = await marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType3> type3 = await marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType4> type4 = await marketRulesRequestType4.Where(r => r.storeId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType5> type5 = await marketRulesRequestType5.Where(r => r.storeId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType6> type6 = await marketRulesRequestType6.Where(r => r.storeId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType7> type7 = await marketRulesRequestType7.Where(r => r.StoreId.Equals(storeId)).ToListAsync();
-            ICollection<MarketRulesRequestType8> type8 = await marketRulesRequestType8.Where(r => r.StoreId.Equals(storeId)).ToListAsync();
+            if (MarketRulesService.Instance.policyManager.GetAllPolicies(storeId).Result.Any() || MarketRulesService.Instance.discountsManager.GetAllDiscounts(storeId).Result.Any())
+                return;
             List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
-            ruleRequests.AddRange(type1);
-            ruleRequests.AddRange(type2);
-            ruleRequests.AddRange(type3);
-            ruleRequests.AddRange(type4);
-            ruleRequests.AddRange(type5);
-            ruleRequests.AddRange(type7);
-            ruleRequests.AddRange(type8);
-            ruleRequests.AddRange(type6);
-            ruleRequests.OrderBy(r => r.getCounter());
+                ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.Where(r => r.storeId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.Where(r => r.StoreId.Equals(storeId)).ToList();
+                ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.Where(r => r.StoreId.Equals(storeId)).ToList();
+               
+                ruleRequests.AddRange(type1);
+                ruleRequests.AddRange(type2);
+                ruleRequests.AddRange(type3);
+                ruleRequests.AddRange(type4);
+                ruleRequests.AddRange(type5);
+                ruleRequests.AddRange(type7);
+                ruleRequests.AddRange(type8);
+                ruleRequests.AddRange(type6);
+                ruleRequests.OrderBy(r => r.getCounter());
+           
             foreach(MarketRuleRequest r in ruleRequests)
             {
-                await r.ActivateFunction();
+                r.ActivateFunction(s);
             }
         }
 
         public async Task AddProduct(Product product)
         {
-            products.Add(product);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                products.Add(product);
+                SaveChanges();
+            }
         }
 
         public async Task<int> getRuleCounter()
         {
-            ICollection<MarketRulesRequestType1> type1 = await marketRulesRequestType1.ToListAsync();
-            ICollection<MarketRulesRequestType2> type2 = await marketRulesRequestType2.ToListAsync();
-            ICollection<MarketRulesRequestType3> type3 = await marketRulesRequestType3.ToListAsync();
-            ICollection<MarketRulesRequestType4> type4 = await marketRulesRequestType4.ToListAsync();
-            ICollection<MarketRulesRequestType5> type5 = await marketRulesRequestType5.ToListAsync();
-            ICollection<MarketRulesRequestType6> type6 = await marketRulesRequestType6.ToListAsync();
-            List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
-            ruleRequests.AddRange(type1);
-            ruleRequests.AddRange(type2);
-            ruleRequests.AddRange(type3);
-            ruleRequests.AddRange(type4);
-            ruleRequests.AddRange(type5);
-            ruleRequests.AddRange(type6);
-            if (ruleRequests.Count == 0)
-                return 0;
-            return ruleRequests.Max(m => m.getCounter());
+            lock (this)
+            {
+                ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.ToList();
+                ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.ToList();
+                ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.ToList();
+                ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.ToList();
+                ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.ToList();
+                ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.ToList();
+                ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.ToList();
+                ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.ToList();
+                List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
+                ruleRequests.AddRange(type1);
+                ruleRequests.AddRange(type2);
+                ruleRequests.AddRange(type3);
+                ruleRequests.AddRange(type4);
+                ruleRequests.AddRange(type5);
+                ruleRequests.AddRange(type6);
+                ruleRequests.AddRange(type7);
+                ruleRequests.AddRange(type8);
+                if (ruleRequests.Count == 0)
+                    return 0;
+                return ruleRequests.Max(m => m.getCounter());
+            }
         }
 
         public async Task<bool> RemoveDataUser(string userId)
         {
-            try
+            lock (this)
             {
-                DataUser u = new DataUser() { username = userId };
-                dataUsers.Attach(u);
-                dataUsers.Remove(u);
-                await SaveChangesAsync();
-                return true;
-            }
-            catch
-            {
-                return false;
+                try
+                {
+                    DataUser u = new DataUser() { username = userId };
+                    dataUsers.Attach(u);
+                    dataUsers.Remove(u);
+                    SaveChanges();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
 
         public async Task RemoveProduct(Product p)
         {
-            try
+            lock (this)
             {
-                products.Remove(p);
-                await SaveChangesAsync();
+                try
+                {
+                    products.Remove(p);
+                    SaveChanges();
+                }
+                catch
+                {
+                }
             }
-            catch
-            {
-            }
+
         }
 
         public  void removeManager(Manager manager)
         {
-            try
+            lock (this)
             {
-                Prem.RemoveRange(manager.store_permission);
-                managers.Remove(manager);
-                SaveChanges();
+                try
+                {
+                    Prem.RemoveRange(manager.store_permission);
+                    managers.Remove(manager);
+                    SaveChanges();
+                }
+                catch (Exception e)
+                {
+                }
             }
-            catch(Exception e)
-            {
-            }
+
         }
 
         public async Task AddRequestType1(MarketRulesRequestType1 req)
         {
-            await marketRulesRequestType1.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                marketRulesRequestType1.Add(req);
+                SaveChanges();
+            }
         }
         public async Task AddRequestType7(MarketRulesRequestType7 req)
         {
-            await marketRulesRequestType7.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                 marketRulesRequestType7.Add(req);
+                 SaveChanges();
+            }
         }
         public async Task AddRequestType8(MarketRulesRequestType8 req)
         {
-            await marketRulesRequestType8.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                 marketRulesRequestType8.Add(req);
+                 SaveChanges();
+            }
         }
 
         public async Task AddRequestType2(MarketRulesRequestType2 req)
         {
-            await marketRulesRequestType2.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                 marketRulesRequestType2.Add(req);
+                 SaveChanges();
+            }
         }
 
         public async Task AddRequestType3(MarketRulesRequestType3 req)
         {
-            await marketRulesRequestType3.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                 marketRulesRequestType3.Add(req);
+                 SaveChanges();
+            }
         }
 
         public async Task AddRequestType4(MarketRulesRequestType4 req)
         {
-            await marketRulesRequestType4.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                marketRulesRequestType4.Add(req);
+                SaveChanges();
+            }
         }
 
         public async Task AddRequestType5(MarketRulesRequestType5 req)
         {
-            await marketRulesRequestType5.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                marketRulesRequestType5.Add(req);
+                SaveChanges();
+            }
         }
 
         public async Task AddRequestType6(MarketRulesRequestType6 req)
         {
-            await marketRulesRequestType6.AddAsync(req);
-            await SaveChangesAsync();
+            lock (this)
+            {
+                marketRulesRequestType6.Add(req);
+                SaveChanges();
+            }
         }
 
 

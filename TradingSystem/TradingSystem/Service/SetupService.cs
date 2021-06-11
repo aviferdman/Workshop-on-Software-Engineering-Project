@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market;
+using TradingSystem.Business.UserManagement;
 
 namespace TradingSystem.Service
 {
@@ -73,6 +74,14 @@ namespace TradingSystem.Service
                         username_guest.Add(username, guestusername);
                         var signupRes = await UserService.Instance.SignupAsync(guestusername, username, password, phone);
                         return Determine(signupRes);
+                    case "AdminSignup":
+                        var adminGuestusername = guestnames.Dequeue();
+                        username = command[1].Trim();
+                        password = command[2].Trim();
+                        var adminPhone = command[3].Trim();
+                        username_guest.Add(username, adminGuestusername);
+                        var adminSignupRes = await UserManagement.Instance.AdminSignUp(username, password, adminPhone);
+                        return Determine(adminSignupRes);
                     case "CreateStore":
                         username = command[2].Trim();
                         storeData = await MarketStoreGeneralService.Instance.CreateStoreAsync(command[1].Trim(), username, command[3].Trim(), command[4].Trim(), command[5].Trim(), command[6].Trim(),
@@ -80,7 +89,7 @@ namespace TradingSystem.Service
                         return CheckNotNull(storeData);
                     case "AddProduct":
                         username = command[7].Trim();
-                        ProductData productData = new ProductData(command[1].Trim(), int.Parse(command[2]), double.Parse(command[3]), double.Parse(command[4]), command[5].Trim());
+                        ProductData productData = new ProductData(storeData.Id, command[1].Trim(), int.Parse(command[2]), double.Parse(command[3]), double.Parse(command[4]), command[5].Trim());
                         var addProductRes = await MarketProductsService.Instance.AddProduct(productData, storeData.Id, username);
                         return Determine(addProductRes.Mess);
                     case "MakeOwner":

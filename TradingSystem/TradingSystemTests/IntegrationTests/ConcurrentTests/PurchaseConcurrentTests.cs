@@ -34,8 +34,8 @@ namespace TradingSystemTests.IntegrationTests.ConcurrentTests
 
         public PurchaseConcurrentTests()
         {
-            product = new Product(QUANTITY1, WEIGHT1, PRICE1);
-            oneProduct = new Product(1, WEIGHT1, PRICE1);
+            product = new Product(new Guid(), QUANTITY1, WEIGHT1, PRICE1);
+            oneProduct = new Product(new Guid(), 1, WEIGHT1, PRICE1);
             testUserAddress = new Address("1", "1", "1", "1", "1");
             testStoreAddress = new Address("2", "2", "2", "2", "2");
             testSecondUserAddress = new Address("3", "3", "3", "3", "3");
