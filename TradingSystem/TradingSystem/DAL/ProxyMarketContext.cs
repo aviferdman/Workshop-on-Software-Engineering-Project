@@ -403,6 +403,8 @@ namespace TradingSystem.DAL
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
             shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
+            conString = ConfigurationManager.AppSettings["ConString"];
+            conType = ConfigurationManager.AppSettings["ConType"];
         }
 
         public async Task AddNewMemberState(string username)

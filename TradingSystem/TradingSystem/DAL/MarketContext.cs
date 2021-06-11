@@ -452,8 +452,7 @@ namespace TradingSystem.DAL
             {
                 try
                 {
-                    memberStates.Add(new AdministratorState(username));
-                    adminUsers.Add(new RegisteredAdmin(username, password, phone));
+                    administratorStates.Add(new AdministratorState(username));
                     SaveChanges();
                 }
                 catch (Exception e)
