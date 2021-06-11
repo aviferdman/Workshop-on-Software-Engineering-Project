@@ -98,6 +98,16 @@ namespace TradingSystem.Business.Market.BidsPackage
             return new Result<bool>(true, false, "");
         }
 
+        internal async Task<Result<bool>> CustomerAcceptBid(Guid bidId, string storeName, string productName)
+        {
+            var bid = GetBidById(bidId);
+            var username = bid.Username;
+            NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Accepted to buy product {productName} for {bid.Price} in store {storeName}");
+            bid.Status = BidStatus.Accept;
+            await ProxyMarketContext.Instance.saveChanges();
+            return new Result<bool>(true, false, "");
+        }
+
         public Guid getProductIdByBidId(Guid bidId)
         {
             return bidsState.Select(state => state.Bid).Where(b => b.Id.Equals(bidId)).Select(b => b.ProductId).FirstOrDefault();
