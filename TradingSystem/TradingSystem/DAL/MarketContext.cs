@@ -581,6 +581,8 @@ namespace TradingSystem.DAL
                 ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.ToList();
                 ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.ToList();
                 ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.ToList();
+                ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.ToList();
+                ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.ToList();
                 List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
                 ruleRequests.AddRange(type1);
                 ruleRequests.AddRange(type2);
@@ -588,6 +590,8 @@ namespace TradingSystem.DAL
                 ruleRequests.AddRange(type4);
                 ruleRequests.AddRange(type5);
                 ruleRequests.AddRange(type6);
+                ruleRequests.AddRange(type7);
+                ruleRequests.AddRange(type8);
                 if (ruleRequests.Count == 0)
                     return 0;
                 return ruleRequests.Max(m => m.getCounter());

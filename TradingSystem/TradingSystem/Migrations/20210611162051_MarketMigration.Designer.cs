@@ -9,7 +9,7 @@ using TradingSystem.DAL;
 namespace TradingSystem.Migrations
 {
     [DbContext(typeof(MarketContext))]
-    [Migration("20210611155125_MarketMigration")]
+    [Migration("20210611162051_MarketMigration")]
     partial class MarketMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -451,7 +451,7 @@ namespace TradingSystem.Migrations
                     b.Property<bool>("decide")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("discountId1")
+                    b.Property<Guid>("discountId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("discountId2")

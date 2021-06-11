@@ -26,3 +26,12 @@ MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/11/2021 16:42:22
 MarketUsers AddGuestMarketUsers AddGuest 6/11/2021 17:04:19
 MarketUsers AddMemberMarketUsers AddMember 6/11/2021 17:04:27
 MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/11/2021 17:04:45
+MarketUsers AddGuestMarketUsers AddGuest 6/11/2021 19:05:15
+MarketUsers AddGuestMarketUsers AddGuest 6/11/2021 19:10:10
+MarketUsers AddMemberMarketUsers AddMember 6/11/2021 19:10:29
+MarketUsers AddGuestMarketUsers AddGuest 6/11/2021 19:14:46
+MarketUsers AddMemberMarketUsers AddMember 6/11/2021 19:15:24
+MarketStores CreateStoreMarketStores CreateStore 6/11/2021 19:15:53
+MarketStores CreateStoreMarketStores CreateStore 6/11/2021 19:17:16
+MarketStores GetStoresByNameMarketStores GetStoresByName 6/11/2021 19:17:54
+MarketStores GetStoresByNameMarketStores GetStoresByName 6/11/2021 19:18:40

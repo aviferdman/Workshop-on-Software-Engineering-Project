@@ -13,7 +13,7 @@ namespace TradingSystem.Business.Market.StorePackage
         public string username { get; set; }
         public DiscountRuleRelation discountRuleRelation { get; set; }
         public Guid storeId { get; set; }
-        public Guid discountId1 { get; set; }
+        public Guid discountId { get; set; }
         public Guid discountId2 { get; set; }
         public bool decide { get; set; }
 
@@ -24,7 +24,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.username = username;
             this.discountRuleRelation = discountRuleRelation;
             this.storeId = storeId;
-            this.discountId1 = discountId;
+            this.discountId = discountId;
             this.discountId2 = discountId2;
             this.decide = decide;
         }
@@ -39,8 +39,8 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public async Task ActivateFunction(Store s)
         {
-            var discountId= await MarketRules.Instance.GenerateConditionalDiscountsAsync(s,username, discountRuleRelation, storeId, discountId1, discountId2, decide);
-            var discountRelation = new DiscountsRelation(username, discountId, discountRuleRelation, storeId, discountId1, discountId2, decide);
+            var discountId1= await MarketRules.Instance.GenerateConditionalDiscountsAsync(s,username, discountRuleRelation, storeId, discountId, discountId2, decide);
+            var discountRelation = new DiscountsRelation(username, discountId1, discountRuleRelation, storeId, discountId, discountId2, decide);
             await MarketRulesService.Instance.discountsManager.AddRelation(discountRelation);
         }
     }

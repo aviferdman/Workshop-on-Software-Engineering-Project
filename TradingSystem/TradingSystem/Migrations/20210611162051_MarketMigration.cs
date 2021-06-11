@@ -143,7 +143,7 @@ namespace TradingSystem.Migrations
                     username = table.Column<string>(type: "TEXT", nullable: true),
                     discountRuleRelation = table.Column<int>(type: "INTEGER", nullable: false),
                     storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountId1 = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountId = table.Column<Guid>(type: "TEXT", nullable: false),
                     discountId2 = table.Column<Guid>(type: "TEXT", nullable: false),
                     decide = table.Column<bool>(type: "INTEGER", nullable: false)
                 },

@@ -449,7 +449,7 @@ namespace TradingSystem.Migrations
                     b.Property<bool>("decide")
                         .HasColumnType("INTEGER");
 
-                    b.Property<Guid>("discountId1")
+                    b.Property<Guid>("discountId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("discountId2")
