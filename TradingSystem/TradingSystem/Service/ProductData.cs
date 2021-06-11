@@ -43,6 +43,7 @@ namespace TradingSystem.Business.Market
 
         public ProductData(Product p)
         {
+            _storeId = p._storeId;
             _price = p.Price;
             _name = p.Name;
             _weight = p.Weight;
