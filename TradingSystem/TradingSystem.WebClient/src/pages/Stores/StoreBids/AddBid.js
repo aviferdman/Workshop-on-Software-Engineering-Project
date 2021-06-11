@@ -5,6 +5,7 @@ import * as GiIcons from "react-icons/gi";
 import NumberFormField from "../../../formsUtil/NumberFormField";
 import * as api from "../../../api";
 import {alertRequestError_default} from "../../../utils";
+import BidEditContent from "./BidEditContent";
 
 class AddBid extends React.Component {
     constructor(props) {
@@ -60,29 +61,10 @@ class AddBid extends React.Component {
         return (
             <main className="items">
                 <Modal show={this.state.show} handleClose={this.hideModal} handleConfirm={this.onConfirm} >
-
-                    <div className="disc-comp-check-line-grid">
-
-                        <div className="center-item">
-                            <div className= "disc-col-grd-perm">
-                                <div className="disc-text-props">
-                                    <label>Bid Price</label>
-                                </div>
-
-                                <div >
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        className="disc-input-props"
-                                        required
-                                        value={this.state.price.getInputValue()}
-                                        onChange={this.onPriceChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                    <BidEditContent
+                        value={this.state.price.getInputValue()}
+                        onChange={this.onPriceChange}
+                        lineGrid={true} />
 
                 </Modal>
 
@@ -109,7 +91,7 @@ const Modal = ({ handleClose, handleConfirm, show, children }) => {
 
                 <div className="comp-modal-buttons">
                     <button className="modal-buttons-props" onClick={handleClose} > Close </button>
-                    <button className="modal-buttons-props" onClick={handleConfirm} > Add </button>
+                    <button className="modal-buttons-props" onClick={handleConfirm} > Bid </button>
                 </div>
 
 

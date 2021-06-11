@@ -6,6 +6,7 @@ import {alertRequestError_default} from "../../utils";
 import ConditionalRender from "../../ConditionalRender";
 import SimpleModal from "../../components/SimpleModal";
 import FormFieldInfo from "../../formsUtil/formFieldInfo";
+import BidEditContent from "../Stores/StoreBids/BidEditContent";
 
 export default class BidRecordUser extends React.Component {
     constructor(props) {
@@ -13,9 +14,11 @@ export default class BidRecordUser extends React.Component {
         this.state = {
             inCart: false,
             quantity: new NumberFormField(),
+            bidPrice: new NumberFormField(),
             action: new FormFieldInfo(),
             showDeclineModal: false,
             showApproveModal: false,
+            showNegotiateModal: false,
         };
     }
 
@@ -37,7 +40,17 @@ export default class BidRecordUser extends React.Component {
     }
 
     onQuantityChange = e => {
-        if (!this.state.price.trySetValueFromEvent(e)) {
+        if (!this.state.quantity.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onPriceChange = e => {
+        if (!this.state.bidPrice.trySetValueFromEvent(e)) {
             return;
         }
 
@@ -96,14 +109,20 @@ export default class BidRecordUser extends React.Component {
     }
 
     openNegotiateBidModal() {
-
+        this.setState({
+            showNegotiateModal: true,
+        });
     }
 
     hideNegotiateBidModal = () => {
-
+        this.setState({
+            showNegotiateModal: false,
+        });
     }
 
     negotiateBid = () => {
+        // TODO: complete
+        console.log('negotiate', this.state.bidPrice.getValue());
     }
 
     openDeclineBidModal() {
@@ -129,6 +148,8 @@ export default class BidRecordUser extends React.Component {
             bid.status === api.data.bids.customerNegotiate ||
             bid.status === api.data.bids.ownerNegotiate
         );
+
+        let declineText = bid.status === api.data.bids.customerNegotiate ? 'Cancel' : 'Decline';
 
         return (
             <div className = "simple-bids-li-div">
@@ -157,7 +178,7 @@ export default class BidRecordUser extends React.Component {
                                 {/*if Negotiate is chosen a pop-up should appear to update the current price */}
                                 <option value="Negotiate">Negotiate</option>
                                 {/*if Decline is chosen a pop-up should appear to warn about declining the offer permanently */}
-                                <option value="Decline">{bid.status === api.data.bids.customerNegotiate ? 'Cancel bid' : 'Decline'}</option>
+                                <option value="Decline">{declineText}</option>
                             </select>
                         </p>
                     )}
@@ -180,7 +201,7 @@ export default class BidRecordUser extends React.Component {
                 {this.state.inCart ? (<button className="button primary" style={{margin: "2rem"}} onClick={this.goToShoppingCart}>Go to shopping cart</button>) : null}
 
                 <SimpleModal
-                    title={'Decline bid'}
+                    title={`${declineText} bid`}
                     show={this.state.showDeclineModal}
                     width={'500px'}
                     height={'215px'}
@@ -210,6 +231,21 @@ export default class BidRecordUser extends React.Component {
                         marginLeft: '2rem',
                         fontSize: '2rem',
                     }}>Approve this bid?</span>
+                </SimpleModal>
+
+                <SimpleModal
+                    title={'Negotiate bid'}
+                    show={this.state.showNegotiateModal}
+                    width={'500px'}
+                    height={'300px'}
+                    btn1Text={'Close'}
+                    btn1Handle={this.hideNegotiateBidModal}
+                    btn2Text={'Bid'}
+                    btn2Handle={this.negotiateBid}>
+                    <BidEditContent
+                        value={this.state.bidPrice.getInputValue()}
+                        onChange={this.onPriceChange}
+                        lineGrid={false} />
                 </SimpleModal>
             </div>
         );
