@@ -28,7 +28,8 @@ namespace TradingSystem.Service
         {
             try
             {
-                var path = Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetParent(Directory.GetCurrentDirectory()).FullName).FullName).FullName);
+                var p = Directory.GetCurrentDirectory();
+                var path =Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
                 string fileName = "init.txt";
                 String[] lines = File.ReadAllLines($@"{path}\{fileName}");
                 for (int i=0; i<lines.Length; i++)
