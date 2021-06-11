@@ -7,16 +7,12 @@ namespace TradingSystem.Service
 {
     public class MarketProductsService
     {
-        private static readonly Lazy<MarketProductsService> instanceLazy = new Lazy<MarketProductsService>(() => new MarketProductsService(), true);
-
         private readonly MarketStores marketStores;
 
         private MarketProductsService()
         {
             marketStores = MarketStores.Instance;
         }
-
-        public static MarketProductsService Instance => instanceLazy.Value;
 
         //"Product added"
         public async Task<Result<Product>> AddProduct(ProductData product, Guid storeID, string username)

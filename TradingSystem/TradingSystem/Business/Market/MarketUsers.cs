@@ -22,23 +22,26 @@ namespace TradingSystem.Business.Market
     public class MarketUsers 
     {
         private static readonly string DEFAULT_ADMIN_USERNAME = "DEFAULT_ADMIN_USERNAME";
-        private MarketDAL marketUsersDAL = MarketDAL.Instance;
+        private MarketDAL marketUsersDAL;
+        private UsersDAL usersDAL;
+        private UserManagement.UserManagement userManagement;
+        public ProxyMarketContext proxyMarketContext;
         private ConcurrentDictionary<string, User> activeUsers;
         private HistoryManager historyManager;
+        public MarketStores marketStores;
         private static Transaction _transaction = Transaction.Instance;
-        private static readonly Lazy<MarketUsers>
-        _lazy =
-        new Lazy<MarketUsers>
-            (() => new MarketUsers());
 
-        public static MarketUsers Instance { get { return _lazy.Value; } }
 
         public ConcurrentDictionary<string, User> ActiveUsers { get => activeUsers; set => activeUsers = value; }
 
-        private MarketUsers()
+        public MarketUsers(UserManagement.UserManagement userManagement,HistoryManager historyManager, MarketDAL marketUsersDAL, UsersDAL usersDAL, ProxyMarketContext p)
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            historyManager = HistoryManager.Instance;
+            this.historyManager=historyManager;
+            this.marketUsersDAL = marketUsersDAL;
+            this.usersDAL = usersDAL;
+            this.proxyMarketContext = p;
+            this.userManagement = userManagement;
         }
 
         
@@ -46,7 +49,6 @@ namespace TradingSystem.Business.Market
         public void tearDown()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            historyManager = HistoryManager.Instance;
             marketUsersDAL.teardown();
         }
 
@@ -59,7 +61,7 @@ namespace TradingSystem.Business.Market
         {
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(UpdateProductInShoppingBasket));
             User user = GetUserById(userId);
-            Store store = await MarketStores.Instance.GetStoreById(storeId);
+            Store store = await marketStores.GetStoreById(storeId);
             user.UpdateProductInShoppingBasket(store, product, quantity);
             return true;
         }
@@ -83,9 +85,9 @@ namespace TradingSystem.Business.Market
                 GuidString = GuidString.Replace("+", "");
                 u.Username = GuidString;
             } while (!activeUsers.TryAdd(GuidString, u));
-            Statistics s = UsersDAL.Instance.getStatis(DateTime.Now.Date);
+            Statistics s = usersDAL.getStatis(DateTime.Now.Date);
             s.guestsNum++;
-            ProxyMarketContext.Instance.saveChanges();
+            proxyMarketContext.saveChanges();
             NotifyAdmins(EventType.Stats);
             return u.Username;
         }
@@ -93,7 +95,6 @@ namespace TradingSystem.Business.Market
         public void DeleteAll()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            historyManager = HistoryManager.Instance;
         }
 
         //functional requirement 2.2: https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/13
@@ -112,7 +113,7 @@ namespace TradingSystem.Business.Market
             User u;
             if (!activeUsers.TryRemove(guestusername, out u))
                 return "user not found in market";
-            string loginmang = await UserManagement.UserManagement.Instance.LogIn(usrname, password);
+            string loginmang = await userManagement.LogIn(usrname, password);
             if (!loginmang.Equals("success"))
             {
                 activeUsers.TryAdd(guestusername,  u);
@@ -154,11 +155,11 @@ namespace TradingSystem.Business.Market
             };
             if(PublisherManagement.Instance.TestMode)
                 PublisherManagement.Instance.BecomeLoggedIn(u.Username);
-            Statistics stat = UsersDAL.Instance.getStatis(DateTime.Now.Date);
+            Statistics stat = usersDAL.getStatis(DateTime.Now.Date);
             if (m is AdministratorState)
             {
                 stat.adminNum++;
-                await ProxyMarketContext.Instance.saveChanges();
+                await proxyMarketContext.saveChanges();
                 return "admin";
             }
             ICollection<Store> stores = await getUserStores(usrname);
@@ -174,7 +175,7 @@ namespace TradingSystem.Business.Market
             {
                 stat.managersNum++;
             }
-            await ProxyMarketContext.Instance.saveChanges();
+            await proxyMarketContext.saveChanges();
             NotifyAdmins(EventType.Stats);
             return "success";
         }
@@ -195,7 +196,7 @@ namespace TradingSystem.Business.Market
         public async Task<string> logout(string username)
         {
             User u;
-            bool loginmang = await UserManagement.UserManagement.Instance.Logout(username);
+            bool loginmang = await userManagement.Logout(username);
             if (!loginmang)
             {
                 return null;
@@ -268,7 +269,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            MarketStores.Instance.findStoreProduct(out found, out p, pid);
+            marketStores.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
             if (p.Quantity < quantity || quantity < 1)
@@ -301,7 +302,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            MarketStores.Instance.findStoreProduct(out found, out p, pid);
+            marketStores.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
             ShoppingBasket basket = u.ShoppingCart.TryGetShoppingBasket(found);
@@ -309,7 +310,7 @@ namespace TradingSystem.Business.Market
                 return "product isn't in basket";
             if (basket.RemoveProduct(p))
             {
-                ProxyMarketContext.Instance.saveChanges();
+                proxyMarketContext.saveChanges();
                 return "product removed from shopping basket";
             }
 
@@ -323,7 +324,7 @@ namespace TradingSystem.Business.Market
                 return "user doesn't exist";
             Product p = null;
             Store found = null;
-            MarketStores.Instance.findStoreProduct(out found, out p, pid);
+            marketStores.findStoreProduct(out found, out p, pid);
             if (found == null || p == null)
                 return "product doesn't exist";
             if (p.Quantity < quantity || quantity < 1)
@@ -333,7 +334,7 @@ namespace TradingSystem.Business.Market
                 return "product isn't in basket";
             if (!basket.TryUpdateProduct(p, quantity))
                 return "product not in cart";
-            ProxyMarketContext.Instance.saveChanges();
+            proxyMarketContext.saveChanges();
             return "product updated";
 
         }
@@ -351,9 +352,9 @@ namespace TradingSystem.Business.Market
                 return new Result<ShoppingCart>(u.ShoppingCart, true, "lists are not disjoint");
             ShoppingCart c = new ShoppingCart(u.ShoppingCart);
             IDbContextTransaction transaction=null;
-            if (!ProxyMarketContext.Instance.IsDebug)
+            if (!proxyMarketContext.IsDebug)
             {
-                transaction = MarketContext.Instance.Database.BeginTransaction();
+                transaction = proxyMarketContext.marketContext.Database.BeginTransaction();
             }
             try
             {
@@ -362,11 +363,11 @@ namespace TradingSystem.Business.Market
                     ans = await AddProductToCart(username, p.Key, p.Value);
                     if (!ans.Equals("product added to shopping basket"))
                     {
-                        if (ProxyMarketContext.Instance.IsDebug)
+                        if (proxyMarketContext.IsDebug)
                         {
                             u.ShoppingCart = c;
-                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username, out _);
-                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
+                            proxyMarketContext.shoppingCarts.TryRemove(username, out _);
+                            proxyMarketContext.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -378,11 +379,11 @@ namespace TradingSystem.Business.Market
                     ans = RemoveProductFromCart(username, p);
                     if (!ans.Equals("product removed from shopping basket"))
                     {
-                        if (ProxyMarketContext.Instance.IsDebug)
+                        if (proxyMarketContext.IsDebug)
                         {
                             u.ShoppingCart = c;
-                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username,out _);
-                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
+                            proxyMarketContext.shoppingCarts.TryRemove(username,out _);
+                            proxyMarketContext.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
@@ -394,18 +395,18 @@ namespace TradingSystem.Business.Market
                     ans = ChangeProductQuanInCart(username, p.Key, p.Value);
                     if (!ans.Equals("product updated"))
                     {
-                        if (ProxyMarketContext.Instance.IsDebug)
+                        if (proxyMarketContext.IsDebug)
                         {
                             u.ShoppingCart = c;
-                            ProxyMarketContext.Instance.shoppingCarts.TryRemove(username, out _);
-                            ProxyMarketContext.Instance.shoppingCarts.TryAdd(username, c);
+                            proxyMarketContext.shoppingCarts.TryRemove(username, out _);
+                            proxyMarketContext.shoppingCarts.TryAdd(username, c);
                             return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
                         }
                         throw new Exception();
                     }
                 }
-                await ProxyMarketContext.Instance.saveChanges();
-                if (!ProxyMarketContext.Instance.IsDebug)
+                await proxyMarketContext.saveChanges();
+                if (!proxyMarketContext.IsDebug)
                 {
                     transaction.Commit();
                     transaction.Dispose();
@@ -414,7 +415,7 @@ namespace TradingSystem.Business.Market
             }
             catch (Exception ex)
             {
-                if(!ProxyMarketContext.Instance.IsDebug)
+                if(!proxyMarketContext.IsDebug)
                 {
                     transaction.Rollback();
                 }
@@ -425,13 +426,12 @@ namespace TradingSystem.Business.Market
         }
         public Statistics GetStats()
         {
-            return UsersDAL.Instance.getStatis(DateTime.Now.Date);
+            return usersDAL.getStatis(DateTime.Now.Date);
         }
 
         public void CleanMarketUsers()
         {
             activeUsers = new ConcurrentDictionary<string, User>();
-            historyManager = HistoryManager.Instance;
         }
     }
 }

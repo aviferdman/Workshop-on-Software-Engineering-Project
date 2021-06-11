@@ -15,7 +15,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using TradingSystem.Business.Market;
+using TradingSystem.DAL;
 using TradingSystem.Service;
 using TradingSystem.WebApi.Controllers;
 using TradingSystem.WebApi.Notifications;
@@ -63,14 +64,18 @@ namespace TradingSystem.WebApi
             //MarketGeneralService.Instance.SetDbDebugMode(true);
 
             services.AddSingleton(CurrentEnvironment.ContentRootFileProvider);
-            services.AddSingleton(MarketGeneralService.Instance);
-            services.AddSingleton(MarketProductsService.Instance);
-            services.AddSingleton(MarketShoppingCartService.Instance);
-            services.AddSingleton(MarketStoreGeneralService.Instance);
-            services.AddSingleton(MarketStorePermissionsManagementService.Instance);
-            services.AddSingleton(MarketUserService.Instance);
-            services.AddSingleton(MarketRulesService.Instance);
-            services.AddSingleton(MarketBidsService.Instance);
+            
+            services.AddScoped<ProxyMarketContext>();
+            services.AddScoped<MarketStores>();
+            services.AddScoped<MarketUsers>();
+            services.AddScoped<MarketGeneralService>();
+            services.AddScoped<MarketProductsService>();
+            services.AddScoped<MarketShoppingCartService>();
+            services.AddScoped<MarketStoreGeneralService>();
+            services.AddScoped<MarketStorePermissionsManagementService>();
+            services.AddScoped<MarketUserService>();
+            services.AddScoped<MarketRulesService>();
+            services.AddScoped<MarketBidsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

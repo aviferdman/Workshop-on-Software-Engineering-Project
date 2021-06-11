@@ -26,26 +26,25 @@ namespace TradingSystem.Business.Market
         private ConcurrentDictionary<Guid, Store> loadedStores;
         private HistoryManager historyManager;
         private static Transaction _transaction = Transaction.Instance;
-        private static readonly Lazy<MarketStores>
-        _lazy =
-        new Lazy<MarketStores>
-            (() => new MarketStores());
-
-        public static MarketStores Instance { get { return _lazy.Value; } }
+        private MarketDAL dal;
+        MarketUsers marketUsers;
+        ProxyMarketContext proxy;
 
         public ConcurrentDictionary<Guid, Store> LoadedStores { get => loadedStores; set => loadedStores = value; }
 
-        private MarketStores()
+        private MarketStores(ProxyMarketContext proxy ,HistoryManager historyManager, MarketDAL marketDAL, MarketUsers marketUsers)
         {
-            historyManager = HistoryManager.Instance;
+            this.proxy = proxy;
+            dal = marketDAL;
+            this.historyManager = historyManager;
             loadedStores = new ConcurrentDictionary<Guid, Store>();
+            this.marketUsers = marketUsers;
         }
 
         public void tearDown()
         {
-            historyManager = HistoryManager.Instance;
             loadedStores = new ConcurrentDictionary<Guid, Store>();
-            MarketDAL.Instance.teardown();
+            dal.teardown();
         }
 
         public void ActivateDebugMode(Mock<ExternalDeliverySystem> deliverySystem, Mock<ExternalPaymentSystem> paymentSystem, bool debugMode)
@@ -59,14 +58,14 @@ namespace TradingSystem.Business.Market
         public async Task<Store> CreateStore(string name, string username, CreditCard bank, Address address)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(CreateStore));
-            User user = MarketUsers.Instance.GetUserByUserName(username);
+            User user = marketUsers.GetUserByUserName(username);
             if (user == null || typeof(GuestState).IsInstanceOfType(user.State))
                 return null;
             Store store = new Store(name, bank, address);
             store.SetFounder(Founder.makeFounder((MemberState)user.State, store));
             if (!loadedStores.TryAdd(store.Id, store))
                 return null;
-            await MarketDAL.Instance.AddStore(store);
+            await dal.AddStore(store);
             //PublisherManagement.Instance.EventNotification(username, EventType.OpenStoreEvent, "Opened Store");
 
             return store;
@@ -87,15 +86,14 @@ namespace TradingSystem.Business.Market
         public async Task<ICollection<Store>> GetStoresByName(string name)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoresByName));
-            ICollection<Store> stores = await MarketDAL.Instance.GetStoresByName(name.ToLower());
+            ICollection<Store> stores = await dal.GetStoresByName(name.ToLower());
             return stores;
         }
 
         public void DeleteAll()
         {
             loadedStores = new ConcurrentDictionary<Guid, Store>();
-            historyManager = HistoryManager.Instance;
-            MarketDAL.Instance.teardown();
+            dal.teardown();
         }
 
 
@@ -103,7 +101,7 @@ namespace TradingSystem.Business.Market
         public async Task<ICollection<IHistory>> GetStoreHistory(string username, Guid storeId)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoreHistory));
-            User user = MarketUsers.Instance.GetUserByUserName(username);
+            User user = marketUsers.GetUserByUserName(username);
             Store store = await GetStoreById(storeId);
             return await store.GetStoreHistory(username);
         }
@@ -113,7 +111,7 @@ namespace TradingSystem.Business.Market
             Store s = null;
             if(!loadedStores.TryGetValue(storeId, out s))
             {
-                return await MarketDAL.Instance.getStore(storeId);
+                return await dal.getStore(storeId);
             }
             return s;
         }
@@ -131,7 +129,7 @@ namespace TradingSystem.Business.Market
                     return;
                 }
             }
-            MarketDAL.Instance.findStoreProduct(out found, out  p,  pid);
+            dal.findStoreProduct(out found, out  p,  pid);
             if(found!=null)
                 loadedStores.TryAdd(found.Id, found);
 
@@ -161,7 +159,7 @@ namespace TradingSystem.Business.Market
         //TODO
         public async  Task<Result<bool>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice)
         {
-            User u = MarketUsers.Instance.GetUserByUserName(username);
+            User u = marketUsers.GetUserByUserName(username);
             Store store = await GetStoreById(storeId);
             if (store == null)
             {
@@ -215,7 +213,7 @@ namespace TradingSystem.Business.Market
         public async Task<String> DefineManagerPermissions(String managerName, Guid storeID, String assignerName, List<Permission> permissions)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(DefineManagerPermissions));
-            User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
+            User assigner = marketUsers.GetUserByUserName(assignerName);
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
@@ -225,7 +223,7 @@ namespace TradingSystem.Business.Market
         public async Task<String> AssignMember(String assigneeName, Guid storeID, String assignerName, string type)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(AssignMember));
-            User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
+            User assigner = marketUsers.GetUserByUserName(assignerName);
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
@@ -236,7 +234,7 @@ namespace TradingSystem.Business.Market
         public async Task<String> RemoveManager(String managerName, Guid storeID, String assignerName)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(RemoveManager));
-            User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
+            User assigner = marketUsers.GetUserByUserName(assignerName);
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
@@ -247,7 +245,7 @@ namespace TradingSystem.Business.Market
         public async Task<String> RemoveOwner(String ownerName, Guid storeID, String assignerName)
         {
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(RemoveOwner));
-            User assigner = MarketUsers.Instance.GetUserByUserName(assignerName);
+            User assigner = marketUsers.GetUserByUserName(assignerName);
             Store store = await GetStoreById(storeID);
             if (store == null)
                 return "Store doesn't exist";
@@ -256,16 +254,16 @@ namespace TradingSystem.Business.Market
 
         public async  Task addToCategory(Product p, string category)
         {
-            Category cat=await MarketDAL.Instance.AddNewCategory(category);
+            Category cat=await dal.AddNewCategory(category);
             cat.addProduct(p);
-            await ProxyMarketContext.Instance.saveChanges();
+            await proxy.saveChanges();
         }
 
         public async void removeFromCategory(Product p, string category)
         {
-            Category cat = await MarketDAL.Instance.AddNewCategory(category);
+            Category cat = await dal.AddNewCategory(category);
             cat.Products.Remove(p);
-            await ProxyMarketContext.Instance.saveChanges();
+            await proxy.saveChanges();
 
         }
 
@@ -275,7 +273,7 @@ namespace TradingSystem.Business.Market
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
             
-            return await MarketDAL.Instance.findProducts(keyword,price_range_low,price_range_high,rating, category);
+            return await dal.findProducts(keyword,price_range_low,price_range_high,rating, category);
         }
 
         //functional requirement 4.9 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/60

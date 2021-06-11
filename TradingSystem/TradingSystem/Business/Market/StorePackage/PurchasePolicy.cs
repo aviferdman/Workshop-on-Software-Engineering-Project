@@ -19,13 +19,13 @@ namespace TradingSystem.Business.Market
         {
             availablePurchaseKinds = new HashSet<Prem>();
         }
-        public async Task AddPurchaseKind(PurchaseKind purchaseKind)
+        public async Task AddPurchaseKind(PurchaseKind purchaseKind, ProxyMarketContext p)
         {
             var toAdd = purchaseKind.ToString();
             if (!Contains(toAdd))
             {
                 availablePurchaseKinds.Add(new Prem(toAdd));
-                await ProxyMarketContext.Instance.saveChanges();
+                await p.saveChanges();
             };
         }
 

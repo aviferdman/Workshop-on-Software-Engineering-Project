@@ -22,7 +22,7 @@ using System.Threading;
 
 namespace TradingSystem.DAL
 {
-    class MarketContext : DbContext
+    public class MarketContext : DbContext
     {
         public DbSet<DataUser> dataUsers { get; set; }
         public DbSet<ShoppingCart> membersShoppingCarts { get; set; }
@@ -112,12 +112,7 @@ namespace TradingSystem.DAL
             }
         }
 
-        public static MarketContext Instance { get { return _lazy.Value; } }
-
-        private static readonly Lazy<MarketContext>
-       _lazy =
-       new Lazy<MarketContext>
-           (() => new MarketContext());
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Store>()

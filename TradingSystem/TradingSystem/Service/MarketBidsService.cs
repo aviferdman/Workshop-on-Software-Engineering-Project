@@ -12,15 +12,16 @@ namespace TradingSystem.Service
 {
     public class MarketBidsService
     {
-        private static readonly Lazy<MarketBidsService> instanceLazy = new Lazy<MarketBidsService>(() => new MarketBidsService(), true);
+     
         static SemaphoreSlim semaphoreSlim;
+        private MarketBids marketBids;
 
-        private MarketBidsService()
+        private MarketBidsService(MarketBids m)
         {
             semaphoreSlim = new SemaphoreSlim(1, 1);
+            marketBids = m;
         }
 
-        public static MarketBidsService Instance => instanceLazy.Value;
 
         // Customers 
         public async Task<Result<Guid>> CustomerCreateBid(String username, Guid storeId, Guid productId, double newBidPrice)
@@ -28,7 +29,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.CustomerCreateBid(username, storeId, productId, newBidPrice);
+                return await marketBids.CustomerCreateBid(username, storeId, productId, newBidPrice);
             }
             finally
             {
@@ -41,7 +42,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.CustomerNegotiateBid(storeId, bidId, newBidPrice);
+                return await marketBids.CustomerNegotiateBid(storeId, bidId, newBidPrice);
             }
             finally
             {
@@ -53,7 +54,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.CustomerDenyBid(storeId, bidId);
+                return await marketBids.CustomerDenyBid(storeId, bidId);
             }
             finally
             {
@@ -62,7 +63,7 @@ namespace TradingSystem.Service
         }
         public Result<ICollection<Bid>> GetCustomerBids(string username)
         {
-            return MarketBids.Instance.GetCustomerBids(username);
+            return marketBids.GetCustomerBids(username);
         }
 
         // Owners
@@ -71,7 +72,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.OwnerAcceptBid(ownerUsername, storeId, bidId);
+                return await marketBids.OwnerAcceptBid(ownerUsername, storeId, bidId);
             }
             finally
             {
@@ -83,7 +84,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.OwnerNegotiateBid(ownerUsername, storeId, bidId, newBidPrice);
+                return await marketBids.OwnerNegotiateBid(ownerUsername, storeId, bidId, newBidPrice);
             }
             finally
             {
@@ -95,7 +96,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.OwnerDenyBid(ownerUsername, storeId, bidId);
+                return await marketBids.OwnerDenyBid(ownerUsername, storeId, bidId);
             }
             finally
             {
@@ -107,7 +108,7 @@ namespace TradingSystem.Service
             await semaphoreSlim.WaitAsync();
             try
             {
-                return await MarketBids.Instance.OwnerChangeBidPolicy(ownerUsername, storeId, isAvailable);
+                return await marketBids.OwnerChangeBidPolicy(ownerUsername, storeId, isAvailable);
             }
             finally
             {
@@ -116,12 +117,12 @@ namespace TradingSystem.Service
         }
         public Result<ICollection<Bid>> GetStoreBids(Guid storeId, string ownerUsername)
         {
-            return MarketBids.Instance.GetStoreBids(storeId, ownerUsername);
+            return marketBids.GetStoreBids(storeId, ownerUsername);
         }
 
         public Result<ICollection<Bid>> GetOwnerAcceptedBids(Guid storeId, string ownerUsername)
         {
-            return MarketBids.Instance.GetOwnerAcceptedBids(storeId, ownerUsername);
+            return marketBids.GetOwnerAcceptedBids(storeId, ownerUsername);
         }
     }
 }

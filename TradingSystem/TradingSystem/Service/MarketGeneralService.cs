@@ -12,18 +12,18 @@ namespace TradingSystem.Service
 {
     public class MarketGeneralService
     {
-        private static readonly Lazy<MarketGeneralService> instanceLazy = new Lazy<MarketGeneralService>(() => new MarketGeneralService(), true);
-
+       
         private readonly MarketUsers marketUsers;
         private readonly MarketStores marketStores;
+        private ProxyMarketContext proxyMarketContext;
 
-        private MarketGeneralService()
+        public MarketGeneralService(MarketUsers marketUsers, MarketStores marketStores, ProxyMarketContext proxyMarketContext)
         {
-            marketUsers = MarketUsers.Instance;
-            marketStores = MarketStores.Instance;
+            this.marketUsers = marketUsers;
+            this.marketStores = marketStores;
+            this.proxyMarketContext = proxyMarketContext;
         }
 
-        public static MarketGeneralService Instance => instanceLazy.Value;
 
         public void tearDown()
         {
@@ -37,7 +37,7 @@ namespace TradingSystem.Service
 
         public void SetDbDebugMode(bool debugMode = true)
         {
-            ProxyMarketContext.Instance.IsDebug = debugMode;
+            proxyMarketContext.IsDebug = debugMode;
         }
 
         public async System.Threading.Tasks.Task<ICollection<HistoryData>> GetAllHistoryAsync(string username)

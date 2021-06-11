@@ -13,14 +13,8 @@ namespace TradingSystem.Business.UserManagement
     //this class tests are in UserMangmentTests
     public class UserManagement
     {
-        private UsersDAL usersDAL= UsersDAL.Instance;
         private string key = "b14ca5898a4e4133bbce2ea2315a1916";
-        private static readonly Lazy<UserManagement>
-        lazy =
-        new Lazy<UserManagement>
-            (() => new UserManagement());
-
-        public static UserManagement Instance { get { return lazy.Value; } }
+        private UsersDAL usersDAL;
 
 
         internal int GetUserAge(string username)
@@ -33,9 +27,9 @@ namespace TradingSystem.Business.UserManagement
             usersDAL.TearDown();
         }
 
-        private UserManagement()
+        private UserManagement(UsersDAL u)
         {
-            
+            usersDAL = u;
         }
 
         public  string EncryptString(string key, string plainText)

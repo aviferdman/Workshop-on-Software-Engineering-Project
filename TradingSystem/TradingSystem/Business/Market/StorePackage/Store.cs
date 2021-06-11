@@ -23,6 +23,7 @@ namespace TradingSystem.Business.Market
     public class Store 
     {
         private BidsManager bidsManager;
+        private ProxyMarketContext p;
         public HashSet<Product> _products { get; set; }
         public Founder founder { get; set; }
         public HashSet<Manager> managers { get; set; }

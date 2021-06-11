@@ -41,17 +41,13 @@ namespace TradingSystem.Business.Market
         private RulesCreator rulesCreator;
         private MarketStores marketStores;
 
-        private static readonly Lazy<MarketRules>
-        _lazy =
-        new Lazy<MarketRules>
-            (() => new MarketRules());
+     
 
-        public static MarketRules Instance { get { return _lazy.Value; } }
 
-        private MarketRules()
+        private MarketRules(MarketStores marketStores)
         {
             this.rulesCreator = new RulesCreator();
-            this.marketStores = MarketStores.Instance;
+            this.marketStores = marketStores;
         }
 
         public async System.Threading.Tasks.Task<Guid> CreateSimpleDiscountAsync(string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())

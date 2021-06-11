@@ -9,26 +9,24 @@ using TradingSystem.DAL;
 
 namespace TradingSystem.Business.Market
 {
-    class HistoryManager
+    public class HistoryManager
     {
-        private static readonly Lazy<HistoryManager>
-        _lazy =
-        new Lazy<HistoryManager>
-            (() => new HistoryManager());
 
-        public HistoryManager()
+        MarketDAL m;
+        public HistoryManager(MarketDAL m)
         {
+            this.m = m;
         }
-        public static HistoryManager Instance { get { return _lazy.Value; } }
+      
 
         public async void AddHistory(TransactionStatus history)
         {
-            await MarketDAL.Instance.AddHistory(history);
+            await m.AddHistory(history);
         }
 
         public async Task<ICollection<IHistory>> GetAllHistories()
         {
-            ICollection<TransactionStatus> transactionStatuses = await MarketDAL.Instance.getAllHistories();
+            ICollection<TransactionStatus> transactionStatuses = await m.getAllHistories();
             List<IHistory> histories = new List<IHistory>();
             foreach(TransactionStatus t in transactionStatuses)
             {
@@ -40,7 +38,7 @@ namespace TradingSystem.Business.Market
 
         public async Task<ICollection<IHistory>> GetUserHistory(string username)
         {
-            ICollection<TransactionStatus> transactionStatuses = await MarketDAL.Instance.getUserHistories(username);
+            ICollection<TransactionStatus> transactionStatuses = await m.getUserHistories(username);
             List<IHistory> histories = new List<IHistory>();
             foreach (TransactionStatus t in transactionStatuses)
             {
@@ -51,7 +49,7 @@ namespace TradingSystem.Business.Market
 
         public async Task<ICollection<IHistory>> GetStoreHistory(Guid storeId)
         {
-            ICollection<TransactionStatus> transactionStatuses = await MarketDAL.Instance.getStoreHistories(storeId);
+            ICollection<TransactionStatus> transactionStatuses = await m.getStoreHistories(storeId);
             List<IHistory> histories = new List<IHistory>();
             foreach (TransactionStatus t in transactionStatuses)
             {

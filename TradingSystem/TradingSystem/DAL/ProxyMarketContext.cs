@@ -17,6 +17,7 @@ namespace TradingSystem.DAL
 {
     public class ProxyMarketContext
     {
+        private MarketUsers marketUsers;
         private bool isDebug;
         public static string conType = "SQLite";
         public static string conString = "Data Source=marketDBTests.db";
@@ -45,8 +46,7 @@ namespace TradingSystem.DAL
             return  marketContext.getStatis(date);
         }
 
-        private MarketContext marketContext;
-        public static ProxyMarketContext Instance { get { return _lazy.Value; } }
+        public MarketContext marketContext;
 
         public async Task saveChanges()
         {
@@ -68,10 +68,6 @@ namespace TradingSystem.DAL
             }
         }
 
-        private static readonly Lazy<ProxyMarketContext>
-       _lazy =
-       new Lazy<ProxyMarketContext>
-           (() => new ProxyMarketContext());
 
         public async Task<ICollection<TransactionStatus>> getAllHistories()
         {
@@ -93,7 +89,7 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                User u=MarketUsers.Instance.GetUserByUserName(username);
+                User u=marketUsers.GetUserByUserName(username);
                 if (u != null)
                 {
                     u.ShoppingCart = new ShoppingCart(u);
@@ -383,10 +379,10 @@ namespace TradingSystem.DAL
             }
         }
 
-        public ProxyMarketContext()
+        public ProxyMarketContext(MarketContext m, MarketUsers u)
         {
             isDebug = false;
-            marketContext = MarketContext.Instance;
+            marketContext = m;
             dataUsers = new ConcurrentDictionary<string, DataUser>();
             admins = new ConcurrentDictionary<string, RegisteredAdmin>();
             memberStates = new ConcurrentDictionary<string, MemberState>();
@@ -400,6 +396,7 @@ namespace TradingSystem.DAL
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
             shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
+            marketUsers = u;
         }
 
         public async Task AddNewMemberState(string username)

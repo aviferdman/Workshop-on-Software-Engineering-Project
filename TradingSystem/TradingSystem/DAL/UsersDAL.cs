@@ -7,15 +7,16 @@ using TradingSystem.Business.Market;
 
 namespace TradingSystem.DAL
 {
-    class UsersDAL
+    public class UsersDAL
     {
-        ProxyMarketContext proxyMarketContext = ProxyMarketContext.Instance;
-        public static UsersDAL Instance { get { return _lazy.Value; } }
+        ProxyMarketContext proxyMarketContext;
 
-        private static readonly Lazy<UsersDAL>
-       _lazy =
-       new Lazy<UsersDAL>
-           (() => new UsersDAL());
+        public UsersDAL(ProxyMarketContext proxyMarketContext)
+        {
+            this.proxyMarketContext = proxyMarketContext;
+        }
+
+
         //returns null if not exist
         public async Task<DataUser> GetDataUser(string username)
         {

@@ -11,16 +11,13 @@ namespace TradingSystem.Business.Market.StorePackage
     {
         private Dictionary<Guid, List<Discount>> _store_discounts;
         private Dictionary<Guid, Policy> _store_policy;
-        private MarketDAL marketDAL = MarketDAL.Instance;
-        private static readonly Lazy<StorePredicatesManager>
-        _lazy =
-        new Lazy<StorePredicatesManager>
-            (() => new StorePredicatesManager());
+        private MarketDAL marketDAL ;
+       
 
-        public static StorePredicatesManager Instance { get { return _lazy.Value; } }
 
-        private StorePredicatesManager()
+        private StorePredicatesManager(MarketDAL marketDAL)
         {
+            this.marketDAL = marketDAL;
             this._store_discounts = new Dictionary<Guid, List<Discount>>();
             this._store_policy = new Dictionary<Guid, Policy>();
         }

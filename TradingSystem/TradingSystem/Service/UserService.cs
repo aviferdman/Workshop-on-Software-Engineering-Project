@@ -10,16 +10,12 @@ namespace TradingSystem.Service
 {
     public class UserService
     {
-        private static readonly Lazy<UserService> instanceLazy = new Lazy<UserService> (() => new UserService(), true);
-
         private readonly UserManagement userManagement;
 
-        private UserService()
+        public UserService(UserManagement userManagement)
         {
-            this.userManagement = UserManagement.Instance;
+            this.userManagement = userManagement;
         }
-
-        public static UserService Instance => instanceLazy.Value;
 
         public void tearDown()
         {

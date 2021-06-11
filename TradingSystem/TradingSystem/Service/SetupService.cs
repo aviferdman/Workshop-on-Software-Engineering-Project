@@ -9,19 +9,27 @@ namespace TradingSystem.Service
 {
     public class SetupService
     {
-        private static readonly Lazy<SetupService> instanceLazy = new Lazy<SetupService>(() => new SetupService(), true);
-        private Queue<String> guestnames;
+       private Queue<String> guestnames;
         private Dictionary<string, string> username_guest;
         string username;
         string password;
         StoreData storeData;
+        MarketUserService marketUserService;
+        UserService userService;
+        MarketStoreGeneralService marketStoreGeneralService;
+        MarketProductsService marketProductsService;
+        MarketStores marketStores;
 
-        private SetupService()
+        private SetupService(MarketStores s,MarketUserService m, UserService u, MarketStoreGeneralService g, MarketProductsService p)
         {
+            marketProductsService = p;
+            marketStores = s;
+            marketStoreGeneralService = g;
+            userService = u;
+            marketUserService = m;
             guestnames = new Queue<string>();
             username_guest = new Dictionary<string, string>();
         }
-        public static SetupService Instance => instanceLazy.Value;
 
         public async Task<Result<String>> Initialize()
         {
@@ -52,18 +60,18 @@ namespace TradingSystem.Service
                 switch (command[0].Trim())
                 {
                     case "AddGuest":
-                        var guest = MarketUserService.Instance.AddGuest();
+                        var guest = marketUserService.AddGuest();
                         guestnames.Enqueue(guest);
                         return new Result<string>("success", false, "success");
                     case "Login":
                         username = command[1].Trim();
                         password = command[2].Trim();
                         var guestname = username_guest[username];
-                        var loginRes = await MarketUserService.Instance.loginAsync(username, password, guestname);
+                        var loginRes = await marketUserService.loginAsync(username, password, guestname);
                         return Determine(loginRes);
                     case "Logout":
                         username = command[1].Trim();
-                        var logoutRes = await MarketUserService.Instance.logoutAsync(username);
+                        var logoutRes = await marketUserService.logoutAsync(username);
                         return CheckNotNull(logoutRes);
                     case "Signup":
                         var guestusername = guestnames.Dequeue();
@@ -71,22 +79,22 @@ namespace TradingSystem.Service
                         password = command[2].Trim();
                         var phone = command[3].Trim();
                         username_guest.Add(username, guestusername);
-                        var signupRes = await UserService.Instance.SignupAsync(guestusername, username, password, phone);
+                        var signupRes = await userService.SignupAsync(guestusername, username, password, phone);
                         return Determine(signupRes);
                     case "CreateStore":
                         username = command[2].Trim();
-                        storeData = await MarketStoreGeneralService.Instance.CreateStoreAsync(command[1].Trim(), username, command[3].Trim(), command[4].Trim(), command[5].Trim(), command[6].Trim(),
+                        storeData = await marketStoreGeneralService.CreateStoreAsync(command[1].Trim(), username, command[3].Trim(), command[4].Trim(), command[5].Trim(), command[6].Trim(),
                             command[7].Trim(), command[8].Trim(), command[9].Trim(), command[10].Trim(), command[11].Trim(), command[12].Trim(), command[13].Trim());
                         return CheckNotNull(storeData);
                     case "AddProduct":
                         username = command[7].Trim();
                         ProductData productData = new ProductData(command[1].Trim(), int.Parse(command[2]), double.Parse(command[3]), double.Parse(command[4]), command[5].Trim());
-                        var addProductRes = await MarketProductsService.Instance.AddProduct(productData, storeData.Id, username);
+                        var addProductRes = await marketProductsService.AddProduct(productData, storeData.Id, username);
                         return Determine(addProductRes.Mess);
                     case "MakeOwner":
                         var assigneeName = command[1].Trim();
                         var assignerName = command[3].Trim();
-                        var makeOwnerRes = await MarketStores.Instance.makeOwner(assigneeName, storeData.Id, assignerName);
+                        var makeOwnerRes = await marketStores.makeOwner(assigneeName, storeData.Id, assignerName);
                         return Determine(makeOwnerRes);
                     default:
                         return new Result<string>("bad paramaters", true, "some command has bad paramaters");

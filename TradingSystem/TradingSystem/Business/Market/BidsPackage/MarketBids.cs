@@ -15,17 +15,11 @@ namespace TradingSystem.Business.Market
     {
         private MarketStores marketStores;
 
-        private static readonly Lazy<MarketBids>
-        _lazy =
-        new Lazy<MarketBids>
-            (() => new MarketBids());
-
-        public static MarketBids Instance { get { return _lazy.Value; } }
-
-        private MarketBids()
+        public MarketBids(MarketStores marketStores)
         {
-            marketStores = MarketStores.Instance;
+            this.marketStores = marketStores;
         }
+
 
         // Customer
         public async Task<Result<Guid>> CustomerCreateBid(string username, Guid storeId, Guid productId, double newBidPrice)

@@ -8,17 +8,14 @@ namespace TradingSystem.Service
 {
     public class MarketUserService
     {
-        private static readonly Lazy<MarketUserService> instanceLazy = new Lazy<MarketUserService>(() => new MarketUserService(), true);
-
         private readonly MarketUsers marketUsers;
 
-        private MarketUserService()
+        private MarketUserService(MarketUsers u)
         {
-            marketUsers = MarketUsers.Instance;
+            marketUsers = u;
         }
 
-        public static MarketUserService Instance => instanceLazy.Value;
-
+       
         //returns uniqe username for guest
         public string AddGuest()
         {

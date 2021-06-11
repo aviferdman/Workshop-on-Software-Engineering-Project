@@ -17,6 +17,7 @@ namespace TradingSystem.Business.Market.BidsPackage
         public Guid id { get; set; }
         public Store s { get; set; }
         public HashSet<BidState> bidsState { get; set; }
+        
         public BidsManager(Store s)
         {
             this.s = s;

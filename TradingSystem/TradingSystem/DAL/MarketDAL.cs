@@ -9,15 +9,14 @@ using TradingSystem.Business.Market.UserPackage;
 
 namespace TradingSystem.DAL
 {
-    class MarketDAL
+    public class MarketDAL
     {
-        ProxyMarketContext proxyMarketContext = ProxyMarketContext.Instance;
-        public static MarketDAL Instance { get { return _lazy.Value; } }
+        ProxyMarketContext proxyMarketContext;
 
-        private static readonly Lazy<MarketDAL>
-       _lazy =
-       new Lazy<MarketDAL>
-           (() => new MarketDAL());
+        public MarketDAL(ProxyMarketContext proxyMarketContext)
+        {
+            this.proxyMarketContext = proxyMarketContext;
+        }
 
         public async Task<MemberState> getMemberState(string usrname)
         {

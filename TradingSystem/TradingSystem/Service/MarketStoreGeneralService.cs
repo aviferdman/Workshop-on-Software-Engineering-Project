@@ -8,16 +8,13 @@ namespace TradingSystem.Service
 {
     public class MarketStoreGeneralService
     {
-        private static readonly Lazy<MarketStoreGeneralService> instanceLazy = new Lazy<MarketStoreGeneralService>(() => new MarketStoreGeneralService(), true);
-
+        
         private readonly MarketStores marketStores;
 
-        private MarketStoreGeneralService()
+        private MarketStoreGeneralService(MarketStores marketStores)
         {
-            marketStores = MarketStores.Instance;
+            this.marketStores = marketStores;
         }
-
-        public static MarketStoreGeneralService Instance => instanceLazy.Value;
 
         public async Task<StoreData> CreateStoreAsync
         (
