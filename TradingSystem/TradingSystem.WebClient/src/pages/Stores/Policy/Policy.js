@@ -71,6 +71,9 @@ export class Policy extends React.Component {
                         <div className="center-btn-st">
                             <AddPolicy storeId={this.storeId} storeProducts={this.state.storeProducts} onSuccess={this.onPolicyAdd} />
                         </div>
+                        <div className="center-btn-nd">
+                            <button className="store-products-button-view"> Remove All</button>
+                        </div>
                     </div>
 
                 </div>

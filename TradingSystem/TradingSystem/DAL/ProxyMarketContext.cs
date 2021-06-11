@@ -382,7 +382,7 @@ namespace TradingSystem.DAL
             }
             catch (Exception e)
             {
-                return null;
+                return new List<Store>();
             }
         }
 

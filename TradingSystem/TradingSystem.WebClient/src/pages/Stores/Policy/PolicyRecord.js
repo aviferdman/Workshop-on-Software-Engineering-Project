@@ -22,38 +22,38 @@ class PolicyRecord extends Component {
 
                         return (
                             <li key={elem.id}>
-                                <div className="simple-discount-li-div">
-                                    <p className="discName">creator: {elem.creator}  </p>
-                                    <p className="discName">Policy Rule: {elem.ruleRelation === "Condition" ? "Xor" : elem.ruleRelation} </p>
-                                    <p className="discName"> Policy Context: {elem.ruleContext}  </p>
-                                    <p className="discName"> Rule Type: {elem.ruleType || "Simple"}  </p>
+                                <div className="simple-discount-li-div" style={{height: "35rem"}}>
+                                    <p className="discName">{<text style={{fontWeight: "bold"}}>Creator: </text>} {elem.creator}  </p>
+                                    <p className="discName">{<text style={{fontWeight: "bold"}}>Policy Rule:  </text>}  {elem.ruleRelation === "Condition" ? "Xor" : elem.ruleRelation} </p>
+                                    <p className="discName">{<text style={{fontWeight: "bold"}}>Policy Context:  </text>} {elem.ruleContext}  </p>
+                                    <p className="discName">{<text style={{fontWeight: "bold"}}>Rule Type: </text>} {elem.ruleType || "Simple"}  </p>
                                     <ConditionalRender
                                         condition={elem.ruleContext === 'Category'}
-                                        render={() => (<p className="discName"> category: {elem.category} </p>)}
+                                        render={() => (<p className="discName">  {<text style={{fontWeight: "bold"}}>Category:</text>}  {elem.category} </p>)}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleContext === 'Product'}
                                         render={() => {
                                             let product = this.props.storeProductsMap[elem.productId];
-                                            return (<p className="discName">product: {(product && product.name) || "<deleted>"} </p>);
+                                            return (<p className="discName"> {<text style={{fontWeight: "bold"}}>Product: </text>} {(product && product.name) || "<deleted>"} </p>);
                                         }}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType != null && elem.ruleType !== 'Time' && elem.minValue != null}
-                                        render={() => (<p className="discName">min value: {elem.ruleType === 'Quantity' ? elem.minValue : formatFloat(elem.minValue)} </p>)}
+                                        render={() => (<p className="discName"> {<text style={{fontWeight: "bold"}}>Min Value: </text>} {elem.ruleType === 'Quantity' ? elem.minValue : formatFloat(elem.minValue)} </p>)}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType != null && elem.ruleType !== 'Time' && elem.maxValue != null}
-                                        render={() => (<p className="discName">max value: {elem.ruleType === 'Quantity' ? elem.maxValue : formatFloat(elem.maxValue)} </p>)}
+                                        render={() => (<p className="discName"> {<text style={{fontWeight: "bold"}}>Max Value: </text>} {elem.ruleType === 'Quantity' ? elem.maxValue : formatFloat(elem.maxValue)} </p>)}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType === 'Time' && elem.startDate != null}
                                         render={() => (
-                                            <p className="discName">start date: {formatDate(elem.startDate)} </p>)}
+                                            <p className="discName">{<text style={{fontWeight: "bold"}}>Start Date:</text>} {formatDate(elem.startDate)} </p>)}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType === 'Time' && elem.endDate != null}
-                                        render={() => (<p className="discName">end date: {formatDate(elem.endDate)} </p>)}
+                                        render={() => (<p className="discName">{<text style={{fontWeight: "bold"}}>End Date:</text>} {formatDate(elem.endDate)} </p>)}
                                     />
                                 </div>
                             </li>
