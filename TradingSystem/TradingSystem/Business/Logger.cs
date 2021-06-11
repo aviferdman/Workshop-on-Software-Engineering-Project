@@ -53,7 +53,10 @@ namespace TradingSystem.Business
             message += $"{message} {DateTime.Now}";
             if (this.writeToFile)
             {
-                var path = ConfigurationManager.AppSettings["LoggerFilePath"];
+                // var path = ConfigurationManager.AppSettings["LoggerFilePath"];
+
+                var path = "LoggerMessages.txt";
+
                 if (!File.Exists(path))
                 {
                     // Create a file to write to.
