@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
 using TradingSystem.WebApi.DTO.History;
-using TradingSystem.WebApi.DTO.Store.Permissions;
+using TradingSystem.WebApi.DTO.Store;
 
 namespace TradingSystem.WebApi.Controllers
 {
@@ -90,7 +90,7 @@ namespace TradingSystem.WebApi.Controllers
                 return BadRequest("Invalid username");
             }
 
-            ICollection<HistoryData>? result = await MarketStoreGeneralService.GetStoreHistory(storeInfoActionDTO.Username, storeInfoActionDTO.StoreID);
+            ICollection<HistoryData>? result = await MarketStoreGeneralService.GetStoreHistory(storeInfoActionDTO.Username, storeInfoActionDTO.StoreId);
             if (result == null)
             {
                 return InternalServerError();

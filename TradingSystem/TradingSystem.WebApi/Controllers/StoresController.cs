@@ -70,7 +70,7 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<StoreInfoDTO>> Info([FromQuery] Guid storeId)
+        public async Task<ActionResult<StoreRefDTO>> Info([FromQuery] Guid storeId)
         {
             StoreData? store = await MarketStoreGeneralService.getStoreById(storeId);
             if (store == null)
@@ -78,7 +78,7 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
 
-            return Ok(new StoreInfoDTO
+            return Ok(new StoreRefDTO
             {
                 Id = store.Id,
                 Name = store.Name,

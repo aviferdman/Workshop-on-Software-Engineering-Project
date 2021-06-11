@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using TradingSystem.Business.Market;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Service;
+using TradingSystem.WebApi.DTO.Store;
 using TradingSystem.WebApi.DTO.Store.Permissions;
 
 using static TradingSystem.Business.Market.StoreStates.Manager;
@@ -42,7 +43,7 @@ namespace TradingSystem.WebApi.Controllers
 
             Result<WorkerDetails>? result = await MarketStorePermissionsManagementService.GetPrems
             (
-                storeInfoActionDTO.StoreID,
+                storeInfoActionDTO.StoreId,
                 storeInfoActionDTO.Username
             );
 
@@ -81,7 +82,7 @@ namespace TradingSystem.WebApi.Controllers
 
             ICollection<WorkerDetails>? result = await MarketStorePermissionsManagementService.GetInfo
             (
-                storeInfoActionDTO.StoreID,
+                storeInfoActionDTO.StoreId,
                 storeInfoActionDTO.Username
             );
             if (result == null)
