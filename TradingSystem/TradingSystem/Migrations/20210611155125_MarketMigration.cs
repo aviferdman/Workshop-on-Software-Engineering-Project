@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TradingSystem.Migrations
 {
-    public partial class MarkeMigration : Migration
+    public partial class MarketMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -143,7 +143,7 @@ namespace TradingSystem.Migrations
                     username = table.Column<string>(type: "TEXT", nullable: true),
                     discountRuleRelation = table.Column<int>(type: "INTEGER", nullable: false),
                     storeId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    discountId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    discountId1 = table.Column<Guid>(type: "TEXT", nullable: false),
                     discountId2 = table.Column<Guid>(type: "TEXT", nullable: false),
                     decide = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
@@ -503,6 +503,7 @@ namespace TradingSystem.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    _storeId = table.Column<Guid>(type: "TEXT", nullable: false),
                     _name = table.Column<string>(type: "TEXT", nullable: true),
                     _quantity = table.Column<int>(type: "INTEGER", nullable: false),
                     _weight = table.Column<double>(type: "REAL", nullable: false),
