@@ -36,7 +36,7 @@ namespace TradingSystemTests.DBTests
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             store = await marketStores.CreateStore("testStore", "founder", card, address);
             await marketStores.makeManager("manager", store.Id, "founder");
-            product1 = new ProductData("ProductName", 100, 100, 100, "CategoryName");
+            product1 = new ProductData(new Guid(), "ProductName", 100, 100, 100, "CategoryName");
             User u = marketUsers.GetUserByUserName("founder");
             ShoppingCart cart = u.ShoppingCart;
             shoppingBasket =await cart.GetShoppingBasket(store);

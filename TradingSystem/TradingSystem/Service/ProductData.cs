@@ -8,6 +8,7 @@ namespace TradingSystem.Business.Market
     {
         public String _name;
         public Guid pid;
+        public Guid _storeId;
         public int _quantity;
         public double _weight;
         public double _price;
@@ -16,6 +17,18 @@ namespace TradingSystem.Business.Market
         private string storeName;
 
         public string StoreName { get => storeName; set => storeName = value; }
+
+        public ProductData(Guid storeId, String name, int quantity, double weight, double price, String category, string storeName = "")
+        {
+            this._storeId = storeId;
+            this._name = name;
+            this._quantity = quantity;
+            this._weight = weight;
+            this._price = price;
+            this.category = category;
+            rating = -1;
+            this.StoreName = storeName;
+        }
 
         public ProductData(String name, int quantity, double weight, double price, String category, string storeName = "")
         {

@@ -80,7 +80,7 @@ namespace TradingSystem.Service
                         return CheckNotNull(storeData);
                     case "AddProduct":
                         username = command[7].Trim();
-                        ProductData productData = new ProductData(command[1].Trim(), int.Parse(command[2]), double.Parse(command[3]), double.Parse(command[4]), command[5].Trim());
+                        ProductData productData = new ProductData(storeData.Id, command[1].Trim(), int.Parse(command[2]), double.Parse(command[3]), double.Parse(command[4]), command[5].Trim());
                         var addProductRes = await MarketProductsService.Instance.AddProduct(productData, storeData.Id, username);
                         return Determine(addProductRes.Mess);
                     case "MakeOwner":

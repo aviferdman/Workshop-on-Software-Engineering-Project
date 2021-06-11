@@ -27,7 +27,7 @@ namespace TradingSystemTests.IntegrationTests
             User u = m.GetUserByUserName(username);
             ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
-            Product p = new Product("lala", 8,50, 500, "category");
+            Product p = new Product(new Guid(), "lala", 8,50, 500, "category");
             Store s = new Store("lalali", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
@@ -45,7 +45,7 @@ namespace TradingSystemTests.IntegrationTests
             User u = m.GetUserByUserName(username);
             ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
-            Product p = new Product("llll", 8, 50, 500,"category");
+            Product p = new Product(new Guid(), "llll", 8, 50, 500,"category");
             Assert.AreEqual("product doesn't exist", await m.AddProductToCart(username, p.Id, 5));
             foreach(ShoppingBasket b in cart.ShoppingBaskets)
             {
@@ -70,7 +70,7 @@ namespace TradingSystemTests.IntegrationTests
             User u = m.GetUserByUserName(username); 
             ShoppingCart cart = new ShoppingCart(u);
             u.ShoppingCart = cart;
-            Product p = new Product("lala2", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "lala2", 8, 50, 500, "category");
             Store s = new Store("lalali2", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
@@ -86,7 +86,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Product p = new Product("lala3", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
@@ -102,7 +102,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Product p = new Product("lala3", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
             Assert.AreEqual("product doesn't exist", m.RemoveProductFromCart(username, p.Id));
@@ -123,7 +123,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Product p = new Product("lala3", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "lala3", 8, 50, 500, "category");
             Store s = new Store("lalalil55", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
@@ -137,7 +137,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Product p = new Product("lala8", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "lala8", 8, 50, 500, "category");
             Store s = new Store("lalali80", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
@@ -154,7 +154,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Product p = new Product("llll8", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "llll8", 8, 50, 500, "category");
             Assert.AreEqual("product doesn't exist", m.ChangeProductQuanInCart(username, p.Id, 5));
         }
 
@@ -173,7 +173,7 @@ namespace TradingSystemTests.IntegrationTests
         {
             string username = m.AddGuest();
             User u = m.GetUserByUserName(username);
-            Product p = new Product("lala70", 8, 50, 500, "category");
+            Product p = new Product(new Guid(), "lala70", 8, 50, 500, "category");
             Store s = new Store("lalali70", null, null);
             s.Products.Add(p);
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
@@ -192,12 +192,12 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc4")]
         public async Task findProductsuccess()
         {
-            Product p = new Product("soy milk", 8, 50, 500, "vegan");
+            Product p = new Product(new Guid(), "soy milk", 8, 50, 500, "vegan");
             Store s = new Store("vegan store", null, null);
             s.Products.Add(p);
             await marketStores.addToCategory(p, "vegan");
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Product p2 = new Product("soy milk diff", 8, 50, 500, "vegan");
+            Product p2 = new Product(new Guid(), "soy milk diff", 8, 50, 500, "vegan");
             Store s2 = new Store("vegan store 2", null, null);
             s2.Products.Add(p2);
             await marketStores.addToCategory(p2, "vegan");
@@ -213,12 +213,12 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc4")]
         public async Task findProductsuccess2()
         {
-            Product p = new Product("tofu", 8, 50, 500, "vegan");
+            Product p = new Product(new Guid(), "tofu", 8, 50, 500, "vegan");
             Store s = new Store("vegan store3", null, null);
             s.Products.Add(p);
             await marketStores .addToCategory(p, "vegan");
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Product p2 = new Product("hummus tofu", 8, 50, 500, "vegan");
+            Product p2 = new Product(new Guid(), "hummus tofu", 8, 50, 500, "vegan");
             Store s2 = new Store("vegan store 4", null, null);
             s2.Products.Add(p2);
             await marketStores .addToCategory(p2, "vegan");
@@ -235,12 +235,12 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc4")]
         public async Task findProductsuccess3()
         {
-            Product p = new Product("watermelon exp", 8, 50, 500.0, "vegatables");
+            Product p = new Product(new Guid(), "watermelon exp", 8, 50, 500.0, "vegatables");
             Store s = new Store("vegan store5", null, null);
             s.Products.Add(p);
             await marketStores.addToCategory(p, "vegatables");
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Product p2 = new Product("watermelon cheep", 8, 50, 5.0, "vegatables");
+            Product p2 = new Product(new Guid(), "watermelon cheep", 8, 50, 5.0, "vegatables");
             await marketStores.addToCategory(p2, "vegatables");
             Store s2 = new Store("vegan store 6", null, null);
             s2.Products.Add(p2);
@@ -257,13 +257,13 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc4")]
         public async Task findProductsuccess4()
         {
-            Product p = new Product("cucumber high rating", 8, 50, 500.0, "vegatables");
+            Product p = new Product(new Guid(), "cucumber high rating", 8, 50, 500.0, "vegatables");
             p.Rating = 5;
             Store s = new Store("vegan store7", null, null);
             s.Products.Add( p);
             await marketStores.addToCategory(p, "vegatables");
             marketStores.LoadedStores.TryAdd(s.GetId(), s);
-            Product p2 = new Product("cucumber low rating", 8, 50, 5.0, "vegatables");
+            Product p2 = new Product(new Guid(), "cucumber low rating", 8, 50, 5.0, "vegatables");
             p2.Rating = 2;
             await marketStores.addToCategory(p2, "vegatables");
             Store s2 = new Store("vegan store 8", null, null);

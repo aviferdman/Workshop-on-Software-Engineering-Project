@@ -26,7 +26,7 @@ namespace TradingSystemTests.UnitTests
         public ProductsTest()
         {
             ProxyMarketContext.Instance.IsDebug = true;
-            product1 = new Product("1", 10, 10, 10, "category");
+            product1 = new Product(new Guid(), "1", 10, 10, 10, "category");
             address = new Address("1", "1", "1", "1", "1");
             card = new CreditCard("1", "1", "1", "1", "1", "1");
             store = new Store("testStore", card, address);
@@ -54,7 +54,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc23")]
         public async Task CheckAddProductInvalidName()
         {
-            Product product2 = new Product("", 10, 10, 10, "category");
+            Product product2 = new Product(new Guid(), "", 10, 10, 10, "category");
             String res = await store.AddProduct(product2, "founder");
             Assert.AreEqual(res, "Invalid product");
             Assert.IsFalse(store.Products.Contains(product2));
@@ -65,7 +65,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc23")]
         public async Task CheckAddProductInvalidPrice()
         {
-            Product product2 = new Product("2", 10, 10, -10, "category");
+            Product product2 = new Product(new Guid(), "2", 10, 10, -10, "category");
             String res = await store.AddProduct(product2, "founder");
             Assert.AreEqual(res, "Invalid product");
             Assert.IsFalse(store.Products.Contains(product2));
@@ -126,7 +126,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc25")]
         public async Task CheckValidEditProduct()
         {
-            Product product2 = new Product("1", 10, 10, 20, "category");
+            Product product2 = new Product(new Guid(), "1", 10, 10, 20, "category");
             store.Products.Add(product1);
             String res = await store.EditProduct(product1.Id, product2, "founder");
             Assert.AreEqual(res, "Product edited");
@@ -150,7 +150,7 @@ namespace TradingSystemTests.UnitTests
         [TestCategory("uc25")]
         public async Task CheckEditNoPermission()
         {
-            Product product2 = new Product("1", 10, 10, 20, "category");
+            Product product2 = new Product(new Guid(), "1", 10, 10, 20, "category");
             store.Products.Add(product1);
             String res = await store.EditProduct(product1.Id, product2, "manager");
             Assert.AreEqual(res, "No permission");

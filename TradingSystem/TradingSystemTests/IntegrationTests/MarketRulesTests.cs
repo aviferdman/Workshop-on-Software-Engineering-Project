@@ -24,7 +24,7 @@ namespace TradingSystemTests.IntegrationTests
             this.store = new Store("TestStore", new CreditCard("1", "1", "1", "1", "1", "1"), new Address("1", "1", "1", "1", "1"));
             this.store.SetFounder(Founder.makeFounder(new MemberState("Founder"), store));
             marketStores.LoadedStores.TryAdd(store.GetId(), store);
-            this.product = new Product("ProductName", 100, 100, 100, "CategoryName");
+            this.product = new Product(new Guid(), "ProductName", 100, 100, 100, "CategoryName");
             this.shoppingBasket = new ShoppingBasket(new ShoppingCart(new User()), store);
             shoppingBasket.addProduct(product, 10);
         }

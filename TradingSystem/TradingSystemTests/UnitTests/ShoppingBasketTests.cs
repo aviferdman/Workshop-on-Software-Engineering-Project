@@ -35,9 +35,9 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void GetStoreHistoryWithoutPermission()
         {
-            Product p1 = new Product(100, 100, 100);
-            Product p2 = new Product(200, 200, 200);
-            Product p3 = new Product(300, 300, 300);
+            Product p1 = new Product(new Guid(), 100, 100, 100);
+            Product p2 = new Product(new Guid(), 200, 200, 200);
+            Product p3 = new Product(new Guid(), 300, 300, 300);
             shoppingBasket.UpdateProduct(p1, 5);
             shoppingBasket.UpdateProduct(p2, 5);
             shoppingBasket.UpdateProduct(p3, 5);
@@ -55,9 +55,9 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void IsEmptyWithProductsWithZeroQuantity()
         {
-            Product p1 = new Product(100, 100, 100);
-            Product p2 = new Product(200, 200, 200);
-            Product p3 = new Product(300, 300, 300);
+            Product p1 = new Product(new Guid(), 100, 100, 100);
+            Product p2 = new Product(new Guid(), 200, 200, 200);
+            Product p3 = new Product(new Guid(), 300, 300, 300);
             shoppingBasket.UpdateProduct(p1, 0);
             shoppingBasket.UpdateProduct(p2, 0);
             shoppingBasket.UpdateProduct(p3, 0);
@@ -68,9 +68,9 @@ namespace TradingSystemTests.MarketTests
         [TestMethod]
         public void IsEmptyWithProductsWithPositiveQuantity()
         {
-            Product p1 = new Product(100, 100, 100);
-            Product p2 = new Product(200, 200, 200);
-            Product p3 = new Product(300, 300, 300);
+            Product p1 = new Product(new Guid(), 100, 100, 100);
+            Product p2 = new Product(new Guid(), 200, 200, 200);
+            Product p3 = new Product(new Guid(), 300, 300, 300);
             shoppingBasket.UpdateProduct(p1, 5);
             shoppingBasket.UpdateProduct(p2, 5);
             shoppingBasket.UpdateProduct(p3, 0);

@@ -1,4 +1,5 @@
-﻿using TradingSystem.Business.Market;
+﻿using System;
+using TradingSystem.Business.Market;
 
 namespace AcceptanceTests.AppInterface.Data
 {

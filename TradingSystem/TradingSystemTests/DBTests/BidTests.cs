@@ -57,7 +57,7 @@ namespace TradingSystemTests.DBTests
             owner = marketUsers.ActiveUsers.GetOrAdd("OwnerTest1", owner);
             customer = marketUsers.ActiveUsers.GetOrAdd("ManagerTest1", customer);
             
-            dataproduct = new ProductData("lala",100, 100, 100, "cat");
+            dataproduct = new ProductData(new Guid(), "lala", 100, 100, 100, "cat");
             var shoppingCart = new ShoppingCart(customer);
             Result<Product> res=await market.AddProduct(dataproduct, store.Id, "FounderTest1");
             product = res.Ret;

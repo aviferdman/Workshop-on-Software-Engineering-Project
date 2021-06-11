@@ -36,7 +36,7 @@ namespace TradingSystemTests.IntegrationTests
             CreditCard card = new CreditCard("1", "1", "1", "1", "1", "1");
             store = await market.CreateStore("testStore", "founder", card, address);
             await market.makeManager("manager", store.Id, "founder");
-            product1 = new ProductData("1", 10, 10, 10, "c");
+            product1 = new ProductData(new Guid(), "1", 10, 10, 10, "c");
         }
 
         /// test for function :<see cref="TradingSystem.Business.Market.MarketStores.AddProduct(ProductData, Guid, string)"/>
@@ -63,7 +63,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc23")]
         public async Task CheckAddProductInvalidPrice()
         {
-            ProductData product2 = new ProductData("1", 10, 10, -10, "category");
+            ProductData product2 = new ProductData(new Guid(), "1", 10, 10, -10, "category");
             Result<Product> result = await market.AddProduct(product2, store.Id, "founder");
             Assert.IsTrue(result.IsErr);
             Assert.AreEqual(result.Mess, "Invalid product");
@@ -74,7 +74,7 @@ namespace TradingSystemTests.IntegrationTests
         [TestCategory("uc23")]
         public async Task CheckAddProductInvalidName()
         {
-            ProductData product2 = new ProductData("", 10, 10, 10, "category");
+            ProductData product2 = new ProductData(new Guid(), "", 10, 10, 10, "category");
             Result<Product> result = await market.AddProduct(product2, store.Id, "founder");
             Assert.IsTrue(result.IsErr);
             Assert.AreEqual(result.Mess, "Invalid product");
@@ -118,7 +118,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckValidEditProductAsync()
         {
             Product p1 = new Product(product1);
-            ProductData p2 = new ProductData("1", 10, 10, 20, "category");
+            ProductData p2 = new ProductData(new Guid(), "1", 10, 10, 20, "category");
             store.Products.Add(p1);
             Assert.AreEqual(await market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product edited");
             Product p = store.GetProduct(p1.Id);
@@ -132,7 +132,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckEditUnavailablwProductAsync()
         {
             Product p1 = new Product(product1);
-            ProductData p2 = new ProductData("1", 10, 10, 20, "category");
+            ProductData p2 = new ProductData(new Guid(), "1", 10, 10, 20, "category");
             Assert.AreEqual(await market.EditProduct(p1.Id, p2, store.Id, "founder"), "Product not in the store");
             Assert.IsFalse(store.Products.Contains(p1));
         }
@@ -143,7 +143,7 @@ namespace TradingSystemTests.IntegrationTests
         public async Task CheckEditNoPermissionAsync()
         {
             Product p1 = new Product(product1);
-            ProductData p2 = new ProductData("1", 10, 10, 20, "category");
+            ProductData p2 = new ProductData(new Guid(), "1", 10, 10, 20, "category");
             store.Products.Add(p1);
             Assert.AreEqual(await market.EditProduct(p1.Id, p2, store.Id, "manager"), "No permission");
             Product p = store.GetProduct(p1.Id);
