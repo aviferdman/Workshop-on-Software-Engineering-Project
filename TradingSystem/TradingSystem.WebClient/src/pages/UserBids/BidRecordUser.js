@@ -1,17 +1,16 @@
 import React from "react";
 import {GlobalContext} from "../../globalContext";
 
-export default class BidRecord extends React.Component {
+export default class BidRecordUser extends React.Component {
     render() {
         let bid = this.props.bid;
 
         return (
             <div className = "simple-bids-li-div">
-                <p className= "bidName">{<text style={{fontWeight: "bold"}}>User: </text>} {bid.user}  </p>
-                <p className= "bidName">{<text style={{fontWeight: "bold"}}>Store: </text>} {bid.store} </p>
-                <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Product: </text>} {bid.product}  </p>
-                <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Current Offer</text>} {bid.currentOffer}  </p>
-                <p className= "bidName">{<text style={{fontWeight: "bold"}}>Status</text>}: {
+                <p className= "bidName">{<text style={{fontWeight: "bold"}}>Store: </text>} {bid.storeName} </p>
+                <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Product: </text>} {bid.productName}  </p>
+                <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Current Offer</text>} {bid.price}  </p>
+                <p className= "bidName">{<text style={{fontWeight: "bold"}}>Status:</text>} {
                     bid.status === "Approved" ? (<label style={{color: "green"}}>Approved</label>):
                     bid.status === "Negotiation" ? (<label style={{color: "orange"}}>Negotiation</label>):
                         (<label style={{color: "red"}}>Declined</label>)}
@@ -38,4 +37,4 @@ export default class BidRecord extends React.Component {
     }
 }
 
-BidRecord.contextType = GlobalContext;
+BidRecordUser.contextType = GlobalContext;

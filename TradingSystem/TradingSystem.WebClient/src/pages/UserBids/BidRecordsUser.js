@@ -1,9 +1,8 @@
 import React from "react";
-import './userBids.css';
 import {GlobalContext} from "../../globalContext";
-import BidRecord from "./BidRecord";
+import BidRecordUser from "./BidRecordUser";
 
-export default class BidRecords extends React.Component {
+export default class BidRecordsUser extends React.Component {
     render() {
         if (this.props.bidRecords == null) {
             return null;
@@ -14,7 +13,7 @@ export default class BidRecords extends React.Component {
                 <ul className = "simple-bids-ul">
                     {this.props.bidRecords.map((elem) => (
                         <li  key={elem.id}>
-                            <BidRecord bid={elem} />
+                            <BidRecordUser bid={elem} />
                         </li>
                     ))}
                 </ul>
@@ -23,4 +22,4 @@ export default class BidRecords extends React.Component {
     }
 }
 
-BidRecords.contextType = GlobalContext;
+BidRecordsUser.contextType = GlobalContext;

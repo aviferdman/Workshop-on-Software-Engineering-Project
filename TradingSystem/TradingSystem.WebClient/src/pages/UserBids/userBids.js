@@ -2,7 +2,7 @@ import React from "react";
 import './userBids.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
-import BidRecords from "./BidRecords";
+import BidRecordsUser from "./BidRecordsUser";
 import * as api from '../../api'
 import {alertRequestError_default} from "../../utils";
 
@@ -39,7 +39,7 @@ export class UserBids extends React.Component {
                         {/*top grid - simple discounts*/}
                         <div  className="user-bids-grid-simple">
                             <h2> My Bids </h2>
-                            <BidRecords bidRecords={this.state.bids} />
+                            <BidRecordsUser bidRecords={this.state.bids} />
                         </div>
 
                     </div>

@@ -18,15 +18,17 @@ namespace TradingSystem.WebApi.Controllers
     [Route("api/stores/bids/[action]")]
     public class StoreBidsController : ControllerBase
     {
-        public StoreBidsController(MarketBidsService marketBidsService)
+        public StoreBidsController(MarketBidsService marketBidsService, MarketStoreGeneralService marketStoreGeneralService)
         {
             MarketBidsService = marketBidsService;
+            MarketStoreGeneralService = marketStoreGeneralService;
         }
 
         public MarketBidsService MarketBidsService { get; }
+        public MarketStoreGeneralService MarketStoreGeneralService { get; }
 
         [HttpPost]
-        public ActionResult<IEnumerable<BidStoreDTO>> Mine([FromBody] UsernameDTO usernameDTO)
+        public async Task<ActionResult<IEnumerable<BidStoreDTO>>> MineAsync([FromBody] UsernameDTO usernameDTO)
         {
             if (string.IsNullOrWhiteSpace(usernameDTO.Username))
             {
@@ -43,7 +45,21 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError(result.Mess);
             }
 
-            return Ok(result.Ret.Select(BidUserDTO.FromBid));
+            // TODO: fetch store names as well using a designated service layer function
+            IEnumerable<BidUserDTO> userBids = result.Ret.Select(BidUserDTO.FromBid).ToList();
+            foreach (BidUserDTO userBid in userBids)
+            {
+                StoreData? store = await MarketStoreGeneralService.getStoreById(userBid.StoreId);
+                if (store == null)
+                {
+                    return InternalServerError();
+                }
+
+                userBid.StoreName = store.Name;
+                ProductData? product = store.Products.FirstOrDefault(p => p.pid == userBid.ProductId);
+                userBid.ProductName = product?._name;
+            }
+            return Ok(userBids);
         }
 
         [HttpPost]
