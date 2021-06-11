@@ -41,6 +41,18 @@ namespace TradingSystem.Business.Market
             }
             return await store.CustomerCreateBid(username, storeId, productId, newBidPrice);
         }
+
+        public async Task<Result<bool>> CustomerAcceptBid(Guid storeId, Guid bidId)
+        {
+            Store store = await marketStores.GetStoreById(storeId);
+            if (store == null)
+            {
+                return new Result<bool>(false, true, "Store doesn't exist");
+            }
+
+            return await store.CustomerAcceptBid(bidId);
+        }
+
         public async Task<Result<bool>> CustomerNegotiateBid(Guid storeId, Guid bidId, double newBidPrice)
         {
             Store store = await marketStores.GetStoreById(storeId);
