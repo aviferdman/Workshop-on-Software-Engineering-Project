@@ -61,3 +61,7 @@
 .margin-no-controls {
   margin-bottom: 42px;
 }
+
+.danger {
+  background-color: rgb(255, 33, 51);
+}

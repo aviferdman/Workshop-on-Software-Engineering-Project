@@ -4,6 +4,8 @@ import * as api from '../../api'
 import NumberFormField from "../../formsUtil/NumberFormField";
 import {alertRequestError_default} from "../../utils";
 import ConditionalRender from "../../ConditionalRender";
+import SimpleModal from "../../components/SimpleModal";
+import FormFieldInfo from "../../formsUtil/formFieldInfo";
 
 export default class BidRecordUser extends React.Component {
     constructor(props) {
@@ -11,14 +13,13 @@ export default class BidRecordUser extends React.Component {
         this.state = {
             inCart: false,
             quantity: new NumberFormField(),
+            action: new FormFieldInfo(),
+            showDeclineModal: false,
+            showApproveModal: false,
         };
     }
 
-    applyAction() {
-
-    }
-
-    async addToCart() {
+    addToCart = async () => {
         await api.shoppingCart.addProduct({
             username: this.context.username,
             productId: this.props.bid.productId,
@@ -31,7 +32,7 @@ export default class BidRecordUser extends React.Component {
         }, alertRequestError_default);
     }
 
-    goToShoppingCart() {
+    goToShoppingCart = () => {
         this.props.history.push('/ShoppingCart');
     }
 
@@ -45,9 +46,89 @@ export default class BidRecordUser extends React.Component {
         });
     }
 
+    onActionSelectionChange = e => {
+        if (!this.state.action.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        this.setState({
+            ...this.state
+        });
+    }
+
+    applyAction = () => {
+        switch (this.state.action.getValue()) {
+            case '':
+                break;
+
+            case 'Approve':
+                this.openApproveBidModal();
+                break;
+
+            case 'Negotiate':
+                this.openNegotiateBidModal();
+                break;
+
+            case 'Decline':
+                this.openDeclineBidModal();
+                break;
+
+            default:
+                throw new Error('Invalid bid action');
+        }
+    }
+
+    openApproveBidModal() {
+        this.setState({
+            showApproveModal: true,
+        });
+    }
+
+    hideApproveBidModal = () => {
+        this.setState({
+            showApproveModal: false,
+        });
+    }
+
+    approveBid = () => {
+        // TODO: complete
+        console.log('Approve');
+    }
+
+    openNegotiateBidModal() {
+
+    }
+
+    hideNegotiateBidModal = () => {
+
+    }
+
+    negotiateBid = () => {
+    }
+
+    openDeclineBidModal() {
+        this.setState({
+            showDeclineModal: true,
+        });
+    }
+
+    hideDeclineBidModal = () => {
+        this.setState({
+            showDeclineModal: false,
+        });
+    }
+
+    declineBid = () => {
+        // TODO: complete
+        console.log('Decline');
+    }
+
     render() {
         let bid = this.props.bid;
-        let isInNegotiation = bid.status === api.data.bids.customerNegotiate || api.data.bids.ownerNegotiate;
+        let isInNegotiation = (
+            bid.status === api.data.bids.customerNegotiate ||
+            bid.status === api.data.bids.ownerNegotiate
+        );
 
         return (
             <div className = "simple-bids-li-div">
@@ -68,7 +149,9 @@ export default class BidRecordUser extends React.Component {
                     render={() => (
                         <p className= "bidName">
                             <text style={{fontWeight: "bold"}}>Action: </text>
-                            <select>
+                            <select onChange={this.onActionSelectionChange}>
+                                <option value=""/>
+
                                 {/*if Approve is chosen a pop-up should appear to warn about Approving the offer permanently */}
                                 {bid.status === api.data.bids.ownerNegotiate ? (<option value="Approve">Approve</option>) : null}
                                 {/*if Negotiate is chosen a pop-up should appear to update the current price */}
@@ -81,7 +164,7 @@ export default class BidRecordUser extends React.Component {
                 />
 
                 {!this.state.inCart && isInNegotiation ?
-                    (<button className="button primary" style={{margin: "2rem"}}>Apply Action</button>) : null
+                    (<button className="button primary" style={{margin: "2rem"}} onClick={this.applyAction}>Apply Action</button>) : null
                 }
                 {!this.state.inCart && bid.status === api.data.bids.approved ? (
                     <input
@@ -96,6 +179,38 @@ export default class BidRecordUser extends React.Component {
                 {!this.state.inCart && bid.status === api.data.bids.approved ? (<button className="button primary" style={{margin: "2rem"}} onClick={this.addToCart}>Add To Cart</button>) : null}
                 {this.state.inCart ? (<button className="button primary" style={{margin: "2rem"}} onClick={this.goToShoppingCart}>Go to shopping cart</button>) : null}
 
+                <SimpleModal
+                    title={'Decline bid'}
+                    show={this.state.showDeclineModal}
+                    width={'500px'}
+                    height={'215px'}
+                    btn1Text={'Close'}
+                    btn1Handle={this.hideDeclineBidModal}
+                    btn2Text={'Decline'}
+                    btn2Handle={this.declineBid}
+                    btn2Class={'danger'}
+                >
+                    <span style={{
+                        marginLeft: '2rem',
+                        fontSize: '2rem',
+                    }}>Are you sure you would like to decline the bid?</span>
+                </SimpleModal>
+
+                <SimpleModal
+                    title={'Approve bid'}
+                    show={this.state.showApproveModal}
+                    width={'500px'}
+                    height={'215px'}
+                    btn1Text={'Close'}
+                    btn1Handle={this.hideApproveBidModal}
+                    btn2Text={'Approve'}
+                    btn2Handle={this.approveBid}
+                >
+                    <span style={{
+                        marginLeft: '2rem',
+                        fontSize: '2rem',
+                    }}>Approve this bid?</span>
+                </SimpleModal>
             </div>
         );
     }

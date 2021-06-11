@@ -1,0 +1,72 @@
+.simple-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width:100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.simple-modal-main {
+  position:fixed;
+  background: white;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%);
+}
+
+.simple-modal-buttons {
+  display: grid;
+  grid-template-columns: 45% 45%;
+  position: relative;
+  justify-content: space-between;
+  margin-top: 3rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20rem;
+  height: 5rem;
+
+}
+
+.simple-modal-buttons-props {
+  cursor: pointer;
+  background-color: #ECCC77FF;
+
+}
+
+.z-index-9999 {
+  z-index: 9999;
+}
+
+.simple-modal  .simple-modal-lines-props{
+  margin-top: 5rem;
+  width: 100%;
+}
+
+.input-props {
+  width: 8rem;
+  height: 3rem;
+  margin-left: 6rem;
+  margin-top: 2rem;
+}
+
+.col-grd{
+  display: grid;
+  grid-template-columns: 15% 7%
+}
+
+.text-props{
+  font-size: 2rem;
+  margin-top: 2rem;
+  margin-left: 2rem;
+}
+
+.simple-modal .simple-modal-center-text{
+  text-align: center;
+}
+
+.check-line-grid{
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+}
