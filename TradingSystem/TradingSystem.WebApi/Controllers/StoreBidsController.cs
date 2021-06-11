@@ -95,5 +95,61 @@ namespace TradingSystem.WebApi.Controllers
             );
             return Ok(result);
         }
+
+        public async Task<ActionResult> ChangeBidPolicy([FromBody] BidPolicyChangeDTO bidPolicyChangeDTO)
+        {
+            if (string.IsNullOrWhiteSpace(bidPolicyChangeDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (bidPolicyChangeDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.OwnerChangeBidPolicy(bidPolicyChangeDTO.Username, bidPolicyChangeDTO.StoreId, bidPolicyChangeDTO.IsAvailable);
+            if (result == null || ((result.IsErr || !result.Ret) && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr || !result.Ret)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok();
+        }
+
+        public async Task<ActionResult<Guid>> CreateCustomerBid([FromBody] CreateBidOfferDTO bidOfferDTO)
+        {
+            if (string.IsNullOrWhiteSpace(bidOfferDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (bidOfferDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+            if (bidOfferDTO.ProductId == Guid.Empty)
+            {
+                return BadRequest("Invalid product ID");
+            }
+            if (bidOfferDTO.NewPrice < 0)
+            {
+                return BadRequest("Invalid price");
+            }
+
+            Result<Guid>? result = await MarketBidsService.CustomerCreateBid(bidOfferDTO.Username, bidOfferDTO.StoreId, bidOfferDTO.ProductId, bidOfferDTO.NewPrice);
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return result.Ret;
+        }
     }
 }

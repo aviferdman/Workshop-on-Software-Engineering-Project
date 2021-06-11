@@ -2,30 +2,64 @@ import React from "react";
 import '../Discount/AddSimpleDiscount.css';
 import { GlobalContext } from "../../../globalContext";
 import * as GiIcons from "react-icons/gi";
-import * as AiIcons from "react-icons/ai";
-
+import NumberFormField from "../../../formsUtil/NumberFormField";
+import * as api from "../../../api";
+import {alertRequestError_default} from "../../../utils";
 
 class AddBid extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: false
-        }
+            show: false,
+            price: new NumberFormField(),
+        };
     }
 
     showModal = () => {
-        this.setState({ show: true });
+        this.setState({
+            show: true,
+            price: new NumberFormField(),
+        });
     }
 
     hideModal = () => {
-        this.setState({ show: false });
+        this.setState({
+            show: false,
+            price: new NumberFormField(),
+        });
     }
 
+    onPriceChange = e => {
+        if (!this.state.price.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onConfirm = async e => {
+        e.preventDefault();
+        if (!this.state.price.validate()) {
+            alert('Please fill the proposed price');
+            return;
+        }
+
+        await api.stores.bids.createCustomerBid({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            productId: this.props.product.id,
+            newPrice: this.state.price.getValue(),
+        }).then(bidId => {
+            this.hideModal();
+        }, alertRequestError_default);
+    }
 
     render() {
         return (
             <main className="items">
-                <Modal show={this.state.show} handleClose={this.hideModal}  >
+                <Modal show={this.state.show} handleClose={this.hideModal} handleConfirm={this.onConfirm} >
 
                     <div className="disc-comp-check-line-grid">
 
@@ -40,6 +74,9 @@ class AddBid extends React.Component {
                                         type="number"
                                         step="0.01"
                                         className="disc-input-props"
+                                        required
+                                        value={this.state.price.getInputValue()}
+                                        onChange={this.onPriceChange}
                                     />
                                 </div>
                             </div>

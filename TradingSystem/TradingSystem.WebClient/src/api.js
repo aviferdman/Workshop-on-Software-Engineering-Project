@@ -181,5 +181,7 @@ export const stores = {
             username: username,
             storeId: storeId,
         })),
+        changeBidPolicy: postCurry('/stores/bids/ChangeBidPolicy'),
+        createCustomerBid: postCurry('/stores/bids/CreateCustomerBid'),
     },
 };

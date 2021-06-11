@@ -16,6 +16,10 @@ export default class FormFieldInfo {
         this.inputValue = inputValue === undefined ? (value == null ? '' : value) : inputValue;
     }
 
+    getInputValue() {
+        return this.inputValue;
+    }
+
     setError(msg) {
         this.isError = true;
         this.errorMessage = msg;
