@@ -6,6 +6,7 @@ import PolicyRecord from "./PolicyRecord";
 import * as api from "../../../api";
 import {alertRequestError_default} from "../../../utils";
 import * as util from "../../../utils";
+import ConditionalRender from "../../../ConditionalRender";
 
 
 export class Policy extends React.Component {
@@ -15,6 +16,7 @@ export class Policy extends React.Component {
             policies: null,
             storeProducts: null,
             storeProductsMap: null,
+            ready: false,
             nextId: 0,
         };
         this.storeId = this.props.match.params.storeId;
@@ -24,6 +26,9 @@ export class Policy extends React.Component {
         let promise_storeProducts = this.fetchStoreProducts();
         let promise_policies = this.fetchPolicies();
         await Promise.all([promise_storeProducts, promise_policies]);
+        this.setState({
+            ready: true,
+        });
     }
 
     async fetchStoreProducts() {
@@ -63,13 +68,23 @@ export class Policy extends React.Component {
                     {/*top grid - simple discounts*/}
                     <div  className="policy-grid-simple">
                         <h2> Store Policy </h2>
-                        <PolicyRecord policyRecords={this.state.policies} storeProductsMap={this.state.storeProductsMap} />
+                        <ConditionalRender
+                            condition={this.state.ready}
+                            render={() => (
+                                <PolicyRecord policyRecords={this.state.policies} storeProductsMap={this.state.storeProductsMap} />
+                           )}
+                        />
                     </div>
 
                     {/*bottom grid - buttons*/}
                     <div className="policy-grid-button">
                         <div className="center-btn-st">
-                            <AddPolicy storeId={this.storeId} storeProducts={this.state.storeProducts} onSuccess={this.onPolicyAdd} />
+                            <ConditionalRender
+                                condition={this.state.ready}
+                                render={() => (
+                                    <AddPolicy storeId={this.storeId} storeProducts={this.state.storeProducts} onSuccess={this.onPolicyAdd} />
+                                )}
+                            />
                         </div>
                         <div className="center-btn-nd">
                             <button className="store-products-button-view"> Remove All</button>

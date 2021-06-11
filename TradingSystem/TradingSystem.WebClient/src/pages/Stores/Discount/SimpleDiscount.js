@@ -52,7 +52,7 @@ class SimpleDiscount extends Component {
                                     <ConditionalRender
                                         condition={elem.discountType === 'Product'}
                                         render={() => {
-                                            let product = this.props.storeProductsMap[elem.productId];
+                                            let product = this.props.storeProductsMap && this.props.storeProductsMap[elem.productId];
                                             return (<p className="discName"> {<text style={{fontWeight: "bold"}}>product: </text>} {(product && product.name) || "<deleted>"} </p>);
                                         }}
                                     />

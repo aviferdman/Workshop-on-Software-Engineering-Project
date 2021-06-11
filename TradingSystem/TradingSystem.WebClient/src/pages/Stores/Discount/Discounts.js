@@ -21,6 +21,7 @@ export class Discounts extends React.Component {
             nextSerialNumber: null,
             storeProducts: null,
             storeProductsMap: null,
+            ready: false,
         };
         this.storeId = this.props.match.params.storeId;
     }
@@ -32,6 +33,9 @@ export class Discounts extends React.Component {
             promise_storeProducts,
             promise_discounts
         ]);
+        this.setState({
+            ready: true,
+        });
     }
 
     async fetchStoreProducts() {
@@ -120,6 +124,10 @@ export class Discounts extends React.Component {
     }
 
     render() {
+        if (!this.state.ready) {
+            return null;
+        }
+
         return (
             <main>
 
