@@ -18,6 +18,7 @@ using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StorePackage.Predicates;
 using TradingSystem.Business.Market.BidsPackage;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading;
 
 namespace TradingSystem.DAL
 {
@@ -192,12 +193,13 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)
         {
-            return  products.Where(p =>
+            var rt=  products.Where(p =>
                                     (p._name.Contains(keyword) || p.category.Contains(keyword))
                                     &&(price_range_low==-1||price_range_low<=p._price)
                                     &&(price_range_high == -1 || price_range_high >= p._price)
                                     &&(rating == -1 || rating == p.rating)
                                     &&(category == null || category.Equals(p.category))).ToList();
+            return rt;
         }
 
         public async Task<Category> AddNewCategory(string category)
@@ -287,29 +289,32 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<TransactionStatus>> getAllHistories()
         {
-            return await transactionStatuses
+            var rt= await transactionStatuses
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h=> h.productId_quantity)
                                 .ToListAsync();
+            return rt;
         }
 
         public async Task<ICollection<TransactionStatus>> getUserHistories(string username)
         {
-            return await transactionStatuses.Where(s=> s.username.Equals(username))
+            var rt = await transactionStatuses.Where(s=> s.username.Equals(username))
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
                                 .ToListAsync();
+            return rt;
         }
 
         public async Task<ICollection<TransactionStatus>> getStoreHistories(Guid storeId)
         {
-            return await transactionStatuses.Where(s => s.storeID.Equals(storeId))
+            var rt= await transactionStatuses.Where(s => s.storeID.Equals(storeId))
                                 .Include(s => s._paymentStatus)
                                 .Include(s => s._deliveryStatus)
                                 .Include(s => s.productHistories).ThenInclude(h => h.productId_quantity)
                                 .ToListAsync();
+            return rt;
         }
 
         internal void tearDown()
@@ -355,7 +360,7 @@ namespace TradingSystem.DAL
 
         public async Task<ICollection<Store>> getMemberStores(string usrname)
         {
-            return await stores.Include(s => s._products)
+            var rt= await stores.Include(s => s._products)
                                 .Include(s => s.owners)
                                 .Include(s => s.managers)
                                 .Include(s => s.founder)
@@ -363,14 +368,15 @@ namespace TradingSystem.DAL
                                             s.managers.Where(m=>m.username.Equals(usrname)).Any()||
                                             s.owners.Where(m => m.username.Equals(usrname)).Any())
                                 .ToListAsync();
+            return rt;
         }
 
         public MarketContext(): base(){}
 
         public async Task<DataUser> GetDataUser(string username)
         {
-           return await dataUsers.SingleAsync(u => u.username.Equals(username));
-            
+            var rt=await dataUsers.SingleAsync(u => u.username.Equals(username));
+            return rt;
         }
 
         public async Task AddNewMemberState(string username)
@@ -397,6 +403,7 @@ namespace TradingSystem.DAL
             {
                 return false;
             }
+            
         }
 
         public async Task<MemberState> getMemberState(string usrname)
@@ -540,6 +547,7 @@ namespace TradingSystem.DAL
             catch
             {
             }
+
         }
 
         public  void removeManager(Manager manager)
@@ -553,6 +561,7 @@ namespace TradingSystem.DAL
             catch(Exception e)
             {
             }
+
         }
 
         public async Task AddRequestType1(MarketRulesRequestType1 req)

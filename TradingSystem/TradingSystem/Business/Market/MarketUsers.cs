@@ -352,7 +352,9 @@ namespace TradingSystem.Business.Market
             ShoppingCart c = new ShoppingCart(u.ShoppingCart);
             IDbContextTransaction transaction=null;
             if (!ProxyMarketContext.Instance.IsDebug)
+            {
                 transaction = MarketContext.Instance.Database.BeginTransaction();
+            }
             try
             {
                 foreach (KeyValuePair<Guid, int> p in products_added)
@@ -407,12 +409,15 @@ namespace TradingSystem.Business.Market
                 {
                     transaction.Commit();
                     transaction.Dispose();
+
                 }
             }
             catch (Exception ex)
             {
                 if(!ProxyMarketContext.Instance.IsDebug)
+                {
                     transaction.Rollback();
+                }
                 return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
             }
             
