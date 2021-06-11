@@ -90,6 +90,12 @@ class StoreContent extends Component {
                         )} />
                     <StoreRestrictedComponentCustom
                         permissions={this.state.myPermissions}
+                        allowedActions={[api.data.stores.permissions.bidRequests,]}
+                        render={() => (
+                            <button className="button-view" onClick={this.onNavigationButtonClick('bids')}>Store Bids</button>
+                        )} />
+                    <StoreRestrictedComponentCustom
+                        permissions={this.state.myPermissions}
                         allowedActions={[api.data.stores.permissions.getShopHistory,]}
                         render={() => (
                             <button className="button-view" onClick={this.onNavigationButtonClick('history')}>Store History</button>

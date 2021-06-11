@@ -174,10 +174,10 @@ export const stores = {
     },
 
     bids: {
-        mine: postCurry('api/stores/bids/Mine', username => ({
+        mine: postCurry('/stores/bids/Mine', username => ({
             username: username,
         })),
-        ofStore: postCurry('api/stores/bids/OfStore', (username, storeId) => ({
+        ofStore: postCurry('/stores/bids/OfStore', (username, storeId) => ({
             username: username,
             storeId: storeId,
         })),
