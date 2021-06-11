@@ -7,11 +7,13 @@
 
 .internal-conatiner.store-container {
     display: grid;
-    grid-template-rows: 16.666% 16.666% 16.666% 16.666% 16.666%;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
 .store-container .button-view{
     cursor: pointer;
     font-size: 6rem;
+    margin: 2rem;
     background-color: #ECCC77FF;
 }
