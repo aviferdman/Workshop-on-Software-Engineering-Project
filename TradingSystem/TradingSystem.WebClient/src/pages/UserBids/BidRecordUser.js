@@ -1,12 +1,12 @@
 import React from "react";
 import {GlobalContext} from "../../globalContext";
 import * as api from '../../api'
-import NumberFormField from "../../formsUtil/NumberFormField";
 import {alertRequestError_default} from "../../utils";
 import ConditionalRender from "../../ConditionalRender";
-import SimpleModal from "../../components/SimpleModal";
 import FormFieldInfo from "../../formsUtil/formFieldInfo";
+import NumberFormField from "../../formsUtil/NumberFormField";
 import BidEditContent from "../Stores/StoreBids/BidEditContent";
+import SimpleModal from "../../components/SimpleModal";
 
 export default class BidRecordUser extends React.Component {
     constructor(props) {
@@ -152,15 +152,15 @@ export default class BidRecordUser extends React.Component {
         let declineText = bid.status === api.data.bids.customerNegotiate ? 'Cancel' : 'Decline';
 
         return (
-            <div className = "simple-bids-li-div">
-                <p className= "bidName">{<text style={{fontWeight: "bold"}}>Store: </text>} {bid.storeName} </p>
-                <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Product: </text>} {bid.productName}  </p>
-                <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Current Offer:</text>} {bid.price}  </p>
-                <p className= "bidName">{<text style={{fontWeight: "bold"}}>Status:</text>} {
-                    bid.status === api.data.bids.approved ? (<label style={{color: "green"}}>Approved</label>) :
-                    bid.status === api.data.bids.ownerNegotiate ? (<label style={{color: "orange"}}>Negotiation (your turn)</label>) :
-                    bid.status === api.data.bids.customerNegotiate ? (<label style={{color: "orange"}}>Negotiation (waiting on store)</label>) :
-                    bid.status === api.data.bids.declined ? (<label style={{color: "red"}}>Declined</label>) :
+            <div className="simple-bids-li-div">
+                <p className="bidName">{<text style={{ fontWeight: "bold" }}>Store: </text>} {bid.storeName} </p>
+                <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Product: </text>} {bid.productName}  </p>
+                <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Current Offer:</text>} {bid.price}  </p>
+                <p className="bidName">{<text style={{ fontWeight: "bold" }}>Status:</text>} {
+                    bid.status === api.data.bids.approved ? (<label style={{ color: "green" }}>Approved</label>) :
+                    bid.status === api.data.bids.ownerNegotiate ? (<label style={{ color: "orange" }}>Negotiation (your turn)</label>) :
+                    bid.status === api.data.bids.customerNegotiate ? (<label style={{ color: "orange" }}>Negotiation (waiting on store)</label>) :
+                    bid.status === api.data.bids.declined ? (<label style={{ color: "red" }}>Declined</label>) :
                     null
                 }
                 </p>
