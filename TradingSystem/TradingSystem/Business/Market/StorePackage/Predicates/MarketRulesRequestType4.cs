@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.Predicates;
+using TradingSystem.Service;
 
 namespace TradingSystem.Business.Market.StorePackage
 {
@@ -36,9 +38,11 @@ namespace TradingSystem.Business.Market.StorePackage
             return id;
         }
 
-        public async Task ActivateFunction()
+        public async Task ActivateFunction(Store s)
         {
-            await MarketRules.Instance.CreateSimpleDiscountAsync(username, storeId, discountType, precent, category, productId);
+            var discountId= await MarketRules.Instance.CreateSimpleDiscountAsync(s,username, storeId, discountType, precent, category, productId);
+            var discountData = new DiscountData(discountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
+            await MarketRulesService.Instance.discountsManager.AddDiscount(discountData);
         }
     }
 }
