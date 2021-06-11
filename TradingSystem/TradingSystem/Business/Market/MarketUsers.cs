@@ -25,6 +25,7 @@ namespace TradingSystem.Business.Market
         private MarketDAL marketUsersDAL = MarketDAL.Instance;
         private ConcurrentDictionary<string, User> activeUsers;
         private HistoryManager historyManager;
+        public Semaphore s;
         private static Transaction _transaction = Transaction.Instance;
         private static readonly Lazy<MarketUsers>
         _lazy =
@@ -37,6 +38,7 @@ namespace TradingSystem.Business.Market
 
         private MarketUsers()
         {
+            s = new Semaphore(1, 1);
             activeUsers = new ConcurrentDictionary<string, User>();
             historyManager = HistoryManager.Instance;
         }
@@ -353,7 +355,8 @@ namespace TradingSystem.Business.Market
             IDbContextTransaction transaction=null;
             if (!ProxyMarketContext.Instance.IsDebug)
             {
-                transaction = MarketContext.Instance.Database.BeginTransaction();
+                    s.WaitOne();
+                    transaction = MarketContext.Instance.Database.BeginTransaction();
             }
             try
             {
@@ -409,6 +412,7 @@ namespace TradingSystem.Business.Market
                 {
                     transaction.Commit();
                     transaction.Dispose();
+                    s.Release();
 
                 }
             }
@@ -417,6 +421,8 @@ namespace TradingSystem.Business.Market
                 if(!ProxyMarketContext.Instance.IsDebug)
                 {
                     transaction.Rollback();
+                    transaction.Dispose();
+                    s.Release();
                 }
                 return new Result<ShoppingCart>(u.ShoppingCart, true, ans);
             }
