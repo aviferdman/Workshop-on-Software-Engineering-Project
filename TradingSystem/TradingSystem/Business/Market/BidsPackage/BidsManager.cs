@@ -62,10 +62,14 @@ namespace TradingSystem.Business.Market.BidsPackage
             BidState b = new BidState(bid);
             if (!ProxyMarketContext.Instance.IsDebug)
             {
-                MarketContext.Instance.Bids.Add(bid);
-                await ProxyMarketContext.Instance.saveChanges();
-                MarketContext.Instance.BidStates.Add(b);
-                await ProxyMarketContext.Instance.saveChanges();
+                lock (MarketContext.Instance)
+                {
+                    MarketContext.Instance.Bids.Add(bid);
+                    MarketContext.Instance.SaveChanges();
+                    MarketContext.Instance.BidStates.Add(b);
+                    MarketContext.Instance.SaveChanges();
+                }
+               
             }
            
             this.bidsState.Add(b);

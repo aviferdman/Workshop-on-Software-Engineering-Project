@@ -90,7 +90,10 @@ namespace TradingSystem.Business.Market
         {
             IDbContextTransaction transaction = null;
             if (!ProxyMarketContext.Instance.IsDebug)
+            {
+                MarketUsers.Instance.s.WaitOne();
                 transaction = MarketContext.Instance.Database.BeginTransaction();
+            }
             try
             {
                 //chcek is not empty
@@ -100,6 +103,7 @@ namespace TradingSystem.Business.Market
                     {
                         transaction.Commit();
                         transaction.Dispose();
+                        MarketUsers.Instance.s.Release();
                     }
                         
                     return new BuyStatus(false, null); 
@@ -124,6 +128,8 @@ namespace TradingSystem.Business.Market
                 {
                     transaction.Commit();
                     transaction.Dispose();
+
+                    MarketUsers.Instance.s.Release();
                 }
                     
                 return new BuyStatus(allSuceeded && allStatusesOk, purchases);
@@ -135,6 +141,7 @@ namespace TradingSystem.Business.Market
                 {
                     transaction.Rollback();
                     transaction.Dispose();
+                    MarketUsers.Instance.s.Release();
                 }
                 return new BuyStatus(true, null);
             }

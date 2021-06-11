@@ -50,8 +50,11 @@ namespace TradingSystem.DAL
 
         public async Task saveChanges()
         {
-            if (!isDebug)
-                await marketContext.SaveChangesAsync();
+            lock (marketContext)
+            {
+                if (!isDebug)
+                    marketContext.SaveChanges();
+            }
         }
         public async Task AddHistory(TransactionStatus history)
         {
