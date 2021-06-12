@@ -62,7 +62,11 @@ export class StoreBids extends React.Component {
                     {/*top grid - simple discounts*/}
                     <div  className="store-bids-grid-simple">
                         <h2> Store Bids </h2>
-                        <BidRecordsStore bidRecords={this.state.bids} storeProductsMap={this.state.storeProductsMap}  />
+                        <BidRecordsStore
+                            bidRecords={this.state.bids}
+                            storeProductsMap={this.state.storeProductsMap}
+                            storeId={this.storeId}
+                        />
 
                     </div>
 

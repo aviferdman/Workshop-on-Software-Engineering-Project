@@ -28,7 +28,7 @@ namespace TradingSystem.WebApi.Controllers
         public MarketStoreGeneralService MarketStoreGeneralService { get; }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<BidStoreDTO>>> MineAsync([FromBody] UsernameDTO usernameDTO)
+        public async Task<ActionResult<IEnumerable<BidUserDTO>>> MineAsync([FromBody] UsernameDTO usernameDTO)
         {
             if (string.IsNullOrWhiteSpace(usernameDTO.Username))
             {
@@ -62,41 +62,53 @@ namespace TradingSystem.WebApi.Controllers
             return Ok(userBids);
         }
 
-        [HttpPost]
-        public ActionResult<IEnumerable<BidStoreDTO>> OfStore([FromBody] StoreInfoActionDTO storeInfoActionDTO)
+        private ActionResult OfStoreCore(Guid storeId, string? username, Func<Bid, bool>? filter, out IEnumerable<BidStoreDTO>? bids)
         {
-            if (string.IsNullOrWhiteSpace(storeInfoActionDTO.Username))
+            bids = null;
+            if (string.IsNullOrWhiteSpace(username))
             {
                 return BadRequest("Invalid username");
             }
-            if (storeInfoActionDTO.StoreId == Guid.Empty)
+            if (storeId == Guid.Empty)
             {
                 return BadRequest("Invalid store ID");
             }
 
-            Result<ICollection<Bid>>? storeBids = MarketBidsService.GetStoreBids(storeInfoActionDTO.StoreId, storeInfoActionDTO.Username);
-            if (storeBids == null || (storeBids.IsErr && string.IsNullOrWhiteSpace(storeBids.Mess)))
+            Result<ICollection<Bid>>? storeBidsResult = MarketBidsService.GetStoreBids(storeId, username);
+            if (storeBidsResult == null || (storeBidsResult.IsErr && string.IsNullOrWhiteSpace(storeBidsResult.Mess)))
             {
                 return InternalServerError();
             }
-            if (storeBids.IsErr)
+            if (storeBidsResult.IsErr)
             {
-                return InternalServerError(storeBids.Mess);
+                return InternalServerError(storeBidsResult.Mess);
             }
 
-            Result<ICollection<Bid>>? myApprovedBids = MarketBidsService.GetOwnerAcceptedBids(storeInfoActionDTO.StoreId, storeInfoActionDTO.Username);
-            if (myApprovedBids == null || (myApprovedBids.IsErr && string.IsNullOrWhiteSpace(myApprovedBids.Mess)))
+            IEnumerable<Bid> storeBids = storeBidsResult.Ret;
+            if (filter != null)
+            {
+                storeBids = storeBids.Where(filter);
+            }
+
+            Result<ICollection<Bid>>? myApprovedBidsResult = MarketBidsService.GetOwnerAcceptedBids(storeId, username);
+            if (myApprovedBidsResult == null || (myApprovedBidsResult.IsErr && string.IsNullOrWhiteSpace(myApprovedBidsResult.Mess)))
             {
                 return InternalServerError();
             }
-            if (myApprovedBids.IsErr)
+            if (myApprovedBidsResult.IsErr)
             {
-                return InternalServerError(myApprovedBids.Mess);
+                return InternalServerError(myApprovedBidsResult.Mess);
             }
 
-            IEnumerable<BidStoreDTO> result = storeBids.Ret.GroupJoin
+            IEnumerable<Bid> myApprovedBids = myApprovedBidsResult.Ret;
+            if (filter != null)
+            {
+                myApprovedBids = myApprovedBids.Where(filter);
+            }
+
+            IEnumerable<BidStoreDTO> result = storeBids.GroupJoin
             (
-                myApprovedBids.Ret,
+                myApprovedBids,
                 bid => bid.Id,
                 bid => bid.Id,
                 (bid, approvedBid) =>
@@ -106,7 +118,60 @@ namespace TradingSystem.WebApi.Controllers
                     return bidStoreDTO;
                 }
             );
-            return Ok(result);
+
+            bids = result;
+            return null;
+        }
+
+        [HttpPost]
+        public ActionResult<IEnumerable<BidStoreDTO>> OfStore([FromBody] StoreInfoActionDTO storeInfoActionDTO)
+        {
+            ActionResult actionResult = OfStoreCore(storeInfoActionDTO.StoreId, storeInfoActionDTO.Username, null, out IEnumerable<BidStoreDTO>? bids);
+            if (actionResult != null)
+            {
+                return actionResult;
+            }
+            if (bids == null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(bids);
+        }
+
+        [HttpPost]
+        public ActionResult<BidStoreDTO> OfStoreSpecific([FromBody] OwnerBidParamsDTO ownerBidParamsDTO)
+        {
+            // TODO: call a specific service layer function
+            ActionResult actionResult = OfStoreCore
+            (
+                ownerBidParamsDTO.StoreId,
+                ownerBidParamsDTO.Username,
+                bid => bid.Id == ownerBidParamsDTO.BidId,
+                out IEnumerable<BidStoreDTO>? bids
+            );
+            if (actionResult != null)
+            {
+                return actionResult;
+            }
+            if (bids == null)
+            {
+                return InternalServerError();
+            }
+
+            BidStoreDTO? bid = null;
+            try
+            {
+                bid = bids.SingleOrDefault();
+            }
+            catch (InvalidOperationException) { }
+
+            if (bid == null)
+            {
+                return InternalServerError("More than 1 bids match the specified ID");
+            }
+
+            return Ok(bid);
         }
 
         public async Task<ActionResult> ChangeBidPolicy([FromBody] BidPolicyChangeDTO bidPolicyChangeDTO)

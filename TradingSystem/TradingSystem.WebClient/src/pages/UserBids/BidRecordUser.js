@@ -127,19 +127,40 @@ export default class BidRecordUser extends React.Component {
         });
     }
 
-    approveBid = () => {
-        // TODO: complete
-        console.log('Approve', this.props.bid.productId);
+    approveBid = async () => {
+        let bid = this.props.bid;
+        await api.stores.bids.customerAcceptBid({
+            storeId: bid.storeId,
+            bidId: bid.id,
+        }).then(() => {
+            bid.status = api.data.bids.approved;
+            this.hideApproveBidModal();
+        }, alertRequestError_default);
     }
 
-    negotiateBid = () => {
-        // TODO: complete
-        console.log('negotiate', this.state.bidPrice.getValue(), this.props.bid.productId);
+    negotiateBid = async () => {
+        let bid = this.props.bid;
+        let newPrice = this.state.bidPrice.getValue();
+        await api.stores.bids.customerNegotiateBid({
+            storeId: bid.storeId,
+            bidId: bid.id,
+            newPrice: newPrice,
+        }).then(() => {
+            bid.status = api.data.bids.customerNegotiate;
+            bid.price = newPrice;
+            this.hideNegotiateBidModal();
+        }, alertRequestError_default);
     }
 
-    declineBid = () => {
-        // TODO: complete
-        console.log('Decline', this.props.bid.productId);
+    declineBid = async () => {
+        let bid = this.props.bid;
+        await api.stores.bids.customerDenyBid({
+            storeId: bid.storeId,
+            bidId: bid.id,
+        }).then(() => {
+            bid.status = api.data.bids.declined;
+            this.hideDeclineBidModal();
+        }, alertRequestError_default);
     }
 
     render() {
@@ -154,7 +175,7 @@ export default class BidRecordUser extends React.Component {
         return (
             <div className="simple-bids-li-div">
                 <p className="bidName">{<text style={{ fontWeight: "bold" }}>Store: </text>} {bid.storeName} </p>
-                <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Product: </text>} {bid.productName}  </p>
+                <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Product: </text>} {bid.productName || "<deleted>"}  </p>
                 <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Current Offer:</text>} {bid.price}  </p>
                 <p className="bidName">{<text style={{ fontWeight: "bold" }}>Status:</text>} {
                     bid.status === api.data.bids.approved ? (<label style={{ color: "green" }}>Approved</label>) :
@@ -191,7 +212,7 @@ export default class BidRecordUser extends React.Component {
                     <input
                         type="number"
                         placeholder="Quantity"
-                        style={{width: "8rem", height: "4rem", marginLeft:"10rem", marginBottom:"2rem", textAlign:"center"}}
+                        style={{width: "8rem", height: "4rem", marginLeft:"auto", marginRight: "auto", textAlign:"center"}}
                         required
                         value={this.state.quantity.getInputValue()}
                         onChange={this.onQuantityChange}

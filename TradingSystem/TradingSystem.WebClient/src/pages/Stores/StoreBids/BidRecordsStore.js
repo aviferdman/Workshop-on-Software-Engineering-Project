@@ -12,11 +12,13 @@ export default class BidRecordsStore extends React.Component {
             <div>
                 <ul className = "simple-bids-ul">
                     {this.props.bidRecords.map((elem) => {
-                        elem.product = this.props.storeProductsMap[elem.productId];
+                        if (this.props.storeProductsMap != null) {
+                            elem.product = this.props.storeProductsMap[elem.productId];
+                        }
 
                         return (
                             <li  key={elem.id}>
-                                <BidRecordStore bid={elem} />
+                                <BidRecordStore bid={elem} storeId={this.props.storeId} />
                             </li>
                         );
                     })}

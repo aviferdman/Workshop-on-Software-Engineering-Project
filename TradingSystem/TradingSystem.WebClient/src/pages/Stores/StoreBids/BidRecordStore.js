@@ -98,19 +98,53 @@ export default class BidRecordStore extends React.Component {
         });
     }
 
-    approveBid = () => {
-        // TODO: complete
-        console.log('Approve', this.props.bid.productId);
+    approveBid = async () => {
+        let bid = this.props.bid;
+        let bidReqData = {
+            username: this.context.username,
+            storeId: this.props.storeId,
+            bidId: bid.id,
+        };
+        await api.stores.bids.ownerAcceptBid(bidReqData)
+            .then(() => {
+                return api.stores.bids.ofStoreSpecific(bidReqData);
+            }, alertRequestError_default)
+            .then(updatedBid => {
+                Object.assign(bid, updatedBid);
+                bid.approvedByMe = true;
+                this.hideApproveBidModal();
+            }, e => {
+                bid.approvedByMe = true;
+                alertRequestError_default(e);
+            });
     }
 
-    negotiateBid = () => {
-        // TODO: complete
-        console.log('negotiate', this.state.bidPrice.getValue(), this.props.bid.productId);
+    negotiateBid = async () => {
+        let bid = this.props.bid;
+        let newPrice = this.state.bidPrice.getValue();
+        await api.stores.bids.customerNegotiateBid({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            bidId: bid.id,
+            newPrice: newPrice,
+        }).then(() => {
+            bid.approvedByMe = true;
+            bid.status = api.data.bids.ownerNegotiate;
+            bid.price = newPrice;
+            this.hideNegotiateBidModal();
+        }, alertRequestError_default);
     }
 
-    declineBid = () => {
-        // TODO: complete
-        console.log('Decline', this.props.bid.productId);
+    declineBid = async () => {
+        let bid = this.props.bid;
+        await api.stores.bids.customerDenyBid({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            bidId: bid.id,
+        }).then(() => {
+            bid.status = api.data.bids.declined;
+            this.hideDeclineBidModal();
+        }, alertRequestError_default);
     }
 
     render() {
@@ -124,7 +158,7 @@ export default class BidRecordStore extends React.Component {
         return (
             <div className="simple-bids-li-div">
                 <p className="bidName">{<text style={{ fontWeight: "bold" }}>User: </text>} {bid.username}  </p>
-                <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Product: </text>} {product.name}  </p>
+                <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Product: </text>} {(product && product.name) || "<deleted>"}  </p>
                 <p className="bidName"> {<text style={{ fontWeight: "bold" }}>Current Offer:</text>} {bid.price}  </p>
                 <p className="bidName">{<text style={{ fontWeight: "bold" }}>Status:</text>} {
                     bid.status === api.data.bids.approved ? (<label style={{ color: "green" }}>Approved</label>) :
@@ -138,11 +172,11 @@ export default class BidRecordStore extends React.Component {
 
                 <p className="bidName" style={{ visibility: isInNegotiation ? 'visible' : 'hidden' }}>
                     <text style={{fontWeight: "bold"}}>Action: </text>
-                    <select onChange={this.onActionSelectionChange} disabled={bid.approvedByMe}>
+                    <select onChange={this.onActionSelectionChange}>
                         <option value=""/>
 
                         {/*if Approve is chosen a pop-up should appear to warn about Approving the offer permanently */}
-                        {bid.status === api.data.bids.customerNegotiate ? (<option value="Approve">Approve</option>) : null}
+                        {bid.status === api.data.bids.customerNegotiate && !bid.approvedByMe ? (<option value="Approve">Approve</option>) : null}
                         {/*if Negotiate is chosen a pop-up should appear to update the current price */}
                         <option value="Negotiate">Negotiate</option>
                         {/*if Decline is chosen a pop-up should appear to warn about declining the offer permanently */}
