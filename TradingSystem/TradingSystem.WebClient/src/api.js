@@ -92,6 +92,10 @@ export const shoppingCart = {
 
 export const statistics = {
     fetchVisitingStatisticsForToday: getCurry('/Statistics/FetchVisitingStatisticsForToday'),
+    fetchVisitingStatisticsForDatesRange: getCurry('/Statistics/FetchVisitingStatisticsForDatesRange', (start, end) => ({
+        dateStart: start,
+        dateEnd: end,
+    })),
 }
 
 export const history = {

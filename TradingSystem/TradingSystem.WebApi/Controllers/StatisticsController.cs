@@ -25,7 +25,19 @@ namespace TradingSystem.WebApi.Controllers
         [HttpGet]
         public ActionResult<StatisticsDTO> FetchVisitingStatisticsForToday()
         {
-            Statistics stats = MarketUserService.GetStats();
+            Statistics stats = MarketUserService.getTodayStats();
+            if (stats == null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(StatisticsDTO.FromStatistics(stats));
+        }
+
+        [HttpGet]
+        public ActionResult<StatisticsDTO> FetchVisitingStatisticsForDatesRange([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
+        {
+            Statistics stats = MarketUserService.getDatesStats(dateStart, dateEnd);
             if (stats == null)
             {
                 return InternalServerError();
