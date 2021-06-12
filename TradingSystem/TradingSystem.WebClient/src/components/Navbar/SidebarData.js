@@ -58,7 +58,8 @@ export const SidebarData = [
         title: 'Statistics',
         path: '/statistics',
         icon: <FcIcons.FcStatistics />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        permissions: [UserRole.admin]
     },
     {
         title: 'Support',
