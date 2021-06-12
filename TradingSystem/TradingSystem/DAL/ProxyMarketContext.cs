@@ -412,6 +412,22 @@ namespace TradingSystem.DAL
             }
         }
 
+        internal ICollection<string> getAllCategories()
+        {
+            if (isDebug)
+            {
+                return categories.Keys; 
+            }
+            try
+            {
+                return  marketContext.getAllCategories();
+            }
+            catch (Exception e)
+            {
+                return new List<string>();
+            }
+        }
+
         public ProxyMarketContext()
         {
             isDebug = false;

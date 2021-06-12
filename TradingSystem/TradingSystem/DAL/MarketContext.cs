@@ -348,6 +348,11 @@ namespace TradingSystem.DAL
             }
         }
 
+        internal ICollection<string> getAllCategories()
+        {
+            return categories.Select(c => c.Name).ToList();
+        }
+
         internal void tearDown()
         {
             try

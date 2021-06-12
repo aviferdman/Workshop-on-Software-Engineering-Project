@@ -271,7 +271,10 @@ namespace TradingSystem.Business.Market
 
         }
 
-
+        public ICollection<string> getAllCategories()
+        {
+            return ProxyMarketContext.Instance.getAllCategories();
+        }
 
         //use case 4 : https://github.com/aviferdman/Workshop-on-Software-Engineering-Project/issues/52
         public async Task<ICollection<Product>> findProducts(string keyword, int price_range_low, int price_range_high, int rating, string category)

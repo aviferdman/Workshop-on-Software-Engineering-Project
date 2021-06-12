@@ -18,6 +18,10 @@ namespace TradingSystem.Service
 
         public static MarketProductsService Instance => instanceLazy.Value;
 
+        public ICollection<string> getAllCategories()
+        {
+            return marketStores.getAllCategories();
+        }
         //"Product added"
         public async Task<Result<Product>> AddProduct(ProductData product, Guid storeID, string username)
         {
