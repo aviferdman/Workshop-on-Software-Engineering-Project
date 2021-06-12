@@ -56,6 +56,8 @@ namespace TradingSystem.Business.Market
 
         public async System.Threading.Tasks.Task<Guid> CreateSimpleDiscountAsync(Store store,string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid(), Guid originalDiscountId = new Guid())
         {
+            if (store == null)
+                return new Guid();
             var d = CreateCalculator(discountType, precent, category, productId);
             Discount discount = new Discount(d);
             if (!originalDiscountId.Equals(new Guid()))
@@ -67,6 +69,8 @@ namespace TradingSystem.Business.Market
         public async System.Threading.Tasks.Task<Guid> CreateConditionalDiscountAsync(Store store,string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
             double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime(), Guid originalDiscountId = new Guid())
         {
+            if (store == null)
+                return new Guid();
             var d = CreateCalculator(discountType, precent, category, productId);
             var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             ConditionDiscount discount = new ConditionDiscount(d);
@@ -80,6 +84,8 @@ namespace TradingSystem.Business.Market
 
         public async System.Threading.Tasks.Task<Result<Guid>> UpdateSimpleDiscountAsync(Store store,Guid discountId, string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid(), Guid originalDiscountId = new Guid())
         {
+            if (store == null)
+                return new Result<Guid>(new Guid(), true, "store not found");
             var d = CreateCalculator(discountType, precent, category, productId);
             Discount discount = new Discount(d);
             if (!originalDiscountId.Equals(new Guid()))
@@ -92,6 +98,9 @@ namespace TradingSystem.Business.Market
         public async System.Threading.Tasks.Task<Result<Guid>> UpdateConditionalDiscountAsync(Store store,Guid discountId, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
             double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime(), Guid originalDiscountId = new Guid())
         {
+
+            if (store == null)
+                return new Result<Guid>(new Guid(), true, "store not found");
             var d = CreateCalculator(discountType, precent, category, productId);
             var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             ConditionDiscount discount = new ConditionDiscount(d);
@@ -105,6 +114,8 @@ namespace TradingSystem.Business.Market
 
         public async Task<Guid> GenerateConditionalDiscountsAsync(Store store,string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide, Guid originalDiscountId = new Guid())
         {
+            if (store == null)
+                return new Guid();
             switch (discountRuleRelation)
             {
                 case DiscountRuleRelation.And:
@@ -118,12 +129,16 @@ namespace TradingSystem.Business.Market
 
         public async Task<Guid> RemoveDiscountAsync(Store store,string username, Guid storeId, Guid discountId)
         {
+            if (store == null)
+                return new Guid();
             return store.RemoveDiscount(username, discountId);
         }
 
         public async Task AddPolicyRule(Store store,string username, Guid storeId, PolicyRuleRelation policyRuleRelation, RuleContext ruleContext, RuleType ruleType, string category = "", Guid productId = new Guid(),
             double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
         {
+            if (store == null)
+                return;
             var r = CreateRule(ruleContext, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             switch (policyRuleRelation)
             {
@@ -144,6 +159,8 @@ namespace TradingSystem.Business.Market
 
         public async Task RemovePolicyRuleAsync(Store store,string username, Guid storeId)
         {
+            if (store == null)
+                return;
             store.RemoveRule(username);
         }
 
@@ -198,6 +215,8 @@ namespace TradingSystem.Business.Market
         private async Task<Guid> AddDiscountAndRuleAsync(string username, Guid storeId, Guid discountId1, Guid discountId2, Guid originalDiscountId = new Guid())
         {
             Store store = await marketStores.GetStoreById(storeId);
+            if (store == null)
+                return new Guid();
             var rule1 = store.GetRuleByDiscountId(discountId1);
             var rule2 = store.GetRuleByDiscountId(discountId2);
             var andRule = Rule.AddTwoRules(rule1, rule2);

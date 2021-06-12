@@ -105,6 +105,10 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketStores) + " " + nameof(GetStoreHistory));
             User user = MarketUsers.Instance.GetUserByUserName(username);
             Store store = await GetStoreById(storeId);
+            if (store == null)
+            {
+                return new List<IHistory>();
+            }
             return await store.GetStoreHistory(username);
         }
 
@@ -259,6 +263,8 @@ namespace TradingSystem.Business.Market
         public async  Task addToCategory(Product p, string category)
         {
             Category cat=await MarketDAL.Instance.AddNewCategory(category);
+            if (cat == null)
+                return;
             cat.addProduct(p);
             await ProxyMarketContext.Instance.saveChanges();
         }
@@ -266,6 +272,8 @@ namespace TradingSystem.Business.Market
         public async void removeFromCategory(Product p, string category)
         {
             Category cat = await MarketDAL.Instance.AddNewCategory(category);
+            if (cat == null)
+                return;
             cat.Products.Remove(p);
             await ProxyMarketContext.Instance.saveChanges();
 

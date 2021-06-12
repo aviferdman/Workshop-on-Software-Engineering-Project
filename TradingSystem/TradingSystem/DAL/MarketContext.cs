@@ -57,7 +57,7 @@ namespace TradingSystem.DAL
                     }
                     catch (Exception ex)
                     {
-                        return null;
+                        return s;
                     }
 
                 }
@@ -595,26 +595,34 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.ToList();
-                ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.ToList();
-                ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.ToList();
-                ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.ToList();
-                ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.ToList();
-                ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.ToList();
-                ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.ToList();
-                ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.ToList();
-                List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
-                ruleRequests.AddRange(type1);
-                ruleRequests.AddRange(type2);
-                ruleRequests.AddRange(type3);
-                ruleRequests.AddRange(type4);
-                ruleRequests.AddRange(type5);
-                ruleRequests.AddRange(type6);
-                ruleRequests.AddRange(type7);
-                ruleRequests.AddRange(type8);
-                if (ruleRequests.Count == 0)
+                try
+                {
+                    ICollection<MarketRulesRequestType1> type1 = marketRulesRequestType1.ToList();
+                    ICollection<MarketRulesRequestType2> type2 = marketRulesRequestType2.ToList();
+                    ICollection<MarketRulesRequestType3> type3 = marketRulesRequestType3.ToList();
+                    ICollection<MarketRulesRequestType4> type4 = marketRulesRequestType4.ToList();
+                    ICollection<MarketRulesRequestType5> type5 = marketRulesRequestType5.ToList();
+                    ICollection<MarketRulesRequestType6> type6 = marketRulesRequestType6.ToList();
+                    ICollection<MarketRulesRequestType7> type7 = marketRulesRequestType7.ToList();
+                    ICollection<MarketRulesRequestType8> type8 = marketRulesRequestType8.ToList();
+                    List<MarketRuleRequest> ruleRequests = new List<MarketRuleRequest>();
+                    ruleRequests.AddRange(type1);
+                    ruleRequests.AddRange(type2);
+                    ruleRequests.AddRange(type3);
+                    ruleRequests.AddRange(type4);
+                    ruleRequests.AddRange(type5);
+                    ruleRequests.AddRange(type6);
+                    ruleRequests.AddRange(type7);
+                    ruleRequests.AddRange(type8);
+                    if (ruleRequests.Count == 0)
+                        return 0;
+                    return ruleRequests.Max(m => m.getCounter());
+                }
+                catch
+                {
                     return 0;
-                return ruleRequests.Max(m => m.getCounter());
+                }
+               
             }
         }
 
@@ -674,24 +682,45 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                marketRulesRequestType1.Add(req);
-                SaveChanges();
+                try
+                {
+                    marketRulesRequestType1.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
         public async Task AddRequestType7(MarketRulesRequestType7 req)
         {
             lock (this)
             {
-                 marketRulesRequestType7.Add(req);
-                 SaveChanges();
+                try
+                {
+                    marketRulesRequestType7.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
         public async Task AddRequestType8(MarketRulesRequestType8 req)
         {
             lock (this)
             {
-                 marketRulesRequestType8.Add(req);
-                 SaveChanges();
+                try
+                {
+                    marketRulesRequestType8.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -699,8 +728,15 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                 marketRulesRequestType2.Add(req);
-                 SaveChanges();
+                try
+                {
+                    marketRulesRequestType2.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -708,8 +744,15 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                 marketRulesRequestType3.Add(req);
-                 SaveChanges();
+                try
+                {
+                    marketRulesRequestType3.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -717,8 +760,15 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                marketRulesRequestType4.Add(req);
-                SaveChanges();
+                try
+                {
+                    marketRulesRequestType4.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -726,8 +776,15 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                marketRulesRequestType5.Add(req);
-                SaveChanges();
+                try
+                {
+                    marketRulesRequestType5.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -735,8 +792,15 @@ namespace TradingSystem.DAL
         {
             lock (this)
             {
-                marketRulesRequestType6.Add(req);
-                SaveChanges();
+                try
+                {
+                    marketRulesRequestType6.Add(req);
+                    SaveChanges();
+                }
+                catch
+                {
+
+                }
             }
         }
 

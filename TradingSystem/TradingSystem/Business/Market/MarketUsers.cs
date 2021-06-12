@@ -62,6 +62,8 @@ namespace TradingSystem.Business.Market
             Logger.Instance.MonitorActivity(nameof(MarketUsers) + " " + nameof(UpdateProductInShoppingBasket));
             User user = GetUserById(userId);
             Store store = await MarketStores.Instance.GetStoreById(storeId);
+            if (store == null)
+                return false;
             user.UpdateProductInShoppingBasket(store, product, quantity);
             return true;
         }

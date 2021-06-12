@@ -53,7 +53,18 @@ namespace TradingSystem.DAL
             lock (marketContext)
             {
                 if (!isDebug)
-                    marketContext.SaveChanges();
+                {
+                    try
+                    {
+                        marketContext.SaveChanges();
+                    }
+                    catch
+                    {
+
+                    }
+                    
+                }
+                   
             }
         }
         public async Task AddHistory(TransactionStatus history)
@@ -88,7 +99,7 @@ namespace TradingSystem.DAL
             }
             catch (Exception e)
             {
-                return null;
+                return new List<TransactionStatus>();
             }
         }
 
@@ -155,7 +166,7 @@ namespace TradingSystem.DAL
             }
             catch (Exception e)
             {
-                return null;
+                return new List<TransactionStatus>();
             }
         }
 
@@ -221,7 +232,15 @@ namespace TradingSystem.DAL
             }
             else
             {
-                return await marketContext.findProducts(keyword, price_range_low, price_range_high, rating, category);
+                try
+                {
+                    return await marketContext.findProducts(keyword, price_range_low, price_range_high, rating, category);
+                }
+                catch
+                {
+                    return new List<Product>();
+                }
+               
             }
             
 
@@ -340,7 +359,7 @@ namespace TradingSystem.DAL
             }
             catch (Exception e)
             {
-                return null;
+                return new List<TransactionStatus>();
             }
         }
 
