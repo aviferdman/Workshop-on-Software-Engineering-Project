@@ -1,15 +1,21 @@
 import React, {Component} from 'react';
 import './Discounts.css';
-import {formatDate, formatFloat} from "../../../utils";
+import {alertRequestError_default, formatDate, formatFloat} from "../../../utils";
 import ConditionalRender from "../../../ConditionalRender";
 import EditSimpleDiscount from "./EditSimpleDiscount";
 import * as AiIcons from "react-icons/ai";
-
+import * as api from "../../../api";
+import {GlobalContext} from "../../../globalContext";
 
 class SimpleDiscount extends Component {
-    onRemoveClick = discount => e => {
-        // TODO: implement
-        this.props.onRemove(discount);
+    onRemoveClick = discount => async e => {
+        await api.stores.discounts.remove({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            discountId: discount.id,
+        }).then(id => {
+            this.props.onRemove(discount);
+        }, alertRequestError_default);
     }
 
     render() {
@@ -91,4 +97,5 @@ class SimpleDiscount extends Component {
     }
 }
 
+SimpleDiscount.contextType = GlobalContext;
 export default SimpleDiscount;

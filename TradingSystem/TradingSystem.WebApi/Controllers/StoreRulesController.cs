@@ -212,6 +212,42 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult<Guid>> RemoveDiscount([FromBody] DiscountRefActionDTO discountRefActionDTO)
+        {
+            if (string.IsNullOrWhiteSpace(discountRefActionDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (discountRefActionDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store id");
+            }
+            if (discountRefActionDTO.DiscountId == Guid.Empty)
+            {
+                return BadRequest("Invalid discount id");
+            }
+
+            Result<Guid>? result = await MarketRulesService.RemoveDiscountAsync
+            (
+                discountRefActionDTO.Username,
+                discountRefActionDTO.StoreId,
+                discountRefActionDTO.DiscountId
+            );
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            Guid id = result.Ret;
+
+            return Ok(id);
+        }
+
+        [HttpPost]
         public async Task<ActionResult<AllDiscountsDTO>> Discounts([FromBody] GuidDTO guidDTO)
         {
             if (guidDTO.Id == Guid.Empty)
