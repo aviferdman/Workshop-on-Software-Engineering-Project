@@ -4,6 +4,7 @@ using System.Net.WebSockets;
 
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
+using TradingSystem.WebApi.Notifications;
 
 namespace TradingSystem.WebApi.Controllers
 {
@@ -33,8 +34,8 @@ namespace TradingSystem.WebApi.Controllers
             Subscriber subRequestPurchase = new Subscriber(username, socket, false);
             PublisherManagement.Instance.Subscribe(username, subRequestPurchase, EventType.RequestPurchaseEvent);
             // for admins stats:
-            // Subscriber subRequestStats = new Subscriber(username, socket, false);
-            // PublisherManagement.Instance.Subscribe(username, subRequestStats, EventType.Stats);
+            var subRequestStats = new SubscriberStatistics(username, socket, false);
+            PublisherManagement.Instance.Subscribe(username, subRequestStats, EventType.Stats);
 
             PublisherManagement.Instance.BecomeLoggedIn(username);
         }
@@ -43,6 +44,7 @@ namespace TradingSystem.WebApi.Controllers
         {
             _ = userWS.TryRemove(username, out _);
             PublisherManagement.Instance.Unsbscribe(username);
+            PublisherManagement.Instance.BecomeLoggedOut(username);
         }
     }
 }

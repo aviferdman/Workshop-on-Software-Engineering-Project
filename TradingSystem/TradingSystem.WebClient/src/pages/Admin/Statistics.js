@@ -9,12 +9,24 @@ export class Statistics extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "",
             statistics: StatisticsData.statistics,
             graph: ""
         };
     }
 
+    componentDidMount() {
+        this.context.webSocket.addEventListener('message', this.onNotificationReceived);
+    }
+
+    onNotificationReceived = e => {
+        console.log('statistics page, web socket message from server', e.data);
+        let notification = JSON.parse(e.data);
+        if (!notification.kind || notification.kind === 'LiveNotification') {
+            return;
+        }
+
+        console.log('Statistics notification', this.state);
+    }
 
     changeGraphType = e => {
         this.setState({

@@ -101,8 +101,13 @@ class App extends React.Component {
 
         // Listen for messages
         socket.addEventListener('message', function (event) {
-            alert(`Live notification: ${event.data}`);
             console.log('web socket message from server', event.data);
+            let notification = JSON.parse(event.data);
+            if (!notification.kind || notification.kind === 'Statistics') {
+                return;
+            }
+
+            alert(`Live notification: ${notification.content}`);
         });
 
         this.setState({
