@@ -25,18 +25,25 @@ class PolicyRecord extends Component {
                                 <div className="simple-discount-li-div" style={{height: "35rem"}}>
                                     <p className="discName">{<text style={{fontWeight: "bold"}}>Creator: </text>} {elem.creator}  </p>
                                     <p className="discName">{<text style={{fontWeight: "bold"}}>Policy Rule:  </text>}  {elem.ruleRelation === "Condition" ? "Xor" : elem.ruleRelation} </p>
-                                    <p className="discName">{<text style={{fontWeight: "bold"}}>Policy Context:  </text>} {elem.ruleContext}  </p>
                                     <p className="discName">{<text style={{fontWeight: "bold"}}>Rule Type: </text>} {elem.ruleType || "Simple"}  </p>
                                     <ConditionalRender
-                                        condition={elem.ruleContext === 'Category'}
-                                        render={() => (<p className="discName">  {<text style={{fontWeight: "bold"}}>Category:</text>}  {elem.category} </p>)}
-                                    />
-                                    <ConditionalRender
-                                        condition={elem.ruleContext === 'Product'}
-                                        render={() => {
-                                            let product = this.props.storeProductsMap[elem.productId];
-                                            return (<p className="discName"> {<text style={{fontWeight: "bold"}}>Product: </text>} {(product && product.name) || "<deleted>"} </p>);
-                                        }}
+                                        condition={elem.ruleType === 'Quantity'}
+                                        render={() => [(
+                                            <p className="discName">{<text style={{fontWeight: "bold"}}>Policy Context:  </text>} {elem.ruleContext}  </p>
+                                        ), (
+                                            <ConditionalRender
+                                                condition={elem.ruleContext === 'Category'}
+                                                render={() => (<p className="discName">  {<text style={{fontWeight: "bold"}}>Category:</text>}  {elem.category} </p>)}
+                                            />
+                                        ), (
+                                            <ConditionalRender
+                                                condition={elem.ruleContext === 'Product'}
+                                                render={() => {
+                                                    let product = this.props.storeProductsMap[elem.productId];
+                                                    return (<p className="discName"> {<text style={{fontWeight: "bold"}}>Product: </text>} {(product && product.name) || "<deleted>"} </p>);
+                                                }}
+                                            />
+                                        )]}
                                     />
                                     <ConditionalRender
                                         condition={elem.ruleType != null && elem.ruleType !== 'Time' && elem.minValue != null}
