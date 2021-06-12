@@ -246,13 +246,14 @@ class AddPolicy extends React.Component {
 
                                 <div>
                                     <select className="disc-input-props"
+                                            disabled={this.props.isFirst}
                                             required
                                             value={this.getInputValue('ruleRelation')}
                                             onChange={this.onInputChange('ruleRelation')}>
-                                        <option value="Simple">Simple</option>
-                                        <option value="Condition">Xor</option>
-                                        <option value="And">And</option>
-                                        <option value="Or">Or</option>
+                                        {this.props.isFirst  ? (<option value="Simple">Simple</option>) : null}
+                                        {!this.props.isFirst ? (<option value="Condition">Xor</option>) : null}
+                                        {!this.props.isFirst ? (<option value="And">And</option>)       : null}
+                                        {!this.props.isFirst ? (<option value="Or">Or</option>)         : null}
                                     </select>
                                 </div>
                             </div>
