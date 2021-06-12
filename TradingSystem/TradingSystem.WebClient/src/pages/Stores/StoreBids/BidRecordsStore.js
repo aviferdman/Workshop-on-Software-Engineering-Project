@@ -18,7 +18,9 @@ export default class BidRecordsStore extends React.Component {
 
                         return (
                             <li  key={elem.id}>
-                                <BidRecordStore bid={elem} storeId={this.props.storeId} />
+                                <BidRecordStore bid={elem}
+                                                storeId={this.props.storeId}
+                                                myPermissions={this.props.myPermissions} />
                             </li>
                         );
                     })}

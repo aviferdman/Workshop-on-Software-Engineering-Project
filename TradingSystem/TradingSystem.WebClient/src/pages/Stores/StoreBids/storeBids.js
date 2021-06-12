@@ -13,17 +13,17 @@ export class StoreBids extends React.Component {
             bids: null,
             storeName: null,
             storeProductsMap: null,
+            myPermissions: null,
             ready: false,
         };
         this.storeId = this.props.match.params.storeId;
     }
 
     async componentDidMount() {
-        let promise_storeProducts = this.fetchStoreProducts();
-        let promise_bids = this.fetchBids();
         await Promise.all([
-            promise_storeProducts,
-            promise_bids
+            this.fetchStoreProducts(),
+            this.fetchBids(),
+            this.fetchMyStorePermissions(),
         ]);
         this.setState({
             ready: true,
@@ -49,6 +49,18 @@ export class StoreBids extends React.Component {
             }, alertRequestError_default);
     }
 
+    async fetchMyStorePermissions() {
+        await api.stores.permissions.mine(this.context.username, this.storeId)
+            .then(permissions => {
+                this.setState({
+                    myPermissions: {
+                        role: permissions.role,
+                        actions: util.arrayToHashset(permissions.permissions),
+                    },
+                });
+            }, alertRequestError_default);
+    }
+
     render() {
         if (!this.state.ready) {
             return null;
@@ -66,6 +78,7 @@ export class StoreBids extends React.Component {
                             bidRecords={this.state.bids}
                             storeProductsMap={this.state.storeProductsMap}
                             storeId={this.storeId}
+                            myPermissions={this.state.myPermissions}
                         />
 
                     </div>

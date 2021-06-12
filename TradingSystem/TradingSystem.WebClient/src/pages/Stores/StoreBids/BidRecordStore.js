@@ -154,6 +154,8 @@ export default class BidRecordStore extends React.Component {
             bid.status === api.data.bids.customerNegotiate ||
             bid.status === api.data.bids.ownerNegotiate
         );
+        let myRole = this.props.myPermissions && this.props.myPermissions.role;
+        let showActions = isInNegotiation && myRole != null && myRole !== 'manager' && myRole !== 'guest';
 
         return (
             <div className="simple-bids-li-div">
@@ -163,6 +165,7 @@ export default class BidRecordStore extends React.Component {
                 <p className="bidName">{<text style={{ fontWeight: "bold" }}>Status:</text>} {
                     bid.status === api.data.bids.approved ? (<label style={{ color: "green" }}>Approved</label>) :
                     bid.status === api.data.bids.ownerNegotiate ? (<label style={{ color: "orange" }}>Negotiation (waiting on customer)</label>) :
+                    !showActions && isInNegotiation ? (<label style={{ color: "orange" }}>Negotiation (waiting on staff)</label>) :
                     bid.status === api.data.bids.customerNegotiate && bid.approvedByMe ? (<label style={{ color: "orange" }}>Negotiation (waiting on staff)</label>) :
                     bid.status === api.data.bids.customerNegotiate ? (<label style={{ color: "orange" }}>Negotiation (waiting on you)</label>) :
                     bid.status === api.data.bids.declined ? (<label style={{ color: "red" }}>Declined</label>) :
@@ -170,7 +173,7 @@ export default class BidRecordStore extends React.Component {
                 }
                 </p>
 
-                <p className="bidName" style={{ visibility: isInNegotiation ? 'visible' : 'hidden' }}>
+                <p className="bidName" style={{ visibility: showActions ? 'visible' : 'hidden' }}>
                     <text style={{fontWeight: "bold"}}>Action: </text>
                     <select onChange={this.onActionSelectionChange}>
                         <option value=""/>
@@ -186,7 +189,7 @@ export default class BidRecordStore extends React.Component {
 
                 <button className="button primary" style={{
                     margin: "2rem",
-                    visibility: isInNegotiation ? 'visible' : 'hidden'
+                    visibility: showActions ? 'visible' : 'hidden'
                 }} onClick={this.applyAction}>Apply Action</button>
 
                 <SimpleModal
