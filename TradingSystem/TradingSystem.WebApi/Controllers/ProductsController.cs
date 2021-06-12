@@ -23,6 +23,18 @@ namespace TradingSystem.WebApi.Controllers
         public MarketProductsService MarketProductsService { get; }
 
         [HttpGet]
+        public ActionResult<IEnumerable<string>> Categories()
+        {
+            ICollection<string>? result = MarketProductsService.getAllCategories();
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(result.Where(x => !string.IsNullOrWhiteSpace(x)));
+        }
+
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductSearchDTO>>> Search([FromQuery] ProductSearchCreteria searchCreteria)
         {
             if (searchCreteria == null)

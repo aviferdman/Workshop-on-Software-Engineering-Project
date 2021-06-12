@@ -89,7 +89,8 @@ export class ShoppingCart extends Component {
                     </div>
 
                     <div className="total">
-                        <h2>Total price of all products: </h2>
+                        <h2>Total price of all products:</h2>
+                        <h3 style={{ fontWeight: "normal", }}>(after bids and discounts)</h3>
                         {this.state.totalPrice == null ? null : (
                             <h1>{formatCurrency(this.state.totalPrice)} </h1>
                         )}

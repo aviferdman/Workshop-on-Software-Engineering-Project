@@ -28,11 +28,18 @@ namespace TradingSystem.Business
 
             var content = new FormUrlEncodedContent(postContent);
 
-            var response = await client.PostAsync(url, content);
+            try
+            {
+                var response = await client.PostAsync(url, content);
 
-            var responseString = await response.Content.ReadAsStringAsync();
+                var responseString = await response.Content.ReadAsStringAsync();
 
-            return responseString;
+                return responseString;
+            }
+            catch (TaskCanceledException)
+            {
+                return "-1";
+            }
         }
     }
 }

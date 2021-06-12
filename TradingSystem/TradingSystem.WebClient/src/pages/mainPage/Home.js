@@ -6,12 +6,17 @@ import axios from "axios";
 import {GlobalContext} from "../../globalContext";
 import HomeProducts from "../../components/HomeProducts";
 import Header from "../../header";
+import * as api from '../../api';
+import {categories} from "../../api";
+import {alertRequestError_default} from "../../utils";
 
 export class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            categories: null,
             products: null,
+            productsFiltered: null,
             cartItems: [],
             category: "",
             ordered: "",
@@ -20,6 +25,19 @@ export class Home extends React.Component {
             searchPriceMin: "",
             searchPriceMax: "",
         };
+    }
+
+    async componentDidMount() {
+        await this.fetchCategories();
+    }
+
+    async fetchCategories() {
+        await api.categories.fetchAll()
+            .then(categories => {
+                this.setState({
+                    categories: categories,
+                });
+            }, alertRequestError_default);
     }
 
     onSearchInputChange = e => {
@@ -64,8 +82,10 @@ export class Home extends React.Component {
             return;
         }
         this.setState({
-            products: response.data
+            products: response.data,
+            productsFiltered: response.data,
         });
+        this.sortProductsByCurrent();
     };
 
     removeFromCart = (product) => {
@@ -95,27 +115,42 @@ export class Home extends React.Component {
 
     sortProducts = (event) =>{
         const sort = event.target.value;
-        this.setState((state) => ({
+        this.sortProductsCore(sort);
+    };
+
+    sortProductsByCurrent() {
+        this.sortProductsCore(this.state.sort);
+    }
+
+    sortProductsCore(sort) {
+        let products = this.sortProductsArray(this.state.products, sort);
+        let productsFiltered = this.sortProductsArray(this.state.productsFiltered, sort);
+        this.setState({
             sort: sort,
-            products: this.state.products.slice().sort((a,b) => (
-                sort === "lowest" ?
-                    ((a.price > b.price)? 1 : -1):
+            products: products,
+            productsFiltered: productsFiltered,
+        });
+    }
+
+    sortProductsArray(products, sort) {
+        return products.slice().sort((a,b) => (
+            sort === "lowest" ?
+                ((a.price > b.price)? 1 : -1):
                 sort === "highest" ?
                     ((a.price < b.price)? 1 : -1):
                     ((a.id < b.id)? 1 : -1)
 
-            ))
-        }));
-    };
+        ));
+    }
 
     filterProducts = (event) => {
         if(event.target.value === ""){
-            this.setState({category: event.target.value , products: this.state.products})
+            this.setState({category: event.target.value , productsFiltered: this.state.products});
         }
         else{
             this.setState({
                 category: event.target.value,
-                products: this.state.products.filter(product => product.category === event.target.value),
+                productsFiltered: this.state.products.filter(product => product.category === event.target.value),
             });
         }
     };
@@ -142,10 +177,9 @@ export class Home extends React.Component {
                         Category{" "}
                         <select value={this.state.searchCategory} onChange={this.onSearchCategoryChange}>
                             <option value="">ALL</option>
-                            <option value="Dairy">Dairy</option>
-                            <option value="Pastries">Pastries</option>
-                            <option value="Beverage">Beverage</option>
-
+                            {this.state.categories == null ? null : this.state.categories.map(category => {
+                                return (<option value={category} key={category}>{category}</option>);
+                            })}
                         </select>
                     </div>
 
@@ -177,14 +211,15 @@ export class Home extends React.Component {
                     <div className="content">
                         <div className="main">
                             <Filter
-                                count={this.state.products === null ? 0 : this.state.products.length}
+                                count={this.state.productsFiltered == null ? 0 : this.state.productsFiltered.length}
+                                categories={this.state.categories}
                                 category={this.state.category}
                                 sort={this.state.ordered}
                                 filterProducts={this.filterProducts}
                                 sortProducts={this.sortProducts} >
                             </Filter>
                             {this.state.products === null ? null : (
-                                <HomeProducts products={this.state.products} addToCart={this.addToCart}
+                                <HomeProducts products={this.state.productsFiltered} addToCart={this.addToCart}
                                               history={this.props.history}/>
                             )}
                         </div>

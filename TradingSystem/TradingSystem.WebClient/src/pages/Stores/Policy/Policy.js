@@ -94,7 +94,10 @@ export class Policy extends React.Component {
                             <ConditionalRender
                                 condition={this.state.ready}
                                 render={() => (
-                                    <AddPolicy storeId={this.storeId} storeProducts={this.state.storeProducts} onSuccess={this.onPolicyAdd} />
+                                    <AddPolicy storeId={this.storeId}
+                                               isFirst={this.state.policies == null || this.state.policies.length === 0}
+                                               storeProducts={this.state.storeProducts}
+                                               onSuccess={this.onPolicyAdd} />
                                 )}
                             />
                         </div>

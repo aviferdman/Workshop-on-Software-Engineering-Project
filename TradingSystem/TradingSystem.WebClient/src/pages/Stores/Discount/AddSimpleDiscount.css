@@ -156,3 +156,7 @@
     align-items: baseline;
     margin-left: 23%;
 }
+
+.disc-grid-col-1-1 {
+    grid-column: 1/1;
+}
