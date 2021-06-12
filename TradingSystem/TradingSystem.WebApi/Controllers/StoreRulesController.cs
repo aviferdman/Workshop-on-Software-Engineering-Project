@@ -28,8 +28,19 @@ namespace TradingSystem.WebApi.Controllers
         public MarketRulesService MarketRulesService { get; }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> AddDiscount([FromBody] DiscountParamsDTO discountParamsDTO)
+        public async Task<ActionResult<Guid>> AddDiscount([FromBody] DiscountParamsSimpleCreationDTO discountParamsSimpleCreationDTO)
         {
+            if (string.IsNullOrWhiteSpace(discountParamsSimpleCreationDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (discountParamsSimpleCreationDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store id");
+            }
+
+            DiscountParamsSimpleDTO discountParamsDTO = discountParamsSimpleCreationDTO.Params;
+
             RuleContext ruleContext;
             if (!Enum.TryParse(discountParamsDTO.DiscountType, out ruleContext))
             {
@@ -41,8 +52,8 @@ namespace TradingSystem.WebApi.Controllers
             {
                 task = MarketRulesService.AddSimpleDiscountAsync
                 (
-                    discountParamsDTO.Username,
-                    discountParamsDTO.StoreId,
+                    discountParamsSimpleCreationDTO.Username,
+                    discountParamsSimpleCreationDTO.StoreId,
                     ruleContext,
                     discountParamsDTO.Percent,
                     discountParamsDTO.Category,
@@ -59,8 +70,8 @@ namespace TradingSystem.WebApi.Controllers
 
                 task = MarketRulesService.AddConditionalDiscountAsync
                 (
-                    discountParamsDTO.Username,
-                    discountParamsDTO.StoreId,
+                    discountParamsSimpleCreationDTO.Username,
+                    discountParamsSimpleCreationDTO.StoreId,
                     ruleContext,
                     ruleType,
                     discountParamsDTO.Percent,
@@ -79,6 +90,88 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError();
             }
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Guid>> EditDiscount([FromBody] DiscountParamsSimpleEditDTO discountParamsSimpleEditDTO)
+        {
+            if (string.IsNullOrWhiteSpace(discountParamsSimpleEditDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (discountParamsSimpleEditDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store id");
+            }
+            if (discountParamsSimpleEditDTO.DiscountId == Guid.Empty)
+            {
+                return BadRequest("Invalid discount id");
+            }
+
+            DiscountParamsSimpleDTO discountParamsDTO = discountParamsSimpleEditDTO.Params;
+
+            RuleContext ruleContext;
+            if (!Enum.TryParse(discountParamsDTO.DiscountType, out ruleContext))
+            {
+                return BadRequest("Invalid discount type");
+            }
+
+            Task<Result<Guid>> task;
+            if (string.IsNullOrEmpty(discountParamsDTO.ConditionType))
+            {
+                task = MarketRulesService.UpdateSimpleDiscountAsync
+                (
+                    discountParamsSimpleEditDTO.DiscountId,
+                    discountParamsSimpleEditDTO.Username,
+                    discountParamsSimpleEditDTO.StoreId,
+                    ruleContext,
+                    discountParamsDTO.Percent,
+                    discountParamsDTO.Category,
+                    discountParamsDTO.ProductId ?? Guid.Empty
+                );
+            }
+            else
+            {
+                RuleType ruleType;
+                if (!Enum.TryParse(discountParamsDTO.ConditionType, out ruleType))
+                {
+                    return BadRequest("Invalid condition type");
+                }
+
+                task = MarketRulesService.UpdateConditionalDiscountAsync
+                (
+                    discountParamsSimpleEditDTO.DiscountId,
+                    discountParamsSimpleEditDTO.Username,
+                    discountParamsSimpleEditDTO.StoreId,
+                    ruleContext,
+                    ruleType,
+                    discountParamsDTO.Percent,
+                    discountParamsDTO.Category,
+                    discountParamsDTO.ProductId ?? Guid.Empty,
+                    discountParamsDTO.MaxValue ?? int.MaxValue,
+                    discountParamsDTO.MinValue ?? 0,
+                    discountParamsDTO.StartDate ?? default,
+                    discountParamsDTO.EndDate ?? default
+                );
+            }
+
+            Result<Guid> result = await task;
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            Guid id = result.Ret;
+            if (id == Guid.Empty)
+            {
+                return InternalServerError();
+            }
+
+            return Ok(id);
         }
 
         [HttpPost]

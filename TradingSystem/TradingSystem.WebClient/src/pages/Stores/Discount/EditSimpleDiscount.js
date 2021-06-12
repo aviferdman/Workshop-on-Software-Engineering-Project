@@ -45,7 +45,7 @@ class EditSimpleDiscount extends React.Component {
         this.state.discountFields.fields.endDate.setValidationOff();
 
         this.onDiscountTypeChangeCore();
-        this.onConditionTypeChangeCore();
+        this.onConditionTypeChangeCore(false);
         if (set) {
             this.setState({
                 ...this.state
@@ -54,16 +54,21 @@ class EditSimpleDiscount extends React.Component {
     }
 
     newFields() {
+        let discount = this.props.discount;
+        if (discount == null) {
+            throw new Error('Null discount in edit');
+        }
+
         return new FormFields({
-            discountType: 'Product',
-            conditionType: '',
-            percent: new NumberFormField(),
-            productId: new NullFormField(),
-            category: '',
-            minValue: new NullableNumberFormField(),
-            maxValue: new NullableNumberFormField(),
-            startDate: new DateFormField(),
-            endDate: new DateFormField(),
+            discountType: discount.discountType,
+            conditionType: discount.conditionType,
+            percent: new NumberFormField(discount.percent),
+            productId: new NullFormField(discount.productId),
+            category: discount.category,
+            minValue: new NullableNumberFormField(discount.minValue),
+            maxValue: new NullableNumberFormField(discount.maxValue),
+            startDate: new DateFormField(discount.startDate),
+            endDate: new DateFormField(discount.endDate),
         });
     }
 
@@ -79,9 +84,8 @@ class EditSimpleDiscount extends React.Component {
         return this.getField(field).inputValue;
     }
 
-    onInputChange = field => e => {
-        e.preventDefault();
-        if (!this.state.discountFields.getField(field).trySetValueFromEvent(e)) {
+    onInputChange = fieldName => e => {
+        if (!this.state.discountFields.getField(fieldName).trySetValueFromEvent(e)) {
             return;
         }
         this.setState({
@@ -90,18 +94,17 @@ class EditSimpleDiscount extends React.Component {
     }
 
     onConditionTypeChange = e => {
-        e.preventDefault();
         if (!this.state.discountFields.getField('conditionType').trySetValueFromEvent(e)) {
             return;
         }
 
-        this.onConditionTypeChangeCore();
+        this.onConditionTypeChangeCore(true);
         this.setState({
             ...this.state
         });
     }
 
-    onConditionTypeChangeCore = () => {
+    onConditionTypeChangeCore = resetValues => {
         let conditionType = this.getFieldValue('conditionType');
         switch (conditionType) {
             case '':
@@ -119,16 +122,17 @@ class EditSimpleDiscount extends React.Component {
                         this.state.minMaxStep = '0.01';
                         break;
                 }
-                this.getField('minValue').inputValue = '';
-                this.getField('minValue').value = null;
-                this.getField('maxValue').inputValue = '';
-                this.getField('maxValue').value = null;
+                if (resetValues) {
+                    this.getField('minValue').inputValue = '';
+                    this.getField('minValue').value = null;
+                    this.getField('maxValue').inputValue = '';
+                    this.getField('maxValue').value = null;
+                }
                 break;
         }
     }
 
     onDiscountTypeChange = e => {
-        e.preventDefault();
         if (!this.state.discountFields.getField('discountType').trySetValueFromEvent(e)) {
             return;
         }
@@ -214,21 +218,15 @@ class EditSimpleDiscount extends React.Component {
                 break;
         }
 
-        let promise = api.stores.discounts.add({
+        let promise = api.stores.discounts.edit({
+            discountId: this.props.discount.id,
             username: this.context.username,
             storeId: this.props.storeId,
-            discountType: discountObj.discountType,
-            conditionType: discountObj.conditionType,
-            percent: discountObj.percent,
-            category: discountObj.category,
-            productId: discountObj.productId,
-            minValue: discountObj.minValue,
-            maxValue: discountObj.maxValue,
-            startDate: discountObj.startDate,
-            endDate: discountObj.endDate,
+            params: discountObj,
         });
 
         await promise.then(discountId => {
+            Object.assign(this.props.discount, discountObj);
             discountObj.id = discountId;
             discountObj.creator = this.context.username;
             this.props.onSuccess(discountObj);
@@ -252,6 +250,7 @@ class EditSimpleDiscount extends React.Component {
                                 <div>
                                     <select className="disc-input-props"
                                             required
+                                            name={'discount-type-select'}
                                             value={this.getInputValue('discountType')}
                                             onChange={this.onDiscountTypeChange}>
                                         <option value="Product">Product</option>
@@ -271,6 +270,7 @@ class EditSimpleDiscount extends React.Component {
                                 <div>
                                     <select className="disc-input-props"
                                             required
+                                            name={'condition-type-select'}
                                             value={this.getInputValue('conditionType')}
                                             onChange={this.onConditionTypeChange}>
                                         <option value="">None</option>
@@ -313,6 +313,7 @@ class EditSimpleDiscount extends React.Component {
 
                                         <select className="disc-input-props"
                                                 required
+                                                name={'product-select'}
                                                 value={this.getInputValue('productId')}
                                                 onChange={this.onInputChange('productId')}>
                                             <option value=""/>
@@ -462,14 +463,14 @@ const Modal = ({ handleClose, handleConfirm, show, children }) => {
             <section className='modal-main'>
 
                 <div className="lines-props">
-                    <h2 className="center-text">Add Simple Discount</h2>
+                    <h2 className="center-text">Edit Simple Discount</h2>
                     {children}
                 </div>
 
 
                 <div className="modal-buttons">
                     <button className="modal-buttons-props" onClick={handleClose} > Close </button>
-                    <button className="modal-buttons-props" onClick={handleConfirm} > Add </button>
+                    <button className="modal-buttons-props" onClick={handleConfirm} > Edit </button>
                 </div>
 
 

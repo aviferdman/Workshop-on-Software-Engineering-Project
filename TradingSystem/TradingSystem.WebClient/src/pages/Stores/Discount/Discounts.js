@@ -108,6 +108,20 @@ export class Discounts extends React.Component {
        this.onDiscountAddCore(this.state.simpleDiscounts, discount);
     }
 
+    onSimpleDiscountEdit = discount => {
+        this.setState({
+            nextSerialNumber: this.state.nextSerialNumber,
+        })
+    }
+
+    onSimpleDiscountRemove = discount => {
+        delete this.state.simpleDiscountsSerialNumberMap[discount.serialNumber];
+        delete this.state.simpleDiscountsIdMap[discount.id];
+        this.setState({
+            simpleDiscounts: this.state.simpleDiscounts.filter(d => d.id !== discount.id),
+        });
+    }
+
     onCompoundDiscountAdd = discount => {
         this.onDiscountAddCore(this.state.complexDiscounts, discount);
     }
@@ -136,7 +150,12 @@ export class Discounts extends React.Component {
                     {/*top grid - simple discounts*/}
                     <div  className="discounts-grid-simple">
                         <h2> Simple Discounts </h2>
-                        <SimpleDiscount simpleDiscountRecords={this.state.simpleDiscounts} storeProductsMap={this.state.storeProductsMap} />
+                        <SimpleDiscount storeId={this.storeId}
+                                        storeProducts={this.state.storeProducts}
+                                        onEdit={this.onSimpleDiscountEdit}
+                                        onRemove={this.onSimpleDiscountRemove}
+                                        simpleDiscountRecords={this.state.simpleDiscounts}
+                                        storeProductsMap={this.state.storeProductsMap} />
                     </div>
 
                     {/*middle grid - complex discounts*/}

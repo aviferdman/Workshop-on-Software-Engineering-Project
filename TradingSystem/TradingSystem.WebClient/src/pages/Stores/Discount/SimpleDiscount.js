@@ -7,6 +7,11 @@ import * as AiIcons from "react-icons/ai";
 
 
 class SimpleDiscount extends Component {
+    onRemoveClick = discount => e => {
+        // TODO: implement
+        this.props.onRemove(discount);
+    }
+
     render() {
         if (this.props.simpleDiscountRecords == null) {
             return null;
@@ -29,13 +34,17 @@ class SimpleDiscount extends Component {
 
                                         <div className="control-buttons" style={{marginLeft:"1rem" , marginTop:"1rem"}}>
                                             <div >
-                                                <button className="exit-button"  >
+                                                <button className="exit-button" onClick={this.onRemoveClick(elem)} >
                                                     <AiIcons.AiOutlineClose />
                                                 </button>
                                             </div>
 
                                             <div style={{marginLeft:"2.5rem"}}>
-                                                <EditSimpleDiscount />
+                                                <EditSimpleDiscount
+                                                    discount={elem}
+                                                    storeId={this.props.storeId}
+                                                    storeProducts={this.props.storeProducts}
+                                                    onSuccess={this.props.onEdit} />
                                             </div>
                                         </div>
 

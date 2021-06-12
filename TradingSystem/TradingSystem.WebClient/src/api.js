@@ -181,6 +181,7 @@ export const stores = {
             id: storeId,
         })),
         add: postCurry('/stores/rules/AddDiscount'),
+        edit: postCurry('/stores/rules/EditDiscount'),
         addCompound: postCurry('/stores/rules/AddCompoundDiscount'),
     },
 
