@@ -2,34 +2,48 @@ import React, {Component} from 'react';
 import './AdminHistory.css';
 import {GlobalContext} from "../../globalContext";
 import Header from "../../header";
-import StatisticsData from "../../data/statisticsData.json"
-import { Bar, Pie } from 'react-chartjs-2'
+import { Bar, Pie } from 'react-chartjs-2';
+import * as api from '../../api';
+import {alertRequestError_default} from "../../utils";
 
 export class Statistics extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            statistics: StatisticsData.statistics,
-            graph: ""
+            statistics: null,
+            datesRange: null,
+            graph: "",
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.context.webSocket.addEventListener('message', this.onNotificationReceived);
+        await this.fetchStatistics();
     }
 
     componentWillUnmount() {
         this.context.webSocket.removeEventListener('message', this.onNotificationReceived);
     }
 
-    onNotificationReceived = e => {
+    onNotificationReceived = async e => {
         console.log('statistics page, web socket message from server', e.data);
         let notification = JSON.parse(e.data);
         if (!notification.kind || notification.kind === 'LiveNotification') {
             return;
         }
-        
-        console.log('Statistics notification', this.state);
+
+        if (this.state.datesRange == null) {
+            await this.fetchStatistics();
+        }
+    }
+
+    fetchStatistics = async () => {
+        await api.statistics.fetchVisitingStatisticsForToday()
+            .then(statistics => {
+                this.setState({
+                    statistics: statistics,
+                });
+            }, alertRequestError_default);
     }
 
     changeGraphType = e => {
@@ -39,6 +53,10 @@ export class Statistics extends Component {
     };
 
     render() {
+        if (this.state.statistics == null) {
+            return null;
+        }
+
         return (
             <div className="grid-container">
                 <Header />
@@ -49,8 +67,8 @@ export class Statistics extends Component {
                         <p className= "bidName"> {<text style={{fontWeight: "bold"}}>Graph Type: </text>}
 
                                 <select value={this.state.graph} onChange={this.changeGraphType}>
-                                    <option value="Bar">Bar</option>
                                     <option value="Pie">Pie</option>
+                                    <option value="Bar">Bar</option>
                                 </select>
 
                         </p>

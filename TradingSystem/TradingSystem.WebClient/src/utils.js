@@ -1,8 +1,13 @@
-export function alertRequestError_default(e) {
+export function getDefaultErrorMessage(e) {
     let msg = (e.response && e.response.data && e.response.data.title) ||
         (e.response && typeof e.response.data === "string" && e.response.data) ||
         (e.response && e.response.title) ||
         e.message;
+    return msg;
+}
+
+export function alertRequestError_default(e) {
+    let msg = getDefaultErrorMessage(e);
     if (msg) {
         msg = ': ' + msg;
     }
