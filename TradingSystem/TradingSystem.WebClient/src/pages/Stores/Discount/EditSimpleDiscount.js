@@ -63,7 +63,7 @@ class EditSimpleDiscount extends React.Component {
         return new FormFields({
             discountType: discount.discountType,
             conditionType: discount.conditionType,
-            percent: new NumberFormField(discount.percent),
+            percent: new NumberFormField(discount.percent * 100),
             productId: new NullFormField(discount.productId),
             category: discount.category,
             minValue: new NullableNumberFormField(discount.minValue),
