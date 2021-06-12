@@ -98,6 +98,8 @@ namespace TradingSystem.Business.Market.BidsPackage
             NotifyOwners(EventType.RequestPurchaseEvent, $"{username} Suggested to buy product {productName} for {newBidPrice} in store {storeName}");
             bid.Price = newBidPrice;
             bid.Status = BidStatus.CustomerNegotiate;
+            var bidState = GetBidStateById(bidId);
+            bidState.OwnersAccepted = new HashSet<Prem>();
             await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
@@ -157,6 +159,8 @@ namespace TradingSystem.Business.Market.BidsPackage
             PublisherManagement.Instance.EventNotification(bid.Username, EventType.RequestPurchaseEvent, $"Hi {bid.Username}, We suggest another bid request for you.");
             bid.Price = newBidPrice;
             bid.Status = BidStatus.OwnerNegotiate;
+            var bidState = GetBidStateById(bidId);
+            bidState.OwnersAccepted = new HashSet<Prem>();
             await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
