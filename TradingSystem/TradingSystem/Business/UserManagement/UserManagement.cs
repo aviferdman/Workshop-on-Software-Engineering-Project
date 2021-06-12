@@ -111,6 +111,7 @@ namespace TradingSystem.Business.UserManagement
                     else
                     {
                         u.IsLoggedin = true;
+                        await ProxyMarketContext.Instance.saveChanges();
                         return "success";
                     }
                         

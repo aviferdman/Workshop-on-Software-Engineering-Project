@@ -581,9 +581,9 @@ namespace TradingSystem.DAL
                 ruleRequests.AddRange(type7);
                 ruleRequests.AddRange(type8);
                 ruleRequests.AddRange(type6);
-                ruleRequests.OrderBy(r => r.getCounter());
+                var ordered=ruleRequests.OrderBy(r => r.getCounter());
            
-            foreach(MarketRuleRequest r in ruleRequests)
+            foreach(MarketRuleRequest r in ordered)
             {
                 r.ActivateFunction(s);
             }
