@@ -18,13 +18,17 @@ export class Statistics extends Component {
         this.context.webSocket.addEventListener('message', this.onNotificationReceived);
     }
 
+    componentWillUnmount() {
+        this.context.webSocket.removeEventListener('message', this.onNotificationReceived);
+    }
+
     onNotificationReceived = e => {
         console.log('statistics page, web socket message from server', e.data);
         let notification = JSON.parse(e.data);
         if (!notification.kind || notification.kind === 'LiveNotification') {
             return;
         }
-
+        
         console.log('Statistics notification', this.state);
     }
 
@@ -106,41 +110,39 @@ export class Statistics extends Component {
                                 }}
                             />
                         </div>
-                    ):
-                        (
-                            <div style={{marginTop: "20rem"}} >
-                                <Pie
-                                    data = {{
-                                        labels: ['Guests', 'Members', 'Managers', 'Owners', 'Admins',],
-                                        datasets: [{
-                                            label: '# of Users',
-                                            data: [this.state.statistics.guests, this.state.statistics.pureMembers, this.state.statistics.pureManagers, this.state.statistics.owners, this.state.statistics.admins],
-                                            backgroundColor: [
-                                                'rgba(255, 99, 132, 0.2)',
-                                                'rgba(54, 162, 235, 0.2)',
-                                                'rgba(255, 206, 86, 0.2)',
-                                                'rgba(75, 192, 192, 0.2)',
-                                                'rgba(153, 102, 255, 0.2)',
-                                            ],
-                                            borderColor: [
-                                                'rgba(255, 99, 132, 1)',
-                                                'rgba(54, 162, 235, 1)',
-                                                'rgba(255, 206, 86, 1)',
-                                                'rgba(75, 192, 192, 1)',
-                                                'rgba(153, 102, 255, 1)',
-                                            ],
-                                            borderWidth: 3
-                                        }]
-                                    }}
-                                    height={200}
-                                    width={300}
-                                    options={{
-                                        maintainAspectRatio: false,
-                                    }}
-                                />
-                            </div>
-                        )
-                    }
+                    ) : (
+                        <div style={{marginTop: "20rem"}} >
+                            <Pie
+                                data = {{
+                                    labels: ['Guests', 'Members', 'Managers', 'Owners', 'Admins',],
+                                    datasets: [{
+                                        label: '# of Users',
+                                        data: [this.state.statistics.guests, this.state.statistics.pureMembers, this.state.statistics.pureManagers, this.state.statistics.owners, this.state.statistics.admins],
+                                        backgroundColor: [
+                                            'rgba(255, 99, 132, 0.2)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(255, 206, 86, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)',
+                                            'rgba(153, 102, 255, 0.2)',
+                                        ],
+                                        borderColor: [
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                        ],
+                                        borderWidth: 3
+                                    }]
+                                }}
+                                height={200}
+                                width={300}
+                                options={{
+                                    maintainAspectRatio: false,
+                                }}
+                            />
+                        </div>
+                    )}
 
 
 
