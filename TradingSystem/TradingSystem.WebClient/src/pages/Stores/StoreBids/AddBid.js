@@ -2,50 +2,69 @@ import React from "react";
 import '../Discount/AddSimpleDiscount.css';
 import { GlobalContext } from "../../../globalContext";
 import * as GiIcons from "react-icons/gi";
-import * as AiIcons from "react-icons/ai";
-
+import NumberFormField from "../../../formsUtil/NumberFormField";
+import * as api from "../../../api";
+import {alertRequestError_default} from "../../../utils";
+import BidEditContent from "./BidEditContent";
 
 class AddBid extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            show: false
-        }
+            show: false,
+            price: new NumberFormField(),
+        };
     }
 
     showModal = () => {
-        this.setState({ show: true });
+        this.setState({
+            show: true,
+            price: new NumberFormField(),
+        });
     }
 
     hideModal = () => {
-        this.setState({ show: false });
+        this.setState({
+            show: false,
+            price: new NumberFormField(),
+        });
     }
 
+    onPriceChange = e => {
+        if (!this.state.price.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        this.setState({
+            ...this.state
+        });
+    }
+
+    onConfirm = async e => {
+        e.preventDefault();
+        if (!this.state.price.validate()) {
+            alert('Please fill the proposed price');
+            return;
+        }
+
+        await api.stores.bids.createCustomerBid({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            productId: this.props.product.id,
+            newPrice: this.state.price.getValue(),
+        }).then(bidId => {
+            this.hideModal();
+        }, alertRequestError_default);
+    }
 
     render() {
         return (
             <main className="items">
-                <Modal show={this.state.show} handleClose={this.hideModal}  >
-
-                    <div className="disc-comp-check-line-grid">
-
-                        <div className="center-item">
-                            <div className= "disc-col-grd-perm">
-                                <div className="disc-text-props">
-                                    <label>Bid Price</label>
-                                </div>
-
-                                <div >
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        className="disc-input-props"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+                <Modal show={this.state.show} handleClose={this.hideModal} handleConfirm={this.onConfirm} >
+                    <BidEditContent
+                        value={this.state.price.getInputValue()}
+                        onChange={this.onPriceChange}
+                        lineGrid={true} />
 
                 </Modal>
 
@@ -56,10 +75,12 @@ class AddBid extends React.Component {
 }
 
 const Modal = ({ handleClose, handleConfirm, show, children }) => {
-    const showHideClassName = show ? 'modal display-block' : 'modal display-none';
+    if (!show) {
+        return null;
+    }
 
     return (
-        <div className={showHideClassName}>
+        <div className='modal display-block'>
             <section className='disc-comp-modal-main'>
 
                 <div className="lines-props">
@@ -70,7 +91,7 @@ const Modal = ({ handleClose, handleConfirm, show, children }) => {
 
                 <div className="comp-modal-buttons">
                     <button className="modal-buttons-props" onClick={handleClose} > Close </button>
-                    <button className="modal-buttons-props" onClick={handleConfirm} > Add </button>
+                    <button className="modal-buttons-props" onClick={handleConfirm} > Bid </button>
                 </div>
 
 

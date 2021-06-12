@@ -88,7 +88,6 @@ export class ShoppingCart extends Component {
                                       onRemoveProduct={this.onRemoveProduct} />
                     </div>
 
-                    {/* TODO: get total price from server */}
                     <div className="total">
                         <h2>Total price of all products: </h2>
                         {this.state.totalPrice == null ? null : (

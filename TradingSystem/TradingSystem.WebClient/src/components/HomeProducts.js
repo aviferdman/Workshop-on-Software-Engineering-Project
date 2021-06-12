@@ -14,7 +14,9 @@ class HomeProducts extends Component {
                             {this.props.products.map((product) => (
                                 <li key={product.id} >
                                     <div className="control-buttons-bid" >
-                                            <AddBid  />
+                                        {/*TODO: Added store id from home search as well*/}
+                                            <AddBid product={product}
+                                                storeId={product.storeId || this.props.storeId} />
                                     </div>
 
                                     <HomeProduct product={product}

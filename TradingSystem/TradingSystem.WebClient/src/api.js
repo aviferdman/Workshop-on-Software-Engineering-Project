@@ -76,8 +76,18 @@ export const data = {
             editDiscount: 'EditDiscount',
             editPolicy: 'EditPolicy',
             bidRequests: 'BidRequests',
-        }
-    }
+        },
+    },
+    bids: {
+        approved: 0,
+        declined: 1,
+        customerNegotiate: 2,
+        ownerNegotiate: 3,
+    },
+};
+
+export const shoppingCart = {
+    addProduct: postCurry('/ShoppingCart/AddProduct'),
 };
 
 export const history = {
@@ -165,5 +175,25 @@ export const stores = {
             id: storeId,
         })),
         add: postCurry('/stores/rules/AddPolicy'),
-    }
+    },
+
+    bids: {
+        mine: postCurry('/stores/bids/Mine', username => ({
+            username: username,
+        })),
+        ofStore: postCurry('/stores/bids/OfStore', (username, storeId) => ({
+            username: username,
+            storeId: storeId,
+        })),
+        ofStoreSpecific: postCurry('/stores/bids/OfStoreSpecific'),
+        changeBidPolicy: postCurry('/stores/bids/ChangeBidPolicy'),
+        createCustomerBid: postCurry('/stores/bids/CreateCustomerBid'),
+
+        customerAcceptBid: postCurry('/stores/bids/CustomerAcceptBid'),
+        customerNegotiateBid: postCurry('/stores/bids/CustomerNegotiateBid'),
+        customerDenyBid: postCurry('/stores/bids/CustomerDenyBid'),
+        ownerAcceptBid: postCurry('/stores/bids/OwnerAcceptBid'),
+        ownerNegotiateBid: postCurry('/stores/bids/OwnerNegotiateBid'),
+        ownerDenyBid: postCurry('/stores/bids/OwnerDenyBid'),
+    },
 };

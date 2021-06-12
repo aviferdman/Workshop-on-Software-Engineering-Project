@@ -8,6 +8,7 @@ import CreditCardFields from "../../formsUtil/creditCardFields";
 import axios from "axios";
 import Header from "../../header";
 import {alertRequestError_default} from "../../utils";
+import * as api from '../../api'
 
 export default class StoreCreateForm extends React.Component {
     constructor(props) {
@@ -30,20 +31,24 @@ export default class StoreCreateForm extends React.Component {
             return;
         }
 
-        try {
-            await axios.post('/Stores/Create', {
+        await axios.post('/Stores/Create', {
+            username: this.context.username,
+            storeName: this.state.storeName.value,
+            address: this.state.address.valuesObject(),
+            creditCard: this.state.creditCard.valuesObject({
+                number: "cardNumber"
+            }),
+        }).then(storeRef => {
+            // TODO: remove later
+            return api.stores.bids.changeBidPolicy({
                 username: this.context.username,
-                storeName: this.state.storeName.value,
-                address: this.state.address.valuesObject(),
-                creditCard: this.state.creditCard.valuesObject({
-                    number: "cardNumber"
-                }),
+                storeId: storeRef.data.id,
+                isAvailable: true,
             });
+        }, alertRequestError_default)
+        .then(() => {
             this.props.history.push('/myStores');
-        }
-        catch (e) {
-            alertRequestError_default(e);
-        }
+        }, alertRequestError_default);
     };
 
     onCancelClick = e => {

@@ -1,10 +1,9 @@
 import NumberFormField from "../formsUtil/NumberFormField";
-import axios from "axios";
+import * as api from '../api'
 import {alertRequestError_default} from "../utils";
 import formatCurrency from "../pages/mainPage/currency";
 import React from "react";
 import {GlobalContext} from "../globalContext";
-import AddBid from "../pages/Stores/StoreBids/AddBid";
 import ConditionalRender from "../ConditionalRender";
 
 export default class HomeProduct extends React.Component {
@@ -42,7 +41,7 @@ export default class HomeProduct extends React.Component {
             return;
         }
 
-        axios.post('/ShoppingCart/AddProduct', {
+        api.shoppingCart.addProduct({
             username: this.context.username,
             productId: this.product.id,
             quantity: this.state.quantity.value,
