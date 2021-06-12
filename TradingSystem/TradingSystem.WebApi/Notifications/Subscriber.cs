@@ -4,13 +4,14 @@ using System.Text;
 using System.Threading;
 
 using TradingSystem.Notifications;
+using TradingSystem.WebApi.Notifications;
 
 namespace TradingSystem.WebApi
 {
-    public class Subscriber : NotificationSubscriber
+    public class Subscriber : WebApiSubsriberBase
     {
         WebSocket socket;
-        public Subscriber(string _subscriberName, WebSocket socket, bool testMode = false) : base(_subscriberName, testMode)
+        public Subscriber(string _subscriberName, WebSocket socket, bool testMode = false) : base(socket, _subscriberName, testMode)
         {
             this.socket = socket;
         }
@@ -61,9 +62,12 @@ namespace TradingSystem.WebApi
                 return;
             }
 
-            string message = $"Hey {SubscriberName}, {ev.Description} @ {ev.Date} ";
-            byte[] buffer = Encoding.ASCII.GetBytes(message);
-            socket.SendAsync(new ArraySegment<byte>(buffer, 0, buffer.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            string message = $"Hey {SubscriberName}, {ev.Description} @ {ev.Date}";
+            SendNotificationAsync(new Notification
+            {
+                Kind = NotificationKind.LiveNotification.ToString(),
+                Content = message,
+            });
         }
     }
 }
