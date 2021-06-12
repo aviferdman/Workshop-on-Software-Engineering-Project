@@ -35,8 +35,15 @@ namespace TradingSystem.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<StatisticsDTO> FetchVisitingStatisticsForDatesRange([FromQuery] DateTime dateStart, [FromQuery] DateTime dateEnd)
+        public ActionResult<StatisticsDTO> FetchVisitingStatisticsForDatesRange
+        (
+            [FromQuery(Name = "dateStart")] DateTime? dateStartNullable,
+            [FromQuery(Name = "dateEnd")] DateTime? dateEndNullable
+        )
         {
+            DateTime dateStart = Utils.ConvertDate(dateStartNullable);
+            DateTime dateEnd = Utils.ConvertDate(dateEndNullable);
+
             Statistics stats = MarketUserService.getDatesStats(dateStart, dateEnd);
             if (stats == null)
             {

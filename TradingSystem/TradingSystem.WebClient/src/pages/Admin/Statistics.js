@@ -5,13 +5,18 @@ import Header from "../../header";
 import { Bar, Pie } from 'react-chartjs-2';
 import * as api from '../../api';
 import {alertRequestError_default} from "../../utils";
+import DateFormField from "../../formsUtil/DateFormField";
+import FormFields from "../../formsUtil/formFields";
 
 export class Statistics extends Component {
     constructor(props) {
         super(props);
         this.state = {
             statistics: null,
-            datesRange: null,
+            datesRange: new FormFields({
+                start: new DateFormField(),
+                end: new DateFormField(),
+            }),
             graph: "",
         };
     }
@@ -26,13 +31,14 @@ export class Statistics extends Component {
     }
 
     onNotificationReceived = async e => {
-        console.log('statistics page, web socket message from server', e.data);
+        console.log('statistics page, web socket message from server');
         let notification = JSON.parse(e.data);
-        if (!notification.kind || notification.kind === 'LiveNotification') {
+        if (notification.kind !== 'Statistics') {
             return;
         }
 
-        if (this.state.datesRange == null) {
+        let datesRange = this.state.datesRange.valuesObject();
+        if (datesRange.start == null && datesRange.end == null) {
             await this.fetchStatistics();
         }
     }
@@ -46,15 +52,51 @@ export class Statistics extends Component {
             }, alertRequestError_default);
     }
 
+    fetchStatisticsDatesRange = async () => {
+        let datesRange = this.state.datesRange.valuesObject();
+        await api.statistics.fetchVisitingStatisticsForDatesRange(datesRange.start, datesRange.end)
+            .then(statistics => {
+                this.setState({
+                    statistics: statistics,
+                });
+            }, alertRequestError_default);
+    }
+
     changeGraphType = e => {
         this.setState({
             graph: e.target.value
         });
     };
 
+    getInputValue = field => {
+        return this.state.datesRange.getField(field).getInputValue();
+    }
+
+    onDateInputChange = field => async e => {
+        if (!this.state.datesRange.getField(field).trySetValueFromEvent(e)) {
+            return;
+        }
+
+        let datesRange = this.state.datesRange.valuesObject();
+        if (datesRange.start != null) {
+            await this.fetchStatisticsDatesRange();
+        }
+        if (datesRange.start == null && datesRange.end == null) {
+            await this.fetchStatistics();
+        }
+    }
+
     render() {
         if (this.state.statistics == null) {
             return null;
+        }
+        let isZero = true;
+        for (let statName of Object.keys(this.state.statistics)) {
+            let stat = this.state.statistics[statName];
+            if (stat > 0) {
+                isZero = false;
+                break;
+            }
         }
 
         return (
@@ -82,6 +124,7 @@ export class Statistics extends Component {
                             type="date"
                             className="disc-input-props"
                             style={{width: "15rem" , height: "3rem" }}
+                            onChange={this.onDateInputChange('start')}
 
                         />
                         <label style={{marginLeft: "5rem" }}>End Date</label>
@@ -89,14 +132,16 @@ export class Statistics extends Component {
                             type="date"
                             className="disc-input-props"
                             style={{width: "15rem" , height: "3rem" }}
+                            onChange={this.onDateInputChange('end')}
 
                         />
 
                     </div>
 
 
-                    {this.state.graph === "Bar" ?
-                    (
+                    {isZero ? (
+                        <h1 className='center-screen'>No visitors</h1>
+                    ) : this.state.graph === "Bar" ? (
                         <div style={{marginTop: "20rem"}}>
                             <Bar
                                 data = {{
