@@ -45,7 +45,8 @@ export const SidebarData = [
         title: 'My Bids',
         path: '/userBids',
         icon: <AiIcons.AiOutlineHistory />,
-        cName: 'nav-text'
+        cName: 'nav-text',
+        permissions: [UserRole.member, UserRole.admin]
     },
     {
         title: 'History',
@@ -61,10 +62,11 @@ export const SidebarData = [
         cName: 'nav-text',
         permissions: [UserRole.admin]
     },
-    {
-        title: 'Support',
-        path: '/support',
-        icon: <IoIcons.IoMdHelpCircle />,
-        cName: 'nav-text'
-    }
+    // TODO: ask gil
+    // {
+    //     title: 'Support',
+    //     path: '/support',
+    //     icon: <IoIcons.IoMdHelpCircle />,
+    //     cName: 'nav-text'
+    // }
 ];
