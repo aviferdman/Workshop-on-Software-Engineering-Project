@@ -79,6 +79,11 @@ namespace TradingSystem.WebApi.Controllers
             }
 
             ICollection<HistoryData>? result = await MarketUserService.GetUserHistory(historyInfoSpecificDTO.Username);
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
             return SingleHistory(historyInfoSpecificDTO.Key, result);
         }
 
@@ -112,6 +117,11 @@ namespace TradingSystem.WebApi.Controllers
             }
 
             ICollection<HistoryData>? result = await MarketStoreGeneralService.GetStoreHistory(storeHistorySpecificDTO.Username, storeHistorySpecificDTO.StoreId);
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
             return SingleHistory(storeHistorySpecificDTO.PaymentId, result);
         }
 
@@ -145,6 +155,11 @@ namespace TradingSystem.WebApi.Controllers
             }
 
             ICollection<HistoryData>? result = await MarketGeneralService.GetAllHistoryAsync(historyInfoSpecificDTO.Username);
+            if (result == null)
+            {
+                return InternalServerError();
+            }
+
             return SingleHistory(historyInfoSpecificDTO.Key, result);
         }
     }
