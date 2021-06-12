@@ -91,34 +91,34 @@ namespace TradingSystem.Business.Market.StorePackage
             await marketDAL.AddRequestType3(marketRulesRequest);
         }
 
-        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId)
+        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId, Guid originDiscountId)
         {
-            var marketRulesRequest = new MarketRulesRequestType4(counter, functionName, username, storeId, discountType, precent, category, productId);
+            var marketRulesRequest = new MarketRulesRequestType4(counter, functionName, username, storeId, discountType, precent, category, productId, originDiscountId);
             await marketDAL.AddRequestType4(marketRulesRequest);
         }
 
-        internal async Task SaveRequest(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide)
+        internal async Task SaveRequest(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide, Guid originDiscountId)
         {
-            var marketRulesRequest = new MarketRulesRequestType5(counter, functionName, username, discountRuleRelation, storeId, discountId, discountId2, decide);
+            var marketRulesRequest = new MarketRulesRequestType5(counter, functionName, username, discountRuleRelation, storeId, discountId, discountId2, decide, originDiscountId);
             await marketDAL.AddRequestType5(marketRulesRequest);
         }
 
-        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        internal async Task SaveRequest(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2, Guid originDiscountId)
         {
-            var marketRulesRequest = new MarketRulesRequestType6(counter, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            var marketRulesRequest = new MarketRulesRequestType6(counter, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2, originDiscountId);
             await marketDAL.AddRequestType6(marketRulesRequest);
         }
 
 
-        public async Task SaveRequest(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId)
+        public async Task SaveRequest(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId, Guid originDiscountId)
         {
-            var marketRulesRequest = new MarketRulesRequestType7(counter, existingDiscountId, functionName, username, storeId, discountType, precent, category, productId);
+            var marketRulesRequest = new MarketRulesRequestType7(counter, existingDiscountId, functionName, username, storeId, discountType, precent, category, productId, originDiscountId);
              await marketDAL.AddRequestType7(marketRulesRequest);
         }
 
-        public async Task SaveRequest(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+        public async Task SaveRequest(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2, Guid originDiscountId)
         {
-            var marketRulesRequest = new MarketRulesRequestType8(counter, existingDiscountId, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            var marketRulesRequest = new MarketRulesRequestType8(counter, existingDiscountId, functionName, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2, originDiscountId);
              await marketDAL.AddRequestType8(marketRulesRequest);
         }
 

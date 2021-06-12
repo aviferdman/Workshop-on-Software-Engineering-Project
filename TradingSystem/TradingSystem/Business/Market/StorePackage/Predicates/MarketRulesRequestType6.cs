@@ -21,8 +21,10 @@ namespace TradingSystem.Business.Market.StorePackage
         public double valueGreaterEQThan { get; set; }
         public DateTime d1 { get; set; }
         public DateTime d2 { get; set; }
+        public Guid originDiscountId { get; set; }
 
-        public MarketRulesRequestType6(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2)
+
+        public MarketRulesRequestType6(int counter, string functionName, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category, Guid productId, double valueLessThan, double valueGreaterEQThan, DateTime d1, DateTime d2, Guid originDiscountId)
         {
             this.id = counter;
             this.functionName = functionName;
@@ -37,6 +39,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.valueGreaterEQThan = valueGreaterEQThan;
             this.d1 = d1;
             this.d2 = d2;
+            this.originDiscountId = originDiscountId;
         }
 
         public MarketRulesRequestType6()
@@ -49,9 +52,9 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public  void ActivateFunction(Store s)
         {
-            var discountId=  MarketRules.Instance.CreateConditionalDiscountAsync(s,username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Result;
-            var discountData = new DiscountData(discountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
-             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
+            var discountId = MarketRules.Instance.CreateConditionalDiscountAsync(s,username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Result;
+            var discountData = new DiscountData(originDiscountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
+            MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
     }
 }

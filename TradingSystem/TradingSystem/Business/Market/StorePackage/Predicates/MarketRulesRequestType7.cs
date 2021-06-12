@@ -17,12 +17,13 @@ namespace TradingSystem.Business.Market.StorePackage
         private double precent;
         private string category;
         private Guid productId;
+        private Guid originDiscountId;
 
         public MarketRulesRequestType7()
         {
         }
 
-        public MarketRulesRequestType7(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId)
+        public MarketRulesRequestType7(int counter, Guid existingDiscountId, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId, Guid originDiscountId)
         {
             this.Id = counter;
             this.ExistingDiscountId = existingDiscountId;
@@ -33,6 +34,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.Precent = precent;
             this.Category = category;
             this.ProductId = productId;
+            this.OriginDiscountId = originDiscountId;
         }
 
         public int Id { get => counter; set => counter = value; }
@@ -44,14 +46,15 @@ namespace TradingSystem.Business.Market.StorePackage
         public double Precent { get => precent; set => precent = value; }
         public string Category { get => category; set => category = value; }
         public Guid ProductId { get => productId; set => productId = value; }
+        public Guid OriginDiscountId { get => originDiscountId; set => originDiscountId = value; }
 
         public  void ActivateFunction(Store s)
         {
-            var res =  MarketRules.Instance.UpdateSimpleDiscountAsync(s,existingDiscountId, username, storeId, discountType, precent, category, productId).Result;
+            var res =  MarketRules.Instance.UpdateSimpleDiscountAsync(s,existingDiscountId, username, storeId, discountType, precent, category, productId, originalDiscountId: OriginDiscountId).Result;
             Guid discountId = res.Ret;
-            var discountData = new DiscountData(discountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
-             MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
-             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
+            var discountData = new DiscountData(OriginDiscountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
+            MarketRulesService.Instance.discountsManager.RemoveDiscount(discountId).Wait();
+            MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
 
         public int getCounter()

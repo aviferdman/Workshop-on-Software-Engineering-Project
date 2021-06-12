@@ -17,7 +17,9 @@ namespace TradingSystem.Business.Market.StorePackage
         public string category { get; set; }
         public Guid productId { get; set; }
 
-        public MarketRulesRequestType4(int counter, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId)
+        public Guid originDiscountId { get; set; }
+
+        public MarketRulesRequestType4(int counter, string functionName, string username, Guid storeId, RuleContext discountType, double precent, string category, Guid productId, Guid originDiscountId)
         {
             this.id = counter;
             this.functionName = functionName;
@@ -27,6 +29,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.precent = precent;
             this.category = category;
             this.productId = productId;
+            this.originDiscountId = originDiscountId;
         }
 
         public MarketRulesRequestType4()
@@ -40,8 +43,8 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public void ActivateFunction(Store s)
         {
-            var discountId= MarketRules.Instance.CreateSimpleDiscountAsync(s,username, storeId, discountType, precent, category, productId).Result;
-            var discountData = new DiscountData(discountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
+            var discountId = MarketRules.Instance.CreateSimpleDiscountAsync(s,username, storeId, discountType, precent, category, productId).Result;
+            var discountData = new DiscountData(originDiscountId, username, storeId, discountType, RuleType.Simple, precent, category, productId, int.MaxValue, 0, default(DateTime), default(DateTime));
              MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }
     }

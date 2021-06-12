@@ -70,21 +70,29 @@ namespace TradingSystem.Business.Market
             return store.AddDiscount(username, discount);
         }
 
-        public async System.Threading.Tasks.Task<Result<Guid>> UpdateSimpleDiscountAsync(Store store,Guid discountId, string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
+        public async System.Threading.Tasks.Task<Result<Guid>> UpdateSimpleDiscountAsync(Store store,Guid discountId, string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid(), Guid originalDiscountId = new Guid())
         {
             var d = CreateCalculator(discountType, precent, category, productId);
             Discount discount = new Discount(d);
+            if (!originalDiscountId.Equals(new Guid()))
+            {
+                discount.Id = originalDiscountId;
+            }
             store.RemoveDiscount(username, discountId);
             store.AddDiscount(username, discount);
             return new Result<Guid>(discountId, false, "");
         }
 
         public async System.Threading.Tasks.Task<Result<Guid>> UpdateConditionalDiscountAsync(Store store,Guid discountId, string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
-            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
+            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime(), Guid originalDiscountId = new Guid())
         {
             var d = CreateCalculator(discountType, precent, category, productId);
             var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             ConditionDiscount discount = new ConditionDiscount(d);
+            if (!originalDiscountId.Equals(new Guid()))
+            {
+                discount.Id = originalDiscountId;
+            }
             discount.AddRule(r);
             store.RemoveDiscount(username, discountId);
             store.AddDiscount(username, discount);

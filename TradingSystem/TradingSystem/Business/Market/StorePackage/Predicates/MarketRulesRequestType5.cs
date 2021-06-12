@@ -16,8 +16,9 @@ namespace TradingSystem.Business.Market.StorePackage
         public Guid discountId { get; set; }
         public Guid discountId2 { get; set; }
         public bool decide { get; set; }
+        public Guid originDiscountId { get; set; }
 
-        public MarketRulesRequestType5(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide)
+        public MarketRulesRequestType5(int counter, string functionName, string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId, Guid discountId2, bool decide, Guid originDiscountId)
         {
             this.id = counter;
             this.functionName = functionName;
@@ -27,6 +28,7 @@ namespace TradingSystem.Business.Market.StorePackage
             this.discountId = discountId;
             this.discountId2 = discountId2;
             this.decide = decide;
+            this.originDiscountId = originDiscountId;
         }
 
         public MarketRulesRequestType5()
@@ -39,8 +41,8 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public  void ActivateFunction(Store s)
         {
-            var discountId1= MarketRules.Instance.GenerateConditionalDiscountsAsync(s,username, discountRuleRelation, storeId, discountId, discountId2, decide).Result;
-            var discountRelation = new DiscountsRelation(username, discountId1, discountRuleRelation, storeId, discountId, discountId2, decide);
+            var discountId1 = MarketRules.Instance.GenerateConditionalDiscountsAsync(s,username, discountRuleRelation, storeId, discountId, discountId2, decide).Result;
+            var discountRelation = new DiscountsRelation(username, originDiscountId, discountRuleRelation, storeId, discountId, discountId2, decide);
             MarketRulesService.Instance.discountsManager.AddRelation(discountRelation).Wait();
         }
     }
