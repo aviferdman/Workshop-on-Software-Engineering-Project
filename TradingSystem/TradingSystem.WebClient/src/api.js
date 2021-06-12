@@ -90,6 +90,10 @@ export const shoppingCart = {
     addProduct: postCurry('/ShoppingCart/AddProduct'),
 };
 
+export const statistics = {
+    fetchVisitingStatisticsForToday: getCurry('/Statistics/FetchVisitingStatisticsForToday'),
+}
+
 export const history = {
     mine: async username => {
         return await post('/History/Mine', {
