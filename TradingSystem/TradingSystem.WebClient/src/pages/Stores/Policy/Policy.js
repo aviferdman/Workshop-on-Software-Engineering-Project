@@ -59,6 +59,18 @@ export class Policy extends React.Component {
         });
     }
 
+    removePolicies = async e => {
+        await api.stores.policies.removeAll({
+            username: this.context.username,
+            storeId: this.storeId,
+        }).then(() => {
+            this.setState({
+                policies: [],
+                nextId: 0,
+            });
+        }, alertRequestError_default);
+    }
+
     render() {
         return (
             <main>
@@ -87,7 +99,7 @@ export class Policy extends React.Component {
                             />
                         </div>
                         <div className="center-btn-nd">
-                            <button className="store-products-button-view"> Remove All</button>
+                            <button className="store-products-button-view" onClick={this.removePolicies}> Remove All</button>
                         </div>
                     </div>
 

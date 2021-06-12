@@ -216,15 +216,7 @@ class AddSimpleDiscount extends React.Component {
         let promise = api.stores.discounts.add({
             username: this.context.username,
             storeId: this.props.storeId,
-            discountType: discountObj.discountType,
-            conditionType: discountObj.conditionType,
-            percent: discountObj.percent,
-            category: discountObj.category,
-            productId: discountObj.productId,
-            minValue: discountObj.minValue,
-            maxValue: discountObj.maxValue,
-            startDate: discountObj.startDate,
-            endDate: discountObj.endDate,
+            params: discountObj,
         });
 
         await promise.then(discountId => {
