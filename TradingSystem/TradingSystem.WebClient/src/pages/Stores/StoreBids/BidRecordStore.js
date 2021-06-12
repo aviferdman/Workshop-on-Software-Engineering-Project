@@ -122,7 +122,7 @@ export default class BidRecordStore extends React.Component {
     negotiateBid = async () => {
         let bid = this.props.bid;
         let newPrice = this.state.bidPrice.getValue();
-        await api.stores.bids.customerNegotiateBid({
+        await api.stores.bids.ownerNegotiateBid({
             username: this.context.username,
             storeId: this.props.storeId,
             bidId: bid.id,
@@ -137,7 +137,7 @@ export default class BidRecordStore extends React.Component {
 
     declineBid = async () => {
         let bid = this.props.bid;
-        await api.stores.bids.customerDenyBid({
+        await api.stores.bids.ownerDenyBid({
             username: this.context.username,
             storeId: this.props.storeId,
             bidId: bid.id,
