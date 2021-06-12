@@ -227,6 +227,12 @@ namespace TradingSystem.WebApi.Controllers
                 return InternalServerError(result.Mess);
             }
 
+            Guid id = result.Ret;
+            if (id == Guid.Empty)
+            {
+                return InternalServerError();
+            }
+
             return Ok(result.Ret);
         }
 
