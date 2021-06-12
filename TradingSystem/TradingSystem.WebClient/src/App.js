@@ -58,16 +58,26 @@ class App extends React.Component {
     }
 
     releaseContext = (unmounting) => {
-        this.logoutCore(unmounting).then(newUsername => {
+        if (this.state.globalContext.role === UserRole.guest) {
             this.setState({
                 globalContext: {
                     ...this.state.globalContext,
-                    username: newUsername,
-                    role: unmounting ? null : UserRole.guest,
-                    webSocket: null
-                }
-            })
-        });
+                    webSocket: null,
+                },
+            });
+        }
+        else {
+            this.logoutCore(unmounting).then(newUsername => {
+                this.setState({
+                    globalContext: {
+                        ...this.state.globalContext,
+                        username: newUsername,
+                        role: unmounting ? null : UserRole.guest,
+                        webSocket: null,
+                    }
+                })
+            });
+        }
     }
 
     setUsername = (username, role) => {
