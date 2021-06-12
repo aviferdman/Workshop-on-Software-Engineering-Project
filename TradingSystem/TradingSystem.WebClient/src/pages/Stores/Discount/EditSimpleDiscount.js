@@ -2,6 +2,7 @@ import React from "react";
 import './AddSimpleDiscount.css';
 import { GlobalContext } from "../../../globalContext";
 import * as api from "../../../api";
+import * as utils from "../../../utils";
 import FormFields from "../../../formsUtil/formFields";
 import {alertRequestError_default} from "../../../utils";
 import NumberFormField from "../../../formsUtil/NumberFormField";
@@ -67,8 +68,8 @@ class EditSimpleDiscount extends React.Component {
             category: discount.category,
             minValue: new NullableNumberFormField(discount.minValue),
             maxValue: new NullableNumberFormField(discount.maxValue),
-            startDate: new DateFormField(discount.startDate),
-            endDate: new DateFormField(discount.endDate),
+            startDate: new DateFormField(utils.formatDateForInput(discount.startDate)),
+            endDate: new DateFormField(utils.formatDateForInput(discount.endDate)),
         });
     }
 
