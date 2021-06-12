@@ -424,6 +424,9 @@ namespace TradingSystem.Migrations
                     b.Property<string>("functionName")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("originDiscountId")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("precent")
                         .HasColumnType("REAL");
 
@@ -461,6 +464,9 @@ namespace TradingSystem.Migrations
                     b.Property<string>("functionName")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("originDiscountId")
+                        .HasColumnType("TEXT");
+
                     b.Property<Guid>("storeId")
                         .HasColumnType("TEXT");
 
@@ -490,6 +496,9 @@ namespace TradingSystem.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("functionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("originDiscountId")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("precent")
@@ -536,6 +545,9 @@ namespace TradingSystem.Migrations
                     b.Property<string>("FunctionName")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("OriginDiscountId")
+                        .HasColumnType("TEXT");
+
                     b.Property<double>("Precent")
                         .HasColumnType("REAL");
 
@@ -575,6 +587,9 @@ namespace TradingSystem.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FunctionName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("OriginDiscountId")
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Precent")

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TradingSystem.Business.Market.StorePackage;
 using TradingSystem.Business.Market.StoreStates;
+using TradingSystem.DAL;
 using TradingSystem.Notifications;
 using TradingSystem.PublisherComponent;
 using static TradingSystem.Business.Market.StoreStates.Manager;
@@ -80,16 +81,8 @@ namespace TradingSystem.Business.Market
 
         public Result<ICollection<Bid>> GetCustomerBids(string username)
         {
-            ICollection<Bid> bids = new HashSet<Bid>();
-            var stores = marketStores.LoadedStores;
-            foreach (var store in stores)
-            {
-                ICollection<Bid> tempBids = store.Value.BidsManager.GetUserBids(username);
-                foreach (var bid in tempBids)
-                {
-                    bids.Add(bid);
-                }
-            }
+            ICollection<Bid> bids = ProxyMarketContext.Instance.getUserBids(username);
+           
             return new Result<ICollection<Bid>>(bids, false, "");
         }
 

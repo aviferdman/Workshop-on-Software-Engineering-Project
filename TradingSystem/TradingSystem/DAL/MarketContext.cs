@@ -95,6 +95,12 @@ namespace TradingSystem.DAL
 
         public DbSet<Category> categories { get; set; }
         public DbSet<MarketRulesRequestType1> marketRulesRequestType1 { get; set; }
+
+        public ICollection<Bid> getUserBids(string username)
+        {
+            return Bids.Where(b => b.Username.Equals(username)).ToHashSet();
+        }
+
         public DbSet<MarketRulesRequestType2> marketRulesRequestType2 { get; set; }
         public DbSet<MarketRulesRequestType3> marketRulesRequestType3 { get; set; }
         public DbSet<MarketRulesRequestType4> marketRulesRequestType4 { get; set; }
@@ -245,27 +251,7 @@ namespace TradingSystem.DAL
             {
                 Store sc = stores.Include(s => s._products)
                 .Single(s => s._products.Where(p => p.id.Equals(pid)).Any());
-                Entry(sc).Reference(s => s.founder).Load();
-                Entry(sc.founder).Reference(s => s.m).Load();
-                Entry(sc).Reference(s => s._address).Load();
-                Entry(sc).Reference(s => s.BidsManager).Load();
-                Entry(sc).Reference(s => s.purchasePolicy).Load();
-                Entry(sc.BidsManager).Collection(s => s.bidsState).Load();
-                foreach (BidState state in sc.BidsManager.bidsState)
-                {
-                    Entry(state).Reference(s => s.Bid).Load();
-                }
-                Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
-                Entry(sc).Collection(s => s.managers).Load();
-                Entry(sc).Collection(s => s.owners).Load();
-                foreach (Manager m in sc.managers)
-                {
-                    Entry(m).Reference(s => s.m).Load();
-                }
-                foreach (Owner m in sc.owners)
-                {
-                    Entry(m).Reference(s => s.m).Load();
-                }
+                sc =  getStore(sc.sid).Result;
                 found = sc;
                 p = sc.Products.Single(p => p.Id.Equals(pid));
             }
@@ -540,6 +526,7 @@ namespace TradingSystem.DAL
                 foreach (BidState state in sc.BidsManager.bidsState)
                 {
                     Entry(state).Reference(s => s.Bid).Load();
+                    Entry(state).Collection(s => s.OwnersAccepted).Load();
                 }
                 Entry(sc.purchasePolicy).Collection(s => s.availablePurchaseKinds).Load();
                 Entry(sc).Collection(s => s.managers).Load();

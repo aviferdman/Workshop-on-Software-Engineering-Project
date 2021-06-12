@@ -92,6 +92,32 @@ namespace TradingSystem.DAL
             }
         }
 
+        internal ICollection<Bid> getUserBids(string username)
+        {
+            if (isDebug)
+            {
+                ICollection<Bid> bids = new HashSet<Bid>();
+                var stores = MarketStores.Instance.LoadedStores;
+                foreach (var store in stores)
+                {
+                    ICollection<Bid> tempBids = store.Value.BidsManager.GetUserBids(username);
+                    foreach (var bid in tempBids)
+                    {
+                        bids.Add(bid);
+                    }
+                }
+                return bids;
+            }
+            try
+            {
+                return  marketContext.getUserBids( username);
+            }
+            catch (Exception e)
+            {
+                return  new HashSet<Bid>();
+            }
+        }
+
         internal void EmptyShppingCart(string username)
         {
             if (isDebug)

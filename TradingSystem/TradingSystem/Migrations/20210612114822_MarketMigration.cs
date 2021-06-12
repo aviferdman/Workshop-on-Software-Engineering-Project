@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TradingSystem.Migrations
 {
-    public partial class MarketMirgation : Migration
+    public partial class MarketMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -128,7 +128,8 @@ namespace TradingSystem.Migrations
                     discountType = table.Column<int>(type: "INTEGER", nullable: false),
                     precent = table.Column<double>(type: "REAL", nullable: false),
                     category = table.Column<string>(type: "TEXT", nullable: true),
-                    productId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    productId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    originDiscountId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -146,7 +147,8 @@ namespace TradingSystem.Migrations
                     storeId = table.Column<Guid>(type: "TEXT", nullable: false),
                     discountId = table.Column<Guid>(type: "TEXT", nullable: false),
                     discountId2 = table.Column<Guid>(type: "TEXT", nullable: false),
-                    decide = table.Column<bool>(type: "INTEGER", nullable: false)
+                    decide = table.Column<bool>(type: "INTEGER", nullable: false),
+                    originDiscountId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -169,7 +171,8 @@ namespace TradingSystem.Migrations
                     valueLessThan = table.Column<double>(type: "REAL", nullable: false),
                     valueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
                     d1 = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    d2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    d2 = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    originDiscountId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,7 +192,8 @@ namespace TradingSystem.Migrations
                     DiscountType = table.Column<int>(type: "INTEGER", nullable: false),
                     Precent = table.Column<double>(type: "REAL", nullable: false),
                     Category = table.Column<string>(type: "TEXT", nullable: true),
-                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    ProductId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OriginDiscountId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -214,7 +218,8 @@ namespace TradingSystem.Migrations
                     ValueLessThan = table.Column<double>(type: "REAL", nullable: false),
                     ValueGreaterEQThan = table.Column<double>(type: "REAL", nullable: false),
                     D1 = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    D2 = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    D2 = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    OriginDiscountId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
