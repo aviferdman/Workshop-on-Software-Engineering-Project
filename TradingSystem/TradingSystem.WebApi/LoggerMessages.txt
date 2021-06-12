@@ -395,3 +395,13 @@ MarketStores GetStoresByNameMarketStores GetStoresByName 6/12/2021 17:37:48
 MarketUsers PurchaseShoppingCartMarketUsers PurchaseShoppingCart 6/12/2021 17:40:07
 MarketUsers GetUserHistoryMarketUsers GetUserHistory 6/12/2021 17:40:29
 MarketUsers GetUserHistoryMarketUsers GetUserHistory 6/12/2021 17:40:30
+MarketUsers AddGuestMarketUsers AddGuest 6/12/2021 23:51:52
+MarketUsers AddMemberMarketUsers AddMember 6/12/2021 23:52:21
+MarketUsers AddGuestMarketUsers AddGuest 6/12/2021 23:53:32
+MarketUsers AddMemberMarketUsers AddMember 6/12/2021 23:53:56
+MarketStores CreateStoreMarketStores CreateStore 6/12/2021 23:54:16
+MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/12/2021 23:54:19
+MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/12/2021 23:54:25
+MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/12/2021 23:54:32
+MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/12/2021 23:54:37
+MarketStores GetInfoSpecificMarketStores GetInfoSpecific 6/12/2021 23:55:28
