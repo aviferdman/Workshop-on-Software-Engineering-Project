@@ -498,6 +498,7 @@ namespace TradingSystem.DAL
                 {
                      Entry(sb).Collection(s => s._product_quantity).Load();
                      Entry(sb).Reference(s => s.store).Load();
+                     getStore(sb.store.sid);
                     foreach (ProductInCart pr in sb._product_quantity)
                     {
                         Entry(pr).Reference(p => p.product).Load();
@@ -581,9 +582,9 @@ namespace TradingSystem.DAL
                 ruleRequests.AddRange(type7);
                 ruleRequests.AddRange(type8);
                 ruleRequests.AddRange(type6);
-                ruleRequests.OrderBy(r => r.getCounter());
+                var ordered=ruleRequests.OrderBy(r => r.getCounter());
            
-            foreach(MarketRuleRequest r in ruleRequests)
+            foreach(MarketRuleRequest r in ordered)
             {
                 r.ActivateFunction(s);
             }

@@ -36,8 +36,8 @@ namespace TradingSystem.DAL
         {
             if (isDebug)
             {
-                if (statistics.Where(s => s.date.Day.Equals(date.Day)).Any())
-                    return statistics.Single(s => s.date.Day.Equals(date.Day));
+                if (statistics.Where(s => s.date.Equals(date)).Any())
+                    return statistics.Single(s => s.date.Equals(date));
                 Statistics s = new Statistics();
                 s.date = date;
                 return s;
