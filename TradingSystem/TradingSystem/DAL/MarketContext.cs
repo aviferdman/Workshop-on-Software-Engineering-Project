@@ -498,6 +498,7 @@ namespace TradingSystem.DAL
                 {
                      Entry(sb).Collection(s => s._product_quantity).Load();
                      Entry(sb).Reference(s => s.store).Load();
+                     getStore(sb.store.sid);
                     foreach (ProductInCart pr in sb._product_quantity)
                     {
                         Entry(pr).Reference(p => p.product).Load();
