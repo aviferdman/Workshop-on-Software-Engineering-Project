@@ -2,7 +2,6 @@ import React from "react";
 import './Policy.css';
 import { GlobalContext } from "../../../globalContext";
 import FormFields from "../../../formsUtil/formFields";
-import NumberFormField from "../../../formsUtil/NumberFormField";
 import NullFormField from "../../../formsUtil/NullFormField";
 import NullableNumberFormField from "../../../formsUtil/NullableNumberFormField";
 import DateFormField from "../../../formsUtil/DateFormField";
@@ -59,7 +58,6 @@ class AddPolicy extends React.Component {
         this.state.fields.fields.startDate.setValidationOff();
         this.state.fields.fields.endDate.setValidationOff();
 
-        this.onRuleContextChangeCore();
         this.onRuleTypeChangeCore();
         if (set) {
             this.setState({
@@ -125,6 +123,8 @@ class AddPolicy extends React.Component {
                 this.getField('maxValue').value = null;
                 break;
         }
+
+        this.onRuleContextChangeCore();
     }
 
     onRuleContextChange = e => {
@@ -140,6 +140,14 @@ class AddPolicy extends React.Component {
 
     onRuleContextChangeCore = () => {
         let ruleContext = this.getFieldValue('ruleContext');
+        let ruleType = this.getFieldValue('ruleType');
+
+        if (ruleType !== 'Quantity') {
+            this.state.fields.fields.productId.setValidationOff();
+            this.state.fields.fields.category.setValidationOff();
+            return;
+        }
+
         switch (ruleContext) {
             case 'Product':
                 this.state.fields.fields.productId.setValidationOn();
@@ -253,25 +261,6 @@ class AddPolicy extends React.Component {
                         <div>
                             <div className= "disc-col-grd-perm">
                                 <div className="disc-text-props">
-                                    <label>Policy Context</label>
-                                </div>
-
-                                <div>
-                                    <select className="disc-input-props"
-                                            required
-                                            value={this.getInputValue('ruleContext')}
-                                            onChange={this.onRuleContextChange}>
-                                        <option value="Product">Product</option>
-                                        <option value="Category">Category</option>
-                                        <option value="Store">Store</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className= "disc-col-grd-perm">
-                                <div className="disc-text-props">
                                     <label>Rule Type</label>
                                 </div>
 
@@ -290,47 +279,23 @@ class AddPolicy extends React.Component {
                         </div>
 
                         <ConditionalRender
-                            condition={this.getField('productId').isValidationOn}
+                            condition={this.getFieldValue('ruleType') === 'Quantity'}
                             render={() => (
                                 <div>
                                     <div className= "disc-col-grd-perm">
                                         <div className="disc-text-props">
-                                            <label>Product</label>
+                                            <label>Policy Context</label>
                                         </div>
 
-                                        <select className="disc-input-props"
-                                                required
-                                                value={this.getInputValue('productId')}
-                                                onChange={this.onInputChange('productId')}>
-                                            <option value=""/>
-                                            <ConditionalRender
-                                                condition={this.props.storeProducts != null}
-                                                render={() => this.props.storeProducts.map(product => {
-                                                    return (<option value={product.id} key={product.id}>{product.name}</option>);
-                                                })}
-                                            />
-                                        </select>
-                                    </div>
-                                </div>
-                            )}
-                        />
-
-                        <ConditionalRender
-                            condition={this.getField('category').isValidationOn}
-                            render={() => (
-                                <div>
-                                    <div className= "disc-col-grd-perm">
-                                        <div className="disc-text-props">
-                                            <label>Category</label>
-                                        </div>
-
-                                        <div >
-                                            <input
-                                                type="text"
-                                                className="disc-input-props"
-                                                value={this.getInputValue('category')}
-                                                onChange={this.onInputChange('category')}
-                                            />
+                                        <div>
+                                            <select className="disc-input-props"
+                                                    required
+                                                    value={this.getInputValue('ruleContext')}
+                                                    onChange={this.onRuleContextChange}>
+                                                <option value="Product">Product</option>
+                                                <option value="Category">Category</option>
+                                                <option value="Store">Store</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -340,7 +305,7 @@ class AddPolicy extends React.Component {
                         <ConditionalRender
                             condition={this.getFieldValue('ruleType') !== '' && this.getFieldValue('ruleType') !== 'Time'}
                             render={() => (
-                                <div>
+                                <div className='policy-grid-col-1-1'>
                                     <div className= "disc-col-grd-perm">
                                         <div className="disc-text-props">
                                             <label>Min</label>
@@ -386,7 +351,7 @@ class AddPolicy extends React.Component {
                         <ConditionalRender
                             condition={this.getFieldValue('ruleType') === 'Time'}
                             render={() => (
-                                <div>
+                                <div className='policy-grid-col-1-1'>
                                     <div className= "disc-col-grd-perm">
                                         <div className="disc-text-props">
                                             <label>Start Date</label>
@@ -423,6 +388,54 @@ class AddPolicy extends React.Component {
                                                 value={this.getInputValue('endDate')}
                                                 onChange={this.onInputChange('endDate')}
 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        />
+
+                        <ConditionalRender
+                            condition={this.getField('productId').isValidationOn}
+                            render={() => (
+                                <div>
+                                    <div className= "disc-col-grd-perm">
+                                        <div className="disc-text-props">
+                                            <label>Product</label>
+                                        </div>
+
+                                        <select className="disc-input-props"
+                                                required
+                                                value={this.getInputValue('productId')}
+                                                onChange={this.onInputChange('productId')}>
+                                            <option value=""/>
+                                            <ConditionalRender
+                                                condition={this.props.storeProducts != null}
+                                                render={() => this.props.storeProducts.map(product => {
+                                                    return (<option value={product.id} key={product.id}>{product.name}</option>);
+                                                })}
+                                            />
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+                        />
+
+                        <ConditionalRender
+                            condition={this.getField('category').isValidationOn}
+                            render={() => (
+                                <div>
+                                    <div className= "disc-col-grd-perm">
+                                        <div className="disc-text-props">
+                                            <label>Category</label>
+                                        </div>
+
+                                        <div >
+                                            <input
+                                                type="text"
+                                                className="disc-input-props"
+                                                value={this.getInputValue('category')}
+                                                onChange={this.onInputChange('category')}
                                             />
                                         </div>
                                     </div>
