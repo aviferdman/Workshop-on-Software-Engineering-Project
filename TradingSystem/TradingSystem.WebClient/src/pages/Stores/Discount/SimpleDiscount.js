@@ -1,12 +1,23 @@
 import React, {Component} from 'react';
 import './Discounts.css';
-import {formatDate, formatFloat} from "../../../utils";
+import {alertRequestError_default, formatDate, formatFloat} from "../../../utils";
 import ConditionalRender from "../../../ConditionalRender";
 import EditSimpleDiscount from "./EditSimpleDiscount";
 import * as AiIcons from "react-icons/ai";
-
+import * as api from "../../../api";
+import {GlobalContext} from "../../../globalContext";
 
 class SimpleDiscount extends Component {
+    onRemoveClick = discount => async e => {
+        await api.stores.discounts.remove({
+            username: this.context.username,
+            storeId: this.props.storeId,
+            discountId: discount.id,
+        }).then(id => {
+            this.props.onRemove(discount);
+        }, alertRequestError_default);
+    }
+
     render() {
         if (this.props.simpleDiscountRecords == null) {
             return null;
@@ -29,13 +40,17 @@ class SimpleDiscount extends Component {
 
                                         <div className="control-buttons" style={{marginLeft:"1rem" , marginTop:"1rem"}}>
                                             <div >
-                                                <button className="exit-button"  >
+                                                <button className="exit-button" onClick={this.onRemoveClick(elem)} >
                                                     <AiIcons.AiOutlineClose />
                                                 </button>
                                             </div>
 
                                             <div style={{marginLeft:"2.5rem"}}>
-                                                <EditSimpleDiscount />
+                                                <EditSimpleDiscount
+                                                    discount={elem}
+                                                    storeId={this.props.storeId}
+                                                    storeProducts={this.props.storeProducts}
+                                                    onSuccess={this.props.onEdit} />
                                             </div>
                                         </div>
 
@@ -82,4 +97,5 @@ class SimpleDiscount extends Component {
     }
 }
 
+SimpleDiscount.contextType = GlobalContext;
 export default SimpleDiscount;

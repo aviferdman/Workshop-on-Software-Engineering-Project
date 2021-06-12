@@ -39,3 +39,10 @@ export function formatDate(date) {
     let year = date.getFullYear();
     return `${dayInMonth}/${month}/${year}`;
 }
+
+export function formatDateForInput(date) {
+    let dayInMonth = formatNum_leadingZero(date.getDate());
+    let month = formatNum_leadingZero(date.getMonth() + 1);
+    let year = date.getFullYear();
+    return `${year}-${month}-${dayInMonth}`;
+}
