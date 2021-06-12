@@ -41,7 +41,7 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public  void ActivateFunction(Store s)
         {
-            var discountId1 = MarketRules.Instance.GenerateConditionalDiscountsAsync(s,username, discountRuleRelation, storeId, discountId, discountId2, decide).Result;
+            var discountId1 = MarketRules.Instance.GenerateConditionalDiscountsAsync(s,username, discountRuleRelation, storeId, discountId, discountId2, decide, originalDiscountId: originDiscountId).Result;
             var discountRelation = new DiscountsRelation(username, originDiscountId, discountRuleRelation, storeId, discountId, discountId2, decide);
             MarketRulesService.Instance.discountsManager.AddRelation(discountRelation).Wait();
         }

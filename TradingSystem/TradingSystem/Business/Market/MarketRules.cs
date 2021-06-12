@@ -54,18 +54,26 @@ namespace TradingSystem.Business.Market
             this.marketStores = MarketStores.Instance;
         }
 
-        public async System.Threading.Tasks.Task<Guid> CreateSimpleDiscountAsync(Store store,string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid())
+        public async System.Threading.Tasks.Task<Guid> CreateSimpleDiscountAsync(Store store,string username, Guid storeId, RuleContext discountType, double precent, string category = "", Guid productId = new Guid(), Guid originalDiscountId = new Guid())
         {
             var d = CreateCalculator(discountType, precent, category, productId);
             Discount discount = new Discount(d);
+            if (!originalDiscountId.Equals(new Guid()))
+            {
+                discount.Id = originalDiscountId;
+            }
             return store.AddDiscount(username, discount);
         }
         public async System.Threading.Tasks.Task<Guid> CreateConditionalDiscountAsync(Store store,string username, Guid storeId, RuleContext discountType, RuleType ruleType, double precent, string category = "", Guid productId = new Guid(),
-            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime())
+            double valueLessThan = int.MaxValue, double valueGreaterEQThan = 0, DateTime d1 = new DateTime(), DateTime d2 = new DateTime(), Guid originalDiscountId = new Guid())
         {
             var d = CreateCalculator(discountType, precent, category, productId);
             var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             ConditionDiscount discount = new ConditionDiscount(d);
+            if (!originalDiscountId.Equals(new Guid()))
+            {
+                discount.Id = originalDiscountId;
+            }
             discount.AddRule(r);
             return store.AddDiscount(username, discount);
         }
@@ -75,10 +83,8 @@ namespace TradingSystem.Business.Market
             var d = CreateCalculator(discountType, precent, category, productId);
             Discount discount = new Discount(d);
             if (!originalDiscountId.Equals(new Guid()))
-            {
-                discount.Id = originalDiscountId;
-            }
             store.RemoveDiscount(username, discountId);
+            discount.Id = discountId;
             store.AddDiscount(username, discount);
             return new Result<Guid>(discountId, false, "");
         }
@@ -90,25 +96,23 @@ namespace TradingSystem.Business.Market
             var r = CreateRule(discountType, ruleType, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             ConditionDiscount discount = new ConditionDiscount(d);
             if (!originalDiscountId.Equals(new Guid()))
-            {
-                discount.Id = originalDiscountId;
-            }
             discount.AddRule(r);
             store.RemoveDiscount(username, discountId);
+            discount.Id = discountId;
             store.AddDiscount(username, discount);
             return new Result<Guid>(discountId, false, "");
         }
 
-        public async Task<Guid> GenerateConditionalDiscountsAsync(Store store,string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
+        public async Task<Guid> GenerateConditionalDiscountsAsync(Store store,string username, DiscountRuleRelation discountRuleRelation, Guid storeId, Guid discountId1, Guid discountId2, bool decide, Guid originalDiscountId = new Guid())
         {
             switch (discountRuleRelation)
             {
                 case DiscountRuleRelation.And:
-                    return await AddDiscountAndRuleAsync(username, storeId, discountId1, discountId2);
+                    return await AddDiscountAndRuleAsync(username, storeId, discountId1, discountId2, originalDiscountId);
                 case DiscountRuleRelation.Or:
-                    return await AddDiscountOrRuleAsync(store,username, storeId, discountId1, discountId2);
+                    return await AddDiscountOrRuleAsync(store,username, storeId, discountId1, discountId2, originalDiscountId);
                 default:
-                    return await AddDiscountXorRuleAsync(store,username, storeId, discountId1, discountId2, decide);
+                    return await AddDiscountXorRuleAsync(store,username, storeId, discountId1, discountId2, decide, originalDiscountId);
             }
         }
 
@@ -178,24 +182,30 @@ namespace TradingSystem.Business.Market
             return r;
         }
 
-        private async Task<Guid> AddDiscountOrRuleAsync(Store store,string username, Guid storeId, Guid discountId1, Guid discountId2)
+        private async Task<Guid> AddDiscountOrRuleAsync(Store store,string username, Guid storeId, Guid discountId1, Guid discountId2, Guid originalDiscountId = new Guid())
         {
             var rule1 = store.GetRuleByDiscountId(discountId1);
             var rule2 = store.GetRuleByDiscountId(discountId2);
             var orRule = Rule.OrTwoRules(rule1, rule2);
             var discount = new ConditionDiscount(store.GetDiscountById(discountId1).Calc, orRule);
-            //discount.AddRule(andRule);
+            if (!originalDiscountId.Equals(new Guid()))
+            {
+                discount.Id = originalDiscountId;
+            }
             return store.AddDiscount(username, discount);
         }
 
-        private async Task<Guid> AddDiscountAndRuleAsync(string username, Guid storeId, Guid discountId1, Guid discountId2)
+        private async Task<Guid> AddDiscountAndRuleAsync(string username, Guid storeId, Guid discountId1, Guid discountId2, Guid originalDiscountId = new Guid())
         {
             Store store = await marketStores.GetStoreById(storeId);
             var rule1 = store.GetRuleByDiscountId(discountId1);
             var rule2 = store.GetRuleByDiscountId(discountId2);
             var andRule = Rule.AddTwoRules(rule1, rule2);
             var discount = new ConditionDiscount(store.GetDiscountById(discountId1).Calc, andRule);
-            //discount.AddRule(andRule);
+            if (!originalDiscountId.Equals(new Guid()))
+            {
+                discount.Id = originalDiscountId;
+            }
             return store.AddDiscount(username, discount);
         }
         private async Task<Guid> CreateRuleToStoreAsync(Store store,string username, Guid storeId, Rule rule)
@@ -220,13 +230,17 @@ namespace TradingSystem.Business.Market
             var newPolicy = store.GetPolicy().Condition(rule);
             store.SetPolicy(username, newPolicy);
         }
-        private async Task<Guid> AddDiscountXorRuleAsync(Store store,string username, Guid storeId, Guid discountId1, Guid discountId2, bool decide)
+        private async Task<Guid> AddDiscountXorRuleAsync(Store store,string username, Guid storeId, Guid discountId1, Guid discountId2, bool decide, Guid originalDiscountId = new Guid())
         {
             try
             {
                 var discount1 = (ConditionDiscount)store.GetDiscountById(discountId1);
                 var discount2 = (ConditionDiscount)store.GetDiscountById(discountId2);
                 var xorDiscount = discount1.Xor(discount2, decide);
+                if (!originalDiscountId.Equals(new Guid()))
+                {
+                    xorDiscount.Id = originalDiscountId;
+                }
                 return store.AddDiscount(username, xorDiscount);
             }
             catch
