@@ -525,7 +525,9 @@ namespace TradingSystem.DAL
         public async Task<Store> getStore(Guid storeId)
         {
             Store sc;
-            sam.WaitOne();
+            lock (this)
+            {
+
                 sc = stores.Single(s => s.sid.Equals(storeId));
                 Entry(sc).Reference(s => s.founder).Load();
                 Entry(sc.founder).Reference(s => s.m).Load();
@@ -550,11 +552,11 @@ namespace TradingSystem.DAL
                     Entry(m).Reference(s => s.m).Load();
                 }
 
-                 getDiscoutsPolicies(storeId, sc);
+                getDiscoutsPolicies(storeId, sc);
 
-            sam.Release();
 
-            return sc;
+                return sc;
+            }
         }
 
         private   void  getDiscoutsPolicies(Guid storeId, Store s)
