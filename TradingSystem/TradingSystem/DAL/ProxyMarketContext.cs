@@ -18,8 +18,8 @@ namespace TradingSystem.DAL
     public class ProxyMarketContext
     {
         private bool isDebug;
-        public static string conType = "SQLServer";
-        public static string conString = "Server=tcp:marketserverinbi.database.windows.net,1433;Initial Catalog=MarketDB2;Persist Security Info=False;User ID=inbi;Password=Marketo1234;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        public static string conType = "SQLite";
+        public static string conString = "Data Source=marketDBTests.db";
         public ConcurrentDictionary<string, DataUser> dataUsers;
         public ConcurrentDictionary<string, RegisteredAdmin> admins;
         public ConcurrentDictionary<string, MemberState> memberStates;
@@ -464,8 +464,8 @@ namespace TradingSystem.DAL
             dataUsers.TryAdd("DEFAULT_ADMIN", admin);
             memberStates.TryAdd("DEFAULT_ADMIN", new AdministratorState("DEFAULT_ADMIN"));
             shoppingCarts.TryAdd("DEFAULT_ADMIN", new ShoppingCart("DEFAULT_ADMIN"));
-            //conString = ConfigurationManager.AppSettings["ConString"];
-            //conType = ConfigurationManager.AppSettings["ConType"];
+            conString = ConfigurationManager.AppSettings["ConString"];
+            conType = ConfigurationManager.AppSettings["ConType"];
         }
 
         public async Task AddNewMemberState(string username)
