@@ -52,7 +52,7 @@ namespace TradingSystem.Business.Market.StorePackage
 
         public  void ActivateFunction(Store s)
         {
-            var discountId = MarketRules.Instance.CreateConditionalDiscountAsync(s,username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2).Result;
+            var discountId = MarketRules.Instance.CreateConditionalDiscountAsync(s,username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2, originalDiscountId: originDiscountId).Result;
             var discountData = new DiscountData(originDiscountId, username, storeId, discountType, ruleType, precent, category, productId, valueLessThan, valueGreaterEQThan, d1, d2);
             MarketRulesService.Instance.discountsManager.AddDiscount(discountData).Wait();
         }

@@ -312,7 +312,7 @@ namespace TradingSystem.Business.Market
             if (basket.RemoveProduct(p))
             {
                 ProxyMarketContext.Instance.saveChanges();
-                if (basket._product_quantity.Count == 0)
+                if (basket._product_quantity != null && basket._product_quantity.Count == 0)
                 {
                     u.ShoppingCart.shoppingBaskets.Remove(basket);
                     ProxyMarketContext.Instance.saveChanges();
