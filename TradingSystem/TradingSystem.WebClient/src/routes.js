@@ -49,7 +49,6 @@ export default function Routes() {
             <Route path={"/adminActions"} component={AdminActions} />
             <Route path={"/adminHistory"} component={AdminHistory} />
             <Route path={"/userBids"} component={UserBids} />
-            <Route path={"/storeBids"} component={StoreBids} />
             <Route path={"/statistics"} component={Statistics} />
         </Switch>
     );

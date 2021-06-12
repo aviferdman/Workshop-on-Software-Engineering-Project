@@ -13,6 +13,7 @@ import {alertRequestError_default} from "../../utils";
 import StoreRestrictedComponentCustom from "../../components/StoreRestrictedComponentCustom";
 import {Discounts} from "./Discount/Discounts";
 import {Policy} from "./Policy/Policy";
+import {StoreBids} from "./StoreBids/storeBids";
 
 class StoreContent extends Component {
     constructor(props) {
@@ -89,6 +90,12 @@ class StoreContent extends Component {
                         )} />
                     <StoreRestrictedComponentCustom
                         permissions={this.state.myPermissions}
+                        allowedActions={[api.data.stores.permissions.bidRequests,]}
+                        render={() => (
+                            <button className="button-view" onClick={this.onNavigationButtonClick('bids')}>Store Bids</button>
+                        )} />
+                    <StoreRestrictedComponentCustom
+                        permissions={this.state.myPermissions}
                         allowedActions={[api.data.stores.permissions.getShopHistory,]}
                         render={() => (
                             <button className="button-view" onClick={this.onNavigationButtonClick('history')}>Store History</button>
@@ -112,6 +119,7 @@ export class Store extends Component {
                     <Route path={`${this.props.match.path}/history/:storeId`} component={StoreHistory} />
                     <Route path={`${this.props.match.path}/discounts/:storeId`} component={Discounts} />
                     <Route path={`${this.props.match.path}/policy/:storeId`} component={Policy} />
+                    <Route path={`${this.props.match.path}/bids/:storeId`} component={StoreBids} />
                     <Route path={`${this.props.match.path}/:storeId`} component={StoreContent} />
                     <Route path={this.props.match.path}>
                         <h3 className='center-screen'>No store selected</h3>

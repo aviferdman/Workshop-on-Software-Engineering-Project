@@ -12,6 +12,7 @@ namespace TradingSystem.WebApi.DTO.Products
         public double Weight { get; set; }
         public double Price { get; set; }
         public string? Category { get; set; }
+        public Guid StoreId { get; set; }
         public string? StoreName { get; set; }
         public int Rating { get; set; }
 
@@ -25,6 +26,7 @@ namespace TradingSystem.WebApi.DTO.Products
                 Quantity = productData._quantity,
                 Price = productData._price,
                 Weight = productData._weight,
+                StoreId = productData._storeId,
                 StoreName = productData.StoreName,
                 Rating = productData.rating,
             };
