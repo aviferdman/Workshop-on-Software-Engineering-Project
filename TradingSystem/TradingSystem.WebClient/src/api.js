@@ -5,7 +5,7 @@ export const post = async (...args) => {
     return response.data;
 }
 
-const getDataForRequest = (fData, params) => {
+const getDataForRequest = (fData, params, noParamsDefault) => {
     let data;
     if (fData != null) {
         if (params.length === 0) {
@@ -19,7 +19,11 @@ const getDataForRequest = (fData, params) => {
         data = params[0];
     }
     else if (params.length === 0) {
-        throw new Error('No data specified to send');
+        if (noParamsDefault === undefined) {
+            throw new Error('No data specified to send');
+        }
+
+        return noParamsDefault;
     }
     else {
         throw new Error('Must specify params selector function if more than 1 params have been passed');
@@ -30,12 +34,14 @@ const getDataForRequest = (fData, params) => {
 
 export const getCurry = (url, fParams, fConfig) => async (...params) => {
     let config = fConfig ? fConfig.apply(this, params) : {};
-    let data = getDataForRequest(fParams, params);
+    let data = getDataForRequest(fParams, params, null);
 
     if (config.params != null && typeof config.params === "object") {
-        data = Object.assign(data, config.params);
+        data = data == null ? config.params : Object.assign(data, config.params);
     }
-    config.params = data;
+    if (data != null) {
+        config.params = data;
+    }
 
     let response = await axios.get(url, config);
     return response.data;
@@ -89,6 +95,14 @@ export const data = {
 export const shoppingCart = {
     addProduct: postCurry('/ShoppingCart/AddProduct'),
 };
+
+export const statistics = {
+    fetchVisitingStatisticsForToday: getCurry('/Statistics/FetchVisitingStatisticsForToday'),
+    fetchVisitingStatisticsForDatesRange: getCurry('/Statistics/FetchVisitingStatisticsForDatesRange', (start, end) => ({
+        dateStart: start,
+        dateEnd: end,
+    })),
+}
 
 export const history = {
     mine: async username => {

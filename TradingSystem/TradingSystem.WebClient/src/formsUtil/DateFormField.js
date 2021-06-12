@@ -6,6 +6,14 @@ export default class DateFormField extends FormFieldInfo {
     }
 
     trySetValueFromEvent(e) {
+        let err = this.trySetValueFromEventCore(e);
+        if (err) {
+            e.target.value = this.inputValue;
+        }
+        return err;
+    }
+
+    trySetValueFromEventCore(e) {
         let value = e.target.value;
         if (value === '') {
             this.value = null;
@@ -14,7 +22,9 @@ export default class DateFormField extends FormFieldInfo {
         }
 
         if (e.target.valueAsDate == null) {
-            return false;
+            this.value = null;
+            this.inputValue = '';
+            return true;
         }
 
         this.value = e.target.valueAsDate;
