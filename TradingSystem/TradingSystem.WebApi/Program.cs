@@ -16,7 +16,7 @@ namespace TradingSystem.WebApi
         public static async Task Main(string[] args)
         {
             IHost? host = CreateHostBuilder(args).Build();
-            await SetupService.Instance.Initialize();
+            //await SetupService.Instance.Initialize();
             await host.RunAsync();
         }
 
