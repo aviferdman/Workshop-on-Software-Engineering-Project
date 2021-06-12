@@ -100,7 +100,7 @@ export default class CartProduct extends React.Component {
                     />
 
                     <div className="product-price">
-                        <div style={{ marginBottom:"0.5rem"}}>{formatCurrency(this.props.product.price)}</div>
+                        <div style={{ marginBottom:"0.5rem"}}>Original price: {formatCurrency(this.props.product.price)}</div>
                     </div>
                     <button onClick={this.onRemoveClick} className="button primary">Remove</button>
                 </div>

@@ -81,7 +81,7 @@ export default class HomeProduct extends React.Component {
                     />
                 )}
                 <div className="product-price">
-                    <div>{formatCurrency(this.product.price)}</div>
+                    <div>Original price: {formatCurrency(this.product.price)}</div>
                 </div>
                 <button onClick={this.onButtonClick} className="button primary">{this.product._inCart ? 'Go to shopping cart' : 'Add To Cart'}</button>
             </div>

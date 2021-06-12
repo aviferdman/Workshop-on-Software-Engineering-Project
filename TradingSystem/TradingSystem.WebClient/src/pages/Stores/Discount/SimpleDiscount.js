@@ -58,18 +58,23 @@ class SimpleDiscount extends Component {
                                     <p className= "discName"> {<text style={{fontWeight: "bold"}}>ID: </text>} {elem.serialNumber}  </p>
                                     <p className= "discName"> {<text style={{fontWeight: "bold"}}>creator: </text>} {elem.creator}  </p>
                                     <p className= "discName"> {<text style={{fontWeight: "bold"}}>percent:  </text>} {formatFloat(elem.percent * 100)}%  </p>
-                                    <p className= "discName"> {<text style={{fontWeight: "bold"}}>discountType: </text>} {elem.discountType} </p>
                                     <p className= "discName"> {<text style={{fontWeight: "bold"}}>condition: </text>} {elem.conditionType || "None"}  </p>
                                     <ConditionalRender
-                                        condition={elem.discountType === 'Category'}
-                                        render={() => (<p className= "discName"> {<text style={{fontWeight: "bold"}}>category:  </text>} {elem.category} </p>)}
-                                    />
-                                    <ConditionalRender
-                                        condition={elem.discountType === 'Product'}
-                                        render={() => {
-                                            let product = this.props.storeProductsMap && this.props.storeProductsMap[elem.productId];
-                                            return (<p className="discName"> {<text style={{fontWeight: "bold"}}>product: </text>} {(product && product.name) || "<deleted>"} </p>);
-                                        }}
+                                        condition={elem.conditionType === 'Quantity'}
+                                        render={() => [(
+                                            <p className= "discName"> {<text style={{fontWeight: "bold"}}>discountType: </text>} {elem.discountType} </p>), (
+                                            <ConditionalRender
+                                                condition={elem.discountType === 'Category'}
+                                                render={() => (<p className= "discName"> {<text style={{fontWeight: "bold"}}>category:  </text>} {elem.category} </p>)}
+                                            />), (
+                                            <ConditionalRender
+                                                condition={elem.discountType === 'Product'}
+                                                render={() => {
+                                                    let product = this.props.storeProductsMap && this.props.storeProductsMap[elem.productId];
+                                                    return (<p className="discName"> {<text style={{fontWeight: "bold"}}>product: </text>} {(product && product.name) || "<deleted>"} </p>);
+                                                }}
+                                            />)
+                                        ]}
                                     />
                                     <ConditionalRender
                                         condition={elem.conditionType != null && elem.conditionType !== 'Time' && elem.minValue != null}

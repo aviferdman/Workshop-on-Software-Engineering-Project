@@ -67,3 +67,7 @@
     text-align: center;
     flex: 1;
 }
+
+.policy-grid-col-1-1 {
+    grid-column: 1/1;
+}

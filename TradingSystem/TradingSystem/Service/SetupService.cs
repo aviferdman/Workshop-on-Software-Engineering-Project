@@ -26,10 +26,11 @@ namespace TradingSystem.Service
 
         public async Task<Result<String>> Initialize()
         {
+            Result<String> ret = null;
             try
             {
                 var p = Directory.GetCurrentDirectory();
-                var path =Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
+                var path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
                 string fileName = "init.txt";
                 String[] lines = File.ReadAllLines($@"{path}\{fileName}");
                 for (int i=0; i<lines.Length; i++)
@@ -39,11 +40,20 @@ namespace TradingSystem.Service
                     Result<String> result = await Navigate(command);
                     if (result.IsErr)
                     {
-                        return result;
+                        ret = result;
                     }
                 }
-            } catch { return new Result<string>("something went wrong", true, "invalid input"); }
+            } 
 
+            catch 
+            { 
+                return new Result<string>("something went wrong", true, "invalid input"); 
+            }
+
+            if (ret != null)
+            {
+                return ret;
+            }
             return new Result<string>("success", false, "initialization succeeded");
         }
 

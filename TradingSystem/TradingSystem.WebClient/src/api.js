@@ -92,6 +92,10 @@ export const data = {
     },
 };
 
+export const categories = {
+    fetchAll: getCurry('/Products/Categories'),
+};
+
 export const shoppingCart = {
     addProduct: postCurry('/ShoppingCart/AddProduct'),
 };
