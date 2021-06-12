@@ -191,6 +191,7 @@ export const stores = {
             id: storeId,
         })),
         add: postCurry('/stores/rules/AddPolicy'),
+        removeAll: postCurry('/stores/rules/RemovePolicies'),
     },
 
     bids: {

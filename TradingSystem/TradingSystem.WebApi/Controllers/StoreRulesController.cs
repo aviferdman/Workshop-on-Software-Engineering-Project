@@ -10,6 +10,7 @@ using TradingSystem.Business.Market.DiscountPackage;
 using TradingSystem.Business.Market.StorePackage.PolicyPackage;
 using TradingSystem.Service;
 using TradingSystem.WebApi.DTO;
+using TradingSystem.WebApi.DTO.Store;
 using TradingSystem.WebApi.DTO.Store.Discounts;
 using TradingSystem.WebApi.DTO.Store.Policy;
 
@@ -274,7 +275,6 @@ namespace TradingSystem.WebApi.Controllers
             });
         }
 
-
         [HttpPost]
         public async Task<ActionResult> AddPolicy([FromBody] PolicyParamsDTO policyParamsDTO)
         {
@@ -310,6 +310,23 @@ namespace TradingSystem.WebApi.Controllers
                 policyParamsDTO.StartDate ?? default,
                 policyParamsDTO.EndDate ?? default
             );
+
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RemovePolicies([FromBody] StoreInfoActionDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (dto.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store id");
+            }
+
+            await MarketRulesService.RemovePolicyRule(dto.Username, dto.StoreId);
 
             return Ok();
         }
