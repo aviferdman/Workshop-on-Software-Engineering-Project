@@ -34,7 +34,7 @@ namespace TradingSystem.Business.Market
             var toRemove = purchaseKind.ToString();
             if (Contains(toRemove))
             {
-                availablePurchaseKinds.Remove(new Prem(toRemove));
+                availablePurchaseKinds.RemoveWhere(pk => pk.p.Equals(toRemove));
             }
         }
 
