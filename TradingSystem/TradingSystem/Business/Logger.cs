@@ -53,26 +53,29 @@ namespace TradingSystem.Business
             message += $"{message} {DateTime.Now}";
             if (this.writeToFile)
             {
-                var path = ConfigurationManager.AppSettings["LoggerFilePath"];
+                //lock (this)
+                //{
+                    var path = ConfigurationManager.AppSettings["LoggerFilePath"];
 
-                // var path = "LoggerMessages.txt";
+                    // var path = "LoggerMessages.txt";
 
-                if (!File.Exists(path))
-                {
-                    // Create a file to write to.
-                    using (StreamWriter sw = File.CreateText(path))
+                    if (!File.Exists(path))
+                    {
+                        // Create a file to write to.
+                        using (StreamWriter sw = File.CreateText(path))
+                        {
+                            sw.WriteLine(message);
+                        }
+                    }
+
+                    // This text is always added, making the file longer over time
+                    // if it is not deleted.
+                    using (StreamWriter sw = File.AppendText(path))
                     {
                         sw.WriteLine(message);
                     }
-                }
-
-                // This text is always added, making the file longer over time
-                // if it is not deleted.
-                using (StreamWriter sw = File.AppendText(path))
-                {
-                    sw.WriteLine(message);
-                }
-                // File.WriteAllTextAsync("LoggerMessages.txt", message);
+                    // File.WriteAllTextAsync("LoggerMessages.txt", message);
+                //}
             }
         }
     }
