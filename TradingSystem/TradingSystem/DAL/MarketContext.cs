@@ -57,6 +57,7 @@ namespace TradingSystem.DAL
                     }
                     catch (Exception ex)
                     {
+                        
                         return s;
                     }
 
@@ -470,6 +471,8 @@ namespace TradingSystem.DAL
                 }
                 catch (Exception e)
                 {
+                    dataUsers.Remove(u);
+                    SaveChanges();
                     return false;
                 }
             }
