@@ -435,6 +435,16 @@ namespace TradingSystem.Business.Market
                 toRem = _products.Where(p => p.Id.Equals(productID)).First();
                 MarketStores.Instance.removeFromCategory(toRem, toRem.Category);
                 _products.Remove(toRem);
+                foreach (User guest in MarketUsers.Instance.ActiveUsers.Values)
+                {
+                    foreach (ShoppingBasket basket in guest.ShoppingCart.ShoppingBaskets)
+                    {
+                        if (basket.Store == this)
+                        {
+                            basket.RemoveProduct(toRem);
+                        }
+                    }
+                }
                 MarketDAL.Instance.RemoveProduct(toRem);
             }
             return "Product removed";
