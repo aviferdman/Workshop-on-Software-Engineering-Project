@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TradingSystem.Migrations
 {
-    public partial class MarketMigration : Migration
+    public partial class MarketMigratin : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

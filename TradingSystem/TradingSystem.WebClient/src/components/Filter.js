@@ -19,10 +19,9 @@ class Filter extends Component {
                     Filter{" "}
                     <select value={this.props.category} onChange={this.props.filterProducts}>
                         <option value="">ALL</option>
-                        <option value="Dairy">Dairy</option>
-                        <option value="Pastries">Pastries</option>
-                        <option value="Beverage">Beverage</option>
-
+                        {this.props.categories == null ? null : this.props.categories.map(category => {
+                            return (<option value={category} key={category}>{category}</option>);
+                        })}
                     </select>
                 </div>
 

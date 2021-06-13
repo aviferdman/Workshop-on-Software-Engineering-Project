@@ -41,6 +41,9 @@ export function formatDate(date) {
 }
 
 export function formatDateForInput(date) {
+    if (date == null) {
+        return '';
+    }
     let dayInMonth = formatNum_leadingZero(date.getDate());
     let month = formatNum_leadingZero(date.getMonth() + 1);
     let year = date.getFullYear();

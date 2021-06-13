@@ -9,8 +9,8 @@ using TradingSystem.DAL;
 namespace TradingSystem.Migrations
 {
     [DbContext(typeof(MarketContext))]
-    [Migration("20210612114822_MarketMigration")]
-    partial class MarketMigration
+    [Migration("20210612213850_MarketMigratin")]
+    partial class MarketMigratin
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

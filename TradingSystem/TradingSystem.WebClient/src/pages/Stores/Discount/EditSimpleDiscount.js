@@ -45,7 +45,6 @@ class EditSimpleDiscount extends React.Component {
         this.state.discountFields.fields.startDate.setValidationOff();
         this.state.discountFields.fields.endDate.setValidationOff();
 
-        this.onDiscountTypeChangeCore();
         this.onConditionTypeChangeCore(false);
         if (set) {
             this.setState({
@@ -63,7 +62,7 @@ class EditSimpleDiscount extends React.Component {
         return new FormFields({
             discountType: discount.discountType,
             conditionType: discount.conditionType,
-            percent: new NumberFormField(discount.percent),
+            percent: new NumberFormField(discount.percent * 100),
             productId: new NullFormField(discount.productId),
             category: discount.category,
             minValue: new NullableNumberFormField(discount.minValue),
@@ -131,6 +130,8 @@ class EditSimpleDiscount extends React.Component {
                 }
                 break;
         }
+
+        this.onDiscountTypeChangeCore();
     }
 
     onDiscountTypeChange = e => {
@@ -146,6 +147,14 @@ class EditSimpleDiscount extends React.Component {
 
     onDiscountTypeChangeCore = () => {
         let discountType = this.getFieldValue('discountType');
+        let conditionType = this.getFieldValue('conditionType');
+
+        if (conditionType !== 'Quantity') {
+            this.state.discountFields.fields.productId.setValidationOff();
+            this.state.discountFields.fields.category.setValidationOff();
+            return;
+        }
+
         switch (discountType) {
             case 'Product':
                 this.state.discountFields.fields.productId.setValidationOn();
@@ -245,26 +254,6 @@ class EditSimpleDiscount extends React.Component {
                         <div>
                             <div className= "disc-col-grd-perm">
                                 <div className="disc-text-props">
-                                    <label>Discount Type</label>
-                                </div>
-
-                                <div>
-                                    <select className="disc-input-props"
-                                            required
-                                            name={'discount-type-select'}
-                                            value={this.getInputValue('discountType')}
-                                            onChange={this.onDiscountTypeChange}>
-                                        <option value="Product">Product</option>
-                                        <option value="Category">Category</option>
-                                        <option value="Store">Store</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div className= "disc-col-grd-perm">
-                                <div className="disc-text-props">
                                     <label>Condition</label>
                                 </div>
 
@@ -304,48 +293,24 @@ class EditSimpleDiscount extends React.Component {
                         </div>
 
                         <ConditionalRender
-                            condition={this.getField('productId').isValidationOn}
+                            condition={this.getFieldValue('conditionType') === 'Quantity'}
                             render={() => (
                                 <div>
                                     <div className= "disc-col-grd-perm">
                                         <div className="disc-text-props">
-                                            <label>Product</label>
+                                            <label>Discount Type</label>
                                         </div>
 
-                                        <select className="disc-input-props"
-                                                required
-                                                name={'product-select'}
-                                                value={this.getInputValue('productId')}
-                                                onChange={this.onInputChange('productId')}>
-                                            <option value=""/>
-                                            <ConditionalRender
-                                                condition={this.props.storeProducts != null}
-                                                render={() => this.props.storeProducts.map(product => {
-                                                    return (<option value={product.id} key={product.id}>{product.name}</option>);
-                                                })}
-                                            />
-                                        </select>
-                                    </div>
-                                </div>
-                            )}
-                        />
-
-                        <ConditionalRender
-                            condition={this.getField('category').isValidationOn}
-                            render={() => (
-                                <div>
-                                    <div className= "disc-col-grd-perm">
-                                        <div className="disc-text-props">
-                                            <label>Category</label>
-                                        </div>
-
-                                        <div >
-                                            <input
-                                                type="text"
-                                                className="disc-input-props"
-                                                value={this.getInputValue('category')}
-                                                onChange={this.onInputChange('category')}
-                                            />
+                                        <div>
+                                            <select className="disc-input-props"
+                                                    required
+                                                    name={'discount-type-select'}
+                                                    value={this.getInputValue('discountType')}
+                                                    onChange={this.onDiscountTypeChange}>
+                                                <option value="Product">Product</option>
+                                                <option value="Category">Category</option>
+                                                <option value="Store">Store</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -355,7 +320,7 @@ class EditSimpleDiscount extends React.Component {
                         <ConditionalRender
                             condition={this.getFieldValue('conditionType') !== '' && this.getFieldValue('conditionType') !== 'Time'}
                             render={() => (
-                                <div>
+                                <div className='disc-grid-col-1-1'>
                                     <div className= "disc-col-grd-perm">
                                         <div className="disc-text-props">
                                             <label>Min</label>
@@ -401,7 +366,7 @@ class EditSimpleDiscount extends React.Component {
                         <ConditionalRender
                             condition={this.getFieldValue('conditionType') === 'Time'}
                             render={() => (
-                                <div>
+                                <div className='disc-grid-col-1-1'>
                                     <div className= "disc-col-grd-perm">
                                         <div className="disc-text-props">
                                             <label>Start Date</label>
@@ -437,6 +402,55 @@ class EditSimpleDiscount extends React.Component {
                                                 style={{width: "15rem" , height: "3rem" }}
                                                 value={this.getInputValue('endDate')}
                                                 onChange={this.onInputChange('endDate')}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        />
+
+                        <ConditionalRender
+                            condition={this.getField('productId').isValidationOn}
+                            render={() => (
+                                <div>
+                                    <div className= "disc-col-grd-perm">
+                                        <div className="disc-text-props">
+                                            <label>Product</label>
+                                        </div>
+
+                                        <select className="disc-input-props"
+                                                required
+                                                name={'product-select'}
+                                                value={this.getInputValue('productId')}
+                                                onChange={this.onInputChange('productId')}>
+                                            <option value=""/>
+                                            <ConditionalRender
+                                                condition={this.props.storeProducts != null}
+                                                render={() => this.props.storeProducts.map(product => {
+                                                    return (<option value={product.id} key={product.id}>{product.name}</option>);
+                                                })}
+                                            />
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+                        />
+
+                        <ConditionalRender
+                            condition={this.getField('category').isValidationOn}
+                            render={() => (
+                                <div>
+                                    <div className= "disc-col-grd-perm">
+                                        <div className="disc-text-props">
+                                            <label>Category</label>
+                                        </div>
+
+                                        <div >
+                                            <input
+                                                type="text"
+                                                className="disc-input-props"
+                                                value={this.getInputValue('category')}
+                                                onChange={this.onInputChange('category')}
                                             />
                                         </div>
                                     </div>

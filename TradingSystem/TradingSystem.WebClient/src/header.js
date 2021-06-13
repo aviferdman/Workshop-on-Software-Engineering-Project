@@ -14,7 +14,7 @@ export default class Header extends React.Component {
                     <h3>{this.context.role && this.context.role !== UserRole.guest ? this.context.username : ''}</h3>
                 </div>
                 <span>{this.context.role === UserRole.admin ? 'Admin' : ''}</span>
-                {!this.context.role || this.context.role === UserRole.guest ? <span /> : (<button className="icons" onClick={this.context.logout}><BiIcons.BiLogInCircle /> </button>)}
+                {!this.context.role ? <span /> : (<button className="icons" onClick={this.context.logout}><BiIcons.BiLogInCircle /> </button>)}
                 <Link
                     className="icons"
                     to={{
