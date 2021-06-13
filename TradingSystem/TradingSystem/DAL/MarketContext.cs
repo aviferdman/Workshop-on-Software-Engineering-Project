@@ -70,6 +70,12 @@ namespace TradingSystem.DAL
         public DbSet<Owner> owners { get; set; }
         public DbSet<Store> stores { get; set; }
         public DbSet<BidsManager> BidsManager { get; set; }
+
+        internal void removeAllProductsInMembersCart(Product p)
+        {
+            productInCarts.RemoveRange(productInCarts.Include(p=>p.product).Where(p => p.product.id.Equals(p.id)));
+        }
+
         public DbSet<BidState> BidStates { get; set; }
         public DbSet<Bid> Bids { get; set; }
         public DbSet<PurchasePolicy> PurchasePolicy { get; set; }
