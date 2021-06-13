@@ -209,7 +209,7 @@ namespace TradingSystem.WebApi.Controllers
                 return BadRequest("Invalid store ID");
             }
 
-            Result<bool>? result = await MarketBidsService.GetStoreBidPolicy(storeInfoActionDTO.Username, storeInfoActionDTO.StoreId, false);
+            Result<bool>? result = await MarketBidsService.GetStoreBidPolicy(storeInfoActionDTO.Username, storeInfoActionDTO.StoreId);
             if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
             {
                 return InternalServerError();

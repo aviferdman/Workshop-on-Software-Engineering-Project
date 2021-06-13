@@ -5,6 +5,8 @@ import {alertRequestError_default} from "../../../utils";
 import BidRecordsStore from "./BidRecordsStore";
 import * as util from "../../../utils";
 import {GlobalContext} from "../../../globalContext";
+import CheckboxFormField from "../../../formsUtil/CheckboxFormField";
+import ConditionalRender from "../../../ConditionalRender";
 
 export class StoreBids extends React.Component {
     constructor(props) {
@@ -14,6 +16,7 @@ export class StoreBids extends React.Component {
             storeName: null,
             storeProductsMap: null,
             myPermissions: null,
+            bidsPolicyCheckField: null,
             ready: false,
         };
         this.storeId = this.props.match.params.storeId;
@@ -24,7 +27,9 @@ export class StoreBids extends React.Component {
             this.fetchStoreProducts(),
             this.fetchBids(),
             this.fetchMyStorePermissions(),
+            this.fetchIsBidsPolicyOn(),
         ]);
+
         this.setState({
             ready: true,
         });
@@ -36,7 +41,13 @@ export class StoreBids extends React.Component {
                 this.setState({
                     bids: bids,
                 });
-            }, alertRequestError_default)
+            }, e => {
+                if (e.response != null && e.response.data === 'Bids are not supported in this store') {
+                    return;
+                }
+
+                alertRequestError_default(e);
+            })
     }
 
     async fetchStoreProducts() {
@@ -61,11 +72,49 @@ export class StoreBids extends React.Component {
             }, alertRequestError_default);
     }
 
+    async fetchIsBidsPolicyOn() {
+        await api.stores.bids.getBidPolicy({
+            username: this.context.username,
+            storeId: this.storeId,
+        }).then(isBidsOn => {
+            this.setState({
+                bidsPolicyCheckField: new CheckboxFormField(isBidsOn),
+            });
+        }, alertRequestError_default);
+    }
+
+    onBidsPolicyCheckedChange = async e => {
+        let field = this.state.bidsPolicyCheckField;
+        let previousValue = field.getValue();
+        if (!field.trySetValueFromEvent(e)) {
+            return;
+        }
+
+        this.setState({
+            bidsPolicyCheckField: field,
+        });
+
+        await api.stores.bids.changeBidPolicy({
+            username: this.context.username,
+            storeId: this.storeId,
+            isAvailable: field.getValue(),
+        }).then(() => {
+        }, e => {
+            field.setValue(previousValue);
+            this.setState({
+                bidsPolicyCheckField: field,
+                bids: [],
+            });
+            alertRequestError_default(e);
+        });
+    }
+
     render() {
         if (!this.state.ready) {
             return null;
         }
 
+        let bidsPolicyCheckField = this.state.bidsPolicyCheckField;
         return (
             <main>
 
@@ -79,20 +128,29 @@ export class StoreBids extends React.Component {
                                <label >Support Bids</label>
                            </div>
 
-                           <div >
-                               <input
-                                   type="checkbox"
-                                   className="input-props"
+                           <div>
+                               <ConditionalRender
+                                   condition={bidsPolicyCheckField != null}
+                                   render={() => (
+                                       <input
+                                           type="checkbox"
+                                           className="input-props"
+                                           value='bidsPolicy'
+                                           checked={bidsPolicyCheckField.getInputValue()}
+                                           onChange={this.onBidsPolicyCheckedChange}
+                                       />
+                                   )}
                                />
                            </div>
                         </div>
-
-                        <BidRecordsStore
-                            bidRecords={this.state.bids}
-                            storeProductsMap={this.state.storeProductsMap}
-                            storeId={this.storeId}
-                            myPermissions={this.state.myPermissions}
-                        />
+                        {bidsPolicyCheckField != null && bidsPolicyCheckField.getValue() ? (
+                            <BidRecordsStore
+                                bidRecords={this.state.bids}
+                                storeProductsMap={this.state.storeProductsMap}
+                                storeId={this.storeId}
+                                myPermissions={this.state.myPermissions}
+                            />
+                        ) : (<h1 className='center-screen'>Bids are not supported in the store</h1>)}
 
                     </div>
 
