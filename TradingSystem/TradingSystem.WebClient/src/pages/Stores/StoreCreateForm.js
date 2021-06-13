@@ -39,14 +39,6 @@ export default class StoreCreateForm extends React.Component {
                 number: "cardNumber"
             }),
         }).then(storeRef => {
-            // TODO: remove later
-            return api.stores.bids.changeBidPolicy({
-                username: this.context.username,
-                storeId: storeRef.data.id,
-                isAvailable: true,
-            });
-        }, alertRequestError_default)
-        .then(() => {
             this.props.history.push('/myStores');
         }, alertRequestError_default);
     };
