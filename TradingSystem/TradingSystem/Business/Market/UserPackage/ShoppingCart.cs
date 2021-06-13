@@ -92,7 +92,15 @@ namespace TradingSystem.Business.Market
             if (!ProxyMarketContext.Instance.IsDebug)
             {
                 MarketUsers.Instance.s.WaitOne();
-                transaction = MarketContext.Instance.Database.BeginTransaction();
+                try
+                {
+                    transaction = MarketContext.Instance.Database.BeginTransaction();
+                }
+                catch
+                {
+                    return new BuyStatus(true, null);
+                }
+                
             }
             try
             {

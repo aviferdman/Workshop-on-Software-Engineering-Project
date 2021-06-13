@@ -363,7 +363,14 @@ namespace TradingSystem.Business.Market
             if (!ProxyMarketContext.Instance.IsDebug)
             {
                     s.WaitOne();
+                try
+                {
                     transaction = MarketContext.Instance.Database.BeginTransaction();
+                }
+                catch
+                {
+                    return new Result<ShoppingCart>(null,true,"an error occured");
+                }
             }
             try
             {
