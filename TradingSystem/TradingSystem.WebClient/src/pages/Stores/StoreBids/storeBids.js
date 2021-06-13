@@ -69,11 +69,24 @@ export class StoreBids extends React.Component {
         return (
             <main>
 
-                <div className="store-bids-grid">
+                <div>
 
                     {/*top grid - simple discounts*/}
                     <div  className="store-bids-grid-simple">
-                        <h2> Store Bids </h2>
+                        <h2>  Store Bids </h2>
+                        <div  className="col-grd-perm-bids">
+                           <div className="text-props">
+                               <label >Support Bids</label>
+                           </div>
+
+                           <div >
+                               <input
+                                   type="checkbox"
+                                   className="input-props"
+                               />
+                           </div>
+                        </div>
+
                         <BidRecordsStore
                             bidRecords={this.state.bids}
                             storeProductsMap={this.state.storeProductsMap}
