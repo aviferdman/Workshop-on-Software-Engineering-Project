@@ -198,6 +198,30 @@ namespace TradingSystem.WebApi.Controllers
             return Ok();
         }
 
+        public async Task<ActionResult<bool>> GetBidPolicy([FromBody] StoreInfoActionDTO storeInfoActionDTO)
+        {
+            if (string.IsNullOrWhiteSpace(storeInfoActionDTO.Username))
+            {
+                return BadRequest("Invalid username");
+            }
+            if (storeInfoActionDTO.StoreId == Guid.Empty)
+            {
+                return BadRequest("Invalid store ID");
+            }
+
+            Result<bool>? result = await MarketBidsService.GetStoreBidPolicy(storeInfoActionDTO.Username, storeInfoActionDTO.StoreId, false);
+            if (result == null || (result.IsErr && string.IsNullOrWhiteSpace(result.Mess)))
+            {
+                return InternalServerError();
+            }
+            if (result.IsErr)
+            {
+                return InternalServerError(result.Mess);
+            }
+
+            return Ok(result.Ret);
+        }
+
         public async Task<ActionResult<Guid>> CreateCustomerBid([FromBody] CreateBidOfferDTO bidOfferDTO)
         {
             if (string.IsNullOrWhiteSpace(bidOfferDTO.Username))

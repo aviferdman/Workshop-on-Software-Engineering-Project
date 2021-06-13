@@ -208,6 +208,7 @@ export const stores = {
         })),
         ofStoreSpecific: postCurry('/stores/bids/OfStoreSpecific'),
         changeBidPolicy: postCurry('/stores/bids/ChangeBidPolicy'),
+        getBidPolicy: postCurry('/stores/bids/GetBidPolicy'),
         createCustomerBid: postCurry('/stores/bids/CreateCustomerBid'),
 
         customerAcceptBid: postCurry('/stores/bids/CustomerAcceptBid'),
