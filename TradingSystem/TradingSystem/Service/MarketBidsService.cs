@@ -127,9 +127,9 @@ namespace TradingSystem.Service
             }
         }
 
-        public async Task<Result<bool>> GetStoreBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
+        public async Task<Result<bool>> GetStoreBidPolicy(string ownerUsername, Guid storeId)
         {
-            return await MarketBids.Instance.GetStoreBidPolicy(ownerUsername, storeId, isAvailable);
+            return await MarketBids.Instance.GetStoreBidPolicy(ownerUsername, storeId);
         }
         public Result<ICollection<Bid>> GetStoreBids(Guid storeId, string ownerUsername)
         {
