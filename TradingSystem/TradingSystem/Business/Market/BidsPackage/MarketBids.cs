@@ -111,7 +111,7 @@ namespace TradingSystem.Business.Market
             }
             return await store.ChangeBidPolicy(isAvailable);
         }
-        public async Task<Result<bool>> GetStoreBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
+        public async Task<Result<bool>> GetStoreBidPolicy(string ownerUsername, Guid storeId)
         {
             Store store = await marketStores.GetStoreById(storeId);
             if (store == null)

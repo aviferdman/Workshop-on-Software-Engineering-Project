@@ -67,6 +67,21 @@ namespace TradingSystem.DAL
                    
             }
         }
+
+        public void removeAllProductsInMembersCart(Product p)
+        {
+            if (isDebug)
+            {
+                return;
+            }
+            try
+            {
+                marketContext.removeAllProductsInMembersCart(p);
+            }
+            catch (Exception e)
+            {
+            }
+        }
         public async Task AddHistory(TransactionStatus history)
         {
             if (isDebug)
