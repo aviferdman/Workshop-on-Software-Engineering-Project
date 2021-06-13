@@ -175,5 +175,11 @@ namespace TradingSystem.Business.Market.BidsPackage
             await ProxyMarketContext.Instance.saveChanges();
             return new Result<bool>(true, false, "");
         }
+
+        public async Task ClearAllBids()
+        {
+            this.bidsState = new HashSet<BidState>();
+            await ProxyMarketContext.Instance.saveChanges();
+        }
     }
 }

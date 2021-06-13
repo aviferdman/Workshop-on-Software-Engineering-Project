@@ -126,6 +126,11 @@ namespace TradingSystem.Service
                 semaphoreSlim.Release();
             }
         }
+
+        public async Task<Result<bool>> GetStoreBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
+        {
+            return await MarketBids.Instance.GetStoreBidPolicy(ownerUsername, storeId, isAvailable);
+        }
         public Result<ICollection<Bid>> GetStoreBids(Guid storeId, string ownerUsername)
         {
             return MarketBids.Instance.GetStoreBids(storeId, ownerUsername);

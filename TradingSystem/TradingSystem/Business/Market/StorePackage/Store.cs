@@ -265,8 +265,14 @@ namespace TradingSystem.Business.Market
             else
             {
                 await this.purchasePolicy.RemovePurchaseKind(PurchaseKind.Bid);
+                await this.BidsManager.ClearAllBids();
                 return new Result<bool>(true, false, "");
             }
+        }
+
+        public async Task<Result<bool>> GetStoreBidPolicy()
+        {
+            return new Result<bool>(this.purchasePolicy.IsAvalable(PurchaseKind.Bid), false, "");
         }
 
         public bool IsPurchaseKindAvailable(PurchaseKind purchaseKind)

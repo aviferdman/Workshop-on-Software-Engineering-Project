@@ -111,6 +111,19 @@ namespace TradingSystem.Business.Market
             }
             return await store.ChangeBidPolicy(isAvailable);
         }
+        public async Task<Result<bool>> GetStoreBidPolicy(string ownerUsername, Guid storeId, bool isAvailable)
+        {
+            Store store = await marketStores.GetStoreById(storeId);
+            if (store == null)
+            {
+                return new Result<bool>(false, true, "Store doesn't exist");
+            }
+            if (!store.CheckPermission(ownerUsername, Permission.BidRequests))
+            {
+                return new Result<bool>(false, true, "No permission to accept Bid");
+            }
+            return await store.GetStoreBidPolicy();
+        }
 
         public async Task<Result<bool>> OwnerNegotiateBid(string ownerUsername, Guid storeId, Guid bidId, double newBidPrice)
         {
