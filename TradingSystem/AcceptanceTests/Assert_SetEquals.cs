@@ -103,7 +103,8 @@ namespace AcceptanceTests
             foreach (TValue item_actual in actual)
             {
                 TValue item_expected;
-                Assert.IsTrue(expected.TryGetValue(getKey(item_actual), out item_expected), $"sets aren't equal");
+                TKey key = getKey(item_actual);
+                Assert.IsTrue(expected.TryGetValue(key, out item_expected), $"sets aren't equal: expected is missing key '{key}'");
                 Assert.IsTrue(valuesComparer(item_expected!, item_actual));
             }
         }
