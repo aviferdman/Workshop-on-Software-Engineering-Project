@@ -166,8 +166,8 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Failure_InvalidQuantity()
         {
-            Assert.IsFalse(EditProduct(new ProductInCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, -1)));
-            Assert.IsFalse(EditProduct(new ProductInCart(useCase_addProductToCart.ProductsAdd.First().ProductIdentifiable.ProductId, 0)));
+            Assert.IsFalse(EditProduct(new ProductInCart(ShopImage.ShopProducts[1].ProductId, -1)));
+            Assert.IsFalse(EditProduct(new ProductInCart(ShopImage.ShopProducts[1].ProductId, 0)));
             AssertCartDidntChange();
         }
 

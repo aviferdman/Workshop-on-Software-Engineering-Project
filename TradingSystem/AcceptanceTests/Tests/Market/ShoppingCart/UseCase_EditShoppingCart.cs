@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using AcceptanceTests.AppInterface;
 using AcceptanceTests.AppInterface.Data;
@@ -63,6 +64,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         }
 
         private ProductsForEdit productsForEdit;
+        private List<ProductsForEdit> productsForEditTeardown;
 
         private UseCase_ViewShoppingCart useCase_viewShoppingCart;
 
@@ -81,16 +83,24 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_viewShoppingCart.Setup();
 
             productsForEdit = ChooseProductsForEdit(MarketImage);
+            productsForEditTeardown = new List<ProductsForEdit>();
         }
 
         public override void Teardown()
         {
             base.Teardown();
-            if (productsForEdit != null && productsForEdit.ProductsAdd != null)
+            if (productsForEditTeardown != null)
             {
-                foreach (ProductInCart product in productsForEdit.ProductsAdd)
+                foreach (ProductsForEdit productsForEdit in productsForEditTeardown)
                 {
-                    MarketBridge.RemoveProductFromUserCart(product.ProductId);
+                    IEnumerable<ProductId> productIds = Enumerable.Empty<ProductId>()
+                        .Concat(productsForEdit.ProductsAdd.Select(x => x.ProductId))
+                        .Concat(productsForEdit.ProductsEdit.Select(x => x.ProductId))
+                        .Concat(productsForEdit.ProductsRemove);
+                    foreach (ProductId productId in productIds)
+                    {
+                        _ = MarketBridge.RemoveProductFromUserCart(productId);
+                    }
                 }
             }
             useCase_viewShoppingCart.Teardown();
@@ -99,33 +109,46 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
         [TestCase]
         public void Success_AllChanged()
         {
-            Assert.IsTrue(MarketBridge.EditUserCart(
-                productsForEdit.ProductsAdd,
-                productsForEdit.ProductsRemove,
-                productsForEdit.ProductsEdit
-            ));
-            /// TODO: check cart items changed properly
-            /// <see cref="AcceptanceTests.AppInterface.MarketBridge.IMarketBridge.GetShoppingCartItems"/>
+            Assert.IsTrue(EditCart_AddToTeardown(productsForEdit));
+            new Assert_SetEquals<ProductId, ProductInCart>
+            (
+                productsForEdit.ProductsAdd.Concat(productsForEdit.ProductsEdit),
+                x => x.ProductId
+            ).AssertEquals(MarketBridge.GetShoppingCartItems());
         }
 
         [TestCase]
         public void Failure_NotMutuallyDisjoint()
         {
-            Assert.IsFalse(MarketBridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
-                new HashSet<ProductId> { MarketImage[1].ShopProducts[1].ProductId },
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
-            ));
-            Assert.IsFalse(MarketBridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
-                new HashSet<ProductId> { MarketImage[0].ShopProducts[0].ProductId },
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) }
-            ));
-            Assert.IsFalse(MarketBridge.EditUserCart(
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
-                new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
-                new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 5) }
-            ));
+            Assert.IsFalse(EditCart_AddToTeardown(new ProductsForEdit
+            {
+                ProductsAdd = new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                ProductsRemove = new HashSet<ProductId> { MarketImage[1].ShopProducts[1].ProductId },
+                ProductsEdit = new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) },
+            }));
+            Assert.IsFalse(EditCart_AddToTeardown(new ProductsForEdit
+            {
+                ProductsAdd = new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                ProductsRemove = new HashSet<ProductId> { MarketImage[0].ShopProducts[0].ProductId },
+                ProductsEdit = new HashSet<ProductInCart> { new ProductInCart(MarketImage[0].ShopProducts[0].ProductId, 5) },
+            }));
+            Assert.IsFalse(EditCart_AddToTeardown(new ProductsForEdit
+            {
+                ProductsAdd = new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 10) },
+                ProductsRemove = new HashSet<ProductId> { MarketImage[1].ShopProducts[0].ProductId },
+                ProductsEdit = new HashSet<ProductInCart> { new ProductInCart(MarketImage[1].ShopProducts[1].ProductId, 5) },
+            }));
+        }
+
+        private bool EditCart_AddToTeardown(ProductsForEdit productsForEdit)
+        {
+            productsForEditTeardown.Add(productsForEdit);
+            return MarketBridge.EditUserCart
+            (
+                productsForEdit.ProductsAdd,
+                productsForEdit.ProductsRemove,
+                productsForEdit.ProductsEdit
+            );
         }
     }
 }

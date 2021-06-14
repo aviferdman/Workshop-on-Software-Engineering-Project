@@ -252,7 +252,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             ).AssertEquals(purchaseHistory);
         }
 
-       // [TestCase]
+        [TestCase]
         public async Task Success_Normal()
         {
             await Success_Normal(BuyerUser, useCase_AddProductToCart_TestLogic_1.Products!);

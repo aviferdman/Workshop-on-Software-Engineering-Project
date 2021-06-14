@@ -89,6 +89,7 @@ namespace AcceptanceTests.Tests.Market.ShoppingCart
             useCase_addProduct.Setup();
             useCase_addProduct.Success_Normal_CheckStoreProducts();
 
+            new UseCase_LogOut_TestLogic(SystemContext).Success_Normal();
             testLogic = new UseCase_AddProductToCart_TestLogic(SystemContext, UserInfo);
             testLogic.Setup();
         }

@@ -20,7 +20,7 @@ namespace TradingSystem.Business
 
         public void Add(Product product, int quantity)
         {
-            ProductId_quantity.Add(new PurchasedProduct(Guid.NewGuid(), product.Price, product.Name, quantity));
+            ProductId_quantity.Add(new PurchasedProduct(product.id, product.Price, product.Name, quantity));
         }
     }
 }
