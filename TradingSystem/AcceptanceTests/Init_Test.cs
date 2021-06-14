@@ -9,11 +9,11 @@ namespace AcceptanceTests
 {
     public class Init_Test
     {
-        [Test]
-        public void testValid()
-        {
-            ProxyMarketContext.Instance.IsDebug = true;
-            Assert.IsFalse(SetupService.Instance.Initialize().Result.IsErr);
-        }
+       // [Test]
+       // public void testValid()
+        //{
+        //    ProxyMarketContext.Instance.IsDebug = true;
+        //    Assert.IsFalse(SetupService.Instance.Initialize().Result.IsErr);
+       // }
     }
 }

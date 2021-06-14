@@ -118,7 +118,11 @@ namespace TradingSystem.Business.Market
             if(!loadedStores.TryGetValue(storeId, out s))
             {
                 s= MarketDAL.Instance.getStore(storeId).Result;
-                loadedStores.TryAdd(storeId, s);
+                if (s != null)
+                {
+
+                    loadedStores.TryAdd(storeId, s);
+                }
             }
             return s;
         }
