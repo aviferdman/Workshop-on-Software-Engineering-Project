@@ -7,7 +7,9 @@
 
 .internal-conatiner.store-container {
     display: grid;
-    grid-template-rows: 14.285% 14.285% 14.285% 14.285% 14.285% 14.285% 14.285%;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
     /* TODO: figure out how to change it later */
     /*grid-template-rows: 1fr 1fr 1fr;
     grid-template-columns: 1fr 1fr;*/
@@ -18,4 +20,5 @@
     font-size: 6rem;
     /*margin: 2rem;*/
     background-color: #ECCC77FF;
+    margin-bottom: 2rem;
 }
