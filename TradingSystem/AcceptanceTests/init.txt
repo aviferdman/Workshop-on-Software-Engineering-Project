@@ -1,0 +1,15 @@
+﻿AddGuest();
+AdminSignup(A1, 123, 052)
+AddGuest();
+Signup(U1, 123, 052);
+AddGuest();
+Signup(U2, 123, 052);
+AddGuest();
+Signup(U3, 123, 052);
+AddGuest();
+Signup(U4, 123, 052);
+Login(U1, 123);
+CreateStore(S1, U1, 1, 1, 2021, Romi, 1, 1, NY, NYC, street, 1, 1);
+AddProduct(Wine, 40, 1, 35, cat, 1, U1);
+MakeOwner(U4, S1, U1);
+Logout(U1);

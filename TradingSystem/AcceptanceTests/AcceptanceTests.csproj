@@ -15,9 +15,13 @@
 
   <ItemGroup>
     <None Remove="testhost.dll.config" />
+    <None Remove="init.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="init.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="testhost.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -33,6 +37,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TradingSystem\TradingSystem.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="init.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   
 </Project>

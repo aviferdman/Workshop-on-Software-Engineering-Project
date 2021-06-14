@@ -29,10 +29,20 @@ namespace TradingSystem.Service
             Result<String> ret = null;
             try
             {
-                var p = Directory.GetCurrentDirectory();
-                var path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
+                var currentDirPath = Directory.GetCurrentDirectory();
+                var parentDirPath = Directory.GetParent(Directory.GetCurrentDirectory()).FullName;
                 string fileName = "init.txt";
-                String[] lines = File.ReadAllLines($@"{path}\{fileName}");
+                string initPath = $@"{parentDirPath}\{fileName}";
+                if (!File.Exists(initPath))
+                {
+                    initPath = Path.Combine(currentDirPath, fileName);
+                    if (!File.Exists(initPath))
+                    {
+                        return new Result<string>(null, true, "Init file not found");
+                    }
+                }
+
+                String[] lines = File.ReadAllLines(initPath);
                 for (int i=0; i<lines.Length; i++)
                 {
                     Char[] delimiters = { '(', ',', ')', ';' };
